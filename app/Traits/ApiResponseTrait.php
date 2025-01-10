@@ -6,17 +6,16 @@ trait ApiResponseTrait
 {
     protected function successResponse($data, $message, $statusCode)
     {
-        if (empty($data)) {
-            return response()->json([
-                'status' => 'success',
-                'message' => $message,
-            ], status: $statusCode);
-        }
-        return response()->json([
+        $response = [
             'status' => 'success',
             'message' => $message,
-            'data' => $data,
-        ], $statusCode);
+        ];
+
+        if (!empty($data)) {
+            $response['data'] = $data;
+        }
+
+        return response()->json($response, $statusCode);
     }
     protected function errorResponse($e, $statusCode = 500)
     {
