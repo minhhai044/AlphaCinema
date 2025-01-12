@@ -2,20 +2,15 @@
 
 namespace App\Services;
 
-use App\Repositories\Modules\CinemaRepository;
+use App\Models\Cinema;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
-class CinemaService
+class CinemaService2
 {
-    protected $cinemaRepository;
-    public function __construct(CinemaRepository $cinemaRepository)
-    {
-        $this->cinemaRepository = $cinemaRepository;
-    }
     public function getAllPaginateService($perPage = 10, string $latest = 'id')
     {
-        return $this->cinemaRepository->getPaginateCinemaRepository($perPage, $latest);
+        return Cinema::query()->latest($latest)->paginate($perPage);
     }
     public function storeService($data)
     {
@@ -23,14 +18,14 @@ class CinemaService
             if ($data['image']) {
                 $data['image'] = Storage::put('cinemaImages', $data['image']);
             }
-            $Cinema = $this->cinemaRepository->createCinemaRepository($data);
+            $Cinema = Cinema::create($data);
             return $Cinema;
         });
     }
     public function updateSevice($id, $data)
     {
         return DB::transaction(function () use ($id, $data) {
-            $findCinema = $this->cinemaRepository->findByIdCinemaRepository($id);
+            $findCinema = Cinema::findOrFail($id);
 
             if ($data['image'] && Storage::exists($findCinema['image'])) {
                 Storage::delete($findCinema['image']);
@@ -38,13 +33,13 @@ class CinemaService
             if ($data['image']) {
                 $data['image'] = Storage::put('cinemaImages', $data['image']);
             }
-            $Cinema =  $findCinema->update($data);
-            return $Cinema;
+            $findCinema->update($data);
+            return $findCinema;
         });
     }
     public function deleteSevice($id)
     {
-        $findCinema = $this->cinemaRepository->findByIdCinemaRepository($id);
+        $findCinema = Cinema::findOrFail($id);
         if (Storage::exists($findCinema['image'])) {
             Storage::delete($findCinema['image']);
         }

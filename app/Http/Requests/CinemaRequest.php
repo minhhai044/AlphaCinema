@@ -2,10 +2,13 @@
 
 namespace App\Http\Requests;
 
+use App\Traits\ApiRequestJsonTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CinemaRequest extends FormRequest
 {
+    // Chuyển validate thành Json
+    use ApiRequestJsonTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -21,6 +24,10 @@ class CinemaRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        // post => rulesForCreate 
+        // put/patch => rulesForUpdate
+
         if ($this->isMethod('post')) {
             return $this->rulesForCreate();
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
@@ -32,19 +39,28 @@ class CinemaRequest extends FormRequest
     public function rulesForCreate()
     {
         return [
-            // 'Create' => 'required',
+            'name' => 'required',
+            'address' => 'required',
+            'image' => 'required'
         ];
     }
 
     public function rulesForUpdate()
     {
         return [
-            // 'Update' => 'required',
+            'name' => 'required',
+            'address' => 'required',
+            'image' => 'required'
         ];
     }
-
-    public function messages(): array
+    
+    // messages chung
+    public function messages()
     {
-        return [];
+        return [
+            'name.required' => 'Vui lòng điền name',
+            'address.required' => 'Vui lòng điền address',
+            'image.required' => 'Vui lòng điền image',
+        ];
     }
 }
