@@ -18,6 +18,17 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->rememberToken();
+            $table->string('avatar')->nullable();
+            $table->integer('phone')->nullable();
+            $table->string('address')->nullable();
+            $table->boolean('gender')->nullable()->comment("0 : Nam , 1 : Nữ");
+            $table->date('birthday')->nullable();
+            $table->string('service_id')->nullable(); // ?
+            $table->string('service_name')->nullable(); // ?
+            $table->boolean('type_user')->default(0)->comment("0 : UserMember , 1 : Admin");
+            $table->integer('rank_id')->default(0); // ?
+            $table->integer('cinema_id')->default(0); // ?
+            $table->softDeletes();
             $table->timestamps();
         });
     }
