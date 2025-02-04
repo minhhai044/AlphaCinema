@@ -11,11 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('type_rooms', function (Blueprint $table) {
+        Schema::create('combos', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->decimal('surcharge', 10, 0);
-            // $table->softDeletes();
+            $table->string('img_thumbnail')->nullable();
+            $table->decimal('price',10,0)->default(0);
+            $table->decimal('price_sale',10,0)->default(0);
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(1)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
             $table->timestamps();
         });
     }
@@ -25,6 +28,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('type_rooms');
+        Schema::dropIfExists('combos');
     }
 };
