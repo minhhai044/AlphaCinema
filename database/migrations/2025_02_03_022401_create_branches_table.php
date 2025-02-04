@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('slug');
-            $table->decimal('surcharge',0,10);
+            $table->decimal('surcharge',10,0);
             $table->boolean('is_active')->default(1)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
             $table->timestamps();
         });

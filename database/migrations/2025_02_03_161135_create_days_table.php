@@ -11,11 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('type_rooms', function (Blueprint $table) {
+        Schema::create('days', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique();
-            $table->decimal('surcharge', 10, 0);
-            // $table->softDeletes();
+            $table->decimal('day_surcharge', 10, 0)->default(0)->comment('Phụ thu theo ngày');
             $table->timestamps();
         });
     }
@@ -25,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('type_rooms');
+        Schema::dropIfExists('days');
     }
 };

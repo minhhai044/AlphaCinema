@@ -11,9 +11,11 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('showtimes', function (Blueprint $table) {
+        Schema::create('slideshows', function (Blueprint $table) {
             $table->id();
-            
+            $table->string('img_thumbnail')->comment('Ảnh thumbnail');
+            $table->text('description')->comment('Mô tả');
+            $table->boolean('is_active')->default(1)->comment('0: Ẩn, 1: Hiển thị');
             $table->timestamps();
         });
     }
@@ -23,6 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('showtimes');
+        Schema::dropIfExists('slideshows');
     }
 };
