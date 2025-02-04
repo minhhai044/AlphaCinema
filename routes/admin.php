@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\DashBoardController;
 use Illuminate\Support\Facades\Route;
 
@@ -15,5 +16,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [DashBoardController::class, 'index'])->name('index');
+
+Route::resource('cinemas', CinemaController::class);
 
 // Route::resource('users', [])
