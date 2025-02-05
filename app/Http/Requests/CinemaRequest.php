@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class CinemaRequest extends FormRequest
 {
     // Chuyển validate thành Json
-    use ApiRequestJsonTrait;
+    // use ApiRequestJsonTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -39,28 +39,35 @@ class CinemaRequest extends FormRequest
     public function rulesForCreate()
     {
         return [
+            'branch_id' => 'required',
             'name' => 'required',
+            'slug' => 'nullable',
             'address' => 'required',
-            'image' => 'required'
+            'description' => 'nullable',
+            'is_active' => 'nullable|in:0,1',
         ];
     }
 
     public function rulesForUpdate()
     {
         return [
+            'branch_id' => 'required',
             'name' => 'required',
+            'slug' => 'nullable',
             'address' => 'required',
-            'image' => 'required'
+            'description' => 'nullable',
+            'is_active' => 'nullable|in:0,1',
         ];
     }
-    
+
     // messages chung
     public function messages()
     {
         return [
-            'name.required' => 'Vui lòng điền name',
-            'address.required' => 'Vui lòng điền address',
-            'image.required' => 'Vui lòng điền image',
+            'name.required' => 'Vui lòng điền tên',
+            'address.required' => 'Vui lòng điền địa chỉ',
+            'image.required' => 'Vui lòng tải ảnh',
+            'branch_id.required' => 'Vui lòng chọn chi nhánh',
         ];
     }
 }

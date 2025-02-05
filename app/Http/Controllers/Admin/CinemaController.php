@@ -6,7 +6,9 @@ use App\Models\Cinema;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CinemaRequest;
 use App\Models\Branch;
+use Illuminate\Support\Facades\Log;
 
 class CinemaController extends Controller
 {
@@ -33,15 +35,12 @@ class CinemaController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CinemaRequest $request)
     {
-        $data = $request->all();
+        $data = $request->validated();
         try {
             $data['is_active'] ??= 0;
-
-            if (!empty($data['name'])) {
-                $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
-            }
+            $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
 
             Cinema::create($data);
 
@@ -66,15 +65,25 @@ class CinemaController extends Controller
      */
     public function edit(Cinema $cinema)
     {
-        return view(self::PATH_VIEW . __FUNCTION__);
+        $branchs = Branch::query()->orderByDesc('id')->get();
+        return view(self::PATH_VIEW . __FUNCTION__, compact('cinema', 'branchs'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Cinema $cinema)
+    public function update(CinemaRequest $request, Cinema $cinema)
     {
-        //
+        $data = $request->all();
+        try {
+            $data['is_active'] ??= 0;
+
+            $cinema->update($data);
+
+            return back();
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+        }
     }
 
     /**
