@@ -2,6 +2,8 @@
 @section('title', 'Quản lý rạp')
 
 @section('style')
+<!-- Sweet Alert-->
+<link href="{{ asset('theme/admin/assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
 <style>
     .card {
         box-shadow: 0px 1px 10px 3px #dedede;
@@ -109,7 +111,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="table-responsive">
+                        <div class="table-responsive min-vh-100">
                             <table class="table align-middle table-nowrap dt-responsive nowrap w-100" id="customerList-table">
                                 <thead class="table-light">
                                     <tr>
@@ -157,16 +159,14 @@
                                                     </a>
                                                 </li>
                                                 <li>
-                                                    <a href="{{ route('admin.cinemas.show', $cinema) }}" class="dropdown-item edit-list" data-edit-id="{{ $cinema->id }}">
-                                                        <i class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
-                                                        Show
-                                                    </a>
-                                                </li>
-                                                <li>
-                                                    <button class="dropdown-item remove-list" data-remove-id="{{ $cinema->id }}">
-                                                        <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                        Delete
-                                                    </button>
+                                                    <form id="delete-cinema-{{ $cinema->id }}" action="{{ route('admin.cinemas.destroy', $cinema) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="dropdown-item remove-list" onclick="handleDelete({{ $cinema->id }})">
+                                                            <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
+                                                            Delete
+                                                        </button>
+                                                    </form>
                                                 </li>
                                             </ul>
                                         </div>
@@ -180,25 +180,24 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-12 col-md-5">
-                        <div class="al-table-info" id="customerList-table_info" role="status" aria-live="polite">
-                            Showing 1 to 10 of 12 entries
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-7">
-                        <div class="al-table-paginate paging_simple_numbers pagination-rounded" id="customerList-table_paginate">
-                            <ul class="pagination">
-                                <li class="paginate_button page-item previous disabled" id="customerList-table_previous"><a aria-controls="customerList-table" aria-disabled="true" role="link" data-dt-idx="previous" tabindex="-1" class="page-link"><i class="mdi mdi-chevron-left"></i></a></li>
-                                <li class="paginate_button page-item active"><a href="#" aria-controls="customerList-table" role="link" aria-current="page" data-dt-idx="0" tabindex="0" class="page-link">1</a></li>
-                                <li class="paginate_button page-item "><a href="#" aria-controls="customerList-table" role="link" data-dt-idx="1" tabindex="0" class="page-link">2</a></li>
-                                <li class="paginate_button page-item next" id="customerList-table_next"><a href="#" aria-controls="customerList-table" role="link" data-dt-idx="next" tabindex="0" class="page-link"><i class="mdi mdi-chevron-right"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    {{ $cinemas->onEachSide(1)->links('admin.layouts.components.pagination') }}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+@endsection
+
+@section('script')
+<script src="{{ asset('theme/admin/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
+<script src="{{ asset('assets/js/config.js') }}"></script>
+
+<script>
+    const handleDelete = (id) => {
+        showAlertConfirm(() => {
+            $(`#delete-cinema-${id}`).submit();
+        })
+    }
+</script>
 @endsection

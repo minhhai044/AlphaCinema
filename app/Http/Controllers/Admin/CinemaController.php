@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Models\Cinema;
 use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CinemaRequest;
 use App\Models\Branch;
@@ -18,7 +17,11 @@ class CinemaController extends Controller
      */
     public function index()
     {
-        $cinemas = Cinema::with('branch')->orderByDesc('id')->get();
+        $cinemas = Cinema::with('branch')->orderByDesc('id')->paginate(20);
+
+        if (request()->page > $cinemas->lastPage()) {
+            return redirect()->route('admin.cinemas.index', ['page' => 1]);
+        }
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('cinemas'));
     }
@@ -91,6 +94,11 @@ class CinemaController extends Controller
      */
     public function destroy(Cinema $cinema)
     {
-        //
+        try {
+            $cinema->delete();
+            return redirect()->back();
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+        }
     }
 }
