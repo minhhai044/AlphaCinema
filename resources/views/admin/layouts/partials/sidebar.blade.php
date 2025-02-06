@@ -32,7 +32,7 @@ const menus = [
             </li>
 
             <li>
-                <a href="#">
+                <a href="{{ route('admin.movies.index') }}">
                     <i data-feather="layout"></i>
                     <span data-key="t-movies">Movies</span>
                 </a>
