@@ -7,17 +7,23 @@ use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CinemaRequest;
 use App\Models\Branch;
+use App\Services\CinemaService;
 use Illuminate\Support\Facades\Log;
 
 class CinemaController extends Controller
 {
     private const PATH_VIEW = 'admin.cinemas.';
+    private CinemaService $cinemaService;
+    public function __construct(CinemaService $cinemaService)
+    {
+        $this->cinemaService = $cinemaService;
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $cinemas = Cinema::with('branch')->orderByDesc('id')->paginate(20);
+        $cinemas = $this->cinemaService->getAllPaginateService(10);
 
         if (request()->page > $cinemas->lastPage()) {
             return redirect()->route('admin.cinemas.index', ['page' => 1]);
@@ -40,12 +46,8 @@ class CinemaController extends Controller
      */
     public function store(CinemaRequest $request)
     {
-        $data = $request->validated();
         try {
-            $data['is_active'] ??= 0;
-            $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
-
-            Cinema::create($data);
+            $this->cinemaService->storeService($request->validated());
 
             return redirect()->route('admin.cinemas.index');
         } catch (\Throwable $th) {
@@ -77,11 +79,8 @@ class CinemaController extends Controller
      */
     public function update(CinemaRequest $request, Cinema $cinema)
     {
-        $data = $request->all();
         try {
-            $data['is_active'] ??= 0;
-
-            $cinema->update($data);
+            $this->cinemaService->updateSevice($cinema, $request->validated());
 
             return back();
         } catch (\Throwable $th) {
