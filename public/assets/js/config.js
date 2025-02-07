@@ -1,9 +1,9 @@
 /**
  * Hiển thị alert, có những type success, error, info, warning, question
  *
- * @param {string} icon Biểu tượng của alert
- * @param {*} message Mô tả của alert
- * @param {*} title Tiêu đều của alert
+ * @param {string} icon     Biểu tượng của alert
+ * @param {*}      message  Mô tả của alert
+ * @param {*}      title    Tiêu đều của alert
  */
 const showAlert = (icon = null, message = null, title = null) => {
   Swal.fire({
@@ -12,7 +12,6 @@ const showAlert = (icon = null, message = null, title = null) => {
     icon: `${icon}`,
   });
 };
-
 /**
  * Hiển thị alert xác nhận
  *
@@ -33,4 +32,14 @@ const showAlertConfirm = (callback) => {
       callback();
     }
   });
+};
+/**
+ * Hiển thị toastr / Type: success, error, warning, info
+ * 
+ * @param {*} icon
+ * @param {*} message
+ * @param {*} title
+ */
+const showToastr = (icon = "success", message = null, title = null) => {
+  toastr[icon](message, title);
 };

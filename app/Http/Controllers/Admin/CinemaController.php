@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Alert;
+use App\Helpers\Toastr;
 use App\Models\Cinema;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
@@ -24,7 +26,7 @@ class CinemaController extends Controller
     public function index()
     {
         $cinemas = $this->cinemaService->getAllPaginateService(10);
-
+        // Toastr::success('Tạo rạp chiếu phim thành công');
         if (request()->page > $cinemas->lastPage()) {
             return redirect()->route('admin.cinemas.index', ['page' => 1]);
         }
@@ -48,7 +50,7 @@ class CinemaController extends Controller
     {
         try {
             $this->cinemaService->storeService($request->validated());
-
+            Toastr::success('', 'Tạo rạp chiếu phim thành công');
             return redirect()->route('admin.cinemas.index');
         } catch (\Throwable $th) {
             die('Error' . $th->getMessage());
@@ -95,6 +97,7 @@ class CinemaController extends Controller
     {
         try {
             $cinema->delete();
+            Alert::success('Xóa rạp chếu phim thành công', 'Alpha Cinema Thông Báo');
             return redirect()->back();
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

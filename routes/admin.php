@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\DashBoardController;
+use App\Http\Controllers\Admin\RankController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,5 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [DashBoardController::class, 'index'])->name('index');
 
 Route::resource('cinemas', CinemaController::class);
+Route::resource('ranks', RankController::class);
 
 // Route::resource('users', [])

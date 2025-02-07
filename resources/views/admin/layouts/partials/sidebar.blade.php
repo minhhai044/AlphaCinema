@@ -37,6 +37,12 @@ const menus = [
                     </li>
 
                     <li>
+                        <a href="{{ route('admin.ranks.index') }}">
+                            <span data-key="t-ranks">Ranks</span>
+                        </a>
+                    </li>
+
+                    <li>
                         <a href="javascript: void(0);" class="has-arrow">
                             <span data-key="t-email">Email</span>
                         </a>
