@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin;
 use App\Helpers\Alert;
 use App\Helpers\Toastr;
 use App\Models\Cinema;
-use Illuminate\Support\Str;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CinemaRequest;
 use App\Models\Branch;
@@ -26,23 +25,24 @@ class CinemaController extends Controller
     public function index()
     {
         $cinemas = $this->cinemaService->getAllPaginateService(10);
-        // Toastr::success('Tạo rạp chiếu phim thành công');
+
+        Toastr::success('Tạo rạp chiếu phim thành công');
+
         if (request()->page > $cinemas->lastPage()) {
             return redirect()->route('admin.cinemas.index', ['page' => 1]);
         }
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('cinemas'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
         $branchs = Branch::query()->orderByDesc('id')->get();
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('branchs'));
     }
-
     /**
      * Store a newly created resource in storage.
      */
@@ -50,13 +50,14 @@ class CinemaController extends Controller
     {
         try {
             $this->cinemaService->storeService($request->validated());
+
             Toastr::success('', 'Tạo rạp chiếu phim thành công');
+
             return redirect()->route('admin.cinemas.index');
         } catch (\Throwable $th) {
             die('Error' . $th->getMessage());
         }
     }
-
     /**
      * Display the specified resource.
      */
@@ -66,16 +67,15 @@ class CinemaController extends Controller
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('cinema'));
     }
-
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Cinema $cinema)
     {
         $branchs = Branch::query()->orderByDesc('id')->get();
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('cinema', 'branchs'));
     }
-
     /**
      * Update the specified resource in storage.
      */
@@ -89,7 +89,6 @@ class CinemaController extends Controller
             Log::error($th->getMessage());
         }
     }
-
     /**
      * Remove the specified resource from storage.
      */
@@ -97,7 +96,9 @@ class CinemaController extends Controller
     {
         try {
             $cinema->delete();
+
             Alert::success('Xóa rạp chếu phim thành công', 'Alpha Cinema Thông Báo');
+
             return redirect()->back();
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

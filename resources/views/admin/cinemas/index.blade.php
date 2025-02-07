@@ -1,50 +1,6 @@
 @extends('admin.layouts.master')
 @section('title', 'Quản lý rạp')
 
-@section('style')
-<!-- Sweet Alert-->
-<link href="{{ asset('theme/admin/assets/libs/sweetalert2/sweetalert2.min.css') }}" rel="stylesheet" type="text/css" />
-<style>
-    .card {
-        box-shadow: 0px 1px 10px 3px #dedede;
-    }
-
-    .al-table-length label {
-        font-weight: normal;
-        text-align: left;
-        white-space: nowrap;
-    }
-
-    .al-table-length .al-table-select {
-        width: auto;
-        display: inline-block;
-    }
-
-    .al-table-length .al-table-input {
-        margin-left: .5em;
-        display: inline-block;
-        width: auto;
-    }
-
-    .al-table-info {
-        padding-top: .85em;
-    }
-
-    .al-table-paginate {
-        margin: 0;
-        white-space: nowrap;
-        text-align: right;
-    }
-
-    .al-table-paginate .pagination {
-        margin: 2px 0;
-        white-space: nowrap;
-        justify-content: flex-end;
-    }
-
-</style>
-@endsection
-
 @section('content')
 <!-- start page title -->
 <div class="row">
@@ -66,7 +22,7 @@
 <!-- end page title -->
 <div class="row">
     <div class="col-lg-12">
-        <div class="card">
+        <div class="card al-card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm">
@@ -190,14 +146,5 @@
 @endsection
 
 @section('script')
-<script src="{{ asset('theme/admin/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
-<script src="{{ asset('assets/js/config.js') }}"></script>
-
-<script>
-    const handleDelete = (id) => {
-        showAlertConfirm(() => {
-            $(`#delete-cinema-${id}`).submit();
-        })
-    }
-</script>
+<script src="{{ asset('assets/js/cinema/index.js') }}"></script>
 @endsection

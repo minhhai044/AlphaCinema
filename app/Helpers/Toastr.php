@@ -14,7 +14,8 @@ class Toastr
         return toastr()
             ->closeButton()
             ->preventDuplicates(true)
-            ->newestOnTop(true);
+            ->newestOnTop(true)
+            ->timeOut(3000);
     }
     /**
      * Hiển thị thông báo thành công

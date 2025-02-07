@@ -1,9 +1,29 @@
+/** Config */
+toastr.options = {
+  closeButton: true,
+  debug: false,
+  newestOnTop: true,
+  progressBar: true,
+  positionClass: "toast-top-right",
+  preventDuplicates: true,
+  onclick: null,
+  showDuration: "300",
+  hideDuration: "1000",
+  timeOut: "3000",
+  extendedTimeOut: "1000",
+  showEasing: "swing",
+  hideEasing: "linear",
+  showMethod: "fadeIn",
+  hideMethod: "fadeOut",
+};
+/** Config */
+
 /**
  * Hiển thị alert, có những type success, error, info, warning, question
  *
  * @param {string} icon     Biểu tượng của alert
- * @param {*}      message  Mô tả của alert
- * @param {*}      title    Tiêu đều của alert
+ * @param {string}      message  Mô tả của alert
+ * @param {string}      title    Tiêu đều của alert
  */
 const showAlert = (icon = null, message = null, title = null) => {
   Swal.fire({
@@ -35,10 +55,10 @@ const showAlertConfirm = (callback) => {
 };
 /**
  * Hiển thị toastr / Type: success, error, warning, info
- * 
- * @param {*} icon
- * @param {*} message
- * @param {*} title
+ *
+ * @param {string} icon
+ * @param {string} message
+ * @param {string} title
  */
 const showToastr = (icon = "success", message = null, title = null) => {
   toastr[icon](message, title);
