@@ -20,14 +20,27 @@ const menus = [
             <li>
                 <a href="{{ route('admin.index') }}">
                     <i data-feather="home"></i>
-                    <span data-key="t-dashboard">Dashboard</span>
+                    <span data-key="t-dashboard">Trang chủ</span>
                 </a>
             </li>
+          
 
             <li>
                 <a href="#">
                     <i data-feather="layout"></i>
                     <span data-key="t-accounts">Accounts</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.foods.index') }}">
+                    <i data-feather="layout"></i>
+                    <span data-key="t-accounts">Đồ ăn</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.combos.index') }}">
+                    <i data-feather="layout"></i>
+                    <span data-key="t-accounts">Combo đồ ăn</span>
                 </a>
             </li>
 
