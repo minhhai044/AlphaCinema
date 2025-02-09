@@ -27,8 +27,6 @@ class VoucherController extends Controller
 
     public function store(VoucherRequest $request)
     {
-
-
         try {
             do {
                 $code = strtoupper(Str::random(10));
@@ -73,10 +71,10 @@ class VoucherController extends Controller
         try {
             // Lấy dữ liệu từ request
             $data = $request->all();
-    
+
             // Cập nhật bản ghi trong cơ sở dữ liệu
             $voucher->update($data);
-    
+
             return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật mã giảm giá thành công!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
@@ -100,7 +98,7 @@ class VoucherController extends Controller
         // dd ($typeRoomRequest);
         try {
             $voucher->delete(); // Sử dụng tên biến mới.
-            
+
             return back()
                 ->with('success', 'Xóa thành công');
         } catch (\Throwable $th) {
@@ -108,5 +106,4 @@ class VoucherController extends Controller
         }
         //
     }
-    
 }

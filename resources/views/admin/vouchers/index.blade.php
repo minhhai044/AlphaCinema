@@ -74,7 +74,7 @@
 
     <!-- end page title -->
     <div class="row">
-        
+
         <div class="col-lg-12">
             <div class="row">
                 <div class="card">
@@ -87,7 +87,8 @@
                             </div>
                             <div class="col-sm-auto">
                                 <div class="mb-4">
-                                    <a href="{{ route('admin.vouchers.create') }}" class="btn btn-light waves-effect waves-light">
+                                    <a href="{{ route('admin.vouchers.create') }}"
+                                        class="btn btn-light waves-effect waves-light">
                                         <i class="bx bx-plus me-1"></i>
                                         Thêm mới
                                     </a>
@@ -173,7 +174,7 @@
                                                             <strong>Đến:</strong> {{ $voucher->end_date_time }}
                                                         </div>
                                                     </td>
-                                                    
+
                                                     <td>
                                                         {{ $voucher->discount }} VNĐ
                                                     </td>
@@ -191,17 +192,20 @@
                                                     </td>
                                                     <td>
                                                         <a href="{{ route('admin.vouchers.show', $voucher) }}">
-                                                            <button title="xem" class="btn btn-success btn-sm " type="button"><i class="bi bi-eye"></i></button>
+                                                            <button title="xem" class="btn btn-success btn-sm "
+                                                                type="button"><i class="bi bi-eye"></i></button>
                                                         </a>
 
                                                         <a href="{{ route('admin.vouchers.edit', $voucher) }}">
-                                                            <button title="xem" class="btn btn-warning btn-sm " type="button"><i
-                                                                    class="fas fa-edit"></i></button>
+                                                            <button title="xem" class="btn btn-warning btn-sm "
+                                                                type="button"><i class="fas fa-edit"></i></button>
                                                         </a>
-                                                        <form action="{{route('admin.vouchers.destroy', $voucher)}}" method="POST" class="d-inline-block">
+                                                        <form action="{{ route('admin.vouchers.destroy', $voucher) }}"
+                                                            method="POST" class="d-inline-block">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có muốn xóa không')">
+                                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                                onclick="return confirm('Bạn có muốn xóa không')">
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
@@ -253,8 +257,7 @@
         </div>
     </div>
     <!-- Modal chỉnh sửa -->
-    <div class="modal fade" id="editBranchModal" tabindex="-1" aria-labelledby="editBranchModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="editBranchModal" tabindex="-1" aria-labelledby="editBranchModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered"> <!-- Thêm modal-dialog-centered -->
             <div class="modal-content">
                 <div class="modal-header">
@@ -292,24 +295,24 @@
         const rows = document.querySelectorAll('#customerList-table tbody tr'); // Lấy tất cả hàng trong bảng
 
         // Tìm kiếm ngay khi nhập
-        if (searchInput) {
-            searchInput.addEventListener('input', function() {
-                const keyword = searchInput.value
-            .toLowerCase(); // Lấy từ khóa tìm kiếm và chuyển về chữ thường
+        // if (searchInput) {
+        //     searchInput.addEventListener('input', function() {
+        //         const keyword = searchInput.value
+        //     .toLowerCase(); // Lấy từ khóa tìm kiếm và chuyển về chữ thường
 
-                rows.forEach(row => {
-                    const branchName = row.querySelector('.branch-name').textContent
-                        .toLowerCase(); // Lấy tên chi nhánh
+        //         rows.forEach(row => {
+        //             const branchName = row.querySelector('.branch-name').textContent
+        //                 .toLowerCase(); // Lấy tên chi nhánh
 
-                    // So sánh từ khóa với tên chi nhánh
-                    if (branchName.includes(keyword)) {
-                        row.style.display = ''; // Hiện hàng nếu khớp
-                    } else {
-                        row.style.display = 'none'; // Ẩn hàng nếu không khớp
-                    }
-                });
-            });
-        }
+        //             // So sánh từ khóa với tên chi nhánh
+        //             if (branchName.includes(keyword)) {
+        //                 row.style.display = ''; // Hiện hàng nếu khớp
+        //             } else {
+        //                 row.style.display = 'none'; // Ẩn hàng nếu không khớp
+        //             }
+        //         });
+        //     });
+        // }
 
         // Modal sửa chi nhánh
         document.querySelectorAll('.editBranch').forEach(function(button) {
