@@ -20,5 +20,9 @@ Route::get('/', [DashBoardController::class, 'index'])->name('index');
 // Route::resource('users', [])
 Route::prefix('seat-templates')->group(function () {
     Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
-    
+    Route::post('/store', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
+    Route::get('{id}/edit', [SeatTemplateControler::class, 'edit'])->name('edit.seat_templates');
+    Route::put('{id}/update', [SeatTemplateControler::class, 'update'])->name('update.seat_templates');
+    Route::put('{id}/update_seat', [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
+
 });

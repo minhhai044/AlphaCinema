@@ -17,7 +17,7 @@ class Seat_template extends Model
         'row_double',
         'description',
         'is_active',
-        'is_publish',
+        'is_publish'
     ];
     protected $casts = [
         'is_publish' => 'boolean',
