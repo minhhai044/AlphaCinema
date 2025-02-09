@@ -1,10 +1,12 @@
 <?php
+
 use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\RankController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\ComboController;
+use App\Http\Controllers\Admin\ExportController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,6 +23,8 @@ Route::get('/', [DashBoardController::class, 'index'])->name('index');
 
 Route::resource('cinemas', CinemaController::class);
 Route::resource('ranks', RankController::class);
+
+Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
 
 // Route Food
 Route::group([

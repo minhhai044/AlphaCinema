@@ -26,8 +26,6 @@ class CinemaController extends Controller
     {
         $cinemas = $this->cinemaService->getAllPaginateService(10);
 
-        Toastr::success('Tạo rạp chiếu phim thành công');
-
         if (request()->page > $cinemas->lastPage()) {
             return redirect()->route('admin.cinemas.index', ['page' => 1]);
         }

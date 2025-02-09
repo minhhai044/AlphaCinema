@@ -30,11 +30,17 @@
                             <h6 class="mb-sm-0 font-size-16">Cinema List</h6>
                         </div>
                     </div>
-                    <div class="col-sm-auto">
+                    <div class="col-sm-auto d-flex gap-2">
                         <div class="mb-4">
                             <a href="{{ route('admin.cinemas.create') }}" class="btn btn-light waves-effect waves-light">
                                 <i class="bx bx-plus me-1"></i>
                                 Add Cinema
+                            </a>
+                        </div>
+                        <div class="mb-4">
+                            <a href="{{ route('admin.export', 'cinemas') }}" class="btn btn-warning waves-effect waves-light">
+                                <i class="bx bx-download me-1"></i>
+                                Export Excel
                             </a>
                         </div>
                     </div>
