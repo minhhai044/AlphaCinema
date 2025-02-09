@@ -18,3 +18,7 @@
 <script src="{{ asset('theme/admin/assets/js/pages/dashboard.init.js') }}"></script>
 
 <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
+
+{{-- làm pop up --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
