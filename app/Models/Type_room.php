@@ -8,4 +8,14 @@ use Illuminate\Database\Eloquent\Model;
 class Type_room extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'id',
+        'name',
+        'surcharge',
+    ];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }
