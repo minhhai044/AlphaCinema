@@ -46,7 +46,7 @@ const menus = [
             </li>
             <li>
                 <a href="{{route('admin.index.seat_templates')}}">
-                    <i data-feather="seat"></i>
+                    <i data-feather="box"></i>
                     <span data-key="t-rooms">Seat Templates</span>
                 </a>
             </li>

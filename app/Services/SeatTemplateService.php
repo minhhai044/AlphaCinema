@@ -6,9 +6,16 @@ use App\Models\Seat_template;
 
 class SeatTemplateService
 {
-    public function getAll()
+    public function getAll($request)
     {
-        return Seat_template::query()->latest('id')->paginate(10);
+        $query = Seat_template::query()->latest('id');
+        if ($request->has('name') && $request->query('name', '') != "") {
+            $name = $request->query('name', '');
+            $query->where('name', 'LIKE', "%$name%");
+        }
+
+
+        return  $query->paginate(10);
     }
     public function storeService(array $data)
     {

@@ -5,9 +5,10 @@
     Thêm
 </button>
 
-{{-- <form action="" method="get">
-
-</form> --}}
+<form action="{{route('admin.index.seat_templates')}}" method="get">
+    <input type="text" name="name" value="{{ request('name') }}">
+    <button type="submit">Search</button>
+</form>
 
 <!-- Button trigger modal -->
 
@@ -35,7 +36,8 @@
                             <select name="matrix" class="form-select" required id="matrixSelectCreate">
                                 <option value="" disabled selected>Chọn ma trận ghế</option>
                                 @foreach ($matrixs as $matrix)
-                                    <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }} {{ $matrix['description'] }}</option>
+                                    <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }} {{ $matrix['description'] }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -115,7 +117,7 @@
                                 <i class=" bx bx-dots-vertical-rounded"></i>
                             </span>
                             <ul class="dropdown-menu">
-                                <li> <a class="dropdown-item" href="{{ route('admin.edit.seat_templates', $data) }}">Cấu
+                                <li> <a class="dropdown-item" href="{{ route('admin.edit.seat_templates', $data) }}"><i class="mdi mdi-plus-circle-outline"></i> Cấu
                                         tạo
                                         ghế</a></li>
                                 <li>
@@ -125,7 +127,7 @@
                                         data-double="{{ $data->row_double }}" data-description="{{ $data->description }}"
                                         data-publish="{{ $data->is_publish }}" data-bs-toggle="modal"
                                         data-bs-target="#exampleModalEdit">
-                                        Chỉnh sửa
+                                        <i class="mdi mdi-playlist-edit"></i> Chỉnh sửa
                                     </a>
                                 </li>
                             </ul>
@@ -162,7 +164,8 @@
                             <select name="matrix" id="matrixSelectEdit" class="form-select" required>
                                 <option value="" disabled selected>Chọn ma trận ghế</option>
                                 @foreach ($matrixs as $matrix)
-                                    <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }} {{ $matrix['description'] }}</option>
+                                    <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }} {{ $matrix['description'] }}
+                                    </option>
                                 @endforeach
                             </select>
                         </div>
@@ -205,114 +208,65 @@
 <script>
     $(document).ready(function () {
         let matrixData = @json($matrixs);
-        $('#matrixSelectCreate').change(function () {
-            let matrixId = $(this).val();
 
+        function handleMatrixChange(selectId, regularId, vipId, doubleId) {
+            let matrixId = $(selectId).val();
             let selectedMatrix = matrixData.find(matrix => matrix.id == matrixId);
 
             if (selectedMatrix) {
-                $('#regularSeatCreate').val(selectedMatrix.row_default['regular']);
-                $('#vipSeatCreate').val(selectedMatrix.row_default['vip']);
-                $('#doubleSeatCreate').val(selectedMatrix.row_default['double']);
+                $(regularId).val(selectedMatrix.row_default['regular']);
+                $(vipId).val(selectedMatrix.row_default['vip']);
+                $(doubleId).val(selectedMatrix.row_default['double']);
             } else {
-                $('#regularSeatCreate').val('');
-                $('#vipSeatCreate').val('');
-                $('#doubleSeatCreate').val('');
+                $(regularId).val('');
+                $(vipId).val('');
+                $(doubleId).val('');
             }
+        }
+
+        $('#matrixSelectCreate').change(function () {
+            handleMatrixChange('#matrixSelectCreate', '#regularSeatCreate', '#vipSeatCreate', '#doubleSeatCreate');
         });
 
         $('#matrixSelectEdit').change(function () {
-            let matrixId = $(this).val();
-
-            let selectedMatrix = matrixData.find(matrix => matrix.id == matrixId);
-
-            if (selectedMatrix) {
-                $('#regularSeatEdit').val(selectedMatrix.row_default['regular']);
-                $('#vipSeatEdit').val(selectedMatrix.row_default['vip']);
-                $('#doubleSeatEdit').val(selectedMatrix.row_default['double']);
-            } else {
-                $('#regularSeatEdit').val('');
-                $('#vipSeatEdit').val('');
-                $('#doubleSeatEdit').val('');
-            }
+            handleMatrixChange('#matrixSelectEdit', '#regularSeatEdit', '#vipSeatEdit', '#doubleSeatEdit');
         });
-        // Form click create
+
+        function handleSubmit(formId, matrixSelectId, regularSeatId, vipSeatId, doubleSeatId) {
+            let form = document.getElementById(formId);
+            if (form.checkValidity()) {
+                let regularSeat = $(regularSeatId).val().trim();
+                let vipSeat = $(vipSeatId).val().trim();
+                let doubleSeat = $(doubleSeatId).val().trim();
+                let matrixId = $(matrixSelectId).val().trim();
+
+                let totalSeat = parseInt(regularSeat) + parseInt(vipSeat) + parseInt(doubleSeat);
+                let selectedMatrix = matrixData.find(matrix => matrix.id == matrixId);
+
+                if (matrixId && selectedMatrix) {
+                    if (totalSeat === selectedMatrix.max_col) {
+                        $(form).submit();
+                    } else {
+                        toastr.error('Vui lòng kiểm tra lại số lượng ghế !!');
+                        handleMatrixChange(matrixSelectId, regularSeatId, vipSeatId, doubleSeatId);
+                    }
+                } else {
+                    toastr.error('matrixId rỗng hoặc không hợp lệ !!');
+                }
+            } else {
+                form.reportValidity();
+            }
+        }
+
         $('#submitSeatTemplate').click(function () {
-
-            let form = document.getElementById('submitSeatTemplateForm');
-            if (form.checkValidity()) {
-                let regularSeat = $('#regularSeatCreate').val().trim();
-                let vipSeat = $('#vipSeatCreate').val().trim();
-                let doubleSeat = $('#doubleSeatCreate').val().trim();
-                let matrixId = $('#matrixSelectCreate').val().trim();
-
-                let totalSeat = parseInt(regularSeat) + parseInt(vipSeat) + parseInt(doubleSeat);
-                if (matrixId) {
-                    let selectedMatrix = matrixData.find(matrix => matrix.id == matrixId);
-                    if (totalSeat == selectedMatrix.max_col) {
-                        $('#submitSeatTemplateForm').submit();
-                    } else {
-                        if (selectedMatrix) {
-                            toastr.error('Vui lòng kiểm tra lại số lượng ghế !!');
-                            $('#regularSeatCreate').val(selectedMatrix.row_default['regular']);
-                            $('#vipSeatCreate').val(selectedMatrix.row_default['vip']);
-                            $('#doubleSeatCreate').val(selectedMatrix.row_default['double']);
-                        } else {
-
-                            $('#regularSeatCreate').val('');
-                            $('#vipSeatCreate').val('');
-                            $('#doubleSeatCreate').val('');
-                        }
-                    }
-
-                } else {
-                    toastr.error('matrixId rỗng !!');
-                }
-            } else {
-                form.reportValidity();
-            }
-
-
+            handleSubmit('submitSeatTemplateForm', '#matrixSelectCreate', '#regularSeatCreate', '#vipSeatCreate', '#doubleSeatCreate');
         });
-        // Form Update
+
         $('#submitSeatTemplateUpdate').click(function () {
-
-            let form = document.getElementById('submitSeatTemplateFormUpdate');
-            if (form.checkValidity()) {
-                let regularSeat = $('#regularSeatEdit').val().trim();
-                let vipSeat = $('#vipSeatEdit').val().trim();
-                let doubleSeat = $('#doubleSeatEdit').val().trim();
-                let matrixId = $('#matrixSelectEdit').val().trim();
-
-                let totalSeat = parseInt(regularSeat) + parseInt(vipSeat) + parseInt(doubleSeat);
-                if (matrixId) {
-                    let selectedMatrix = matrixData.find(matrix => matrix.id == matrixId);
-                    if (totalSeat == selectedMatrix.max_col) {
-                        $('#submitSeatTemplateFormUpdate').submit();
-                    } else {
-                        if (selectedMatrix) {
-                            toastr.error('Vui lòng kiểm tra lại số lượng ghế !!');
-                            $('#regularSeatEdit').val(selectedMatrix.row_default['regular']);
-                            $('#vipSeatEdit').val(selectedMatrix.row_default['vip']);
-                            $('#doubleSeatEdit').val(selectedMatrix.row_default['double']);
-                        } else {
-
-                            $('#regularSeatEdit').val('');
-                            $('#vipSeatEdit').val('');
-                            $('#doubleSeatEdit').val('');
-                        }
-                    }
-
-                } else {
-                    toastr.error('matrixId rỗng !!');
-                }
-            } else {
-                form.reportValidity();
-            }
-
-
+            handleSubmit('submitSeatTemplateFormUpdate', '#matrixSelectEdit', '#regularSeatEdit', '#vipSeatEdit', '#doubleSeatEdit');
         });
     });
+
     $(document).ready(function () {
         let Url = @json($appUrl);
         $('input[id^="is_active"]').change(function () {
@@ -366,10 +320,10 @@
 
         if (publish) {
             $('#regularSeatEdit, #vipSeatEdit, #doubleSeatEdit').attr('readonly', true);
-            $('#matrixSelectEdit').prop('disabled',true);
+            $('#matrixSelectEdit').prop('disabled', true);
         } else {
             $('#vipSeatEdit, #doubleSeatEdit').removeAttr('readonly');
-            $('#matrixSelectEdit').prop('disabled',false);
+            $('#matrixSelectEdit').prop('disabled', false);
         }
 
 

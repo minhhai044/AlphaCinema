@@ -17,9 +17,10 @@ class SeatTemplateControler extends Controller
     {
         $this->seatTemplateService = $seatTemplateService;
     }
-    public function index()
+    public function index(Request $request)
     {
-        $dataAll = $this->seatTemplateService->getAll();
+        
+        $dataAll = $this->seatTemplateService->getAll($request);
         $matrixs = Seat_template::MATRIXS;
         return view(self::PATH_VIEW . __FUNCTION__, compact('dataAll', 'matrixs'));
     }
