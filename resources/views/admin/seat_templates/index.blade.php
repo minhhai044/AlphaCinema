@@ -17,18 +17,21 @@
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form action="{{ route('admin.store.seat_templates') }}" method="post" id="submitSeatTemplateForm">
+            <form action="{{ route('admin.store.seat_templates') }}"
+                method="post" class="submitSeatTemplateForm">
                 @csrf
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Thêm mẫu ghế</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
+                    
                     <div class="row">
                         <div class="col-lg-12 mb-3">
                             <label for="nameInput" class="form-label">Tên mẫu ghế <span
                                     style="color: red">*</span></label>
-                            <input required type="text" name="name" class="form-control" placeholder="Nhập tên mẫu ghế">
+                            <input type="text" name="name" required data-pristine-required-message="Vui lòng nhập tên mẫu ghế !!!" 
+                                 class="form-control" placeholder="Nhập tên mẫu ghế">
                         </div>
                         <div class="col-lg-12 mb-3">
                             <label for="matrixSelectCreate" class="form-label">Ma trận ghế <span
@@ -36,8 +39,8 @@
                             <select name="matrix" class="form-select" required id="matrixSelectCreate">
                                 <option value="" disabled selected>Chọn ma trận ghế</option>
                                 @foreach ($matrixs as $matrix)
-                                    <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }} {{ $matrix['description'] }}
-                                    </option>
+                                <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }} {{ $matrix['description'] }}
+                                </option>
                                 @endforeach
                             </select>
                         </div>
@@ -69,6 +72,23 @@
                     <button id="submitSeatTemplate" type="button" class="btn btn-primary">Thêm mẫu ghế</button>
                 </div>
             </form>
+            {{-- <form action="{{ route('admin.store.seat_templates') }}" id="pristine-valid-example" novalidate
+                method="post" class="submitSeatTemplateForm">
+                @csrf
+                <input type="hidden" />
+                <div class="row">
+                    <div class="col-xl-4 col-md-6">
+                        <div class="form-group mb-3">
+                            <label>Username</label>
+                            <input type="text" name="username" required
+                                data-pristine-required-message="Please enter a username" class="form-control"
+                                placeholder="First name" />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Submit form</button>
+                    </div>
+            </form> --}}
         </div>
     </div>
 </div>
@@ -117,7 +137,8 @@
                                 <i class=" bx bx-dots-vertical-rounded"></i>
                             </span>
                             <ul class="dropdown-menu">
-                                <li> <a class="dropdown-item" href="{{ route('admin.edit.seat_templates', $data) }}"><i class="mdi mdi-plus-circle-outline"></i> Cấu
+                                <li> <a class="dropdown-item" href="{{ route('admin.edit.seat_templates', $data) }}"><i
+                                            class="mdi mdi-plus-circle-outline"></i> Cấu
                                         tạo
                                         ghế</a></li>
                                 <li>
@@ -144,7 +165,7 @@
 <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
-            <form method="post" id="submitSeatTemplateFormUpdate">
+            <form method="post" class="submitSeatTemplateFormUpdate">
                 @csrf
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="exampleModalLabel">Sửa mẫu ghế</h1>
@@ -203,8 +224,10 @@
 </div>
 
 
-<script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-    crossorigin="anonymous"></script>
+
+
+@endsection
+@section('script')
 <script>
     $(document).ready(function () {
         let matrixData = @json($matrixs);
@@ -232,9 +255,10 @@
             handleMatrixChange('#matrixSelectEdit', '#regularSeatEdit', '#vipSeatEdit', '#doubleSeatEdit');
         });
 
-        function handleSubmit(formId, matrixSelectId, regularSeatId, vipSeatId, doubleSeatId) {
-            let form = document.getElementById(formId);
-            if (form.checkValidity()) {
+        function handleSubmit(formClass, matrixSelectId, regularSeatId, vipSeatId, doubleSeatId) {
+            let form = $(`.${formClass}`);
+
+            if (form[0].checkValidity()) {
                 let regularSeat = $(regularSeatId).val().trim();
                 let vipSeat = $(vipSeatId).val().trim();
                 let doubleSeat = $(doubleSeatId).val().trim();
@@ -254,7 +278,7 @@
                     toastr.error('matrixId rỗng hoặc không hợp lệ !!');
                 }
             } else {
-                form.reportValidity();
+                form[0].reportValidity();
             }
         }
 
@@ -266,7 +290,7 @@
             handleSubmit('submitSeatTemplateFormUpdate', '#matrixSelectEdit', '#regularSeatEdit', '#vipSeatEdit', '#doubleSeatEdit');
         });
     });
-
+    // Phần active
     $(document).ready(function () {
         let Url = @json($appUrl);
         $('input[id^="is_active"]').change(function () {
@@ -299,7 +323,7 @@
             }
         });
     });
-
+    // Phần edit
     $('.edit-seat-template').click(function () {
         let id = $(this).data('id');
         let name = $(this).data('name');
@@ -330,13 +354,12 @@
 
 
         // Thay đổi action của form để cập nhật
-        $('#submitSeatTemplateFormUpdate').attr('action', `seat-templates/${id}/update`);
-        $('#submitSeatTemplateFormUpdate').append('<input type="hidden" name="_method" value="PUT">');
+        $('.submitSeatTemplateFormUpdate').attr('action', `seat-templates/${id}/update`);
+        $('.submitSeatTemplateFormUpdate').append('<input type="hidden" name="_method" value="PUT">');
 
         // Đổi text của nút submit
         $('#submitSeatTemplateUpdate').text('Cập nhật');
     });
-
 
 </script>
 @endsection

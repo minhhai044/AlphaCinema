@@ -305,194 +305,196 @@
         </div>
     </div>
 
-    <script src="https://code.jquery.com/jquery-3.7.1.js" integrity="sha256-eKhayi8LEQwp4NKxN+CfCh+3qOVUtJn3QNZ0TciWLP4="
-        crossorigin="anonymous"></script>
-    <script>
-        $(document).ready(function() {
-            // Hàm kiểm tra ghế kế bên có đủ điều kiện để tạo ghế đôi hay không
-            function canMakeDoubleSeat($td) {
-                return $td.length && $td.find('img').attr('src')?.includes('seat-add.svg') && $td.css('display') !==
-                    'none';
-            }
+   
+    
 
-            $('.box-item-seat').on('click', function() {
-                //Trỏ đến img trong class box-item-seat
-                var img = $(this).find('img');
-                // Lấy src của image đó 
-                var currentSrc = img.attr('src');
-                // Lấy typeSeatId từ data-attribute 1 : Ghế thường , 2 : ghế Vip , 3 Ghế đôi
-                var typeSeatId = parseInt($(this).data('typeSeatId'));
+@endsection
+@section('script')
+<script>
+    $(document).ready(function() {
+        // Hàm kiểm tra ghế kế bên có đủ điều kiện để tạo ghế đôi hay không
+        function canMakeDoubleSeat($td) {
+            return $td.length && $td.find('img').attr('src')?.includes('seat-add.svg') && $td.css('display') !==
+                'none';
+        }
 
-                // Tìm và trỏ đến thẻ td đang click
-                var tdElement = $(this).closest('td');
-                // Lấy td bên phải
-                var nextTd = tdElement.next();
+        $('.box-item-seat').on('click', function() {
+            //Trỏ đến img trong class box-item-seat
+            var img = $(this).find('img');
+            // Lấy src của image đó 
+            var currentSrc = img.attr('src');
+            // Lấy typeSeatId từ data-attribute 1 : Ghế thường , 2 : ghế Vip , 3 Ghế đôi
+            var typeSeatId = parseInt($(this).data('typeSeatId'));
 
-                // Lấy td bên trái
-                var previousTd = tdElement.prev();
+            // Tìm và trỏ đến thẻ td đang click
+            var tdElement = $(this).closest('td');
+            // Lấy td bên phải
+            var nextTd = tdElement.next();
 
-                // Nếu bạn chưa chọn ghế thì currentSrc sẽ chứa seat-add.svg
-                // Nếu bạn đã chọn ghế thì currentSrc sẽ chứa seat-regular.svg hoặc seat-vip.svg hoặc seat-double.svg
+            // Lấy td bên trái
+            var previousTd = tdElement.prev();
+
+            // Nếu bạn chưa chọn ghế thì currentSrc sẽ chứa seat-add.svg
+            // Nếu bạn đã chọn ghế thì currentSrc sẽ chứa seat-regular.svg hoặc seat-vip.svg hoặc seat-double.svg
 
 
-                if (currentSrc.includes('seat-add.svg')) {
-                    // Ghế đôi typeSeatId = 3 
-                    if (typeSeatId === 3) {
+            if (currentSrc.includes('seat-add.svg')) {
+                // Ghế đôi typeSeatId = 3 
+                if (typeSeatId === 3) {
 
-                        if (canMakeDoubleSeat(nextTd)) {
+                    if (canMakeDoubleSeat(nextTd)) {
 
-                            // Chọn ghế đôi bên phải
-                            tdElement.attr('colspan', 2); // set colSpan = 2 cho td đang click
-                            nextTd.hide(); // ẩn td bên phải
-                            img.attr('src', "{{ asset('images/seat/seat-2.png') }}"); // set src cho img
-                        } else if (canMakeDoubleSeat(
-                                previousTd)) { // nếu đằng trước td không còn thì sẽ quay lại đằng sau td
-                            // Chọn ghế đôi bên trái
-                            previousTd.attr('colspan', 2); // set colSpan = 2 cho td trước td đang click
-                            tdElement.hide(); // ẩn td bên trái
-                            previousTd.find('img').attr('src',
-                                "{{ asset('images/seat/seat-2.png') }}"); // set src cho img
-                        } else {
-                            // nếu đằng trước và sau td không còn thì sẽ thông báo
-                            toastr.error('Không có đủ chỗ trống để đặt ghế đôi !!');
-                        }
+                        // Chọn ghế đôi bên phải
+                        tdElement.attr('colspan', 2); // set colSpan = 2 cho td đang click
+                        nextTd.hide(); // ẩn td bên phải
+                        img.attr('src', "{{ asset('images/seat/seat-2.png') }}"); // set src cho img
+                    } else if (canMakeDoubleSeat(
+                            previousTd)) { // nếu đằng trước td không còn thì sẽ quay lại đằng sau td
+                        // Chọn ghế đôi bên trái
+                        previousTd.attr('colspan', 2); // set colSpan = 2 cho td trước td đang click
+                        tdElement.hide(); // ẩn td bên trái
+                        previousTd.find('img').attr('src',
+                            "{{ asset('images/seat/seat-2.png') }}"); // set src cho img
                     } else {
-                        // Xử lý ghế thường và ghế VIP
-                        var seatSrc = (typeSeatId === 1) ? "{{ asset('images/seat/seat-1.png') }}" :
-                            "{{ asset('images/seat/seat-1.png') }}";
-                        img.attr('src', seatSrc);
+                        // nếu đằng trước và sau td không còn thì sẽ thông báo
+                        toastr.error('Không có đủ chỗ trống để đặt ghế đôi !!');
                     }
                 } else {
-                    // Trả ghế về trạng thái ban đầu
-                    img.attr('src', "{{ asset('svg/seat-add.svg') }}").css('width', '60%');
-
-                    // Nếu ghế hiện tại là ghế đôi, trả colSpan về 1 và hiển thị lại ghế kế bên
-                    if (typeSeatId === 3 && tdElement.attr('colspan') == 2) {
-                        if (nextTd.length) {
-                            tdElement.attr('colspan', 1);
-                            nextTd.show();
-                        } else if (previousTd.length) {
-                            previousTd.attr('colspan', 1);
-                            tdElement.show();
-                        }
-                    }
+                    // Xử lý ghế thường và ghế VIP
+                    var seatSrc = (typeSeatId === 1) ? "{{ asset('images/seat/seat-1.png') }}" :
+                        "{{ asset('images/seat/seat-1.png') }}";
+                    img.attr('src', seatSrc);
                 }
-            });
-            // Xóa bỏ tất cả các ghế
-            $('.btn-remove-all').on('click', function() {
-                // Lấy  row đó A or B or C ,.....
-                var row = $(this).data('row');
-                // Trỏ đến các td có data-row = row và có class = box-item-seat
-                var seats = $(`td[data-row="${row}"] .box-item-seat`);
-                // Lặp qua các seats đó
-                seats.each(function() {
-                    // Lấy hình ảnh của từng td
-                    var img = $(this).find('img');
-                    // Thêm ảnh vào các thẻ image
-                    img.attr('src', "{{ asset('svg/seat-add.svg') }}").css('width', '60%');
-                    // Lấy thông tin td hiện tại
-                    var tdElement = $(this).closest('td');
-                    // Ghế đôi  sẽ trở về dạng ban đầu
-                    if (tdElement.attr('colSpan') == 2) {
-                        var nextTd = tdElement.next();
-                        tdElement.attr('colSpan', 1);
+            } else {
+                // Trả ghế về trạng thái ban đầu
+                img.attr('src', "{{ asset('svg/seat-add.svg') }}").css('width', '60%');
+
+                // Nếu ghế hiện tại là ghế đôi, trả colSpan về 1 và hiển thị lại ghế kế bên
+                if (typeSeatId === 3 && tdElement.attr('colspan') == 2) {
+                    if (nextTd.length) {
+                        tdElement.attr('colspan', 1);
                         nextTd.show();
-                    }
-                });
-            });
-            // Chọn tất cả các ghế
-            $('.btn-select-all').on('click', function() {
-                // Lấy  row đó A or B or C ,.....
-                var row = $(this).data('row');
-                // Trỏ đến các td có data-row = row và có class = box-item-seat
-                var seats = $(`td[data-row="${row}"] .box-item-seat`);
-                // Lấy type của hàng ghế đó
-                var seatType = parseInt($(this).closest('tr').data('row-type-seat'));
-                // Reset lại toàn bộ các ghế đã click trước
-                resetAllSeats(seats);
-                // Nếu seatType == 1 thì sẽ setAtribu cho image
-                if (seatType === 1) {
-                    seats.each(function() {
-                        $(this).find('img').attr('src', "{{ asset('images/seat/seat-1.png') }}");
-                    });
-                    // Nếu seatType == 2 thì sẽ setAtribu cho image
-                } else if (seatType === 2) {
-                    seats.each(function() {
-                        $(this).find('img').attr('src', "{{ asset('images/seat/seat-1.png') }}");
-                    });
-                    // Nếu seatType == 3 thì sẽ setAtribu cho image
-
-                } else if (seatType === 3) {
-                    for (let i = 0; i < seats.length; i++) {
-                        // trỏ đến phần tử thứ i trong seats
-                        var seatDiv = seats.eq(i);
-                        // lấy ảnh trong phần tử đó
-                        var img = seatDiv.find('img');
-                        // trỏ đến id đang click
-                        var tdElement = seatDiv.closest('td');
-                        // lấy td tiếp theo
-                        var nextTd = tdElement.next();
-                        // nếu nextTd chưa đc chọn 
-                        if (canMakeDoubleSeat(nextTd)) {
-                            tdElement.attr('colSpan', 2);
-                            nextTd.hide();
-                            img.attr('src', "{{ asset('images/seat/seat-2.png') }}");
-                            i++;
-                            // kiểm tra td sau đó đã đc chọn hay chưa
-                        } else if (i > 0 && canMakeDoubleSeat(seats.eq(i - 1).closest('td'))) {
-                            var previousTd = seats.eq(i - 1).closest('td');
-                            previousTd.attr('colSpan', 2);
-                            tdElement.hide();
-                            previousTd.find('img').attr('src', "{{ asset('images/seat/seat-2.png') }}");
-                        }
+                    } else if (previousTd.length) {
+                        previousTd.attr('colspan', 1);
+                        tdElement.show();
                     }
                 }
-            });
-
-            function resetAllSeats(seats) {
-                seats.each(function() {
-                    var img = $(this).find('img');
-                    var tdElement = $(this).closest('td');
-
-                    img.attr('src', "{{ asset('svg/seat-add.svg') }}").css('width', '60%');
-
-                    if (tdElement.attr('colSpan') == 2) {
-                        tdElement.attr('colSpan', 1);
-                        tdElement.next().show();
-                    }
-                });
             }
-
-            $('#seatForm').submit(function(e) {
-                let seatStructure = [];
-
-                $('.box-item-seat').each(function(index) {
-                    
-                    var img = $(this).find('img');
-                    if (!img.attr('src').includes('seat-add.svg')) {
-                        let tdElement = $(this).closest('td');
-                        let coordinates_x = tdElement.data('col');
-                        let coordinates_y = tdElement.data('row');
-                        let type_seat_id = $(this).data('type-seat-id');
-
-                        seatStructure.push({
-                            id:index+1,
-                            coordinates_x: coordinates_x,
-                            coordinates_y: coordinates_y,
-                            type_seat_id: type_seat_id,
-                        });
-                    }
-                });
-
-                if (seatStructure.length === 0) {
-                    e.preventDefault(); // Ngăn form submit nếu không có ghế nào được chọn
-                    toastr.error('Bạn chưa chọn ghế nào!!!');
-                    return;
+        });
+        // Xóa bỏ tất cả các ghế
+        $('.btn-remove-all').on('click', function() {
+            // Lấy  row đó A or B or C ,.....
+            var row = $(this).data('row');
+            // Trỏ đến các td có data-row = row và có class = box-item-seat
+            var seats = $(`td[data-row="${row}"] .box-item-seat`);
+            // Lặp qua các seats đó
+            seats.each(function() {
+                // Lấy hình ảnh của từng td
+                var img = $(this).find('img');
+                // Thêm ảnh vào các thẻ image
+                img.attr('src', "{{ asset('svg/seat-add.svg') }}").css('width', '60%');
+                // Lấy thông tin td hiện tại
+                var tdElement = $(this).closest('td');
+                // Ghế đôi  sẽ trở về dạng ban đầu
+                if (tdElement.attr('colSpan') == 2) {
+                    var nextTd = tdElement.next();
+                    tdElement.attr('colSpan', 1);
+                    nextTd.show();
                 }
-
-                $('#seatStructure').val(JSON.stringify(seatStructure));
             });
         });
-    </script>
+        // Chọn tất cả các ghế
+        $('.btn-select-all').on('click', function() {
+            // Lấy  row đó A or B or C ,.....
+            var row = $(this).data('row');
+            // Trỏ đến các td có data-row = row và có class = box-item-seat
+            var seats = $(`td[data-row="${row}"] .box-item-seat`);
+            // Lấy type của hàng ghế đó
+            var seatType = parseInt($(this).closest('tr').data('row-type-seat'));
+            // Reset lại toàn bộ các ghế đã click trước
+            resetAllSeats(seats);
+            // Nếu seatType == 1 thì sẽ setAtribu cho image
+            if (seatType === 1) {
+                seats.each(function() {
+                    $(this).find('img').attr('src', "{{ asset('images/seat/seat-1.png') }}");
+                });
+                // Nếu seatType == 2 thì sẽ setAtribu cho image
+            } else if (seatType === 2) {
+                seats.each(function() {
+                    $(this).find('img').attr('src', "{{ asset('images/seat/seat-1.png') }}");
+                });
+                // Nếu seatType == 3 thì sẽ setAtribu cho image
 
+            } else if (seatType === 3) {
+                for (let i = 0; i < seats.length; i++) {
+                    // trỏ đến phần tử thứ i trong seats
+                    var seatDiv = seats.eq(i);
+                    // lấy ảnh trong phần tử đó
+                    var img = seatDiv.find('img');
+                    // trỏ đến id đang click
+                    var tdElement = seatDiv.closest('td');
+                    // lấy td tiếp theo
+                    var nextTd = tdElement.next();
+                    // nếu nextTd chưa đc chọn 
+                    if (canMakeDoubleSeat(nextTd)) {
+                        tdElement.attr('colSpan', 2);
+                        nextTd.hide();
+                        img.attr('src', "{{ asset('images/seat/seat-2.png') }}");
+                        i++;
+                        // kiểm tra td sau đó đã đc chọn hay chưa
+                    } else if (i > 0 && canMakeDoubleSeat(seats.eq(i - 1).closest('td'))) {
+                        var previousTd = seats.eq(i - 1).closest('td');
+                        previousTd.attr('colSpan', 2);
+                        tdElement.hide();
+                        previousTd.find('img').attr('src', "{{ asset('images/seat/seat-2.png') }}");
+                    }
+                }
+            }
+        });
+
+        function resetAllSeats(seats) {
+            seats.each(function() {
+                var img = $(this).find('img');
+                var tdElement = $(this).closest('td');
+
+                img.attr('src', "{{ asset('svg/seat-add.svg') }}").css('width', '60%');
+
+                if (tdElement.attr('colSpan') == 2) {
+                    tdElement.attr('colSpan', 1);
+                    tdElement.next().show();
+                }
+            });
+        }
+
+        $('#seatForm').submit(function(e) {
+            let seatStructure = [];
+
+            $('.box-item-seat').each(function(index) {
+                
+                var img = $(this).find('img');
+                if (!img.attr('src').includes('seat-add.svg')) {
+                    let tdElement = $(this).closest('td');
+                    let coordinates_x = tdElement.data('col');
+                    let coordinates_y = tdElement.data('row');
+                    let type_seat_id = $(this).data('type-seat-id');
+
+                    seatStructure.push({
+                        id:index+1,
+                        coordinates_x: coordinates_x,
+                        coordinates_y: coordinates_y,
+                        type_seat_id: type_seat_id,
+                    });
+                }
+            });
+
+            if (seatStructure.length === 0) {
+                e.preventDefault(); // Ngăn form submit nếu không có ghế nào được chọn
+                toastr.error('Bạn chưa chọn ghế nào!!!');
+                return;
+            }
+
+            $('#seatStructure').val(JSON.stringify(seatStructure));
+        });
+    });
+</script>
 @endsection

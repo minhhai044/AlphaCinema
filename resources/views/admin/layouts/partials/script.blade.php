@@ -15,11 +15,12 @@
 <script src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
 <script src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js') }}"></script>
 <!-- dashboard init -->
+<script src="{{ asset('theme/admin/assets/libs/pristinejs/pristine.min.js') }}"></script>
 <script src="{{ asset('theme/admin/assets/js/pages/dashboard.init.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/js/pages/form-validation.init.js') }}"></script>
 
 <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
 
-<!-- jQuery -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <!-- Toastr JS -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
