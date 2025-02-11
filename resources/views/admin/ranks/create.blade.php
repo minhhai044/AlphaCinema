@@ -33,38 +33,54 @@
 <form action="{{ route('admin.ranks.store') }}" method="POST" enctype="multipart/form-data">
     @csrf
     <div class="row">
-        <div class="col-lg-9">
+        <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
                     <div class="row">
-                        <div class="col-lg-12">
+                        <div class="col-lg-6">
                             <div class="mb-3">
                                 <label for="cinema-name" class="form-label">
                                     <span class="required">*</span>
-                                    Name
+                                    Tên cấp bậc
                                 </label>
-                                <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" id="cinema-name" placeholder="Enter cinema name" value="{{ old('name') }}">
+                                <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" id="cinema-name" placeholder="Tên cấp bậc" value="{{ old('name') }}">
 
                                 @error('name')
                                 <small class="text-danger fst-italic">*{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="cinema-address" class="form-label">
+                                <label for="cinema-name" class="form-label">
                                     <span class="required">*</span>
-                                    Address
+                                    Phần trăm vé
                                 </label>
-                                <input class="form-control @error('address') is-invalid @enderror" type="text" name="address" id="cinema-address" placeholder="Enter cinema address" value="{{ old('address') }}">
-                                @error('address')
+                                <input class="form-control @error('ticket_percentage') is-invalid @enderror" type="number" name="ticket_percentage" id="cinema-name" placeholder="Phần trăm vé" value="{{ old('ticket_percentage') }}">
+
+                                @error('ticket_percentage')
+                                <small class="text-danger fst-italic">*{{ $message }}</small>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="mb-3">
+                                <label for="cinema-name" class="form-label">
+                                    <span class="required">*</span>
+                                    Tổng chi tiêu
+                                </label>
+                                <input class="form-control @error('total_spent') is-invalid @enderror" type="number" name="total_spent" id="cinema-name" placeholder="Tổng chi tiêu" value="{{ old('total_spent') }}">
+
+                                @error('total_spent')
                                 <small class="text-danger fst-italic">*{{ $message }}</small>
                                 @enderror
                             </div>
                             <div class="mb-3">
-                                <label for="cinema-description" class="form-label">
-                                    Description
+                                <label for="cinema-name" class="form-label">
+                                    <span class="required">*</span>
+                                    Phần trăm combo
                                 </label>
-                                <textarea class="form-control" name="description" rows="6" placeholder="Enter cinema description"></textarea>
-                                @error('description')
+                                <input class="form-control @error('combo_percentage') is-invalid @enderror" type="number" name="combo_percentage" id="cinema-name" placeholder="Phần trăm combo" value="{{ old('combo_percentage') }}">
+
+                                @error('combo_percentage')
                                 <small class="text-danger fst-italic">*{{ $message }}</small>
                                 @enderror
                             </div>
@@ -77,26 +93,6 @@
                         Submit
                         <i class="bx bx-chevron-right ms-1"></i>
                     </button>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-3">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="mb-3 d-flex gap-2">
-                                <label for="cinema-description" class="form-label">
-                                    Active:
-                                </label>
-                                <div class="square-switch">
-                                    <input type="checkbox" id="square-switch3" switch="bool" value="1" name="is_active">
-                                    <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>

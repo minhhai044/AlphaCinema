@@ -34,3 +34,7 @@
     white-space: nowrap;
     justify-content: flex-end;
 }
+
+.cursor-pointer {
+    cursor: pointer !important;
+}
