@@ -23,3 +23,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 {{-- config global --}}
 <script src="{{ asset('assets/js/config.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/jquery-jvec')}}"></script>
+<script src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormapd-mill-en.js')}}"></script>
+<script src="{{ asset('theme/admin/assets/libs/pristinejs/pristine.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/js/pages/dashboard.init.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/js/pages/form-validation.init.js') }}"></script>

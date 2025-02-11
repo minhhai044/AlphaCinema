@@ -98,7 +98,12 @@ const menus = [
                     <span data-key="t-rooms">Rooms</span>
                 </a>
             </li>
-
+            <li>
+                <a href="{{route('admin.index.seat_templates')}}">
+                    <i data-feather="box"></i>
+                    <span data-key="t-rooms">Seat Templates</span>
+                </a>
+            </li>
             <li class="menu-title mt-2" data-key="t-components">Elements</li>
 
             <li>

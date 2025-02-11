@@ -2,7 +2,9 @@
 
 use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\DashBoardController;
+
 use App\Http\Controllers\Admin\RankController;
+use App\Http\Controllers\Admin\SeatTemplateControler;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\ComboController;
@@ -94,3 +96,13 @@ Route::group([
     // Hiển thị chi tiết  phải khai báo cuối cùng trong route
     Route::get('{combo}', [ComboController::class, 'show'])->name('show');
 });
+// Route::resource('users', [])
+Route::prefix('seat-templates')->group(function () {
+    Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
+    Route::post('/store', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
+    Route::get('{id}/edit', [SeatTemplateControler::class, 'edit'])->name('edit.seat_templates');
+    Route::put('{id}/update', [SeatTemplateControler::class, 'update'])->name('update.seat_templates');
+    Route::put('{id}/update_seat', [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
+
+});
+

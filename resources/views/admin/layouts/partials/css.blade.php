@@ -16,3 +16,4 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
 {{-- css global --}}
 <link rel="stylesheet" href="{{ asset('assets/css/al.global.css') }}">
+
