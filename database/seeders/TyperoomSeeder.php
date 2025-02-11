@@ -13,6 +13,6 @@ class TyperoomSeeder extends Seeder
      */
     public function run(): void
     {
-        Type_room::factory(10)->create();
+        Type_room::factory(4)->create();
     }
 }

@@ -66,12 +66,24 @@ const menus = [
                 <ul class="sub-menu" aria-expanded="false">
                     <li>
                         <a href="{{ route('admin.typerooms.index') }}">
-                            <span data-key="t-cinemas">Dang sách loại phòng</span>
+                            <span data-key="t-cinemas">Danh sách loại phòng</span>
                         </a>
                     </li>
                 </ul>
             </li>
-
+            <li>
+                <a href="{{ route('admin.type_seats.index') }}" class="has-arrow">
+                    <i data-feather="grid"></i>
+                    <span data-key="t-cinema-systems">Quản lí loại ghế </span>
+                </a>
+                {{-- <ul class="sub-menu" aria-expanded="false">
+                    <li>
+                        <a href="{{ route('admin.typerooms.index') }}">
+                            <span data-key="t-cinemas">Danh sách loại phòng</span>
+                        </a>
+                    </li>
+                </ul> --}}
+            </li>
             <li>
                 <a href="#">
                     <i data-feather="layout"></i>

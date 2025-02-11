@@ -1,17 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
-// use App\Http\Controllers\Controller;
-// use App\Models\Branch;
 use App\Http\Requests\TypeRoomRequest;
 use App\Models\Type_room;
-// use Illuminate\Http\Request;
-// use Str;
-
-
-use Illuminate\Support\Str;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Services\TypeRoomService;
@@ -95,9 +86,17 @@ class TyperoomController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(TypeRoomRequest $typeRoomRequest, string $id)
+    public function destroy(Type_room $type_room)
     {
-        dd ($typeRoomRequest);
+        // dd ($typeRoomRequest);
+        try {
+            $type_room->delete(); // Sử dụng tên biến mới.
+            
+            return back()
+                ->with('success', 'Xóa thành công');
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
+        }
         //
     }
 }

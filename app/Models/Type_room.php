@@ -9,7 +9,6 @@ class Type_room extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'id',
         'name',
         'surcharge',
     ];

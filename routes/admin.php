@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\TyperoomController;
+use App\Http\Controllers\Admin\TypeSeatController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -33,3 +34,6 @@ Route::group([
     Route::delete('{type_room}/destroy',[TyperoomController::class,'destroy'])->name('destroy');    
 });
 // Route::resource('users', [])
+
+Route::resource('type_seats', TypeSeatController::class);
+
