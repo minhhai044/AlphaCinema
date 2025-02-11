@@ -1,6 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\CinemaController;
+use App\Http\Controllers\Admin\BranchController;
+use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Admin\UserVoucherController;
 use App\Http\Controllers\Admin\DashBoardController;
 
 
@@ -31,6 +34,7 @@ Route::get('/', [DashBoardController::class, 'index'])->name('index');
 
 Route::resource('cinemas', CinemaController::class);
 Route::resource('ranks', RankController::class);
+
 
 
 Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
@@ -103,6 +107,15 @@ Route::group([
     // Hiển thị chi tiết  phải khai báo cuối cùng trong route
     Route::get('{combo}', [ComboController::class, 'show'])->name('show');
 });
+
+Route::resource('branches', BranchController::class);
+Route::get('/admin/branches', [BranchController::class, 'index'])->name('admin.branches.index');
+
+Route::resource('vouchers', VoucherController::class);
+
+Route::resource('user-vouchers', UserVoucherController::class);
+
+
 // Route::resource('users', [])
 Route::prefix('seat-templates')->group(function () {
     Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');

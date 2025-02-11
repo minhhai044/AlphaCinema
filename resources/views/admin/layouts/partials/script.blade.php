@@ -17,9 +17,19 @@
 <script
     src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js') }}"></script>
 <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
+
 {{-- sweetalert2 --}}
 <script src="{{ asset('theme/admin/assets/libs/sweetalert2/sweetalert2.min.js') }}"></script>
 {{-- toastr --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 {{-- config global --}}
 <script src="{{ asset('assets/js/config.js') }}"></script>
+
+
+{{-- làm pop up --}}
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+

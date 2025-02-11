@@ -38,8 +38,13 @@
                     </li>
 
                     <li>
+
                         <a href="{{ route('admin.ranks.index') }}">
                             <span data-key="t-ranks">Ranks</span>
+
+                        <a href="{{ route('admin.branches.index') }}">
+                            <span data-key="t-branches">Branches</span>
+
                         </a>
                     </li>
 
@@ -67,7 +72,52 @@
             </li>
 
             <li>
+
                 <a href="{{ route('admin.users.index') }}">
+
+                <a href="javascript: void(0);" class="has-arrow">
+                    <i data-feather="grid"></i>
+                    <span data-key="t-service-systems">Dịch vụ và ưu đãi</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
+                    <li>
+                        <a href="{{ route('admin.vouchers.index') }}">
+                            <span data-key="t-vouchers">Mã giảm giá</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.user-vouchers.index') }}">
+                            <span data-key="t-vouchers">Áp mã</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow">
+                            <span data-key="t-email">Email</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="apps-email-inbox.html" data-key="t-inbox">Inbox</a></li>
+                            <li><a href="apps-email-read.html" data-key="t-read-email">Read Email</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow">
+                            <span data-key="t-invoices">Invoices</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="apps-invoices-list.html" data-key="t-invoice-list">Invoice List</a>
+                            </li>
+                            <li><a href="apps-invoices-detail.html" data-key="t-invoice-detail">Invoice
+                                    Detail</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+           
+            <li>
+                <a href="#">
+
                     <i data-feather="layout"></i>
                     <span data-key="t-accounts">Accounts</span>
                 </a>
