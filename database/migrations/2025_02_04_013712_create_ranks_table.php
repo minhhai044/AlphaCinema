@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('transactions', function (Blueprint $table) {
+        Schema::create('ranks', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique()->comment('Tên mức rank');
             $table->decimal('total_spent', 15, 0)->comment('Tổng số tiền đã tiêu');
@@ -25,6 +25,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
+    
     public function down(): void
     {
         Schema::dropIfExists('transactions');

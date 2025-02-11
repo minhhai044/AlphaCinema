@@ -33,7 +33,7 @@ class UserFactory extends Factory
             'gender' => fake()->boolean(),
             'birthday' => fake()->date(),
             'type_user' => fake()->boolean(),
-            'transaction_id' => fake()->numberBetween(1, 50),
+            'total_amount' => fake()->numberBetween(1000000, 5000000),
             'cinema_id' => fake()->numberBetween(1, 50),
         ];
     }

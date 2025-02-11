@@ -23,10 +23,10 @@ return new class extends Migration
             $table->string('address')->nullable();
             $table->boolean('gender')->nullable()->comment("0 : Nam , 1 : Nữ");
             $table->date('birthday')->nullable();
+            $table->bigInteger('total_amount')->default(0)->comment('Tổng giao dịch');
             // $table->string('service_id')->nullable(); // ?
             // $table->string('service_name')->nullable(); // ?
             $table->boolean('type_user')->default(0)->comment("0 : UserMember , 1 : Admin");
-            $table->integer('transaction_id')->default(0); // ?
             $table->integer('cinema_id')->default(0); // ?
             $table->softDeletes();
             $table->timestamps();

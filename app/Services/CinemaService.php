@@ -42,6 +42,7 @@ class CinemaService
             return $Cinema;
         });
     }
+    
     public function deleteSevice($id)
     {
         $findCinema = $this->cinemaRepository->findByIdCinemaRepository($id);
