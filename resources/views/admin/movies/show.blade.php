@@ -41,8 +41,17 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Phiên bản phim </label>
-                                            <input disabled type="text" name="movie_versions"
-                                                value="{{ $movie->movie_versions }}" class="form-control" required>
+                                            @php
+                                                $selectedVersions = json_decode($movie->movie_versions, true) ?? [];
+                                            @endphp
+                                            <input type="checkbox" name="movie_versions[]" value="Action"
+                                                {{ in_array('Action', $selectedVersions) ? 'checked' : '' }}>  Action
+
+                                            <input type="checkbox" name="movie_versions[]" value="Horror"
+                                                {{ in_array('Horror', $selectedVersions) ? 'checked' : '' }}> Horror
+
+                                            <input type="checkbox" name="movie_versions[]" value="Comedy"
+                                                {{ in_array('Comedy', $selectedVersions) ? 'checked' : '' }}> Comedy
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Mô tả </label>

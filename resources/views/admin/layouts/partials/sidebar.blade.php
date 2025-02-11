@@ -1,12 +1,12 @@
 @php
-const menus = [
-[
-'label' => 'Dashboard',
-'key' => 't-dashboard',
-'name' => 'admin.index',
-'icon' => ''
-]
-];
+    const menus = [
+        [
+            'label' => 'Dashboard',
+            'key' => 't-dashboard',
+            'name' => 'admin.index',
+            'icon' => '',
+        ],
+    ];
 @endphp
 
 
@@ -37,7 +37,12 @@ const menus = [
                     <span data-key="t-movies">Movies</span>
                 </a>
             </li>
-
+            <li>
+                <a href="{{ route('admin.days.index') }}">
+                    <i data-feather="layout"></i>
+                    <span data-key="t-movies">Day</span>
+                </a>
+            </li>
             <li>
                 <a href="#">
                     <i data-feather="layout"></i>

@@ -31,112 +31,180 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Tên phim</label>
-                                            <input type="text" name="name" class="form-control">
-                                            @error('name')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <label for="name" class="form-label">Tên phim</label>
+                                            <input type="text" name="name" id="name"
+                                                class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
+                                                value="{{ old('name') }}" placeholder="Nhập tên phim">
+
+                                            <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('name'))
+                                                    {{ $errors->first('name') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Đường dẫn phim</label>
-                                            <input type="text" name="slug" class="form-control">
-                                            @error('slug')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="text" name="slug"
+                                                class="form-control {{ $errors->has('slug') ? 'is-invalid' : (old('slug') ? 'is-valid' : '') }}"value="{{ old('slug') }}">
+                                            <div class="{{ $errors->has('slug') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('slug'))
+                                                    {{ $errors->first('slug') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Danh mục phim</label>
-                                            <input type="text" name="category" class="form-control">
-                                            @error('category')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="text" name="category"
+                                                class="form-control {{ $errors->has('category') ? 'is-invalid' : (old('category') ? 'is-valid' : '') }}"
+                                                value="{{ old('category') }}">
+                                            <div
+                                                class="{{ $errors->has('category') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('category'))
+                                                    {{ $errors->first('category') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Ảnh </label>
-                                            <input type="file" name="img_thumbnail" class="form-control">
-                                            @error('img_thumbnail')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="file" name="img_thumbnail"
+                                                class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}"
+                                                value="{{ old('img_thumbnail') }}">
+                                            <div
+                                                class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('img_thumbnail'))
+                                                    {{ $errors->first('img_thumbnail') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim </label>
-                                            <input type="text" name="movie_versions" class="form-control">
-
-                                            @error('movie_versions')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <label class="form-label">Thể loại phim</label>
+                                            <input type="checkbox" name="movie_versions[]" value="Action"> Action
+                                            <input type="checkbox" name="movie_versions[]" value="Horror"> Horror
+                                            <input type="checkbox" name="movie_versions[]" value="Comedy"> Comedy
+                                            <div
+                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('movie_versions'))
+                                                    {{ $errors->first('movie_versions') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Mô tả </label>
-                                            <textarea name="description" class="form-control"></textarea>
-                                            @error('description')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <textarea name="description"
+                                                class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}"
+                                                value="{{ old('description') }}"></textarea>
+                                            <div
+                                                class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('description'))
+                                                    {{ $errors->first('description') }}
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
 
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label">Tác giả</label>
-                                            <input type="text" name="director" class="form-control">
-                                            @error('director')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="text" name="director"
+                                                class="form-control {{ $errors->has('director') ? 'is-invalid' : (old('director') ? 'is-valid' : '') }}"
+                                                value="{{ old('director') }}">
+                                            <div
+                                                class="{{ $errors->has('director') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('director'))
+                                                    {{ $errors->first('director') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">URL</label>
-                                            <input type="text" name="trailer_url" class="form-control">
-                                            @error('trailer_url')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="text" name="trailer_url"
+                                                class="form-control {{ $errors->has('trailer_url') ? 'is-invalid' : (old('trailer_url') ? 'is-valid' : '') }}"
+                                                value="{{ old('trailer_url') }}">
+                                            <div
+                                                class="{{ $errors->has('trailer_url') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('trailer_url'))
+                                                    {{ $errors->first('trailer_url') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Thời lượng phim</label>
                                             <input type="number" name="duration" min="1" step="1"
-                                                class="form-control" placeholder="Nhập số phút">
-                                            @error('duration')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                                class="form-control {{ $errors->has('duration') ? 'is-invalid' : (old('duration') ? 'is-valid' : '') }}"
+                                                value="{{ old('duration') }}" placeholder="Nhập số phút">
+                                            <div class="{{ $errors->has('duration') ? 'invalid-feedback' : 'valid-feedback' }}"
+                                                value="{{ old('duration') }}">
+                                                @if ($errors->has('duration'))
+                                                    {{ $errors->first('duration') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu</label>
-                                            @error('end_date')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
-                                            @error('release_date')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <div
+                                                class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('release_date'))
+                                                    {{ $errors->first('release_date') }}
+                                                @endif
+                                            </div>
+                                            <div
+                                                class="{{ $errors->has('end_date') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('end_date'))
+                                                    {{ $errors->first('end_date') }}
+                                                @endif
+                                            </div>
                                             <div class="input-daterange input-group" id="datepicker6"
                                                 data-date-format="dd M, yyyy" data-date-autoclose="true"
                                                 data-provide="datepicker" data-date-container="#datepicker6">
-                                                <input type="datetime-local" class="form-control" name="release_date"
+                                                <input type="datetime-local"
+                                                    class="form-control {{ $errors->has('release_date') ? 'is-invalid' : (old('release_date') ? 'is-valid' : '') }}"
+                                                    value="{{ old('release_date') }}" name="release_date"
                                                     placeholder="Start Date" />
 
-                                                <input type="datetime-local" class="form-control" name="end_date"
+                                                <input type="datetime-local"
+                                                    class="form-control {{ $errors->has('end_date') ? 'is-invalid' : (old('end_date') ? 'is-valid' : '') }}"
+                                                    value="{{ old('end_date') }}" name="end_date"
                                                     placeholder="End Date" />
 
                                             </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Phụ phí</label>
-                                            <input type="number" name="surcharge" class="form-control">
-                                            @error('surcharge')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="number" name="surcharge"
+                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
+                                                value="{{ old('surcharge') }}">
+                                            <div
+                                                class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('surcharge'))
+                                                    {{ $errors->first('surcharge') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Phiên bản phim</label>
-                                            <input type="text" name="movie_genres" class="form-control">
-                                            @error('movie_genres')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="checkbox" name="movie_genres[]" value="2D"> 2D
+                                            <input type="checkbox" name="movie_genres[]" value="3D"> 3D
+                                            <input type="checkbox" name="movie_genres[]" value="4D"> 4D
+                                            <div
+                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('movie_genres'))
+                                                    {{ $errors->first('movie_genres') }}
+                                                @endif
+                                            </div>
                                         </div>
+
+
                                         <div class="mb-3">
                                             <label class="form-label">Đánh giá</label>
-                                            <input type="number" name="rating" class="form-control">
-                                            @error('rating')
-                                                <span class="text-danger">{{ $message }}</span>
-                                            @enderror
+                                            <input type="number" name="rating"
+                                                class="form-control {{ $errors->has('rating') ? 'is-invalid' : (old('rating') ? 'is-valid' : '') }}"
+                                                value="{{ old('rating') }}">
+                                            <div
+                                                class="{{ $errors->has('rating') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('rating'))
+                                                    {{ $errors->first('rating') }}
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -144,54 +212,65 @@
                         </div>
                     </div>
 
-                    <!-- Khối 3/12 -->
+
                     <!-- Khối 3/12 -->
                     <div class="col-lg-3">
                         <div class="card">
                             <div class="card-body">
-                                <!-- Trạng thái Active -->
+                                <!-- Active -->
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="square-switch">
-                                        <input type="checkbox" id="square-switch3" switch="bool" checked />
-                                        <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                        <input type="checkbox" id="square-switch_active" switch="bool"
+                                            {{ old('is_active', 1) ? 'checked' : '' }} />
+                                        <label for="square-switch_active" data-on-label="Yes"
+                                            data-off-label="No"></label>
                                     </div>
                                     <span>Active</span>
                                 </div>
-                                <input type="hidden" name="is_active" id="is_active" value="1">
+                                <input type="hidden" name="is_active" id="is_active"
+                                    value="{{ old('is_active', 1) }}">
 
-                                <!-- Trạng thái Hot -->
+                                <!-- Hot -->
+
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="square-switch">
-                                        <input type="checkbox" id="square-switch_hot" switch="bool" checked />
+                                        <input type="checkbox" id="square-switch_hot" switch="bool"
+                                            {{ old('is_hot', 1) ? 'checked' : '' }} />
                                         <label for="square-switch_hot" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
                                     <span>Hot</span>
                                 </div>
-                                <input type="hidden" name="is_hot" id="is_hot" value="1">
+                                <input type="hidden" name="is_hot" id="is_hot"
+                                    value="{{ old('is_hot', 1) }}">
 
-                                <!-- Trạng thái Special -->
+                                <!-- Special -->
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="square-switch">
-                                        <input type="checkbox" id="square-switch_special" switch="bool" checked />
+                                        <input type="checkbox" id="square-switch_special" switch="bool"
+                                            {{ old('is_special', 1) ? 'checked' : '' }} />
                                         <label for="square-switch_special" data-on-label="Yes"
                                             data-off-label="No"></label>
                                     </div>
                                     <span>Special</span>
                                 </div>
-                                <input type="hidden" name="is_special" id="is_special" value="1">
+                                <input type="hidden" name="is_special" id="is_special"
+                                    value="{{ old('is_special', 1) }}">
 
-                                <!-- Trạng thái Publish -->
+                                <!-- Publish -->
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="square-switch">
-                                        <input type="checkbox" id="square-switch_publish" switch="bool" checked />
+                                        <input type="checkbox" id="square-switch_publish" switch="bool"
+                                            {{ old('is_special', 1) ? 'checked' : '' }} />
                                         <label for="square-switch_publish" data-on-label="Yes"
                                             data-off-label="No"></label>
                                     </div>
                                     <span>Publish</span>
                                 </div>
-                                <input type="hidden" name="is_publish" id="is_publish" value="1">
+                                <input type="hidden" name="is_publish" id="is_publish"
+                                    value="{{ old('is_publish', 1) }}">
                             </div>
                         </div>
+
                         <div class="d-flex flex-wrap gap-2">
                             <button type="submit" class="btn btn-primary waves-effect waves-light">
                                 Submit
@@ -209,11 +288,18 @@
         <!-- end select2 -->
         <script>
             document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function(checkbox) {
-                checkbox.addEventListener("change", function() {
-                    let hiddenInput = document.getElementById(this.id.replace("square-switch_", "is_"));
-                    hiddenInput.value = this.checked ? 1 : 0;
+                checkbox.addEventListener('change', function() {
+                    var label = this.nextElementSibling;
+                    label.textContent = this.checked ? label.getAttribute('data-on-label') : label.getAttribute(
+                        'data-off-label');
+
+                    var hiddenInput = document.getElementById(this.id.replace('square-switch', 'is'));
+                    if (hiddenInput) {
+                        hiddenInput.value = this.checked ? '1' : '0';
+                    }
                 });
             });
         </script>
+
     </div>
 @endsection

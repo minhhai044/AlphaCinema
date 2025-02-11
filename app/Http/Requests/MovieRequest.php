@@ -44,6 +44,10 @@ class MovieRequest extends FormRequest
             'movie_versions.*' => 'string|max:255',
             'movie_genres' => 'required|array',
             'movie_genres.*' => 'string|max:255',
+            'is_active' => 'boolean',
+            'is_hot' => 'boolean',
+            'is_special' => 'boolean',
+            'is_publish' => 'boolean',
         ];
     }
 
@@ -51,7 +55,7 @@ class MovieRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'slug' => 'required|string|max:255|unique:movies,slug,' . $this->route('movie'),
+            'slug' => 'required|string|max:255',
             'category' => 'required|string|max:255',
             'description' => 'required|string',
             'img_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -60,10 +64,18 @@ class MovieRequest extends FormRequest
             'rating' => 'required|numeric|min:0|max:10',
             'release_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:release_date',
-            'trailer_url' => 'required|url',
+            // Nếu không có field trailer_url trong form, chuyển thành nullable:
+            'trailer_url' => 'nullable|url',
             'surcharge' => 'required|numeric|min:0',
-            'movie_versions' => 'required|string|max:255',
-            'movie_genres' => 'required|string|max:255',
+            // Nếu có khả năng người dùng bỏ qua chọn checkbox, có thể dùng sometimes hoặc nullable
+            'movie_versions' => 'sometimes|array',
+            'movie_versions.*' => 'string|max:255',
+            'movie_genres' => 'sometimes|array',
+            'movie_genres.*' => 'string|max:255',
+            'is_active' => 'boolean',
+            'is_hot' => 'boolean',
+            'is_special' => 'boolean',
+            'is_publish' => 'boolean',
         ];
     }
 
@@ -108,10 +120,10 @@ class MovieRequest extends FormRequest
             'surcharge.numeric' => 'Phụ phí phải là số.',
             'surcharge.min' => 'Phụ phí phải lớn hơn hoặc bằng 0.',
             'movie_versions.required' => 'Danh sách phiên bản phim là bắt buộc.',
-            'movie_versions.*.string' => 'Mỗi phiên bản phim phải là chuỗi ký tự.',
+            'movie_versions.*.array' => 'Mỗi phiên bản phim phải là chuỗi ký tự.',
             'movie_versions.*.max' => 'Tên mỗi phiên bản phim không được vượt quá 255 ký tự.',
             'movie_genres.required' => 'Danh sách thể loại phim là bắt buộc.',
-            'movie_genres.*.string' => 'Mỗi thể loại phim phải là chuỗi ký tự.',
+            'movie_genres.*.array' => 'Mỗi thể loại phim phải là chuỗi ký tự.',
             'movie_genres.*.max' => 'Tên mỗi thể loại phim không được vượt quá 255 ký tự.',
         ];
     }

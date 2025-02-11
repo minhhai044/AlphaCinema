@@ -20,14 +20,16 @@ class MovieService
 
     public function createMovie($data)
     {
-        
+
         return DB::transaction(function () use ($data) {
             if (isset($data['img_thumbnail'])) {
                 $data['img_thumbnail'] = Storage::put('movieImages', $data['img_thumbnail']);
             }
+            $data['movie_versions'] = json_encode($data['movie_versions']) ;
+            $data['movie_genres'] = json_encode($data['movie_genres']) ;
+            // dd($data['movie_versions']);
             return Movie::create($data);
         });
-
     }
 
     public function updateMovie($id, $data)
@@ -45,6 +47,9 @@ class MovieService
                 }
                 $data['img_thumbnail'] = Storage::put('movie_images', $data['img_thumbnail']);
             }
+            $data['movie_versions'] = isset($data['movie_versions']) ? json_encode($data['movie_versions']) : json_encode([]);
+            $data['movie_genres'] = isset($data['movie_genres']) ? json_encode($data['movie_genres']) : json_encode([]);
+
 
             $movie->update($data);
             return $movie;

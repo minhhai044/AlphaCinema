@@ -20,14 +20,11 @@ class MovieController extends Controller
     // 1. Hiển thị danh sách phim
     public function index(Request $request)
     {
-        // Lấy các tham số lọc từ request
         $filters = $request->only(['id','name', 'movie_versions', 'movie_genres']);
 
-        // Áp dụng bộ lọc cho Movie
         $movieFilter = new MovieFilter($filters);
         $movies = $movieFilter->apply()->paginate(10);
         // dd($movies);
-        // Truyền kết quả và các tham số lọc (để giữ giá trị ở form) sang view
         return view('admin.movies.index', compact('movies', 'filters'));
     }
 
@@ -41,8 +38,11 @@ class MovieController extends Controller
     public function store(MovieRequest $request)
     {
         // dd($request->all());
+
         $validated = $request->validated();
         $this->movieService->createMovie($validated);
+        // dd($request->all());
+
         // dd($request['movie_versions']);
         return redirect()->route('admin.movies.index')->with('success', 'Thêm phim thành công!');
     }
@@ -69,6 +69,7 @@ class MovieController extends Controller
         $this->movieService->updateMovie($id, $validated);
         return redirect()->route('admin.movies.index')->with('success', 'Cập nhật phim thành công!');
     }
+
 
     // 7. Xóa phim
     public function destroy($id)

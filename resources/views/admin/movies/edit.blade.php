@@ -19,7 +19,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Tên phim</label>
                                             <input type="text" name="name" value="{{ old('name', $movie->name) }}"
-                                                class="form-control" >
+                                                class="form-control">
                                             @error('name')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -28,7 +28,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Đường dẫn phim</label>
                                             <input type="text" name="slug" value="{{ old('slug', $movie->slug) }}"
-                                                class="form-control" >
+                                                class="form-control">
                                             @error('slug')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -37,8 +37,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Danh mục phim</label>
                                             <input type="text" name="category"
-                                                value="{{ old('category', $movie->category) }}" class="form-control"
-                                                >
+                                                value="{{ old('category', $movie->category) }}" class="form-control">
                                             @error('category')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -58,9 +57,17 @@
 
                                         <div class="mb-3">
                                             <label class="form-label">Phiên bản phim</label>
-                                            <input type="text" name="movie_versions"
-                                                value="{{ old('movie_versions', $movie->movie_versions) }}"
-                                                class="form-control" >
+                                            @php
+                                                $selectedVersions = json_decode($movie->movie_versions, true) ?? [];
+                                            @endphp
+                                            <input type="checkbox" name="movie_versions[]" value="Action"
+                                                {{ in_array('Action', $selectedVersions) ? 'checked' : '' }}> Action
+
+                                            <input type="checkbox" name="movie_versions[]" value="Horror"
+                                                {{ in_array('Horror', $selectedVersions) ? 'checked' : '' }}> Horror
+
+                                            <input type="checkbox" name="movie_versions[]" value="Comedy"
+                                                {{ in_array('Comedy', $selectedVersions) ? 'checked' : '' }}> Comedy
                                             @error('movie_versions')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -68,7 +75,7 @@
 
                                         <div class="mb-3">
                                             <label class="form-label">Mô tả</label>
-                                            <textarea name="description" class="form-control" >{{ old('description', $movie->description) }}</textarea>
+                                            <textarea name="description" class="form-control">{{ old('description', $movie->description) }}</textarea>
                                             @error('description')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -79,8 +86,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Tác giả</label>
                                             <input type="text" name="director"
-                                                value="{{ old('director', $movie->director) }}" class="form-control"
-                                                >
+                                                value="{{ old('director', $movie->director) }}" class="form-control">
                                             @error('director')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -115,7 +121,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Phụ phí</label>
                                             <input type="number" name="surcharge" class="form-control"
-                                                value="{{ old('surcharge', $movie->surcharge) }}" >
+                                                value="{{ old('surcharge', $movie->surcharge) }}">
                                             @error('surcharge')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -123,17 +129,28 @@
 
                                         <div class="mb-3">
                                             <label class="form-label">Thể loại phim</label>
-                                            <input type="text" name="movie_genres" class="form-control"
-                                                value="{{ old('movie_genres', $movie->movie_genres) }}" >
+                                            @php
+                                                $selectedVersions = json_decode($movie->movie_genres, true) ?? [];
+                                            @endphp
+                                            <input type="checkbox" name="movie_genres[]" value="2D"
+                                                {{ in_array('2D', $selectedVersions) ? 'checked' : '' }}> 2D
+
+                                            <input type="checkbox" name="movie_genres[]" value="3D"
+                                                {{ in_array('3D', $selectedVersions) ? 'checked' : '' }}> 3D
+
+                                            <input type="checkbox" name="movie_genres[]" value="4D"
+                                                {{ in_array('4D', $selectedVersions) ? 'checked' : '' }}> 4D
                                             @error('movie_genres')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
 
+
+
                                         <div class="mb-3">
                                             <label class="form-label">Đánh giá</label>
                                             <input type="number" name="rating" class="form-control"
-                                                value="{{ old('rating', $movie->rating) }}" >
+                                                value="{{ old('rating', $movie->rating) }}">
                                             @error('rating')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -145,7 +162,7 @@
                     </div>
 
 
-                    <!-- Khối 3/12 -->
+
                     <!-- Khối 3/12 -->
                     <div class="col-lg-3">
                         <div class="card">
