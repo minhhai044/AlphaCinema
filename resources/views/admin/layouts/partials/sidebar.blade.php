@@ -77,6 +77,11 @@ const menus = [
                         </a>
                     </li>
 
+                    <li>
+                        <a href="{{ route('admin.user-vouchers.index') }}">
+                            <span data-key="t-vouchers">Áp mã</span>
+                        </a>
+                    </li>
 
                     <li>
                         <a href="javascript: void(0);" class="has-arrow">

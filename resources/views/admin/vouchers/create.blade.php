@@ -50,10 +50,12 @@
                                 <label for="code" class="form-label">
                                     <span class="required">*</span> Mã giảm giá (Tự động)
                                 </label>
-                                <input type="text" name="code" id="code" class="form-control" value="{{ old('code', Str::upper(Str::random(10))) }}" readonly>
-                                @error('code')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <input type="text" name="code" id="code" class="form-control {{ $errors->has('code') ? 'is-invalid' : (old('code') ? 'is-valid' : '') }}" value="{{ old('code', Str::upper(Str::random(10))) }}" readonly>
+                                <div class="{{ $errors->has('code') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                    @if ($errors->has('code'))
+                                        {{ $errors->first('code') }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -62,10 +64,12 @@
                                 <label for="discount" class="form-label">
                                     <span class="required">*</span> Giảm giá (VNĐ)
                                 </label>
-                                <input type="number" name="discount" id="discount" class="form-control" placeholder="Nhập số tiền giảm giá" value="{{ old('discount') }}">
-                                @error('discount')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <input type="number" name="discount" id="discount" class="form-control {{ $errors->has('discount') ? 'is-invalid' : (old('discount') ? 'is-valid' : '') }}" placeholder="Nhập số tiền giảm giá" value="{{ old('discount') }}">
+                                <div class="{{ $errors->has('discount') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                    @if ($errors->has('discount'))
+                                        {{ $errors->first('discount') }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -74,10 +78,12 @@
                                 <label for="start_date_time" class="form-label">
                                     <span class="required">*</span> Ngày bắt đầu
                                 </label>
-                                <input type="datetime-local" name="start_date_time" id="start_date_time" class="form-control" value="{{ old('start_date_time') }}">
-                                @error('start_date_time')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <input type="datetime-local" name="start_date_time" id="start_date_time" class="form-control {{ $errors->has('start_date_time') ? 'is-invalid' : (old('start_date_time') ? 'is-valid' : '') }}" value="{{ old('start_date_time') }}">
+                                <div class="{{ $errors->has('start_date_time') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                    @if ($errors->has('start_date_time'))
+                                        {{ $errors->first('start_date_time') }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -86,10 +92,12 @@
                                 <label for="end_date_time" class="form-label">
                                     <span class="required">*</span> Ngày kết thúc
                                 </label>
-                                <input type="datetime-local" name="end_date_time" id="end_date_time" class="form-control" value="{{ old('end_date_time') }}">
-                                @error('end_date_time')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <input type="datetime-local" name="end_date_time" id="end_date_time" class="form-control {{ $errors->has('end_date_time') ? 'is-invalid' : (old('end_date_time') ? 'is-valid' : '') }}" value="{{ old('end_date_time') }}">
+                                <div class="{{ $errors->has('end_date_time') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                    @if ($errors->has('end_date_time'))
+                                        {{ $errors->first('end_date_time') }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -98,10 +106,12 @@
                                 <label for="quantity" class="form-label">
                                     <span class="required">*</span> Số lượng
                                 </label>
-                                <input type="number" name="quantity" id="quantity" class="form-control" placeholder="Nhập số lượng mã" value="{{ old('quantity') }}">
-                                @error('quantity')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <input type="number" name="quantity" id="quantity" class="form-control {{ $errors->has('quantity') ? 'is-invalid' : (old('quantity') ? 'is-valid' : '') }}" placeholder="Nhập số lượng mã" value="{{ old('quantity') }}">
+                                <div class="{{ $errors->has('quantity') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                    @if ($errors->has('quantity'))
+                                        {{ $errors->first('quantity') }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
@@ -111,12 +121,14 @@
                                     <span class="required">*</span> Giới hạn sử dụng
                                 </label>
                                 <input type="number" name="limit_by_user" id="limit_by_user" 
-                                       class="form-control" 
+                                class="form-control {{ $errors->has('limit_by_user') ? 'is-invalid' : (old('limit_by_user') ? 'is-valid' : '') }}" 
                                        value="{{ old('limit_by_user', 1) }}" 
                                        placeholder="Nhập giới hạn sử dụng">
-                                @error('limit_by_user')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                       <div class="{{ $errors->has('limit_by_user') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                        @if ($errors->has('limit_by_user'))
+                                            {{ $errors->first('limit_by_user') }}
+                                        @endif
+                                    </div>
                             </div>
                         </div>
                         
@@ -126,20 +138,24 @@
                                 <label for="title" class="form-label">
                                     <span class="required">*</span> Tiêu đề
                                 </label>
-                                <input type="text" name="title" id="title" class="form-control" placeholder="Nhập tiêu đề" value="{{ old('title') }}">
-                                @error('title')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <input type="text" name="title" id="title" class="form-control {{ $errors->has('title') ? 'is-invalid' : (old('title') ? 'is-valid' : '') }}" placeholder="Nhập tiêu đề" value="{{ old('title') }}">
+                                <div class="{{ $errors->has('title') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                    @if ($errors->has('title'))
+                                        {{ $errors->first('title') }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
 
                         <div class="col-lg-12">
                             <div class="mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
-                                <textarea name="description" id="description" class="form-control" rows="4" placeholder="Nhập mô tả">{{ old('description') }}</textarea>
-                                @error('description')
-                                <div class="text-danger">{{ $message }}</div>
-                                @enderror
+                                <textarea name="description" id="description" class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}" rows="4" placeholder="Nhập mô tả">{{ old('description') }}</textarea>
+                                <div class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                    @if ($errors->has('description'))
+                                        {{ $errors->first('description') }}
+                                    @endif
+                                </div>
                             </div>
                         </div>
                     </div>

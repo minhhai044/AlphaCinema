@@ -88,14 +88,16 @@
                                     <label for="name" class="form-label">
                                         <span class="text-danger">*</span>Tên chi nhánh:
                                     </label>
-                                    <input type="text" class='form-control' name="name" value="{{ old('name') }}"
+                                    <input type="text" class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}" name="name" value="{{ old('name') }}"
                                         placeholder="Nhập tên chi nhánh">
                                     <div class="form-text">
                                         Tên chi nhánh của rạp chiếu phim.
                                     </div>
-                                    @error('name')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
+                                    <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                        @if ($errors->has('name'))
+                                            {{ $errors->first('name') }}
+                                        @endif
+                                    </div>
                                 </div>
 
 

@@ -1,12 +1,14 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
-
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Voucher;
 use Illuminate\Support\Str;
 use App\Http\Requests\VoucherRequest;
+use App\Models\User_voucher;
+use App\Models\User;
 
 
 
@@ -46,6 +48,8 @@ class VoucherController extends Controller
         }
     }
 
+
+
     public function show(Voucher $voucher)
     {
         return view(self::PATH_VIEW . __FUNCTION__, compact('voucher'));
@@ -81,17 +85,7 @@ class VoucherController extends Controller
         }
     }
 
-    // public function destroy(Voucher $voucher)
-    // {
-    //     try {
-    //         $voucher->delete();
 
-    //         return back()->with('success', true);
-
-    //     } catch (\Throwable $th) {
-    //         return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
-    //     }
-    // }
 
     public function destroy(Voucher $voucher)
     {
