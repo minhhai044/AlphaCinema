@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\CinemaController;
 use App\Http\Controllers\Api\SeatTemplateController;
+use App\Http\Controllers\Api\MovieController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -27,3 +28,15 @@ Route::put('{id}/active-seat-template',[SeatTemplateController::class,'activeSea
 // Route::post('/storecinemas',[CinemaController::class,'store']);
 // Route::put('{id}/updatecinemas',[CinemaController::class,'update']);
 // Route::delete('{id}/deletecinemas',[CinemaController::class,'delete']);
+Route::get('/cinemas',[CinemaController::class,'index']);
+Route::get('{id}/showcinemas',[CinemaController::class,'show']);
+Route::post('/storecinemas',[CinemaController::class,'store']);
+Route::put('{id}/updatecinemas',[CinemaController::class,'update']);
+Route::delete('{id}/deletecinemas',[CinemaController::class,'delete']);
+
+// Route::prefix('admin/movies')->group(function () {
+//     Route::get('/', [MovieController::class, 'index']);
+//     Route::post('/', [MovieController::class, 'store']);
+//     Route::put('/{id}', [MovieController::class, 'update']);
+//     Route::delete('/{id}', [MovieController::class, 'destroy']);
+// });

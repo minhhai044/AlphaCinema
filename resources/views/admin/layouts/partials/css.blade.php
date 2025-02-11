@@ -1,5 +1,7 @@
 <!-- App favicon -->
 <link rel="shortcut icon" href="{{ asset('theme/admin/assets/images/favicon.ico') }}">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
+
 <!-- plugin css -->
 <link href="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}" rel="stylesheet" type="text/css" />
 <!-- preloader css -->

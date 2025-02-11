@@ -4,11 +4,13 @@ use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\DashBoardController;
 
 
+use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\SeatTemplateControler;
 
 use App\Http\Controllers\Admin\UserController;
 
+use App\Http\Controllers\Admin\DayController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\ComboController;
@@ -148,3 +150,22 @@ Route::group([
     // Hiển thị chi tiết user phải khai báo cuối cùng trong route
     Route::get('{users}', [UserController::class, 'show'])->name('show');
 });
+
+Route::resource('movies', MovieController::class)->names([
+    'index' => 'movies.index',
+    'create' => 'movies.create',
+    'store' => 'movies.store',
+    'show' => 'movies.show',
+    'edit' => 'movies.edit',
+    'update' => 'movies.update',
+    'destroy' => 'movies.destroy',
+]);
+
+Route::resource('days', DayController::class)->names([
+    'index' => 'days.index',
+    'create' => 'days.create',
+    'store' => 'days.store',
+    'destroy' => 'days.destroy',
+]);
+
+Route::post('days/update/{id}', [DayController::class, 'update']);
