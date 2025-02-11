@@ -70,7 +70,8 @@
                     <li>
                         <a href="{{ route('admin.ranks.index') }}">
                             <span data-key="t-ranks">Quản lý hạn mức</span>
-
+                        </a>
+                    </li>
 
 
                         </a>

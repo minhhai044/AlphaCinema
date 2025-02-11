@@ -1,6 +1,14 @@
 <?php
 
+
 use App\Http\Controllers\Admin\RoleController;
+
+
+use App\Http\Controllers\Admin\CinemaController;
+use App\Http\Controllers\Admin\BranchController;
+use App\Http\Controllers\Admin\VoucherController;
+use App\Http\Controllers\Admin\UserVoucherController;
+use App\Http\Controllers\Admin\DashBoardController;
 
 use Illuminate\Support\Facades\Route;
 
@@ -11,22 +19,22 @@ use App\Http\Controllers\Admin\RoomController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\MovieController;
-use App\Http\Controllers\Admin\BranchController;
 
-use App\Http\Controllers\Admin\CinemaController;
+
+
 
 use App\Http\Controllers\Admin\ExportController;
-use App\Http\Controllers\Admin\VoucherController;
+
 use App\Http\Controllers\Admin\ShowtimeController;
 
 
 use App\Http\Controllers\Admin\TyperoomController;
 use App\Http\Controllers\Admin\TypeSeatController;
 
-use App\Http\Controllers\Admin\DashBoardController;
+
 
 use App\Http\Controllers\Admin\SeatTemplateControler;
-use App\Http\Controllers\Admin\UserVoucherController;
+
 use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\StatisticalController;
 

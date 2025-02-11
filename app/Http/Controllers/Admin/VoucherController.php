@@ -65,7 +65,6 @@ class VoucherController extends Controller
 
 
 
-
     public function show(Voucher $voucher)
     {
         return view(self::PATH_VIEW . __FUNCTION__, compact('voucher'));
@@ -104,7 +103,6 @@ class VoucherController extends Controller
         }
     }
     
-
 
     public function destroy(Voucher $voucher)
     {
