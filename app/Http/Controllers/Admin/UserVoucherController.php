@@ -25,7 +25,7 @@ class UserVoucherController extends Controller
     public function create()
     {
         $users = User::all();
-        $vouchers = Voucher::all();
+        $vouchers = Voucher::where('is_active', 1)->get();
         return view('admin.user_vouchers.create', compact('users', 'vouchers'));
     }
 

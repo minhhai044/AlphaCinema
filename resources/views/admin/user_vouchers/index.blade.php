@@ -131,7 +131,8 @@
                                         <tr>
                                             <th>#</th>
                                             <th>Người dùng</th>
-                                            <th>Voucher</th>
+                                            <th>Mã voucher</th>
+                                            <th>Tên voucher</th>
                                             <th>Số lần sử dụng</th>
                                             <th>Chức năng</th>
                                         </tr>
@@ -149,6 +150,7 @@
                                             </div>
                                         </td>
                                         <td>{{ $User_voucher->user->name }}</td>
+                                        <td>{{ $User_voucher->voucher->code }}</td>
                                         <td>{{ $User_voucher->voucher->title }}</td>
                                         <td>{{ $User_voucher->usage_count }}</td>
                                         <td>
