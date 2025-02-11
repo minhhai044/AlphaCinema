@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Controllers\Filters\MovieFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MovieRequest;
 use App\Services\MovieService;
@@ -17,10 +18,17 @@ class MovieController extends Controller
     }
 
     // 1. Hiển thị danh sách phim
-    public function index()
+    public function index(Request $request)
     {
-        $movies = $this->movieService->getAllMovies();
-        return view('admin.movies.index', compact('movies'));
+        // Lấy các tham số lọc từ request
+        $filters = $request->only(['id','name', 'movie_versions', 'movie_genres']);
+
+        // Áp dụng bộ lọc cho Movie
+        $movieFilter = new MovieFilter($filters);
+        $movies = $movieFilter->apply()->paginate(10);
+        // dd($movies);
+        // Truyền kết quả và các tham số lọc (để giữ giá trị ở form) sang view
+        return view('admin.movies.index', compact('movies', 'filters'));
     }
 
     // 2. Hiển thị form thêm mới phim
@@ -32,9 +40,10 @@ class MovieController extends Controller
     // 3. Lưu phim mới
     public function store(MovieRequest $request)
     {
+        // dd($request->all());
         $validated = $request->validated();
         $this->movieService->createMovie($validated);
-        // dd($request['img_thumbnail']);
+        // dd($request['movie_versions']);
         return redirect()->route('admin.movies.index')->with('success', 'Thêm phim thành công!');
     }
 
