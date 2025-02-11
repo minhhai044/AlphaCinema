@@ -60,6 +60,8 @@ const handleUpdate = async (url, data) => {
     processData: true,
     success: function (res) {
       console.log(res);
+      $("#updateRankModal").modal("hide");
+      location.reload();
     },
     error: function (err) {
       console.log(err.responseJSON);
