@@ -28,27 +28,29 @@ class VoucherController extends Controller
     }
 
     public function store(VoucherRequest $request)
-    {
-        try {
-            do {
-                $code = strtoupper(Str::random(10));
-            } while (Voucher::where('code', $code)->exists());
+{
+    try {
+        do {
+            $code = strtoupper(Str::random(10));
+        } while (Voucher::where('code', $code)->exists());
 
-            $data = $request->all();
-            $data['code'] = $code;
-            $data['is_active'] ??= 1;
-            $data['limit_by_user'] = $data['limit_by_user'] ?? 1;
-            $data['discount'] = $data['discount'] ?? 0;
+        $data = $request->all();
+        $data['code'] = $code;
+        $data['is_active'] ??= 1;
+        $data['limit_by_user'] = $data['limit_by_user'] ?? 1;
+        
+        // Loại bỏ dấu phẩy trước khi lưu vào database
+        $data['discount'] = (int) str_replace(',', '', $request->input('discount'));
 
-            Voucher::create($data);
+        Voucher::create($data);
 
-            return redirect()->route('admin.vouchers.index')->with('success', 'Thêm mới mã giảm giá thành công!');
-        } catch (\Throwable $th) {
-            return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
-        }
+        return redirect()->route('admin.vouchers.index')->with('success', 'Thêm mới mã giảm giá thành công!');
+    } catch (\Throwable $th) {
+        return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
     }
+}
 
-
+    
 
     public function show(Voucher $voucher)
     {
@@ -69,22 +71,24 @@ class VoucherController extends Controller
         return view('admin.vouchers.edit', compact('voucher'));
     }
 
-
     public function update(VoucherRequest $request, Voucher $voucher)
     {
         try {
             // Lấy dữ liệu từ request
             $data = $request->all();
-
+    
+            // Loại bỏ dấu phẩy trước khi lưu vào database
+            $data['discount'] = (int) str_replace(',', '', $request->input('discount'));
+    
             // Cập nhật bản ghi trong cơ sở dữ liệu
             $voucher->update($data);
-
+    
             return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật mã giảm giá thành công!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
         }
     }
-
+    
 
 
     public function destroy(Voucher $voucher)
