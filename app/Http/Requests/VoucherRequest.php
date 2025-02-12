@@ -25,7 +25,9 @@ class VoucherRequest extends FormRequest
             return $this->rulesForUpdate();
         }
 
-        return [];
+        return [
+            'discount_hidden' => ['required', 'numeric'], // Chỉ validate hidden input
+        ];
     }
 
     /**
