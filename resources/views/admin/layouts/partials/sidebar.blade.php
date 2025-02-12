@@ -176,9 +176,9 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{route('admin.rooms.index')}}">
                     <i data-feather="layout"></i>
-                    <span data-key="t-rooms">Rooms</span>
+                    <span data-key="t-rooms">Quản lý phòng chiếu</span>
                 </a>
             </li>
             <li>

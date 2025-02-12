@@ -18,6 +18,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\RoomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -116,7 +117,6 @@ Route::resource('vouchers', VoucherController::class);
 Route::resource('user-vouchers', UserVoucherController::class);
 
 
-// Route::resource('users', [])
 Route::prefix('seat-templates')->group(function () {
     Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
     Route::post('/store', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
@@ -125,6 +125,10 @@ Route::prefix('seat-templates')->group(function () {
     Route::put('{id}/update_seat', [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
 });
 
+Route::prefix('rooms')->as('rooms.')->group(function () {
+    Route::get('/', [RoomController::class, 'index'])->name('index');
+    
+});
 Route::resource('accounts', UserController::class);
 // Xóa mềm  (soft delete)
 Route::delete('accounts', [UserController::class, 'solfDestroy'])->name('solfDestroy');

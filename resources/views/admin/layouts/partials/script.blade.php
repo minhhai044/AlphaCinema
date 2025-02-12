@@ -12,10 +12,14 @@
 <!-- apexcharts -->
 <script src="{{ asset('theme/admin/assets/libs/apexcharts/apexcharts.min.js') }}"></script>
 <!-- Plugins js-->
+<script src="{{ asset('theme/admin/assets/libs/pristinejs/pristine.min.js') }}"></script>
+
 <script
     src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
 <script
     src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/js/pages/form-validation.init.js') }}"></script>
+
 <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
 
 {{-- sweetalert2 --}}
@@ -26,10 +30,4 @@
 <script src="{{ asset('assets/js/config.js') }}"></script>
 
 
-{{-- làm pop up --}}
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-
-
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
-
