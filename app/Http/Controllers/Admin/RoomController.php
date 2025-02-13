@@ -18,7 +18,7 @@ class RoomController extends Controller
         $type_rooms = [
             '1' => "Ghế Thường",
             '2' => "Ghế Vip",
-            '3' => "Ghế đôi"
+            '3' => "Ghế Đôi"
         ];
         // dd($branchs,$cinemas,$type_rooms);
         // $type_rooms = Type_room::query()->pluck('name','id')->all();

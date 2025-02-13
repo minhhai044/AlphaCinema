@@ -5,7 +5,6 @@
     <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Tạo phòng chiếu
     </button>
-
     <!-- Modal -->
     <form action="" method="post">
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -30,8 +29,8 @@
                                         style="color: red">*</span></label>
                                 <select name="branch_id" class="form-select" required id="matrixSelectCreate">
                                     <option value="" disabled selected>Chọn chi nhánh</option>
-                                    @foreach ($branchs as $branch)
-                                        <option value="{{ $branch['id'] }}">{{ $branch['name'] }}</option>
+                                    @foreach ($branchs as $id => $branch)
+                                        <option value="{{ $id }}">{{ $branch }}</option>
                                     @endforeach
                                 </select>
                             </div>
@@ -40,8 +39,8 @@
 
                                 <select name="cinema_id" class="form-select" required id="matrixSelectCreate">
                                     <option value="" disabled selected>Chọn rạp phim</option>
-                                    @foreach ($cinemas as $cinema)
-                                        <option value="{{ $cinema['id'] }}">{{ $cinema['name'] }}
+                                    @foreach ($cinemas as $id => $cinema)
+                                        <option value="{{ $id }}">{{ $cinema }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -51,8 +50,8 @@
                                         style="color: red">*</span></label>
                                 <select name="seat_template_id" class="form-select" required id="matrixSelectCreate">
                                     <option value="" disabled selected>Chọn mẫu ghế</option>
-                                    @foreach ($seat_templates as $seat_template)
-                                        <option value="{{ $seat_template['id'] }}">{{ $seat_template['name'] }}
+                                    @foreach ($seat_templates as $id => $seat_template)
+                                        <option value="{{ $id }}">{{ $seat_template }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -62,8 +61,8 @@
 
                                 <select name="type_room_id" class="form-select" required id="matrixSelectCreate">
                                     <option value="" disabled selected>Chọn loại phòng</option>
-                                    @foreach ($type_rooms as $type_room)
-                                    <option value="{{ $type_room['id'] }}">{{ $type_room['name'] }}
+                                    @foreach ($type_rooms as  $id => $type_room)
+                                    <option value="{{ $id }}">{{ $type_room }}
                                     </option>
                                     @endforeach
                                 </select>
