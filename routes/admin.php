@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\SeatTemplateControler;
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Controllers\Admin\DayController;
+use App\Http\Controllers\Admin\TyperoomController;
+use App\Http\Controllers\Admin\TypeSeatController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\ComboController;
@@ -116,7 +118,18 @@ Route::resource('vouchers', VoucherController::class);
 
 Route::resource('user-vouchers', UserVoucherController::class);
 
+// Route::resource('typerooms', TyperoomController::class);
 
+Route::group([
+    'prefix' => 'typerooms',  // Tiền tố URL cho tất cả route
+    'as' => 'typerooms.',     // Nhóm tên route (vd: foods.index, foods.store);
+], function () {
+    Route::get('/',[TyperoomController::class,'index'])->name('index');
+    Route::post('/',[TyperoomController::class,'store'])->name('store');        
+    Route::put('{type_room}/update',[TyperoomController::class,'update'])->name('update');    
+    Route::delete('{type_room}/destroy',[TyperoomController::class,'destroy'])->name('destroy');  
+});
+// Route::resource('users', [])
 Route::prefix('seat-templates')->group(function () {
     Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
     Route::post('/store', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
@@ -186,3 +199,6 @@ Route::resource('days', DayController::class)->names([
 ]);
 
 Route::post('days/update/{id}', [DayController::class, 'update']);
+
+Route::resource('type_seats', TypeSeatController::class);
+

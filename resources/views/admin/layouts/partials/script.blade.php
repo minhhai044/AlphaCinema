@@ -28,6 +28,5 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 {{-- config global --}}
 <script src="{{ asset('assets/js/config.js') }}"></script>
-
-
+{{-- select2 --}}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
