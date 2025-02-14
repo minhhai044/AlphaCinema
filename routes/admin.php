@@ -117,9 +117,9 @@ Route::resource('vouchers', VoucherController::class);
 Route::resource('user-vouchers', UserVoucherController::class);
 
 
-Route::prefix('seat-templates')->group(function () {
+Route::prefix('seat-templates')->middleware(['validateError'])->group(function () {
     Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
-    Route::post('/store', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
+    Route::post('/', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
     Route::get('{id}/edit', [SeatTemplateControler::class, 'edit'])->name('edit.seat_templates');
     Route::put('{id}/update', [SeatTemplateControler::class, 'update'])->name('update.seat_templates');
     Route::put('{id}/update_seat', [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
@@ -127,6 +127,9 @@ Route::prefix('seat-templates')->group(function () {
 
 Route::prefix('rooms')->as('rooms.')->group(function () {
     Route::get('/', [RoomController::class, 'index'])->name('index');
+    Route::post('/', [RoomController::class, 'store'])->name('store');
+    Route::get('{id}/show', [RoomController::class, 'show'])->name('show');
+    Route::put('{id}/update', [RoomController::class, 'update'])->name('update');
     
 });
 Route::resource('accounts', UserController::class);

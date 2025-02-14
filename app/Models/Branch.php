@@ -9,4 +9,8 @@ class Branch extends Model
 {
     use HasFactory;
     protected $fillable = ['name', 'slug', 'surcharge', 'is_active'];
+
+    public function cinemas(){
+        return $this->hasMany(Cinema::class);
+    }
 }

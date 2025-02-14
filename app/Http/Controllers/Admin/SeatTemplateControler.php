@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Helpers\Alert;
+use App\Helpers\Toastr;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\SeatTemplateRequest;
 use App\Http\Requests\SeatTemplateStructureRequest;
@@ -19,7 +21,7 @@ class SeatTemplateControler extends Controller
     }
     public function index(Request $request)
     {
-        
+        Toastr::error('Vui lòng kiểm tra lại !!!');
         $dataAll = $this->seatTemplateService->getAll($request);
         $matrixs = Seat_template::MATRIXS;
         return view(self::PATH_VIEW . __FUNCTION__, compact('dataAll', 'matrixs'));
@@ -45,38 +47,7 @@ class SeatTemplateControler extends Controller
     }
     public function edit(string $id)
     {
-        $seatTemplate = Seat_template::query()->findOrFail($id);
-        $matrix = Seat_template::getMatrixById($seatTemplate->matrix);
-        $seatMap = [];
-        if ($seatTemplate->seat_structure) {
-            $seats = json_decode($seatTemplate->seat_structure, true);
-            
-
-            // Đếm tổng số ghế
-            $totalSeats = 0; // Khởi tạo biến tổng số ghế
-
-            if ($seats) {
-                foreach ($seats as $seat) {
-                    $coordinates_y = $seat['coordinates_y'];
-                    $coordinates_x = $seat['coordinates_x'];
-
-                    if (!isset($seatMap[$coordinates_y])) {
-                        $seatMap[$coordinates_y] = [];
-                    }
-
-                    $seatMap[$coordinates_y][$coordinates_x] = $seat['type_seat_id'];
-
-                    // Tăng tổng số ghế
-                    if ($seat['type_seat_id'] == 3) {
-                        // Ghế đôi, cộng thêm 2
-                        $totalSeats += 2;
-                    } else {
-                        // Ghế thường hoặc ghế VIP, cộng thêm 1
-                        $totalSeats++;
-                    }
-                }
-            }
-        }
+         [$seatTemplate, $matrix, $seatMap] =$this->seatTemplateService->editService($id);
         return view(self::PATH_VIEW . __FUNCTION__, compact('matrix', 'seatTemplate', 'seatMap'));
     }
     public function update_seat(SeatTemplateStructureRequest $seatTemplateStructureRequest, string $id)

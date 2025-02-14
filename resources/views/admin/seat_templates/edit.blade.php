@@ -46,6 +46,24 @@
         
     </style>
     <h1>Sơ đồ ghế</h1>
+     <!-- start page title -->
+     {{-- <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Chi tiết phòng</h4>
+
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('admin.rooms.index') }}">Danh sách phòng</a>
+                        </li>
+                        <li class="breadcrumb-item active">Chi tiết phòng</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div> --}}
+    <!-- end page title -->
     <div class="row">
         <div class="col-lg-9 text-center">
             <div class="screen w-full mx-auto mb-4 p-2 bg-dark text-white">Màn Hình Chiếu</div>
@@ -172,9 +190,9 @@
                                                     <!-- 3 cho ghế đôi -->
                                                     <img src="{{ asset('images/seat/seat-2-booked.png') }}"
                                                         class='seat' width="77%">
-                                                    <span
+                                                    <p
                                                         class="seat-label-double">{{ chr(65 + $row) . ($col + 1) }}
-                                                        {{ chr(65 + $row) . ($col + 2) }}</span>
+                                                        {{ chr(65 + $row) . ($col + 2) }}</p>
                                                 </div>
                                             </td>
                                             <td class="box-item" style="display: none;">
