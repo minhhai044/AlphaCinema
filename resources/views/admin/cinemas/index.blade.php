@@ -1,48 +1,6 @@
 @extends('admin.layouts.master')
 @section('title', 'Quản lý rạp')
 
-@section('style')
-<style>
-    .card {
-        box-shadow: 0px 1px 10px 3px #dedede;
-    }
-
-    .al-table-length label {
-        font-weight: normal;
-        text-align: left;
-        white-space: nowrap;
-    }
-
-    .al-table-length .al-table-select {
-        width: auto;
-        display: inline-block;
-    }
-
-    .al-table-length .al-table-input {
-        margin-left: .5em;
-        display: inline-block;
-        width: auto;
-    }
-
-    .al-table-info {
-        padding-top: .85em;
-    }
-
-    .al-table-paginate {
-        margin: 0;
-        white-space: nowrap;
-        text-align: right;
-    }
-
-    .al-table-paginate .pagination {
-        margin: 2px 0;
-        white-space: nowrap;
-        justify-content: flex-end;
-    }
-
-</style>
-@endsection
-
 @section('content')
 <!-- start page title -->
 <div class="row">
@@ -64,7 +22,7 @@
 <!-- end page title -->
 <div class="row">
     <div class="col-lg-12">
-        <div class="card">
+        <div class="card al-card">
             <div class="card-body">
                 <div class="row">
                     <div class="col-sm">
@@ -72,11 +30,17 @@
                             <h6 class="mb-sm-0 font-size-16">Cinema List</h6>
                         </div>
                     </div>
-                    <div class="col-sm-auto">
+                    <div class="col-sm-auto d-flex gap-2">
                         <div class="mb-4">
                             <a href="{{ route('admin.cinemas.create') }}" class="btn btn-light waves-effect waves-light">
                                 <i class="bx bx-plus me-1"></i>
                                 Add Cinema
+                            </a>
+                        </div>
+                        <div class="mb-4">
+                            <a href="{{ route('admin.export', 'cinemas') }}" class="btn btn-warning waves-effect waves-light">
+                                <i class="bx bx-download me-1"></i>
+                                Export Excel
                             </a>
                         </div>
                     </div>
@@ -109,7 +73,7 @@
 
                 <div class="row">
                     <div class="col-sm-12">
-                        <div class="table-responsive">
+                        <div class="table-responsive min-vh-100">
                             <table class="table align-middle table-nowrap dt-responsive nowrap w-100" id="customerList-table">
                                 <thead class="table-light">
                                     <tr>
@@ -157,6 +121,15 @@
                                                     </a>
                                                 </li>
                                                 <li>
+                                                    <form id="delete-cinema-{{ $cinema->id }}" action="{{ route('admin.cinemas.destroy', $cinema) }}" method="POST">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="button" class="dropdown-item remove-list" onclick="handleDelete({{ $cinema->id }})">
+                                                            <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
+                                                            Delete
+                                                        </button>
+                                                    </form>
+
                                                     <button @method('DELETE') href="{{ route('admin.cinemas.show', $cinema) }}" class="dropdown-item edit-list" data-edit-id="{{ $cinema->id }}">
                                                         <i class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
                                                         Show
@@ -180,25 +153,15 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-sm-12 col-md-5">
-                        <div class="al-table-info" id="customerList-table_info" role="status" aria-live="polite">
-                            Showing 1 to 10 of 12 entries
-                        </div>
-                    </div>
-                    <div class="col-sm-12 col-md-7">
-                        <div class="al-table-paginate paging_simple_numbers pagination-rounded" id="customerList-table_paginate">
-                            <ul class="pagination">
-                                <li class="paginate_button page-item previous disabled" id="customerList-table_previous"><a aria-controls="customerList-table" aria-disabled="true" role="link" data-dt-idx="previous" tabindex="-1" class="page-link"><i class="mdi mdi-chevron-left"></i></a></li>
-                                <li class="paginate_button page-item active"><a href="#" aria-controls="customerList-table" role="link" aria-current="page" data-dt-idx="0" tabindex="0" class="page-link">1</a></li>
-                                <li class="paginate_button page-item "><a href="#" aria-controls="customerList-table" role="link" data-dt-idx="1" tabindex="0" class="page-link">2</a></li>
-                                <li class="paginate_button page-item next" id="customerList-table_next"><a href="#" aria-controls="customerList-table" role="link" data-dt-idx="next" tabindex="0" class="page-link"><i class="mdi mdi-chevron-right"></i></a></li>
-                            </ul>
-                        </div>
-                    </div>
+                    {{ $cinemas->onEachSide(1)->links('admin.layouts.components.pagination') }}
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+@endsection
+
+@section('script')
+<script src="{{ asset('assets/js/cinema/index.js') }}"></script>
 @endsection

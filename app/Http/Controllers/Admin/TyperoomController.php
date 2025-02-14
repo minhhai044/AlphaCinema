@@ -6,6 +6,7 @@ use App\Models\Type_room;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Services\TypeRoomService;
+use Illuminate\Http\Request;
 
 class TyperoomController extends Controller
 {
@@ -33,6 +34,7 @@ class TyperoomController extends Controller
         $branchs = Branch::query()->orderByDesc('id')->get();
         return view(self::PATH_VIEW . __FUNCTION__, compact('branchs'));
     }
+    // public function create() {}
 
     /**
      * Store a newly created resource in storage.
@@ -47,6 +49,10 @@ class TyperoomController extends Controller
         } catch (\Throwable $th) {
             return back()
                 ->with('THAO TÁC KHÔNG THÀNH CÔNG');
+                
+        } catch (\Throwable $th) {
+            back()
+                ->with('error', 'THAO TÁC KHÔNG THÀNH CÔNG');
         }
     }
 
@@ -68,6 +74,7 @@ class TyperoomController extends Controller
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('type_room'));
     }
+    // public function edit(Type_room $type_room) {}
 
     /**
      * Update the specified resource in storage.
@@ -81,8 +88,7 @@ class TyperoomController extends Controller
         } catch (\Throwable $th) {
             return back()
             ->with('THAO TÁC KHÔNG THÀNH CÔNG');
-        }
-    }
+        }}
     /**
      * Remove the specified resource from storage.
      */
@@ -91,7 +97,6 @@ class TyperoomController extends Controller
         // dd ($typeRoomRequest);
         try {
             $type_room->delete(); // Sử dụng tên biến mới.
-            
             return back()
                 ->with('success', 'Xóa thành công');
         } catch (\Throwable $th) {

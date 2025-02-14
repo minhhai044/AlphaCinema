@@ -129,6 +129,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    <tbody class="roomList">
                                         @foreach ($type_rooms as $item)
                                             <td class="sorting_1 dtr-control">
                                                 <div class="d-none">{{ $item->id }}</div>
@@ -147,7 +148,7 @@
 
                                             </td>
                                             <td>
-                                                <div>{{$item->created_at->format('d/m/Y H:i:s')}}</div>
+                                                <div>{{ $item->created_at->format('d/m/Y H:i:s') }}</div>
 
                                             </td>
                                             <td>
@@ -252,45 +253,42 @@
                                                 <div class="col-md-12">
                                                     <div class="row">
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="name" class="form-label "> <span
-                                                                    class="text-danger">*</span>Tên
-                                                                loại phòng
-                                                            </label>
-                                                            <input type="text" class="form-control" name="name">
+                                                            <label for="name">Tên loại phòng:</label>
+                                                            <input type="text" name="name" id="name"
+                                                                class="form-control" value="{{ old('name') }}">
+                                                            <small class="text-danger error" id="nameError">
+                                                                @error('name')
+                                                                    {{ $message }}
+                                                                @enderror
+                                                            </small>
                                                         </div>
 
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="price" class="form-label ">
-                                                                <span class="text-danger">*</span>
-                                                                Giá
-                                                            </label>
+                                                            <label for="name">Giá phòng:</label>
                                                             <input type="number" name="surcharge"
-                                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}">
+                                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
+                                                                value="{{ old('surcharge') }}">
 
-                                                            <div
-                                                                class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                            <div class="invalid-feedback">
                                                                 @if ($errors->has('surcharge'))
                                                                     {{ $errors->first('surcharge') }}
                                                                 @endif
                                                             </div>
                                                         </div>
                                                     </div>
-
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
 
 
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Thêm mới</button>
+                        <button type="submit" class="btn btn-primary btn-submit"> Thêm mới</button>
                     </div>
                 </form>
             </div>
@@ -326,8 +324,8 @@
                                                                     class="text-danger">*</span>Tên
                                                                 loại phòng
                                                             </label>
-                                                            <input type="text" class="form-control" id="name"
-                                                                name="name">
+                                                            <input type="text" class="form-control bg-light" id="nameedit"
+                                                                name="name" readonly>
                                                         </div>
 
                                                         <div class="col-md-6 mb-3">
@@ -356,12 +354,10 @@
                             </div>
 
                         </div>
-
-
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Save changes</button>
+                        <button type="submit" class="btn btn-primary">Sửa loại phòng</button>
                     </div>
                 </form>
             </div>
@@ -370,17 +366,17 @@
 @endsection
 
 @section('script')
+    <script src="{{ asset('js/validate-type-room.js') }}"></script>
     <script>
         // Sửa 
         $('.edit_type_room').click(function(e) {
             let id = $(this).data('id');
-            let name = $(this).data('name').trim();
+            let name = $(this).data('name');
             let surcharge = $(this).data('surcharge');
-
-            $('#name').val(name);
+            $('#nameedit').val(name);
             $('#surcharge').val(surcharge);
 
             $('#formupdate').attr('action', `typerooms/${id}/update`);
-        })
+        });
     </script>
 @endsection

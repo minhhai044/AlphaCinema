@@ -61,7 +61,8 @@
                                             </a>
                                             <ul class="dropdown-menu dropdown-menu-end" style="">
                                                 <li>
-                                                    <a data-bs-toggle="modal" class="edit_type_seat"
+                                                    <a data-bs-toggle="modal"
+                                                        class="edit_type_seat  btn btn-light waves-effect waves-light"
                                                         data-bs-target="#exampleModal" data-id={{ $item->id }}
                                                         data-name="{{ $item->name }}" data-price={{ $item->price }}>
                                                         <i class="mdi mdi-pencil font-size-16 text-success me-1"></i>
@@ -95,14 +96,14 @@
         </div><!--end col-->
     </div><!--end row-->
 
- 
+
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <h1 class="modal-title fs-5" id="exampleModalLabel">Sửa loại ghế </h1>
+                    {{-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> --}}
                 </div>
                 <div class="modal-body">
                     <form method="post" id="formupdate">
@@ -125,7 +126,7 @@
                                                                 loại ghế
                                                             </label>
                                                             <input type="text" class="form-control" id="name"
-                                                                name="name"  disabled>
+                                                                name="name" disabled>
                                                         </div>
 
                                                         <div class="col-md-6 mb-3">
@@ -134,53 +135,90 @@
                                                                 Giá
                                                             </label>
                                                             <input type="number" name="price" id="price"
-                                                                class="form-control {{ $errors->has('price') ? 'is-invalid' : (old('price') ? 'is-valid' : '') }}"
-                                                               >
-
-                                                            <div
-                                                                class="{{ $errors->has('price') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                                class="form-control {{ $errors->has('price') ? 'is-invalid' : (old('price') ? 'is-valid' : '') }}">
+                                                            <div id="price-error" class="invalid-feedback">
                                                                 @if ($errors->has('price'))
                                                                     {{ $errors->first('price') }}
                                                                 @endif
                                                             </div>
                                                         </div>
+
                                                     </div>
-
                                                 </div>
-                                            </div>
 
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
 
+
                         </div>
-                      
-                 
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary btn-close-modal"
+                                data-bs-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary">Sửa ghế </button>
+                        </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <button type="submit" class="btn btn-primary">Save changes</button>
-                </div>
-            </form>
             </div>
         </div>
-    </div>
-@endsection
+    @endsection
 
 
-@section('script')
-    <script>
-        $('.edit_type_seat').click(function(e) {
-            let id = $(this).data('id');
-            let name = $(this).data('name').trim();
-            let price = $(this).data('price');
-            console.log(name);
-            
-            $('#name').val(name);
-            $('#price').val(price);
+    @section('script')
+        <script>
+            $('.edit_type_seat').click(function(e) {
+                let id = $(this).data('id');
+                let name = $(this).data('name').trim();
+                let price = $(this).data('price');
+                console.log(name);
 
-            $('#formupdate').attr('action',`type_seats/${id}`);
-        })
-    </script>
-@endsection
+                $('#name').val(name);
+                $('#price').val(price);
+
+                $('#formupdate').attr('action', `type_seats/${id}`);
+            })
+            $('#formupdate').submit(function(e) {
+                e.preventDefault(); // Ngăn form submit ngay lập tức
+
+                let price = parseFloat($('#price').val());
+                let errorMessage = '';
+
+                // Lấy danh sách giá từ dữ liệu đang hiển thị trên trang
+                let priceNormal = {{ $typeSeats->where('name', 'Ghế thường')->first()->price ?? 0 }};
+                let priceVip = {{ $typeSeats->where('name', 'Ghế VIP')->first()->price ?? 0 }};
+                let priceCouple = {{ $typeSeats->where('name', 'Ghế đôi')->first()->price ?? 0 }};
+
+                if (price <= 0) {
+                    errorMessage = 'Giá phải lớn hơn 0!';
+                } else if ($('#name').val().trim() === 'Ghế thường' && price >= priceVip) {
+                    errorMessage = 'Giá ghế thường phải nhỏ hơn giá ghế VIP!';
+                } else if ($('#name').val().trim() === 'Ghế VIP' && (price <= priceNormal || price >= priceCouple)) {
+                    errorMessage = 'Giá ghế VIP phải lớn hơn ghế thường và nhỏ hơn ghế đôi!';
+                } else if ($('#name').val().trim() === 'Ghế đôi' && price <= priceVip) {
+                    errorMessage = 'Giá ghế đôi phải lớn hơn giá ghế VIP!';
+                }
+
+                if (errorMessage) {
+                    $('#price-error').text(errorMessage).show(); // Hiển thị lỗi dưới input
+                    $('#price').addClass('is-invalid'); // Thêm class Bootstrap
+                } else {
+                    $('#price-error').text('').hide(); // Ẩn lỗi nếu không có
+                    $('#price').removeClass('is-invalid'); // Xóa class lỗi
+                    this.submit(); // Nếu hợp lệ, gửi form
+                }
+
+                // Reset lỗi khi đóng modal
+                $('.btn-close-modal').click(function() {
+                    resetFormErrors();
+                });
+
+                function resetFormErrors() {
+                    $('#price-error').text('').hide();
+                    $('#price').removeClass('is-invalid');
+                }
+            });
+        </script>
+    @endsection

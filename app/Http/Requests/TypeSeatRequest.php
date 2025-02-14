@@ -98,6 +98,50 @@ class TypeSeatRequest extends FormRequest
         }
     );
 }
+
+    // public function withValidator(Validator $validator)
+    // {
+    //     $validator->after(
+    //         function ($validator) {
+    //             $typeSeatId = $this->route('type_seat'); // Lấy ID loại ghế từ route
+    //             $typeSeat = Type_seat::find($typeSeatId);
+
+    //             // Kiểm tra nếu loại ghế không tồn tại
+    //             if (!$typeSeat) {
+    //                 $validator->errors()->add('price', 'Loại ghế không tồn tại!');
+    //                 return;
+    //             }
+    //             $newPrice = (float)$this->input('price');
+
+    //             // Lấy giá hiện tại của tất cả loại ghế
+    //             $allSeats = Type_seat::all()->pluck('price', 'id')->map(fn($value) => (float) $value);
+
+    //             $priceRegular = $allSeats[1] ?? 0;
+    //             $priceVIP = $allSeats[2] ?? 0;
+    //             $priceDouble = $allSeats[3] ?? 0;
+    //             // dd([
+    //             //     'typeSeatId' => $typeSeatId,
+    //             //     'newPrice' => (int) $this->input('price'),
+    //             //     'allSeats' => $allSeats,
+    //             //     'priceRegular' => $allSeats[1] ?? 0,
+    //             //     'priceVIP' => $allSeats[2] ?? 0,
+    //             //     'priceDouble' => $allSeats[3] ?? 0,
+    //             // ]);
+    //             // Kiểm tra điều kiện giá theo ID
+    //             if ($typeSeat->id == 1 && $newPrice >= $priceVIP) {
+    //                 $validator->errors()->add('price', 'Giá ghế thường phải nhỏ hơn giá ghế VIP!');
+    //             }
+
+    //             if ($typeSeat->id == 2 && ($newPrice <= $priceRegular || $newPrice >= $priceDouble)) {
+    //                 $validator->errors()->add('price', 'Giá ghế VIP phải lớn hơn ghế thường và nhỏ hơn ghế đôi!');
+    //             }
+
+    //             if ($typeSeat->id == 3 && $newPrice <= $priceVIP) {
+    //                 $validator->errors()->add('price', 'Giá ghế đôi phải lớn hơn giá ghế VIP!');
+    //             }
+    //         }
+    //     );
+    // }
     // messages chung
     public function messages()
     {

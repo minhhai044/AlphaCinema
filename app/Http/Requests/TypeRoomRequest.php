@@ -67,6 +67,12 @@ class TypeRoomRequest extends FormRequest
         return [
             'name.required' => 'Vui lòng điền name',
             'surcharge.required' => 'Vui lòng điền lệch giá ',
+            'name.required' => 'Vui lòng nhập tên loại phòng.',
+            'name.unique' => 'Tên loại phòng đã tồn tại, vui lòng chọn tên khác.',
+            'surcharge.required' => 'Vui lòng nhập phụ thu.',
+            'surcharge.numeric' => 'Phụ thu phải là một số.',
+            'surcharge.min' => 'Phụ thu không được nhỏ hơn 0.',
+            'surcharge.max' => 'Phụ thu quá lớn.',
         ];
     }
 }

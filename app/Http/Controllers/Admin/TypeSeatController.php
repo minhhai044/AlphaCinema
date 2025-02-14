@@ -77,7 +77,7 @@ class TypeSeatController extends Controller
             $data = $typeSeatRequest->validated();
             $this->typeSeatService->updateService(['price' => $data['price']],$id);
             return redirect()->route('admin.type_seats.index')
-                ->with('THAO TÁC KHÔNG THÀNH CÔNG');
+                ->with('success','THAO TÁC THÀNH CÔNG');
         } catch (\Throwable $th) {
             return back()
             ->with('THAO TÁC KHÔNG THÀNH CÔNG');
