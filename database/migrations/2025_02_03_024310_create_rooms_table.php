@@ -2,11 +2,11 @@
 
 use App\Models\Branch;
 use App\Models\Cinema;
-use App\Models\Seat_template;
 use App\Models\Type_room;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Seat_template;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -23,8 +23,8 @@ return new class extends Migration
             $table->foreignIdFor(Seat_template::class)->constrained();
             $table->string('name')->unique();
             $table->json('seat_structures');
-            $table->boolean('is_active')->default(1)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
-            $table->boolean('is_publish')->default(1)->comment("0 : Ẩn , 1 : Hiện");
+            $table->boolean('is_active')->default(0)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
+            $table->boolean('is_publish')->default(0)->comment("0 : Ẩn , 1 : Hiện");
             $table->timestamps();
             // $table->softDeletes();
         });

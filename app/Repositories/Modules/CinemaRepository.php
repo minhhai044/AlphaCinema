@@ -25,5 +25,6 @@ class CinemaRepository extends BaseRepository
     public function createCinemaRepository(array $data)
     {
         return $this->create($data);
+
     }
 }

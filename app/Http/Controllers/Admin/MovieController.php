@@ -64,8 +64,9 @@ class MovieController extends Controller
     // 6. Cập nhật phim
     public function update(MovieRequest $request, $id)
     {
+        // dd($request->all());
         $validated = $request->validated();
-
+        // dd($validated);
         $this->movieService->updateMovie($id, $validated);
         return redirect()->route('admin.movies.index')->with('success', 'Cập nhật phim thành công!');
     }

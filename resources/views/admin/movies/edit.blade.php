@@ -5,8 +5,7 @@
 
         <h1 class="card-title">Sửa phim: {{ $movie->name }}</h1>
         <div class="col-12">
-            <form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data"
-                class="custom-validation">
+            <<form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="row">
@@ -213,7 +212,7 @@
 
                 </div>
 
-            </form>
+                </form>
         </div>
     </div>
     <!-- end select2 -->

@@ -4,11 +4,12 @@ namespace App\Http\Requests;
 
 use App\Traits\ApiRequestJsonTrait;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class CinemaRequest extends FormRequest
 {
     // Chuyển validate thành Json
-    use ApiRequestJsonTrait;
+    // use ApiRequestJsonTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -39,28 +40,36 @@ class CinemaRequest extends FormRequest
     public function rulesForCreate()
     {
         return [
-            'name' => 'required',
-            'address' => 'required',
-            'image' => 'required'
+            'branch_id'             => 'required',
+            'name'                  => 'required|unique:cinemas',
+            'slug'                  => 'nullable',
+            'address'               => 'required',
+            'description'           => 'nullable',
+            'is_active'             => 'nullable|in:0,1',
         ];
     }
 
     public function rulesForUpdate()
     {
         return [
-            'name' => 'required',
-            'address' => 'required',
-            'image' => 'required'
+            'branch_id'             => 'required',
+            'name'                  => ['required', Rule::unique('cinemas')->ignore($this->cinema->id)],
+            'slug'                  => 'nullable',
+            'address'               => 'required',
+            'description'           => 'nullable',
+            'is_active'             => 'nullable|in:0,1',
         ];
     }
-    
+
     // messages chung
     public function messages()
     {
         return [
-            'name.required' => 'Vui lòng điền name',
-            'address.required' => 'Vui lòng điền address',
-            'image.required' => 'Vui lòng điền image',
+            'name.required'         => 'Vui lòng điền tên',
+            'name.unique'           => 'Tên phòng đã tồn tại',
+            'address.required'      => 'Vui lòng điền địa chỉ',
+            'image.required'        => 'Vui lòng tải ảnh',
+            'branch_id.required'    => 'Vui lòng chọn chi nhánh',
         ];
     }
 }

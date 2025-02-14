@@ -9,8 +9,16 @@ class Cinema extends Model
 {
     use HasFactory;
     protected $fillable = [
+        'branch_id',
         'name',
+        'slug',
         'address',
-        'image'
+        'description',
+        'is_active',
     ];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
+    }
 }

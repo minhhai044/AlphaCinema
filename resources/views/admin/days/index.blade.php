@@ -101,7 +101,7 @@
                 let name = row.querySelector(".day-input[type='text']").value;
                 let day_surcharge = row.querySelector(".day-input[type='number']").value;
 
-                fetch("/days/update/" + id, {
+                fetch("/admin/days/update/" + id, {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",

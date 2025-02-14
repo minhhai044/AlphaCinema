@@ -2,9 +2,11 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\Response;
+
 trait ApiResponseTrait
 {
-    protected function successResponse($data, $message, $statusCode)
+    protected function successResponse($data = [], $message = '', $statusCode = Response::HTTP_OK)
     {
         $response = [
             'status' => 'success',

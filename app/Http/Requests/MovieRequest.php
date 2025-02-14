@@ -72,10 +72,10 @@ class MovieRequest extends FormRequest
             'movie_versions.*' => 'string|max:255',
             'movie_genres' => 'sometimes|array',
             'movie_genres.*' => 'string|max:255',
-            'is_active' => 'boolean',
-            'is_hot' => 'boolean',
-            'is_special' => 'boolean',
-            'is_publish' => 'boolean',
+            'is_active' => 'sometimes|nullable|boolean',
+            'is_hot' => 'sometimes|nullable|boolean',
+            'is_special' => 'sometimes|nullable|boolean',
+            'is_publish' => 'sometimes|nullable|boolean',
         ];
     }
 
