@@ -44,7 +44,11 @@
                                         <span class="required">*</span>
                                         Name
                                     </label>
-                                    <input class="form-control" type="text" name="name" id="cinema-name" placeholder="Enter cinema name">
+                                    <input class="form-control @error('name') is-invalid @enderror" type="text" name="name" id="cinema-name" placeholder="Enter cinema name" value="{{ old('name') }}">
+
+                                    @error('name')
+                                    <small class="text-danger fst-italic">*{{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -55,7 +59,7 @@
                                         <span class="required">*</span>
                                         Branch
                                     </label>
-                                    <select class="form-control" placeholder="Select branch" name="branch_id">
+                                    <select class="form-control @error('branch_id') is-invalid @enderror" placeholder="Select branch" name="branch_id">
                                         <option disabled selected>Select branch</option>
                                         @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">
@@ -63,6 +67,9 @@
                                         </option>
                                         @endforeach
                                     </select>
+                                    @error('branch_id')
+                                    <small class="text-danger fst-italic">*{{ $message }}</small>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -73,14 +80,19 @@
                                     <span class="required">*</span>
                                     Address
                                 </label>
-                                <input class="form-control" type="text" name="address" id="cinema-address" placeholder="Enter cinema address">
+                                <input class="form-control @error('address') is-invalid @enderror" type="text" name="address" id="cinema-address" placeholder="Enter cinema address" value="{{ old('address') }}">
+                                @error('address')
+                                <small class="text-danger fst-italic">*{{ $message }}</small>
+                                @enderror
                             </div>
                             <div class="mb-3">
                                 <label for="cinema-description" class="form-label">
-                                    <span class="required">*</span>
                                     Description
                                 </label>
                                 <textarea class="form-control" name="description" rows="6" placeholder="Enter cinema description"></textarea>
+                                @error('description')
+                                <small class="text-danger fst-italic">*{{ $message }}</small>
+                                @enderror
                             </div>
                         </div>
                     </div>
@@ -89,10 +101,6 @@
                 <div class="card-footer">
                     <button class="btn btn-primary">
                         Submit
-                        <i class="bx bx-chevron-right ms-1"></i>
-                    </button>
-                    <button class="btn btn-danger" type="button">
-                        Cancel
                         <i class="bx bx-chevron-right ms-1"></i>
                     </button>
                 </div>
@@ -106,7 +114,6 @@
                         <div class="col-lg-12">
                             <div class="mb-3 d-flex gap-2">
                                 <label for="cinema-description" class="form-label">
-                                    <span class="required">*</span>
                                     Active:
                                 </label>
                                 <div class="square-switch">

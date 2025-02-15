@@ -20,9 +20,10 @@ const menus = [
             <li>
                 <a href="{{ route('admin.index') }}">
                     <i data-feather="home"></i>
-                    <span data-key="t-dashboard">Dashboard</span>
+                    <span data-key="t-dashboard">Trang chủ</span>
                 </a>
             </li>
+          
 
             <li>
                 <a href="javascript: void(0);" class="has-arrow">
@@ -33,6 +34,12 @@ const menus = [
                     <li>
                         <a href="{{ route('admin.cinemas.index') }}">
                             <span data-key="t-cinemas">Cinemas</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="{{ route('admin.ranks.index') }}">
+                            <span data-key="t-ranks">Ranks</span>
                         </a>
                     </li>
 
@@ -93,6 +100,18 @@ const menus = [
                     </li>
                 </ul>
             </li>
+            <li>
+                <a href="{{ route('admin.foods.index') }}">
+                    <i data-feather="layout"></i>
+                    <span data-key="t-accounts">Đồ ăn</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.combos.index') }}">
+                    <i data-feather="layout"></i>
+                    <span data-key="t-accounts">Combo đồ ăn</span>
+                </a>
+            </li>
 
             <li>
                 <a href="#">
@@ -107,7 +126,12 @@ const menus = [
                     <span data-key="t-rooms">Rooms</span>
                 </a>
             </li>
-
+            <li>
+                <a href="{{route('admin.index.seat_templates')}}">
+                    <i data-feather="box"></i>
+                    <span data-key="t-rooms">Seat Templates</span>
+                </a>
+            </li>
             <li class="menu-title mt-2" data-key="t-components">Elements</li>
 
             <li>
