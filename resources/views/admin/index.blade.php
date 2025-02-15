@@ -1640,3 +1640,8 @@
     <!-- end col -->
 </div><!-- end row -->
 @endsection
+
+@section('script')
+<!-- dashboard init -->
+<script src="{{ asset('theme/admin/assets/js/pages/dashboard.init.js') }}"></script>
+@endsection

@@ -1,12 +1,12 @@
 @php
-const menus = [
-[
-'label' => 'Dashboard',
-'key' => 't-dashboard',
-'name' => 'admin.index',
-'icon' => ''
-]
-];
+    const menus = [
+        [
+            'label' => 'Dashboard',
+            'key' => 't-dashboard',
+            'name' => 'admin.index',
+            'icon' => '',
+        ],
+    ];
 @endphp
 
 
@@ -20,9 +20,10 @@ const menus = [
             <li>
                 <a href="{{ route('admin.index') }}">
                     <i data-feather="home"></i>
-                    <span data-key="t-dashboard">Dashboard</span>
+                    <span data-key="t-dashboard">Trang chủ</span>
                 </a>
             </li>
+          
 
             <li>
                 <a href="javascript: void(0);" class="has-arrow">
@@ -37,8 +38,14 @@ const menus = [
                     </li>
 
                     <li>
+
+
+                        <a href="{{ route('admin.ranks.index') }}">
+                            <span data-key="t-ranks">Ranks</span>
+
                         <a href="{{ route('admin.branches.index') }}">
                             <span data-key="t-branches">Branches</span>
+
                         </a>
                     </li>
 
@@ -66,6 +73,10 @@ const menus = [
             </li>
 
             <li>
+
+
+                <a href="{{ route('admin.users.index') }}">
+
                 <a href="javascript: void(0);" class="has-arrow">
                     <i data-feather="grid"></i>
                     <span data-key="t-service-systems">Dịch vụ và ưu đãi</span>
@@ -108,25 +119,76 @@ const menus = [
            
             <li>
                 <a href="#">
+
                     <i data-feather="layout"></i>
                     <span data-key="t-accounts">Accounts</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
+                    <li>
+                        <a href="{{ route('admin.users.index') }}">
+                            <span data-key="t-cinemas">User</span>
+                        </a>
+                    </li>
+
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow">
+                            <span data-key="t-email">Email</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="apps-email-inbox.html" data-key="t-inbox">Inbox</a></li>
+                            <li><a href="apps-email-read.html" data-key="t-read-email">Read Email</a></li>
+                        </ul>
+                    </li>
+                    <li>
+                        <a href="javascript: void(0);" class="has-arrow">
+                            <span data-key="t-invoices">Invoices</span>
+                        </a>
+                        <ul class="sub-menu" aria-expanded="false">
+                            <li><a href="apps-invoices-list.html" data-key="t-invoice-list">Invoice List</a>
+                            </li>
+                            <li><a href="apps-invoices-detail.html" data-key="t-invoice-detail">Invoice
+                                    Detail</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="{{ route('admin.foods.index') }}">
+                    <i data-feather="layout"></i>
+                    <span data-key="t-accounts">Đồ ăn</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('admin.combos.index') }}">
+                    <i data-feather="layout"></i>
+                    <span data-key="t-accounts">Combo đồ ăn</span>
                 </a>
             </li>
 
             <li>
-                <a href="#">
+                <a href="{{ route('admin.movies.index') }}">
                     <i data-feather="layout"></i>
                     <span data-key="t-movies">Movies</span>
                 </a>
             </li>
-
+            <li>
+                <a href="{{ route('admin.days.index') }}">
+                    <i data-feather="layout"></i>
+                    <span data-key="t-movies">Day</span>
+                </a>
+            </li>
             <li>
                 <a href="#">
                     <i data-feather="layout"></i>
                     <span data-key="t-rooms">Rooms</span>
                 </a>
             </li>
-
+            <li>
+                <a href="{{route('admin.index.seat_templates')}}">
+                    <i data-feather="box"></i>
+                    <span data-key="t-rooms">Seat Templates</span>
+                </a>
+            </li>
             <li class="menu-title mt-2" data-key="t-components">Elements</li>
 
             <li>

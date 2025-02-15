@@ -60,15 +60,19 @@
 
                         <div class="col-lg-6">
                             <div class="mb-3">
-                                <label for="discount" class="form-label">
+                                <label for="formatted_discount" class="form-label">
                                     <span class="required">*</span> Giảm giá (VNĐ)
                                 </label>
-                                <input type="number" name="discount" id="discount" class="form-control" placeholder="Nhập số tiền giảm giá" value="{{ old('discount', $voucher->discount) }}">
+                                <input type="text" id="formatted_discount" class="form-control {{ $errors->has('discount') ? 'is-invalid' : (old('discount') ? 'is-valid' : '') }}" placeholder="Nhập số tiền giảm giá" value="{{ number_format(old('discount', $voucher->discount), 0, '.', ',') }}">
+                                
+                                <input type="hidden" name="discount" id="discount_hidden" value="{{ old('discount', $voucher->discount) }}">
+                        
                                 @error('discount')
-                                <div class="text-danger">{{ $message }}</div>
+                                    <div class="text-danger">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
+                        
 
                         <div class="col-lg-6">
                             <div class="mb-3">
@@ -189,6 +193,33 @@
                 </div>
             </div>
         </div>
+
     </div>
 </form>
+
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const formattedInput = document.getElementById("formatted_discount");
+            const hiddenInput = document.getElementById("discount_hidden");
+
+            formattedInput.addEventListener("input", function(e) {
+                let value = e.target.value.replace(/[^\d]/g, ""); // Loại bỏ ký tự không phải số
+                if (value !== "") {
+                    formattedInput.value = Number(value).toLocaleString('en-US'); // Hiển thị có dấu phẩy
+                    hiddenInput.value = value; // Lưu giá trị thực không có dấu phẩy
+                } else {
+                    hiddenInput.value = "0";
+                }
+            });
+
+            formattedInput.addEventListener("blur", function(e) {
+                if (e.target.value === "") {
+                    e.target.value = "0";
+                    hiddenInput.value = "0";
+                }
+            });
+        });
+    </script>
+
 @endsection

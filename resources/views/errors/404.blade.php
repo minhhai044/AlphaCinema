@@ -32,7 +32,7 @@
                     <div class="text-center mb-5">
                         <h1 class="display-1 fw-semibold">4<span class="text-primary mx-2">0</span>4</h1>
                         {{-- <h4 class="text-uppercase">Sorry, page not found</h4> --}}
-                        <h4 class="text-uppercase">Ấn lung tung cái lồn gì đấy 😡🤬</h4>
+                        <h4 class="text-uppercase"></h4>
                         <div class="mt-5 text-center">
                             <a class="btn btn-primary waves-effect waves-light" href="{{ route('admin.index') }}">
                                 Back to Dashboard

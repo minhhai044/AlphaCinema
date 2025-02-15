@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use App\Repositories\Modules\CinemaRepository;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use App\Repositories\Modules\CinemaRepository;
 
 class CinemaService
 {
@@ -20,28 +21,22 @@ class CinemaService
     public function storeService($data)
     {
         return DB::transaction(function () use ($data) {
-            if ($data['image']) {
-                $data['image'] = Storage::put('cinemaImages', $data['image']);
-            }
-            $Cinema = $this->cinemaRepository->createCinemaRepository($data);
-            return $Cinema;
-        });
-    }
-    public function updateSevice($id, $data)
-    {
-        return DB::transaction(function () use ($id, $data) {
-            $findCinema = $this->cinemaRepository->findByIdCinemaRepository($id);
+            $data['is_active'] ??= 0;
+            $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
 
-            if ($data['image'] && Storage::exists($findCinema['image'])) {
-                Storage::delete($findCinema['image']);
-            }
-            if ($data['image']) {
-                $data['image'] = Storage::put('cinemaImages', $data['image']);
-            }
-            $Cinema =  $findCinema->update($data);
-            return $Cinema;
+            return $this->cinemaRepository->createCinemaRepository($data);
         });
     }
+    public function updateSevice($cinema, $data)
+    {
+        return DB::transaction(function () use ($cinema, $data) {
+            $data['is_active'] ??= 0;
+            $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
+
+            return $cinema->update($data);
+        });
+    }
+    
     public function deleteSevice($id)
     {
         $findCinema = $this->cinemaRepository->findByIdCinemaRepository($id);

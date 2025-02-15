@@ -19,20 +19,13 @@ class UserVoucherRequest extends FormRequest
      */
     public function rules(): array
     {
-        // if ($this->isMethod('post')) {
-        //     return $this->rulesForCreate();
-        // } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
-        //     return $this->rulesForUpdate();
-        // }
+        if ($this->isMethod('post')) {
+            return $this->rulesForCreate();
+        } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
+            return $this->rulesForUpdate();
+        }
 
-        // return [];
-
-        return [
-            'user_ids' => 'required|array',
-            'user_ids.*' => 'exists:users,id',
-            'voucher_id' => 'required|exists:vouchers,id',
-            'usage_count' => 'nullable|integer|min:0',
-        ];
+        return [];
     }
 
     /**
@@ -41,7 +34,8 @@ class UserVoucherRequest extends FormRequest
     public function rulesForCreate(): array
     {
         return [
-            'user_id' => 'required|exists:users,id',
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id',
             'voucher_id' => 'required|exists:vouchers,id',
             'usage_count' => 'nullable|integer|min:0',
         ];
@@ -65,6 +59,9 @@ class UserVoucherRequest extends FormRequest
     public function messages(): array
     {
         return [
+            'user_ids.required' => 'Vui lòng chọn ít nhất một người dùng.',
+            'user_ids.array' => 'Danh sách người dùng không hợp lệ.',
+            'user_ids.*.exists' => 'Một hoặc nhiều người dùng không hợp lệ.',
             'user_id.required' => 'Vui lòng chọn người dùng.',
             'user_id.exists' => 'Người dùng không hợp lệ.',
             'voucher_id.required' => 'Vui lòng chọn voucher.',

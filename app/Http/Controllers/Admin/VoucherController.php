@@ -28,6 +28,7 @@ class VoucherController extends Controller
     }
 
     public function store(VoucherRequest $request)
+
     {
         try {
             do {
@@ -73,25 +74,23 @@ class VoucherController extends Controller
     public function update(VoucherRequest $request, Voucher $voucher)
     {
         try {
-            // Lấy dữ liệu từ request
             $data = $request->all();
-
-            // Cập nhật bản ghi trong cơ sở dữ liệu
+            $data['discount'] = (int) str_replace(',', '', $request->input('discount'));
+    
             $voucher->update($data);
-
             return redirect()->route('admin.vouchers.index')->with('success', 'Cập nhật mã giảm giá thành công!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
         }
     }
-
+    
 
 
     public function destroy(Voucher $voucher)
     {
         // dd ($typeRoomRequest);
         try {
-            $voucher->delete(); // Sử dụng tên biến mới.
+            $voucher->delete(); 
 
             return back()
                 ->with('success', 'Xóa thành công');

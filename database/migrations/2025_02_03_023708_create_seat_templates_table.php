@@ -20,8 +20,8 @@ return new class extends Migration
             $table->integer('row_vip')->nullable();
             $table->integer('row_double')->nullable();
             $table->text('description')->nullable();
-            $table->boolean('is_active')->default(1)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
-            $table->boolean('is_publish')->default(1)->comment("0 : Ẩn , 1 : Hiện");
+            $table->boolean('is_active')->default(0)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
+            $table->boolean('is_publish')->default(0)->comment("0 : chưa xuất bản , 1 : Đã xuất bản");
             $table->timestamps();
         });
     }
