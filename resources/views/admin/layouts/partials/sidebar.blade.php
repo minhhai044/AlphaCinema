@@ -71,7 +71,32 @@
                     </li>
                 </ul>
             </li>
-
+            <li>
+                <a href="javascript: void(0);" class="has-arrow">
+                    <i data-feather="grid"></i>
+                    <span data-key="t-cinema-systems">Quản lí loại phòng</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
+                    <li>
+                        <a href="{{ route('admin.typerooms.index') }}">
+                            <span data-key="t-cinemas">Danh sách loại phòng</span>
+                        </a>
+                    </li>
+                </ul>
+            </li>
+            <li>
+                <a href="{{ route('admin.type_seats.index') }}" class="has-arrow">
+                    <i data-feather="grid"></i>
+                    <span data-key="t-cinema-systems">Quản lí loại ghế </span>
+                </a>
+                {{-- <ul class="sub-menu" aria-expanded="false">
+                    <li>
+                        <a href="{{ route('admin.typerooms.index') }}">
+                            <span data-key="t-cinemas">Danh sách loại phòng</span>
+                        </a>
+                    </li>
+                </ul> --}}
+            </li>
             <li>
 
 
@@ -116,7 +141,7 @@
                     </li>
                 </ul>
             </li>
-           
+
             <li>
                 <a href="#">
 
@@ -178,9 +203,9 @@
                 </a>
             </li>
             <li>
-                <a href="#">
+                <a href="{{route('admin.rooms.index')}}">
                     <i data-feather="layout"></i>
-                    <span data-key="t-rooms">Rooms</span>
+                    <span data-key="t-rooms">Quản lý phòng chiếu</span>
                 </a>
             </li>
             <li>
