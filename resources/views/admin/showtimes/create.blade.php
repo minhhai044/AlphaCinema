@@ -201,10 +201,6 @@
         </div>
     </form>
     <input type="hidden" id="duration">
-    <div class="mb-3">
-        <label for="example-time-input" class="form-label">Time</label>
-        <input class="form-control" type="time" value="13:45:00" id="example-time-input">
-    </div>
     @php
         $appUrl = env('APP_URL');
     @endphp
@@ -247,34 +243,32 @@
         let idRowCounter = 1;
         function addTimeRow() {
             const id = idRowCounter++;
-            console.log(id);
             
             const html = `
-                                                            <div class="row align-items-center" id="${id}">
-                                                                <div class="col-lg-5">
-                                                                    <div class="mb-3">
-                                                                        <label for="start_time_${id}" class="form-label">
-                                                                            Thời gian bắt đầu <span class="text-danger">*</span>
-                                                                        </label>
-
-                                                                        <input type="time" class="form-control" name="start_time[]" data-id="${id}" id="start_time_${id}" aria-label="Chọn thời gian">
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-5">
-                                                                    <div class="mb-3">
-                                                                        <label for="end_time_${id}" class="form-label">
-                                                                            Thời gian kết thúc <span class="text-danger">*</span>
-                                                                        </label>
-                                                                        <input type="time" class="form-control" name="end_time[]" id="end_time_${id}" readonly>
-                                                                    </div>
-                                                                </div>
-                                                                <div class="col-lg-2 d-flex align-items-center">
-                                                                    <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${id}">
-                                                                        <i class="bi bi-trash"></i>
-                                                                    </button>
-                                                                </div>
-                                                            </div>
-                                                        `;
+        <div class="row align-items-center" id="${id}">
+            <div class="col-lg-5">
+                <div class="mb-3">
+                    <label for="start_time_${id}" class="form-label">
+                        Thời gian bắt đầu <span class="text-danger">*</span>
+                    </label>
+                    <input type="time" class="form-control" name="start_time[]" data-id="${id}" id="start_time_${id}" aria-label="Chọn thời gian">
+                </div>
+            </div>
+            <div class="col-lg-5">
+                <div class="mb-3">
+                    <label for="end_time_${id}" class="form-label">
+                        Thời gian kết thúc <span class="text-danger">*</span>
+                    </label>
+                    <input type="time" class="form-control" name="end_time[]" id="end_time_${id}" readonly>
+                </div>
+            </div>
+            <div class="col-lg-2 d-flex align-items-center">
+                <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${id}">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>
+    `;
             $('#listTime').append(html);
 
         }
@@ -336,7 +330,9 @@
             let timeStart = $(this).val();
             let durationMovie = $('#duration').val();
 
-
+            let end_time_before =  $(`#end_time_${id - 1}`).val(); // Thời gian của end_time trước đó
+            console.log(end_time_before);
+            
             let [startHour, startMinute] = timeStart.split(':').map(Number);
 
             let totalMinutes = startHour * 60 + startMinute;
