@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Branch;
 use App\Models\Cinema;
 use App\Models\Day;
 use App\Models\Movie;
@@ -17,11 +18,12 @@ return new class extends Migration
     {
         Schema::create('showtimes', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Branch::class)->constrained();
             $table->foreignIdFor(Movie::class)->constrained();
             $table->foreignIdFor(Day::class)->constrained();
             $table->foreignIdFor(Cinema::class)->constrained();
             $table->foreignIdFor(Room::class)->constrained();
-            $table->json('seat_structures');
+            $table->json('seat_structure');
             $table->string('slug')->nullable();
             $table->string('format')->nullable();
             $table->date('date')->comment('Ngày chiếu');
@@ -30,7 +32,7 @@ return new class extends Migration
             $table->decimal('price_special', 10, 0)->comment('Giá suất chiếu đặc biệt');
             $table->text('description_special')->nullable();
             $table->boolean('status_special')->default(0)->comment('0 : Không đặc biệt, 1 : Đặc biệt');
-            $table->boolean('is_active')->default(1)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
+            $table->boolean('is_active')->default(0)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
             $table->timestamps();
         });
     }

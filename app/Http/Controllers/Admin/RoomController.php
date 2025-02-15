@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Log;
 
 class RoomController extends Controller
 {
-    const PATH_VIEW = "admin.rooms.";
+    private const PATH_VIEW = "admin.rooms.";
     private $roomService;
     public function __construct(RoomService $roomService)
     {

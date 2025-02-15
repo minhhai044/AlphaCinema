@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\BranchController;
+use App\Http\Controllers\Admin\ShowtimeController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\UserVoucherController;
 use App\Http\Controllers\Admin\DashBoardController;
@@ -117,7 +118,7 @@ Route::resource('vouchers', VoucherController::class);
 Route::resource('user-vouchers', UserVoucherController::class);
 
 
-Route::prefix('seat-templates')->middleware(['validateError'])->group(function () {
+Route::prefix('seat-templates')->group(function () {
     Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
     Route::post('/', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
     Route::get('{id}/edit', [SeatTemplateControler::class, 'edit'])->name('edit.seat_templates');
@@ -130,8 +131,16 @@ Route::prefix('rooms')->as('rooms.')->group(function () {
     Route::post('/', [RoomController::class, 'store'])->name('store');
     Route::get('{id}/show', [RoomController::class, 'show'])->name('show');
     Route::put('{id}/update', [RoomController::class, 'update'])->name('update');
-    
 });
+
+Route::prefix('showtimes')->as('showtimes.')->group(function () {
+    Route::get('/', [ShowtimeController::class, 'index'])->name('index');
+    Route::get('/create', [ShowtimeController::class, 'create'])->name('create');
+    // Route::post('/', [RoomController::class, 'store'])->name('store');
+    // Route::get('{id}/show', [RoomController::class, 'show'])->name('show');
+    // Route::put('{id}/update', [RoomController::class, 'update'])->name('update');
+});
+
 Route::resource('accounts', UserController::class);
 // Xóa mềm  (soft delete)
 Route::delete('accounts', [UserController::class, 'solfDestroy'])->name('solfDestroy');
