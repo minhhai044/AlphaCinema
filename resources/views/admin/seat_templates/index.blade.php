@@ -72,23 +72,6 @@
                     <button id="submitSeatTemplate" type="button" class="btn btn-primary">Thêm mẫu ghế</button>
                 </div>
             </form>
-            {{-- <form action="{{ route('admin.store.seat_templates') }}" id="pristine-valid-example" novalidate
-                method="post" class="submitSeatTemplateForm">
-                @csrf
-                <input type="hidden" />
-                <div class="row">
-                    <div class="col-xl-4 col-md-6">
-                        <div class="form-group mb-3">
-                            <label>Username</label>
-                            <input type="text" name="username" required
-                                data-pristine-required-message="Please enter a username" class="form-control"
-                                placeholder="First name" />
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <button type="submit" class="btn btn-primary">Submit form</button>
-                    </div>
-            </form> --}}
         </div>
     </div>
 </div>

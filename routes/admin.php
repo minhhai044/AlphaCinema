@@ -5,8 +5,6 @@ use App\Http\Controllers\Admin\BranchController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\UserVoucherController;
 use App\Http\Controllers\Admin\DashBoardController;
-
-
 use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\SeatTemplateControler;
@@ -14,10 +12,13 @@ use App\Http\Controllers\Admin\SeatTemplateControler;
 use App\Http\Controllers\Admin\UserController;
 
 use App\Http\Controllers\Admin\DayController;
+use App\Http\Controllers\Admin\TyperoomController;
+use App\Http\Controllers\Admin\TypeSeatController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\RoomController;
 
 /*
 |--------------------------------------------------------------------------
@@ -115,6 +116,7 @@ Route::resource('vouchers', VoucherController::class);
 
 Route::resource('user-vouchers', UserVoucherController::class);
 
+// Route::resource('typerooms', TyperoomController::class);
 
 Route::resource('branches', BranchController::class);
 Route::get('/admin/branches', [BranchController::class, 'index'])->name('admin.branches.index');
@@ -123,6 +125,15 @@ Route::resource('vouchers', VoucherController::class);
 
 Route::resource('user-vouchers', UserVoucherController::class);
 
+Route::group([
+    'prefix' => 'typerooms',  // Tiền tố URL cho tất cả route
+    'as' => 'typerooms.',     // Nhóm tên route (vd: foods.index, foods.store);
+], function () {
+    Route::get('/',[TyperoomController::class,'index'])->name('index');
+    Route::post('/',[TyperoomController::class,'store'])->name('store');        
+    Route::put('{type_room}/update',[TyperoomController::class,'update'])->name('update');    
+    Route::delete('{type_room}/destroy',[TyperoomController::class,'destroy'])->name('destroy');  
+});
 // Route::resource('users', [])
 Route::prefix('seat-templates')->group(function () {
     Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
@@ -132,6 +143,10 @@ Route::prefix('seat-templates')->group(function () {
     Route::put('{id}/update_seat', [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
 });
 
+Route::prefix('rooms')->as('rooms.')->group(function () {
+    Route::get('/', [RoomController::class, 'index'])->name('index');
+    
+});
 Route::resource('accounts', UserController::class);
 // Xóa mềm  (soft delete)
 Route::delete('accounts', [UserController::class, 'solfDestroy'])->name('solfDestroy');
@@ -189,3 +204,6 @@ Route::resource('days', DayController::class)->names([
 ]);
 
 Route::post('days/update/{id}', [DayController::class, 'update']);
+
+Route::resource('type_seats', TypeSeatController::class);
+

@@ -169,6 +169,7 @@
     <div class="rightbar-overlay"></div>
 
     @include('admin.layouts.partials.script')
+    
     @yield('script')
 </body>
 

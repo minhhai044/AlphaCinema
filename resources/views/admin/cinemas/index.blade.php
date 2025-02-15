@@ -129,6 +129,17 @@
                                                             Delete
                                                         </button>
                                                     </form>
+
+                                                    <button @method('DELETE') href="{{ route('admin.cinemas.show', $cinema) }}" class="dropdown-item edit-list" data-edit-id="{{ $cinema->id }}">
+                                                        <i class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
+                                                        Show
+                                                    </button>
+                                                </li>
+                                                <li>
+                                                    {{-- <button class="dropdown-item remove-list" data-remove-id="{{ $cinema->id }}">
+                                                        <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
+                                                        Delete
+                                                    </button> --}}
                                                 </li>
                                             </ul>
                                         </div>
