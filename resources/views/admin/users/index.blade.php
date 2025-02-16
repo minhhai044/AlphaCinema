@@ -73,8 +73,7 @@
                         </div>
                         <div class="col-sm-auto">
                             <div class="mb-4">
-                                <a href="{{ route('admin.users.create') }}"
-                                    class="btn btn-light waves-effect waves-light">
+                                <a href="{{ route('admin.users.create') }}" class="btn btn-light waves-effect waves-light">
                                     <i class="bx bx-plus me-1"></i>
                                     Add user
                                 </a>
@@ -157,7 +156,11 @@
                                                 {{ $user->gender == 0 ? 'Nam' : 'Nữ' }}
                                             </td>
                                             <td>
-                                                {{ $user->type_user == 0 ? 'Khách' : 'Admin' }}
+                                                @if ($user->roles->isNotEmpty())
+                                                    @foreach ($user->roles as $role)
+                                                        <span class="badge bg-primary">{{ $role->name }}</span>
+                                                    @endforeach
+                                                @endif
                                             </td>
                                             <td>
                                                 <div class="dropdown">

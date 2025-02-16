@@ -15,7 +15,7 @@ class UserRepository extends BaseRepository
 
     public function getPaginateUserRepository($perPage = 10, string $latest = 'id')
     {
-        return $this->model->latest($latest)->paginate($perPage);
+        return $this->model->where('type_user', 1)->with('cinema')->latest($latest)->paginate($perPage);
     }
 
     public function findByIdUserRepository($id)
