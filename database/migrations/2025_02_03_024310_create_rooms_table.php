@@ -22,7 +22,8 @@ return new class extends Migration
             $table->foreignIdFor(Type_room::class)->constrained();
             $table->foreignIdFor(Seat_template::class)->constrained();
             $table->string('name')->unique();
-            $table->json('seat_structures');
+            $table->json('seat_structure');
+            $table->text('description')->nullable();
             $table->boolean('is_active')->default(0)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
             $table->boolean('is_publish')->default(0)->comment("0 : Ẩn , 1 : Hiện");
             $table->timestamps();

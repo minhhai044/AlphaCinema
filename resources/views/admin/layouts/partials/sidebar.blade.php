@@ -255,7 +255,13 @@
             <li>
                 <a href="{{route('admin.index.seat_templates')}}">
                     <i data-feather="box"></i>
-                    <span data-key="t-rooms">Seat Templates</span>
+                    <span data-key="t-rooms">Quản lý mẫu ghế</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{route('admin.showtimes.index')}}">
+                    <i data-feather="box"></i>
+                    <span data-key="t-rooms">Quản lý xuất chiếu</span>
                 </a>
             </li>
             <li class="menu-title mt-2" data-key="t-components">Elements</li>

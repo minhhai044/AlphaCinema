@@ -63,11 +63,12 @@ class SeatTemplateRequest extends FormRequest
     public function messages()
     {
         return [
-            'name.required' => 'Vui lòng nhập tên mẫu ghế',
-            'matrix.required' => 'Vui lòng chọn ma trận ghế',
-            'row_regular.required' => 'Vui lòng nhập ghế thuờng',
-            'row_vip.required' => 'Vui lòng nhập ghế vip',
-            'row_double.required' => 'Vui lòng nhập ghế đôi',
+            'name.required' => 'Vui lòng nhập tên !!!',
+            'name.unique' => 'Tên đã tồn tại !!!',
+            'matrix.required' => 'Vui lòng chọn ma trận ghế !!!',
+            'row_regular.required' => 'Vui lòng nhập ghế thuờng !!!',
+            'row_vip.required' => 'Vui lòng nhập ghế vip !!!',
+            'row_double.required' => 'Vui lòng nhập ghế đôi !!!',
         ];
     }
 }
