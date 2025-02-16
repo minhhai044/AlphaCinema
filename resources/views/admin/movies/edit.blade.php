@@ -5,8 +5,7 @@
 
         <h1 class="card-title">Sửa phim: {{ $movie->name }}</h1>
         <div class="col-12">
-            <form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data"
-                class="custom-validation">
+            <<form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="row">
@@ -91,6 +90,14 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Thời lượng phim</label>
+                                            <input type="text" name="trailer_url"
+                                                value="{{ old('trailer_url', $movie->trailer_url) }}" class="form-control">
+                                            @error('trailer_url')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
 
                                         <div class="mb-3">
                                             <label class="form-label">Thời lượng phim</label>
@@ -100,6 +107,7 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+
 
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu</label>
@@ -213,7 +221,7 @@
 
                 </div>
 
-            </form>
+                </form>
         </div>
     </div>
     <!-- end select2 -->

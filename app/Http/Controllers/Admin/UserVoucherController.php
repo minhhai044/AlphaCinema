@@ -54,6 +54,7 @@ class UserVoucherController extends Controller
 
 
     public function store(UserVoucherRequest $request)
+<<<<<<< HEAD
     {
         try {
             $data = $request->validated();
@@ -92,6 +93,46 @@ class UserVoucherController extends Controller
     }
 
 
+=======
+{
+    try {
+        $data = $request->validated();
+
+        // Kiểm tra nếu có nhiều người dùng được chọn
+        if (!empty($data['user_ids']) && is_array($data['user_ids'])) {
+            $insertData = [];
+
+            foreach ($data['user_ids'] as $userId) {
+                if (!User_voucher::where('user_id', $userId)
+                    ->where('voucher_id', $data['voucher_id'])
+                    ->exists()) {
+                    
+                    $insertData[] = [
+                        'user_id' => $userId,
+                        'voucher_id' => $data['voucher_id'],
+                        'usage_count' => $data['usage_count'] ?? 0,
+                        'created_at' => now(),
+                        'updated_at' => now(),
+                    ];
+                }
+            }
+
+            if (!empty($insertData)) {
+                User_voucher::insert($insertData);
+                return redirect()->route('admin.user-vouchers.index')->with('success', 'Thêm mới User Voucher thành công!');
+            } else {
+                return redirect()->back()->with('error', 'Tất cả người dùng đã nhận voucher này.');
+            }
+        }
+
+        return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một người dùng.');
+    } catch (\Throwable $th) {
+        return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
+    }
+}
+
+    
+>>>>>>> huypqph45595
 
 
     /**

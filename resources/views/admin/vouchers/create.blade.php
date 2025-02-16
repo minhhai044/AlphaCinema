@@ -66,9 +66,8 @@
                                     <span class="required">*</span> Giảm giá (VNĐ)
                                 </label>
                                 <input type="text" id="formatted_discount" class="form-control {{ $errors->has('discount') ? 'is-invalid' : (old('discount') ? 'is-valid' : '') }}" placeholder="Nhập số tiền giảm giá" value="{{ old('discount') }}">
-                                
-                                <input type="hidden" name="discount" id="discount_hidden" value="{{ old('discount') }}">
 
+                                <input type="hidden" name="discount" id="discount_hidden" value="{{ old('discount') }}">
                                 <div class="{{ $errors->has('discount') ? 'invalid-feedback' : 'valid-feedback' }}">
                                     @if ($errors->has('discount'))
                                         {{ $errors->first('discount') }}
@@ -124,9 +123,9 @@
                                 <label for="limit_by_user" class="form-label">
                                     <span class="required">*</span> Giới hạn sử dụng
                                 </label>
-                                <input type="number" name="limit_by_user" id="limit_by_user" 
-                                class="form-control {{ $errors->has('limit_by_user') ? 'is-invalid' : (old('limit_by_user') ? 'is-valid' : '') }}" 
-                                       value="{{ old('limit_by_user', 1) }}" 
+                                <input type="number" name="limit_by_user" id="limit_by_user"
+                                class="form-control {{ $errors->has('limit_by_user') ? 'is-invalid' : (old('limit_by_user') ? 'is-valid' : '') }}"
+                                       value="{{ old('limit_by_user', 1) }}"
                                        placeholder="Nhập giới hạn sử dụng">
                                        <div class="{{ $errors->has('limit_by_user') ? 'invalid-feedback' : 'valid-feedback' }}">
                                         @if ($errors->has('limit_by_user'))
@@ -135,7 +134,7 @@
                                     </div>
                             </div>
                         </div>
-                        
+
 
                         <div class="col-lg-12">
                             <div class="mb-3">
@@ -201,7 +200,6 @@
         </div>
     </div>
 </form>
-
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {

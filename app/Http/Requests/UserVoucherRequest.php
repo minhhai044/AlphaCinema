@@ -26,6 +26,20 @@ class UserVoucherRequest extends FormRequest
         }
 
         return [];
+        // if ($this->isMethod('post')) {
+        //     return $this->rulesForCreate();
+        // } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
+        //     return $this->rulesForUpdate();
+        // }
+
+        // return [];
+
+        return [
+            'user_ids' => 'required|array',
+            'user_ids.*' => 'exists:users,id',
+            'voucher_id' => 'required|exists:vouchers,id',
+            'usage_count' => 'nullable|integer|min:0',
+        ];
     }
 
     /**
@@ -36,6 +50,7 @@ class UserVoucherRequest extends FormRequest
         return [
             'user_ids' => 'required|array',
             'user_ids.*' => 'exists:users,id',
+            'user_id' => 'required|exists:users,id',
             'voucher_id' => 'required|exists:vouchers,id',
             'usage_count' => 'nullable|integer|min:0',
         ];

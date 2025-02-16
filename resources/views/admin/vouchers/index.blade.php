@@ -177,7 +177,6 @@
 
                                                     <td>
                                                         {{ number_format($voucher->discount )}} VNĐ
-
                                                     </td>
                                                     <td>
                                                         {{ $voucher->quantity }}

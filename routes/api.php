@@ -40,3 +40,15 @@ Route::delete('{id}/deletecinemas',[CinemaController::class,'delete']);
 //     Route::put('/{id}', [MovieController::class, 'update']);
 //     Route::delete('/{id}', [MovieController::class, 'destroy']);
 // });
+
+// Route::prefix('movies')->group(function () {
+//     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
+//     Route::get('/{movie}', [MovieController::class, 'show'])->name('api.movies.show');
+//     Route::post('/', [MovieController::class, 'store'])->name('api.movies.store');
+//     Route::put('/{movie}', [MovieController::class, 'update'])->name('api.movies.update');
+//     Route::delete('/{movie}', [MovieController::class, 'delete'])->name('api.movies.delete');
+// });
+
+Route::prefix('movies')->group(function () {
+    Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
+});
