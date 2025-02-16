@@ -188,16 +188,6 @@
                         </div>
                     </div>
 
-                    <div class="card-footer">
-                        <button type="submit" class="btn btn-primary">
-                            Cập nhật
-                            <i class="bx bx-chevron-right ms-1"></i>
-                        </button>
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-danger">
-                            Hủy
-                            <i class="bx bx-chevron-right ms-1"></i>
-                        </a>
-                    </div>
                 </div>
             </div>
 
@@ -237,12 +227,12 @@
                                     <div id="image-container" class=" position-relative">
                                         @if ($user->avatar && Storage::exists($user->avatar))
                                             <img id="image-preview" src="{{ Storage::url($user->avatar) }}"
-                                                 alt="Preview" class="img-fluid mb-2"
-                                                 style="max-width: 100px; max-height: 100px;">
+                                                alt="Preview" class="img-fluid rounded avatar-xl mb-2"
+                                                style="max-width: 100%; max-height: 100%;">
                                         @endif
                                         <!-- Icon thùng rác ở góc phải -->
                                         <button type="button" id="delete-image"
-                                                class="btn btn-danger position-absolute top-0 end-0 p-1">
+                                            class="btn btn-danger position-absolute top-0 end-0 p-1">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
                                     </div>
@@ -253,9 +243,26 @@
                 </div>
             </div>
 
+            <div class="col-lg-12">
+
+                <div class="card-footer">
+                    <button type="submit" class="btn btn-primary">
+                        Cập nhật
+                        <i class="bx bx-chevron-right ms-1"></i>
+                    </button>
+                    <a href="{{ route('admin.users.index') }}" class="btn btn-danger">
+                        Hủy
+                        <i class="bx bx-chevron-right ms-1"></i>
+                    </a>
+                </div>
+            </div>
 
         </div>
     </form>
+
+@endsection
+
+@section('script')
 
     <script>
         // Function to display selected image
@@ -298,6 +305,4 @@
             });
         });
     </script>
-
-
 @endsection

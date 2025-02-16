@@ -27,7 +27,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
 
-
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
 
@@ -35,4 +34,44 @@
 
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+
+
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+<style>
+    /* Mặc định */
+    .select2-container--default .select2-selection--single {
+        background-color: #f8f9fa;
+        /* Màu nền nhẹ */
+        border: 1px solid #ced4da;
+        /* Viền mặc định */
+        border-radius: 4px;
+        height: 38px;
+        padding: 5px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    /* Khi hover */
+    .select2-container--default .select2-selection--single:hover {
+        border-color: #A8ABDF;
+        /* Viền tím xanh nhạt */
+    }
+
+    /* Khi focus vào */
+    .select2-container--default.select2-container--focus .select2-selection--single {
+        border-color: #A8ABDF !important;
+        /* Viền tím xanh nhạt */
+        outline: none;
+        box-shadow: 0 0 5px rgba(168, 171, 223, 0.6);
+        /* Hiệu ứng bóng */
+    }
+
+    /* Định dạng ô tìm kiếm trong Select2 */
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 1px solid #A8ABDF !important;
+        /* Viền ô search */
+        border-radius: 4px;
+        padding: 5px;
+    }
+</style>
 

@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Models\Cinema;
 use App\Models\User;
 use App\Repositories\Modules\UserRepository;
 use App\Services\UserService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
 {
@@ -26,21 +28,31 @@ class UserController extends Controller
 
     public function index()
     {
-        $users = User::orderByDesc('id')->get();
-
-        return view(self::PATH_VIEW . __FUNCTION__, compact('users'));
+        // $users = User::orderByDesc('id')->get();
+        $users = User::where('type_user', 1)->with('cinema')->get();
+        $roles = Role::all();
+        return view(self::PATH_VIEW . __FUNCTION__, compact('users', 'roles'));
     }
 
     public function create()
     {
-        return view(self::PATH_VIEW . __FUNCTION__);
+        $typeAdmin = User::TYPE_ADMIN;
+        $roles = Role::all();
+
+        $cinemas = Cinema::where('is_active', '1')->first('branch_id')->get();
+        return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas']));
     }
 
     public function store(UserRequest $userRequest)
     {
         $data = $userRequest->validated();
+        $data['type_user'] = 1;
 
-        $this->userService->storeUser($data);
+        $user =  $this->userService->storeUser($data);
+
+        if ($userRequest->has('role_id')) {
+            $user->assignRole($userRequest->role_id);
+        }
 
         return redirect()->route('admin.users.index')->with('success', 'Thêm người dùng thành công!');
     }

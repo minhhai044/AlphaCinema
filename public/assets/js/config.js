@@ -63,3 +63,5 @@ const showAlertConfirm = (callback) => {
 const showToastr = (icon = "success", message = null, title = null) => {
   toastr[icon](message, title);
 };
+
+

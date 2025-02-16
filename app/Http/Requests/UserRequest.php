@@ -39,7 +39,7 @@ class UserRequest extends FormRequest
             'phone'     => 'required|regex:/^\+?[0-9]{10,15}$/|unique:users,phone',  // Kiểm tra số điện thoại duy nhất
             'email'     => 'required|email|unique:users,email',  // Kiểm tra email duy nhất
             'password'  => 'required|string|min:8|confirmed',
-            'address'   => 'required|string|max:255',
+            'address'   => 'nullable|string|max:255',
             'gender'    => 'nullable',
             'birthday'  => 'nullable|date',
             'total_amount' => 'nullable|numeric',  // Nếu cần kiểu dữ liệu số cho 'total_amount'
