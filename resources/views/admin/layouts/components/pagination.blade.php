@@ -1,6 +1,6 @@
 <div class="col-sm-12 col-md-7">
     <div class="al-table-info" id="customerList-table_info" role="status" aria-live="polite">
-        Showing {{ $paginator->firstItem() }} to {{ $paginator->lastItem() }} of {{ $paginator->total() }} entries
+        Hiển thị từ {{ $paginator->firstItem() }} đến {{ $paginator->lastItem() }} trong tổng số {{ $paginator->total() }} mục
     </div>
 </div>
 <div class="col-sm-12 col-md-5">

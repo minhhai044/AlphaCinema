@@ -1,10 +1,10 @@
 <?php
-use App\Http\Controllers\Admin\CinemaController;
-use App\Http\Controllers\Admin\DashBoardController;
-use App\Http\Controllers\Admin\RankController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\FoodController;
+use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\ComboController;
+use App\Http\Controllers\Admin\CinemaController;
+use App\Http\Controllers\Admin\DashBoardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -30,8 +30,6 @@ Route::group([
     // Danh sách món ăn
     Route::get('/', [FoodController::class, 'index'])->name('index');
 
-
-
     // Hiển thị form tạo món ăn mới
     Route::get('create', [FoodController::class, 'create'])->name('create');
 
@@ -44,8 +42,8 @@ Route::group([
     // Cập nhật món ăn
     Route::put('{food}', [FoodController::class, 'update'])->name('update');
 
-    // Xóa mềm món ăn (soft delete)
-    Route::delete('{food}', [FoodController::class, 'solfDestroy'])->name('solfDestroy');
+    // // Xóa mềm món ăn (soft delete)
+    // Route::delete('{food}', [FoodController::class, 'solfDestroy'])->name('solfDestroy');
 
     // Xóa vĩnh viễn món ăn
     Route::delete('{food}/forceDestroy', [FoodController::class, 'forceDestroy'])->name('forceDestroy');
@@ -90,3 +88,5 @@ Route::group([
     // Hiển thị chi tiết  phải khai báo cuối cùng trong route
     Route::get('{combo}', [ComboController::class, 'show'])->name('show');
 });
+
+Route::post('/foods/change-active', [FoodController::class, 'changeActive'])->name('admin.foods.change-active');

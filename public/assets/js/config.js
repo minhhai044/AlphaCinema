@@ -21,7 +21,7 @@ toastr.options = {
 /**
  * Hiển thị alert, có những type success, error, info, warning, question
  *
- * @param {string} icon     Biểu tượng của alert
+ * @param {string}      icon     Biểu tượng của alert
  * @param {string}      message  Mô tả của alert
  * @param {string}      title    Tiêu đều của alert
  */

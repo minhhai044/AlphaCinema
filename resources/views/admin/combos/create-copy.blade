@@ -1,37 +1,27 @@
 @extends('admin.layouts.master')
 @section('title', 'Quản lý Combo')
 
-@section('style')
-    <style>
-        .required {
-            color: red;
-            font-style: italic !important;
-        }
-    </style>
-@endsection
-
 @section('content')
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Cập nhật Combo</h4>
-
+                <h4 class="mb-sm-0 font-size-18">Thêm mới Combo</h4>
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item">
                             <a href="{{ route('admin.combos.index') }}">Combo</a>
                         </li>
-                        <li class="breadcrumb-item active">Cập nhật Combo: {{ $combo->name }}</li>
+                        <li class="breadcrumb-item active">Thêm mới Combo</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
     <!-- end page title -->
-    <form action="{{ route('admin.combos.update', $combo->id) }}" method="POST" enctype="multipart/form-data">
+
+    <form action="{{ route('admin.combos.store') }}" method="POST" enctype="multipart/form-data" id="comboForm">
         @csrf
-        @method('PUT')
         <div class="row">
             <div class="col-lg-9">
                 <div class="card">
@@ -45,43 +35,7 @@
                             </div>
                             <div id="food_list" class="col-md-12">
                                 <!-- Các phần tử food sẽ được thêm vào đây -->
-                                @foreach ($combo->comboFood as $item)
-                                    <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded"
-                                        id="${id}_item">
-                                        <div class="col-md-6">
-                                            <label for="${id}_select" class="form-label">Đồ ăn</label>
-                                            <select name="combo_food[]" id="${id}_select" class="form-control food-select">
-                                                @foreach ($food as $itemId => $itemName)
-                                                    <option value="{{ $itemId }}" @selected($item->food_id == $itemId)>{{ $itemName }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <span class="text-danger" id="${id}_food_error"></span>
-                                        </div>
-
-                                        <div class="col-md-3 mx-4">
-                                            <label for="${id}" class="form-label align-items-center">Số lượng</label>
-                                            <div class="d-flex flex-wrap align-items-start">
-                                                <div
-                                                    class="input-step step-primary full-width p-1 d-flex align-items-center border rounded">
-                                                    <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
-                                                    <input type="number" name="combo_quantity[]"
-                                                        class="food-quantity text-center border-0 mx-2" id="${id}" value="0"
-                                                        min="0" max="10" readonly>
-                                                    <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
-                                                </div>
-                                            </div>
-                                            <span class="text-danger" id="${id}_quantity_error"></span>
-                                        </div>
-
-                                        <div class="col-md-2 text-center">
-                                            <button type="button" class="btn btn-danger remove-food">
-                                                <span class="bx bx-trash"></span>
-                                            </button>
-                                        </div>
-                                    </div>
-
-                                @endforeach
+                                <p></p>
                             </div>
 
 
@@ -90,7 +44,7 @@
                                     <label for="name" class="form-label"><span class="text-danger">*</span>Tên Combo</label>
                                     <input type="text" name="name" id="name"
                                         class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
-                                        data-="" value="{{ $combo->name }}" placeholder="Nhập tên món ăn">
+                                        data-="" value="{{ old('name') }}" placeholder="Nhập tên món ăn">
 
                                     <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
                                         @if ($errors->has('name'))
@@ -102,18 +56,18 @@
 
                             <div class="col-md-4 mb-3">
                                 <label for="price" class="form-label ">Giá gốc (VNĐ)</label>
-                                <input type="number" class="form-control" id="price" name="price"
-                                    value="{{ $combo->price }}" readonly>
+                                <input type="number" class="form-control bg-light" id="price" name="price" readonly>
                             </div>
+
 
                             <div class="col-md-4 mb-3">
                                 <div class="mb-3">
                                     <label for="price_sale" class="form-label"><span class="text-danger">*</span>Giá
-                                        Sale(VNĐ)</label>
+                                        bán (VNĐ)</label>
                                     <input type="text"
                                         class="form-control {{ $errors->has('price_sale') ? 'is-invalid' : (old('price_sale') ? 'is-valid' : '') }}"
-                                        name="price_sale" id="price_sale" placeholder="Nhập giá tiền"
-                                        value="{{ formatPrice($combo->price_sale) }}">
+                                        name="price_sale" id="price_sale" placeholder="Nhập giá tiền" value="{{ old('price_sale') }}"
+                                        >
                                     <div class="{{ $errors->has('price_sale') ? 'invalid-feedback' : 'valid-feedback' }}">
                                         @if ($errors->has('price_sale'))
                                             {{ $errors->first('price_sale') }}
@@ -129,7 +83,7 @@
                             </label>
                             <textarea
                                 class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}"
-                                name="description" rows="6" placeholder="Nhập mô tả">{{ $combo->description }}</textarea>
+                                name="description" rows="6" placeholder="Nhập mô tả">{{ old('description') }}</textarea>
 
                             <div class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
                                 @if ($errors->has('description'))
@@ -141,7 +95,7 @@
 
                     <div class="card-footer">
                         <button class="btn btn-primary">
-                            Cập nhật
+                            Thêm mới
                             <i class="bx bx-chevron-right ms-1"></i>
                         </button>
                         <a href="{{ route('admin.combos.index') }}" class="btn btn-danger" type="button"
@@ -166,8 +120,8 @@
                                                 Hoạt động:
                                             </label>
                                             <div class="square-switch">
-                                                <input type="checkbox" @checked($combo->is_active) id="square-switch3"
-                                                    switch="bool" value="1" name="is_active">
+                                                <input type="checkbox" id="square-switch3" switch="bool" value="1"
+                                                    name="is_active">
                                                 <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
                                             </div>
                                         </div>
@@ -191,12 +145,6 @@
                                             {{ $errors->first('img_thumbnail') }}
                                         @endif
                                     </div>
-                                    @if ($combo->img_thumbnail)
-                                        <div class="mt-3 text-center">
-                                            <img src="{{ Storage::url($combo->img_thumbnail) }}" alt="Thumbnail"
-                                                class="img-fluid" width="200">
-                                        </div>
-                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -206,57 +154,77 @@
             </div>
         </div>
     </form>
-
 @endsection
+
+@section('script-libs')
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"
+    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+@endsection
+
 @section('script')
     <script>
-        // Hàm thêm món ăn vào danh sách
         $(document).ready(function () {
-            let foodCount = $('.food-item').length;
-            const minFoodItems = 2;
-            const maxFoodItems = 8;
-            const foodList = $('#food_list');
+            let foodCount = 0; // Biến đếm số lượng món ăn được thêm vào
+            const minFoodItems = 2; // Số lượng món ăn tối thiểu
+            const maxFoodItems = 8; // Số lượng món ăn tối đa
+
+            const foodList = $('#food_list'); // Lấy danh sách chứa các món ăn
+
+            // Danh sách giá món ăn (Thay thế bằng dữ liệu thực tế)
             const foodPrices = @json($foodPrice->pluck('price', 'id'));
 
+            // Hàm thêm món ăn vào danh sách
             function addFoodItem() {
                 if (foodCount >= maxFoodItems) {
-                    showAlert('warning', 'Chỉ được thêm tối đa 8 món ăn', 'AlphaCinema thông báo');
+                    showAlert('warning ', 'Chỉ được thêm tối đa 8 món ăn' , 'AlphaCinema thông báo');
+                    // alert('Chỉ được thêm tối đa ' + maxFoodItems + ' món ăn.');
                     return;
                 }
-                const id = 'food_' + Date.now();
+                const id = 'food_' + Date.now(); // Tạo ID duy nhất cho món ăn
                 const foodItemHtml = `
-                    <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded" id="${id}_item">
-                        <div class="col-md-6">
-                            <label for="${id}_select" class="form-label">Đồ ăn</label>
-                            <select name="combo_food[]" id="${id}_select" class="form-control food-select">
-                                <option value="">--Chọn đồ ăn--</option>
-                                @foreach ($food as $itemId => $itemName)
-                                    <option value="{{ $itemId }}">{{ $itemName }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-3 mx-4">
-                            <label for="${id}" class="form-label">Số lượng</label>
-                            <div class="d-flex flex-wrap align-items-start">
-                                <div class="input-step step-primary full-width p-1 d-flex align-items-center border rounded">
-                                    <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
-                                    <input type="number" name="combo_quantity[]" class="food-quantity text-center border-0 mx-2" id="${id}" value="1" min="1" max="10" readonly>
-                                    <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
+                        <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded" id="${id}_item">
+                            <div class="col-md-6">
+                                <label for="${id}_select" class="form-label">Đồ ăn</label>
+                                <select name="combo_food[]" id="${id}_select" class="form-control food-select">
+                                    <option value="">--Chọn đồ ăn--</option>
+                                    @foreach ($food as $itemId => $itemName)
+                                        <option value="{{ $itemId }}">{{ $itemName }}</option>
+                                    @endforeach
+                                </select>
+                                <span class="text-danger" id="${id}_food_error"></span>
+                            </div>
+
+                            <div class="col-md-3 mx-4">
+                                <label for="${id}" class="form-label align-items-center">Số lượng</label>
+                                <div class="d-flex flex-wrap align-items-start">
+                                    <div class="input-step step-primary full-width p-1 d-flex align-items-center border rounded">
+                                        <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
+                                        <input type="number" name="combo_quantity[]" class="food-quantity text-center border-0 mx-2"
+                                            id="${id}" value="0" min="0" max="10" readonly>
+                                        <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
+                                    </div>
+                                </div>
+                                <span class="text-danger" id="${id}_quantity_error"></span>
+                            </div>
+
+                            <div class="col-md-2 text-center">
+                                <button type="button" class="btn btn-danger remove-food">
+                                    <span class="bx bx-trash"></span>
+                                </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="col-md-2 text-center">
-                            <button type="button" class="btn btn-danger remove-food"><span class="bx bx-trash"></span></button>
-                        </div>
-                    </div>
-                `;
-                foodList.append(foodItemHtml);
-                foodCount++;
-                updateEventHandlers();
-                updateSelectOptions();
-                updateTotalPrice();
+                    `;
+
+                foodList.append(foodItemHtml); // Thêm HTML vào danh sách món ăn
+                foodCount++; // Tăng số lượng món ăn hiện tại
+
+                updateEventHandlers(); // Cập nhật lại sự kiện cho các phần tử mới
+                updateSelectOptions(); // Cập nhật danh sách món ăn đã chọn
+                updateTotalPrice(); // Cập nhật tổng giá tiền
             }
 
+            // Hàm xóa món ăn khỏi danh sách
             function removeFoodItem(foodItem) {
                 if (foodCount > minFoodItems) {
                     foodItem.remove();
@@ -264,10 +232,11 @@
                     updateTotalPrice();
                     updateSelectOptions();
                 } else {
-                    showAlert('warning', 'Cần ít nhất 2 món ăn để tạo Combo!', 'AlphaCinema thông báo');
+                    showAlert('warning ', 'Cần ít nhất 2 món ăn để tạo Combo!' , 'AlphaCinema thông báo');
                 }
             }
 
+            // Hàm cập nhật danh sách các món ăn đã chọn để tránh trùng lặp
             function updateSelectOptions() {
                 const selectedValues = $('.food-select').map(function () {
                     return $(this).val();
@@ -281,11 +250,13 @@
                 });
             }
 
+            // Hàm tính tổng giá tiền dựa trên số lượng và giá của món ăn
             function updateTotalPrice() {
                 let totalPrice = 0;
                 $('.food-item').each(function () {
                     const foodId = $(this).find('.food-select').val();
                     const quantity = parseInt($(this).find('.food-quantity').val()) || 0;
+
                     if (foodId && quantity > 0) {
                         totalPrice += (foodPrices[foodId] || 0) * quantity;
                     }
@@ -293,45 +264,131 @@
                 $('#price').val(totalPrice);
             }
 
+            // Cập nhật sự kiện click khi nhấn nút tăng/giảm số lượng
             function updateEventHandlers() {
+                // Xử lý tăng số lượng
                 $('.pluss').off('click').on('click', function () {
-                    let $quantityInput = $(this).siblings('.food-quantity');
+                    let $quantityInput = $(this).siblings('.food-quantity'); // Lấy input số lượng
                     let currentValue = parseInt($quantityInput.val());
-                    if (currentValue < 10) {
+                    if (currentValue < 10) { // Giới hạn số lượng tối đa là 10
                         $quantityInput.val(currentValue + 1);
                         updateTotalPrice();
                     }
                 });
 
+                // Xử lý giảm số lượng
                 $('.minuss').off('click').on('click', function () {
-                    let $quantityInput = $(this).siblings('.food-quantity');
+                    let $quantityInput = $(this).siblings('.food-quantity'); // Lấy input số lượng
                     let currentValue = parseInt($quantityInput.val());
-                    if (currentValue > 1) {
+                    if (currentValue > 0) {
                         $quantityInput.val(currentValue - 1);
                         updateTotalPrice();
                     }
                 });
 
+                // Xử lý chọn món ăn
                 $('.food-select').off('change').on('change', updateSelectOptions);
+
+                // Xóa món ăn
                 $('.remove-food').off('click').on('click', function () {
                     removeFoodItem($(this).closest('.food-item'));
                 });
             }
 
+            // Gán sự kiện cho nút "Thêm món ăn"
             $('#add').on('click', addFoodItem);
 
-            $('#comboForm').on('submit', function (e) {
-                let isValid = true;
-                $('.food-select').each(function () {
-                    if ($(this).val() === '') {
-                        isValid = false;
-                        showAlert('warning', 'Vui lòng chọn đồ ăn trước khi cập nhật!', 'AlphaCinema thông báo');
-                    }
-                });
-                if (!isValid) e.preventDefault();
+            // Thêm sẵn 2 món ăn vào danh sách khi tải trang
+            for (let i = 0; i < minFoodItems; i++) {
+                addFoodItem();
+            }
+
+        $('#comboForm').on('submit', function (e) {
+         let isValid = true; // Biến đánh dấu trạng thái hợp lệ của form
+
+        // Kiểm tra mỗi phần tử food-select trong food list
+        $('.food-select').each(function () {
+            const foodItemError = $(this).siblings('.food-item').find('.text-danger');
+            if ($(this).val() === '') {
+                isValid = false; // Nếu chưa chọn món ăn, đặt trạng thái không hợp lệ
+                foodItemError.text('Vui lòng chọn món ăn'); // Hiển thị lỗi
+            } else {
+                foodItemError.text(''); // Xóa lỗi nếu đã chọn món ăn
+            }
             });
 
-            updateEventHandlers();
+            // Nếu form không hợp lệ, ngừng submit
+            if (!isValid) {
+                e.preventDefault();
+                showAlert('warning', 'Vui lòng chọn đồ ăn trước khi thêm mới!', 'Bạn chưa chọn đồ ăn');
+            }
+        });
+
+    // Thêm sự kiện cho nút "Thêm món ăn" để đảm bảo sau khi thêm mới, món ăn phải được chọn
+    $('#add').on('click', function () {
+        // Xử lý thêm món ăn như đã thực hiện trước đó
+        addFoodItem();
+
+        // Validate ngay sau khi thêm món ăn
+        $('.food-select').trigger('change');
+    });
+
+        // Validate các trường input
+        $("#name").on("input", function () {
+            let value = $(this).val().trim();
+            if (value.length === 0) {
+                $(this).removeClass("is-valid").addClass("is-invalid");
+                $(this).next(".invalid-feedback").text("Tên combo không được để trống").show();
+            } else {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+                $(this).next(".invalid-feedback").hide();
+            }
+        });
+
+        $("#price_sale").on("input", function () {
+            let value = $(this).val().trim();
+            if (!/^\d+(\.\d{1,2})?$/.test(value)) { // Chỉ chấp nhận số nguyên hoặc số thập phân
+                $(this).removeClass("is-valid").addClass("is-invalid");
+                $(this).next(".invalid-feedback").text("Giá bán Combo phải là số hợp lệ").show();
+            } else {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+                $(this).next(".invalid-feedback").hide();
+            }
+        });
+
+        $("textarea[name='description']").on("input", function () {
+            let value = $(this).val().trim();
+            if (value.length === 0) {
+                $(this).removeClass("is-valid").addClass("is-invalid");
+                $(this).next(".invalid-feedback").text("Mô tả không được để trống").show();
+            } else {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+                $(this).next(".invalid-feedback").hide();
+            }
+        });
+
+        $("#img_thumbnail").on("change", function () {
+            let value = $(this).val().trim();
+            if (value.length === 0) {
+                $(this).removeClass("is-valid").addClass("is-invalid");
+                $(this).next(".invalid-feedback").text("Vui lòng chọn ảnh").show();
+            } else {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+                $(this).next(".invalid-feedback").hide();
+            }
+        });
+
+        // Validate giá gốc và giá bán Combo khi thay đổi
+        $("#price, #price_sale").on("input", function () {
+            let value = $(this).val();
+            if (isNaN(value) || value <= 0) {
+                $(this).removeClass("is-valid").addClass("is-invalid");
+                $(this).next(".invalid-feedback").text("Vui lòng nhập giá hợp lệ").show();
+            } else {
+                $(this).removeClass("is-invalid").addClass("is-valid");
+                $(this).next(".invalid-feedback").hide();
+            }
+        });
         });
     </script>
 @endsection

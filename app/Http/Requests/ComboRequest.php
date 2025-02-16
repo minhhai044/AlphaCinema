@@ -46,10 +46,12 @@ class ComboRequest extends FormRequest
                 Rule::unique(Combo::class),
             ],
             'img_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'required|numeric|min:0|max:99999999',
+            'price' => 'nullable|numeric|min:0|max:99999999',
             'price_sale' => 'nullable|numeric|min:0|max:99999999|lt:price', // Giá sale phải nhỏ hơn giá gốc
             'description' => 'required|string',
             'is_active' => 'nullable|boolean',
+            'combo_food.*' => 'required|exists:food,id',  // Đảm bảo đồ ăn được chọn có tồn tại trong DB
+            'combo_quantity.*' => 'required|integer|min:1|max:9'
         ];
     }
 
@@ -67,6 +69,8 @@ class ComboRequest extends FormRequest
             'price_sale' => 'nullable|numeric|min:0|max:99999999|lt:price',
             'description' => 'required|string',
             'is_active' => 'nullable|boolean',
+            'combo_food.*' => 'required|exists:food,id',  // Đảm bảo đồ ăn được chọn có tồn tại trong DB
+            'combo_quantity.*' => 'required|integer|min:1|max:9'
         ];
     }
 
@@ -114,12 +118,18 @@ class ComboRequest extends FormRequest
             'price_sale.numeric' => 'Giá Combo Sale phải là một số.',
             'price_sale.min' => 'Giá Combo không được nhỏ hơn 0.',
             'price_sale.max' => 'Giá Combo không được vượt quá 99,999,999.',
-            'price_sale.lt' => 'Giá giảm giá Combo phải nhỏ hơn giá Combo.',
+            'price_sale.lt' => 'Giá bán phải nhỏ hơn giá gốc.',
 
             'description.required' => 'Vui lòng nhập mô tả Combo.',
             'description.string' => 'Mô tả Combo phải là chuỗi ký tự.',
 
             'is_active.boolean' => 'Trạng thái kích hoạt phải là hoạt động hoặc không hoạt động.',
+
+
+            'combo_food.*.exists' => 'Món ăn bạn chọn không tồn tại.',
+            'combo_quantity.*.integer' => 'Số lượng phải là số nguyên.',
+            'combo_quantity.*.min' => 'Số lượng phải lớn hơn 0.',
+            'combo_quantity.*.max' => 'Số lượng phải nhỏ hơn 9.',
         ];
     }
 }

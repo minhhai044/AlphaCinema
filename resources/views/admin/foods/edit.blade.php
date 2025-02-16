@@ -35,72 +35,69 @@
             <div class="col-lg-9">
                 <div class="card">
                     <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-6">
-                                <!-- Tên món ăn -->
-                                <div class="mb-3">
-                                    <label for="name" class="form-label">Tên món ăn</label>
-                                    <input type="text" name="name" id="name"
-                                           class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
-                                           value="{{ old('name', $data->name) }}" placeholder="Nhập tên món ăn">
-                                    <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                        @if ($errors->has('name'))
-                                        {{ $errors->first('name') }}
-                                        @endif
+                        <div class="col-md-12">
+                            <div class="row p-3">
+                                <div class="col-md-4 mb-3">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label"><span class="text-danger">*</span>Tên món
+                                            ăn</label>
+                                        <input type="text" name="name" id="name"
+                                            class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
+                                            value="{{ $data->name }}" placeholder="Nhập tên món ăn">
+
+                                        <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            @if ($errors->has('name'))
+                                                {{ $errors->first('name') }}
+                                            @endif
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="type">Loại đồ ăn </label>
+                                            <select name="type" id="type" class="form-select">
+                                                @foreach ($typeFoods as $typeFood)
+                                                    <option value="{{ $typeFood }}" @selected($data->type== $typeFood))>
+                                                        {{ $typeFood }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
+                                <div class="col-md-4 mb-3">
+                                    <div>
+                                        <div class="mb-3">
+                                            <label class="form-label" for="price"><span class="text-danger">*</span> Giá
+                                                tiền</label>
+                                            <input type="text"
+                                                class="form-control {{ $errors->has('price') ? 'is-invalid' : (old('price') ? 'is-valid' : '') }}"
+                                                name="price" id="price" placeholder="Nhập giá tiền"
+                                                value="{{ $data->price }}">
 
-                                <!-- Hình ảnh -->
-                                <div class="mb-3">
-                                    <label for="img_thumbnail" class="form-label">Chọn hình ảnh</label>
-                                    <input
-                                        class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}"
-                                        type="file" id="img_thumbnail" name="img_thumbnail">
-                                    <div
-                                        class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                        @if ($errors->has('img_thumbnail'))
-                                        {{ $errors->first('img_thumbnail') }}
-                                        @endif
+                                            <div
+                                                class="{{ $errors->has('price') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('price'))
+                                                    {{ $errors->first('price') }}
+                                                @endif
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
-
-                                <!-- Hiển thị ảnh hiện tại nếu có -->
-                                @if($data->img_thumbnail)
-                                <div class="mb-3">
-                                    <label class="form-label">Ảnh hiện tại</label>
-                                    <img src="{{ Storage::url($data->img_thumbnail) }}" alt="Thumbnail"
-                                         class="img-fluid" width="200">
-                                </div>
-                                @endif
-                            </div>
-
-                            <div class="col-lg-6">
-                                <!-- Giá tiền -->
-                                <div class="mb-3">
-                                    <label for="price" class="form-label">Giá tiền (VNĐ)</label>
-                                    <input type="text"
-                                           class="form-control {{ $errors->has('price') ? 'is-invalid' : (old('price') ? 'is-valid' : '') }}"
-                                           name="price" id="price" placeholder="Nhập giá tiền"
-                                           value="{{ number_format($data->price) }}">
-                                    <div class="{{ $errors->has('price') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                        @if ($errors->has('price'))
-                                        {{ $errors->first('price') }}
-                                        @endif
-                                    </div>
-                                </div>
-
-                                <!-- Mô tả -->
-                                <div class="mb-3">
-                                    <label for="food-description" class="form-label"><span class="required">*</span> Mô
-                                        tả</label>
+                                <div class="col-md-12 mb-3">
+                                    <label for="food-description" class="form-label">
+                                        <span class="required">*</span> Mô tả
+                                    </label>
                                     <textarea
                                         class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}"
                                         name="description" rows="6"
-                                        placeholder="Nhập mô tả">{{ old('description', $data->description) }}</textarea>
-                                    <div
-                                        class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                        placeholder="Nhập mô tả">{{ $data->description }}</textarea>
+
+                                    <div class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
                                         @if ($errors->has('description'))
-                                        {{ $errors->first('description') }}
+                                            {{ $errors->first('description') }}
                                         @endif
                                     </div>
                                 </div>
@@ -113,34 +110,65 @@
                             <i class="bx bx-chevron-right ms-1"></i>
                         </button>
                         <a href="{{ route('admin.foods.index') }}" class="btn btn-danger" type="button"
-                           onclick="return confirm('Bạn có chắc chắn hủy bỏ thao tác? Mọi thay đổi sẽ không được lưu')">
+                            onclick="return confirm('Bạn có chắc chắn hủy bỏ thao tác? Mọi thay đổi sẽ không được lưu')">
                             Hủy bỏ
                             <i class="bx bx-chevron-right ms-1"></i>
                         </a>
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-3">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <div class="mb-3 d-flex gap-2">
-                                    <label for="food-description" class="form-label">
-                                        <span class="required">*</span>
-                                        Hoạt động:
-                                    </label>
-                                    <div class="square-switch">
-                                        <input type="checkbox" @checked($data->is_active) id="square-switch3" switch="bool" value="1"
-                                               name="is_active">
-                                        <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-2">
+                                            <label for="food-description" class="form-label">
+                                                <span class="required">*</span>
+                                                Hoạt động:
+                                            </label>
+                                            <div class="square-switch">
+                                                <input type="checkbox" @checked($data->is_active) id="square-switch3" switch="bool" value="1"
+                                                       name="is_active">
+                                                <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                            </div>
+                                        </div>
                                     </div>
+
                                 </div>
                             </div>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <label for="img_thumbnail" class="form-label"> <span class="text-danger">*</span>Hình
+                                        ảnh</label>
+                                    <input type="file" name="img_thumbnail" id="img_thumbnail" class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}">
+                                    <div
+                                        class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                        @if ($errors->has('img_thumbnail'))
+                                            {{ $errors->first('img_thumbnail') }}
+                                        @endif
+                                    </div>
+                                    @if($data->img_thumbnail)
+                                    <div class="mt-3 text-center">
+                                        <img src="{{ Storage::url($data->img_thumbnail) }}" alt="Thumbnail"
+                                             class="img-fluid" width="200">
+                                    </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </form>
 

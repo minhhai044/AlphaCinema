@@ -2,16 +2,19 @@
 
 namespace App\Services;
 
-use DB;
-use Storage;
+use App\Models\Food;
 use App\Models\Combo;
-
+use App\Models\ComboFood;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ComboService
 {
+
+
     public function getAllComboService($perPage = 10, string $latest = 'id')
     {
-        return Combo::orderByDesc('updated_at')->orderByDesc('created_at')->paginate($perPage);
+        return Combo::query()->with('comboFood')->latest($latest)->paginate($perPage);
     }
 
     public function getComboByIdService($id)
@@ -21,14 +24,47 @@ class ComboService
 
     public function createComboService($data)
     {
+        // dd($data);
         return DB::transaction(function () use ($data) {
             if (isset($data['img_thumbnail'])) {
                 $data['img_thumbnail'] = Storage::put('comboImages', $data['img_thumbnail']);
             }
-
+            // Thiết lập trạng thái mặc định cho is_active nếu không có
             $data['is_active'] ??= 0;
 
-            return Combo::create($data);
+            // Tính tổng combo
+
+            $foodIds = $data['combo_food'];            // Lấy ID combo
+            $quantities = $data['combo_quantity'];      // Lấy số lượng combo
+            $totalPrice = 0;
+
+            foreach ($foodIds as $key => $foodId) {
+                // Lấy thông tin món ăn từ bảng food
+                $food = Food::findOrFail($foodId); // lấy món ăn
+                $quantity = $quantities[$key];         // lấy số lượng của món ăn tương ứng
+
+                // Tính giá: giá món ăn * số lượng
+                $totalPrice += $food->price * $quantity;
+            }
+            // Lưu combo mới với tổng giá đã tính
+            $combo = Combo::create([
+                'name' => $data['name'],
+                'price_sale' => $data['price_sale'],
+                'price' => $totalPrice,  // Lưu tổng giá của combo
+                'description' => $data['description'],
+                'img_thumbnail' => $data['img_thumbnail'] ?? null,
+                'is_active' => $data['is_active'],
+            ]);
+
+            // Lưu các món ăn vào combo
+            foreach ($foodIds as $key => $foodId) {
+                ComboFood::create([
+                    'combo_id' => $combo->id,
+                    'food_id' => $foodId,
+                    'quantity' => $quantities[$key],
+                ]);
+            }
+            return  $combo;
         });
     }
 
