@@ -1,47 +1,52 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Timepicker Example</title>
-  
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  
-  <!-- Bootstrap Timepicker CSS -->
- 
-  
-  <!-- Material Design Icons -->
-  <link rel="stylesheet" href="https://cdn.materialdesignicons.com/5.4.55/css/materialdesignicons.min.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
 </head>
+
 <body>
-  <div class="container mt-5">
-    <div class="input-group" id="timepicker-input-group2">
-      <input id="timepicker2" type="text" class="form-control" data-provide="timepicker">
-      <span class="input-group-text">
-        <i class="mdi mdi-clock-outline"></i>
-      </span>
-    </div>
-  </div>
-  
-  <!-- jQuery -->
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  
-  <!-- Bootstrap Bundle JS -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  
-  <!-- Bootstrap Timepicker JS -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-timepicker/0.5.2/js/bootstrap-timepicker.min.js"></script>
-  
   <script>
-    $(document).ready(function(){
-      // Khởi tạo timepicker cho input với id="timepicker2"
-      $('#timepicker2').timepicker({
-        showMeridian: false,  // Sử dụng định dạng 24 giờ (nếu plugin hỗ trợ)
-        minuteStep: 5,        // Bước nhảy của phút
-        defaultTime: false    // Không set thời gian mặc định
-      });
-    });
+    function insertTimeSlot(timeslots, newSlot) {
+      // Sắp xếp các khoảng thời gian theo thời gian bắt đầu
+      timeslots.sort((a, b) => a.start - b.start);
+
+      // Duyệt qua tất cả các khoảng thời gian hiện có để chèn mới
+      for (let i = 0; i < timeslots.length; i++) {
+        // Kiểm tra nếu khoảng thời gian mới không chồng lấp
+        if (newSlot.start >= timeslots[i].end) {
+          // Nếu không chồng lấp, chèn nó vào đúng vị trí
+          timeslots.splice(i + 1, 0, newSlot);
+          return timeslots;
+        }
+        // Nếu khoảng thời gian mới kết thúc trước khi bắt đầu khoảng thời gian hiện tại
+        if (newSlot.end <= timeslots[i].start) {
+          // Nếu không chồng lấp, chèn nó vào vị trí đầu tiên
+          timeslots.splice(i, 0, newSlot);
+          return timeslots;
+        }
+      }
+      // Nếu không có vị trí thích hợp, thêm vào cuối
+      timeslots.push(newSlot);
+      return timeslots;
+    }
+
+    // Dữ liệu khoảng thời gian đã có
+    let timeslots = [
+      { start: 2, end: 3.5 },  // 2:00 - 3:30
+      { start: 5, end: 6.5 },  // 5:00 - 6:30
+    ];
+
+    // Khoảng thời gian mới cần chèn
+    let newSlot = { start: 4, end: 4.75 };  // 4:00 - 4:45
+
+    // Gọi hàm chèn và in ra kết quả
+    let updatedTimeslots = insertTimeSlot(timeslots, newSlot);
+
+    console.log(updatedTimeslots);
   </script>
 </body>
+
 </html>

@@ -23,8 +23,12 @@ class ShowtimeController extends Controller
     public function create()
     {
 
-        [$branchs, $branchsRelation, $rooms, $movies,$days,$slug,$versions] = $this->showtimeService->createService();
+        [$branchs, $branchsRelation, $rooms, $movies,$days,$slug,$roomsRelation] = $this->showtimeService->createService();
         // dd($branchs, $branchsRelation, $rooms, $movies,$days);
-        return view(self::PATH_VIEW . __FUNCTION__,compact('branchs','branchsRelation','rooms','movies','days','slug','versions'));
+        return view(self::PATH_VIEW . __FUNCTION__,compact('branchs','branchsRelation','rooms','movies','days','slug','roomsRelation'));
+    }
+    public function store(Request $request) {
+        
+        dd($request->all());
     }
 }

@@ -42,8 +42,4 @@ class Showtime extends Model
         return $formattedPart1 . '-' . $formattedPart2;
     }
 
-    public const VERSIONS = [
-        ['id' => 1, 'name' => 'Lòng tiếng'],
-        ['id' => 2, 'name' => 'Phụ đề']
-    ];
 }
