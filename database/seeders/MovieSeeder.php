@@ -12,7 +12,7 @@ class MovieSeeder extends Seeder
     {
         $faker = Faker::create();
 
-        for ($i = 0; $i < 20; $i++) {
+        for ($i = 0; $i < 10; $i++) {
             Movie::create([
                 'name' => $faker->sentence(3),
                 'slug' => $faker->slug,
@@ -20,7 +20,7 @@ class MovieSeeder extends Seeder
                 'img_thumbnail' => $faker->imageUrl(300, 400, 'movies', true),
                 'description' => $faker->paragraph,
                 'director' => $faker->name,
-                'duration' => rand(90, 180) . ' phút',
+                'duration' => rand(90, 180) ,
                 'rating' => $faker->randomFloat(1, 5, 10),
                 'release_date' => $faker->date(),
                 'end_date' => $faker->date(),

@@ -90,6 +90,14 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">Thời lượng phim</label>
+                                            <input type="text" name="trailer_url"
+                                                value="{{ old('trailer_url', $movie->trailer_url) }}" class="form-control">
+                                            @error('trailer_url')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
 
                                         <div class="mb-3">
                                             <label class="form-label">Thời lượng phim</label>
@@ -99,6 +107,7 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+
 
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu</label>

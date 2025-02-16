@@ -7,6 +7,7 @@ use App\Http\Requests\MovieRequest;
 use App\Models\Movie;
 use App\Services\MovieService;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
 class MovieController extends Controller
@@ -20,21 +21,28 @@ class MovieController extends Controller
         $this->movieService = $movieService;
     }
 
-
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $movies = $this->movieService->getAllMovies();
-            return $this->successResponse(
-                $movies,
-                'Movies retrieved successfully!',
-                Response::HTTP_OK
-            );
+            $query = Movie::query();
+
+            // Lọc theo tên phim
+            if ($request->has('search') && !empty($request->search['value'])) {
+                $searchValue = $request->search['value'];
+                $query->where('name', 'LIKE', "%$searchValue%");
+            }
+
+            // Lấy số lượng bản ghi theo yêu cầu DataTable
+            $movies = $query->paginate($request->length ?? 10);
+
+            return response()->json([
+                "draw" => intval($request->draw),
+                "recordsTotal" => $movies->total(),
+                "recordsFiltered" => $movies->total(),
+                "data" => $movies->items(),
+            ]);
         } catch (\Exception $e) {
-            return $this->errorResponse(
-                $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -92,7 +100,7 @@ class MovieController extends Controller
         }
     }
 
-    
+
     public function delete(string $id)
     {
         try {

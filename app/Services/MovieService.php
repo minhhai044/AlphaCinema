@@ -8,11 +8,26 @@ use Illuminate\Support\Facades\DB;
 
 class MovieService
 {
+    // public function getAllMovies()
+    // {
+    //     return Movie::latest()->paginate(5);
+    // }
     public function getAllMovies()
     {
-        return Movie::latest()->paginate(5);
-    }
+        $query = Movie::query();
 
+        $totalRecords = $query->count(); // Tổng số phim
+        $filteredRecords = $totalRecords; // Số phim sau khi lọc
+
+        $movies = $query->paginate(request()->get('length', 30)); // Lấy số lượng từ request
+
+        return [
+            "draw" => request()->get('draw', 0),
+            "recordsTotal" => $totalRecords,
+            "recordsFiltered" => $filteredRecords,
+            "data" => $movies->items()
+        ];
+    }
     public function getMovieById($id)
     {
         return Movie::findOrFail($id);

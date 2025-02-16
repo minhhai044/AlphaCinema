@@ -43,9 +43,10 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Đường dẫn phim</label>
-                                            <input type="text" name="slug"
-                                                class="form-control {{ $errors->has('slug') ? 'is-invalid' : (old('slug') ? 'is-valid' : '') }}"value="{{ old('slug') }}">
+                                            <label class="form-label">Slug</label>
+                                            <input type="text" id="slug" name="slug"
+                                                class="form-control {{ $errors->has('slug') ? 'is-invalid' : (old('slug') ? 'is-valid' : '') }}"
+                                                value="{{ old('slug') }}" readonly>
                                             <div class="{{ $errors->has('slug') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('slug'))
                                                     {{ $errors->first('slug') }}
@@ -156,12 +157,12 @@
                                             <div class="input-daterange input-group" id="datepicker6"
                                                 data-date-format="dd M, yyyy" data-date-autoclose="true"
                                                 data-provide="datepicker" data-date-container="#datepicker6">
-                                                <input type="datetime-local"
+                                                <input type="date"
                                                     class="form-control {{ $errors->has('release_date') ? 'is-invalid' : (old('release_date') ? 'is-valid' : '') }}"
                                                     value="{{ old('release_date') }}" name="release_date"
                                                     placeholder="Start Date" />
 
-                                                <input type="datetime-local"
+                                                <input type="date"
                                                     class="form-control {{ $errors->has('end_date') ? 'is-invalid' : (old('end_date') ? 'is-valid' : '') }}"
                                                     value="{{ old('end_date') }}" name="end_date"
                                                     placeholder="End Date" />
@@ -240,8 +241,7 @@
                                     </div>
                                     <span>Hot</span>
                                 </div>
-                                <input type="hidden" name="is_hot" id="is_hot"
-                                    value="{{ old('is_hot', 1) }}">
+                                <input type="hidden" name="is_hot" id="is_hot" value="{{ old('is_hot', 1) }}">
 
                                 <!-- Special -->
                                 <div class="d-flex align-items-center gap-2 mb-2">
@@ -298,6 +298,32 @@
                         hiddenInput.value = this.checked ? '1' : '0';
                     }
                 });
+            });
+
+            function generateUUID() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0,
+                        v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+            function convertToSlug(text) {
+                return text.toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu tiếng Việt
+                    .replace(/[^a-z0-9 -]/g, '') // Xóa ký tự đặc biệt
+                    .replace(/\s+/g, '-') // Thay khoảng trắng bằng -
+                    .replace(/-+/g, '-'); // Xóa dấu gạch ngang dư thừa
+            }
+
+            document.getElementById('name').addEventListener('input', function() {
+                let name = this.value.trim();
+                if (name !== '') {
+                    let slug = convertToSlug(name) + '-' + generateUUID().substring(0, 8); // Chỉ lấy 8 ký tự UUID
+                    document.getElementById('slug').value = slug;
+                } else {
+                    document.getElementById('slug').value = '';
+                }
             });
         </script>
 
