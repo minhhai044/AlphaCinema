@@ -1,10 +1,10 @@
 <?php
 
-use App\Models\Combo;
 use App\Models\Food;
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use App\Models\Combo;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -14,10 +14,11 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('combo_food', function (Blueprint $table) {
-           $table->foreignIdFor(Combo::class)->constrained();
-           $table->foreignIdFor(Food::class)->constrained();
-           $table->bigInteger('quantity')->default(0);
-           $table->primary(['combo_id', 'food_id']);
+            $table->id();
+            $table->foreignIdFor(Combo::class)->constrained();
+            $table->foreignIdFor(Food::class)->constrained();
+            $table->unsignedInteger('quantity')->default(0);
+            $table->timestamps();
         });
     }
 

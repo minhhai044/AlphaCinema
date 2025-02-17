@@ -17,4 +17,13 @@ class Combo extends Model
         'description',
         'is_active',
     ];
+
+    public function comboFood(){
+        return $this->hasMany(ComboFood::class);
+    }
+
+    public function food(){
+        return $this->belongsToMany(Food::class, 'combo_food')->withPivot('quantity');
+    }
+
 }

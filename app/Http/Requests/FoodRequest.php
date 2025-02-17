@@ -4,10 +4,12 @@ namespace App\Http\Requests;
 
 use App\Models\Food;
 use Illuminate\Validation\Rule;
+use App\Traits\ApiRequestJsonTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class FoodRequest extends FormRequest
 {
+    use ApiRequestJsonTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -43,9 +45,10 @@ class FoodRequest extends FormRequest
                 'max:255',
                 Rule::unique(Food::class),
             ],
+            'type' => 'required',
             'img_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|numeric|min:0|max:99999999',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
         ];
     }
@@ -57,11 +60,12 @@ class FoodRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                Rule::unique(Food::class)->ignore($this->route('food')), // Bỏ qua ID hiện tại
+                Rule::unique(Food::class)->ignore($this->route('food') ), // Bỏ qua ID hiện tại
             ],
+            'type' => 'nullable',
             'img_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|numeric|min:0|max:99999999',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
         ];
     }
@@ -102,7 +106,7 @@ class FoodRequest extends FormRequest
 
             'description.required' => 'Vui lòng nhập mô tả món ăn.',
             'description.string' => 'Mô tả món ăn phải là chuỗi ký tự.',
-
+            'type.required' => 'Vui lòng chọn loại đồ ăn.',
             'is_active.boolean' => 'Trạng thái kích hoạt phải là hoạt động hoặc không hoạt động.',
         ];
     }

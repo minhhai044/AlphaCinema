@@ -181,7 +181,7 @@
     {{-- model create --}}
     <div class="modal fade" id="createFoodModal" tabindex="-1" aria-labelledby="createFoodModalLabel"
         aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="createFoodModalLabel">
@@ -265,7 +265,7 @@
     </div>
     <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel" aria-hidden="true">
         <input type="hidden" id="updateFoodId" name="food_id">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="updateFoodModalLabel">
