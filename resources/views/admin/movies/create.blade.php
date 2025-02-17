@@ -169,18 +169,7 @@
 
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Phụ phí</label>
-                                            <input type="number" name="surcharge"
-                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
-                                                value="{{ old('surcharge') }}">
-                                            <div
-                                                class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('surcharge'))
-                                                    {{ $errors->first('surcharge') }}
-                                                @endif
-                                            </div>
-                                        </div>
+
                                         <div class="mb-3">
                                             <label class="form-label">Phiên bản phim</label>
                                             <input type="checkbox" name="movie_genres[]" value="2D"> 2D
@@ -190,6 +179,18 @@
                                                 class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('movie_genres'))
                                                     {{ $errors->first('movie_genres') }}
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="mb-3" id="surcharge_container" style="display: none;">
+                                            <label class="form-label">Phụ phí</label>
+                                            <input type="number" name="surcharge"
+                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
+                                                value="{{ old('surcharge') }}">
+                                            <div
+                                                class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('surcharge'))
+                                                    {{ $errors->first('surcharge') }}
                                                 @endif
                                             </div>
                                         </div>
@@ -260,7 +261,7 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="square-switch">
                                         <input type="checkbox" id="square-switch_publish" switch="bool"
-                                            {{ old('is_special', 1) ? 'checked' : '' }} />
+                                            {{ old('is_publish', 1) ? 'checked' : '' }} />
                                         <label for="square-switch_publish" data-on-label="Yes"
                                             data-off-label="No"></label>
                                     </div>
@@ -287,17 +288,34 @@
         </div>
         <!-- end select2 -->
         <script>
+            // Cập nhật giá trị của hidden input cho các checkbox
             document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function(checkbox) {
                 checkbox.addEventListener('change', function() {
-                    var label = this.nextElementSibling;
-                    label.textContent = this.checked ? label.getAttribute('data-on-label') : label.getAttribute(
-                        'data-off-label');
-
                     var hiddenInput = document.getElementById(this.id.replace('square-switch', 'is'));
                     if (hiddenInput) {
                         hiddenInput.value = this.checked ? '1' : '0';
                     }
                 });
+            });
+
+            document.addEventListener('DOMContentLoaded', function() {
+                var publishCheckbox = document.getElementById('square-switch_special');
+                var surchargeContainer = document.getElementById('surcharge_container');
+
+                function toggleSurchargeInput() {
+                    console.log('toggleSurchargeInput triggered, publishCheckbox.checked:', publishCheckbox.checked);
+                    if (publishCheckbox.checked) {
+                        surchargeContainer.style.display = 'block';
+                    } else {
+                        surchargeContainer.style.display = 'none';
+                    }
+                }
+
+                // Gọi khi tải trang để đảm bảo trạng thái ban đầu đúng
+                toggleSurchargeInput();
+
+                // Lắng nghe sự kiện thay đổi của checkbox (dùng "change" để đảm bảo trạng thái cập nhật)
+                publishCheckbox.addEventListener('change', toggleSurchargeInput);
             });
 
             function generateUUID() {
