@@ -88,7 +88,13 @@ class ComboController extends Controller
     public function update(ComboRequest $comboRequest, string $id)
     {
         try {
+
             $data = $comboRequest->validated();
+            
+            if(empty($data['price_sale'])){
+                $data['price_sale'] = 0;
+            }
+            
             $this->comboService->updateComboService($id, $data);
 
             Toastr::success(null, 'Cập nhật đồ ăn thành công!'); // thông báo lỗi

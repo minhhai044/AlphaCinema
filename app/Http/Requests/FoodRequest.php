@@ -48,7 +48,7 @@ class FoodRequest extends FormRequest
             'type' => 'required',
             'img_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|numeric|min:0|max:99999999',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
         ];
     }
@@ -65,7 +65,7 @@ class FoodRequest extends FormRequest
             'type' => 'nullable',
             'img_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'required|numeric|min:0|max:99999999',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
         ];
     }

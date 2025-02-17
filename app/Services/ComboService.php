@@ -73,6 +73,7 @@ class ComboService
 
         return DB::transaction(function () use ($id, $data) {
             $combo = Combo::findOrFail($id);
+            // dd($data->toArray());
             if (isset($data['img_thumbnail'])) {
                 if (Storage::exists($combo->img_thumbnail)) {
                     Storage::delete($combo->img_thumbnail);
@@ -81,9 +82,40 @@ class ComboService
                 $data['img_thumbnail'] = Storage::put('comboImages', $data['img_thumbnail']);
             }
 
-            $combo->update($data);
+           // Tính toán lại tổng giá của combo
+        $foodIds = $data['combo_food'];           // Lấy ID combo
+        $quantities = $data['combo_quantity'];    // Lấy số lượng combo
+        $totalPrice = 0;
 
-            return $combo->update($data);
+        foreach ($foodIds as $key => $foodId) {
+            $food = Food::findOrFail($foodId);
+            $quantity = $quantities[$key];
+            $totalPrice += $food->price * $quantity;
+        }
+
+        // Cập nhật thông tin combo
+        $combo->update([
+            'name' => $data['name'],
+            'price_sale' => $data['price_sale'],
+            'price' => $totalPrice,  // Cập nhật tổng giá của combo
+            'description' => $data['description'],
+            'img_thumbnail' => $data['img_thumbnail'] ?? $combo->img_thumbnail,
+            'is_active' => $data['is_active'],
+        ]);
+
+        // Xóa tất cả món ăn cũ của combo để cập nhật lại
+        ComboFood::where('combo_id', $combo->id)->delete();
+
+        // Thêm món ăn mới vào combo
+        foreach ($foodIds as $key => $foodId) {
+            ComboFood::create([
+                'combo_id' => $combo->id,
+                'food_id' => $foodId,
+                'quantity' => $quantities[$key],
+            ]);
+        }
+
+        return $combo;
         });
     }
 

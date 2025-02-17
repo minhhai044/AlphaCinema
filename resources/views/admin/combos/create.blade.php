@@ -266,26 +266,49 @@
 
             // Cập nhật sự kiện click khi nhấn nút tăng/giảm số lượng
             function updateEventHandlers() {
-                // Xử lý tăng số lượng
-                $('.pluss').off('click').on('click', function () {
-                    let $quantityInput = $(this).siblings('.food-quantity'); // Lấy input số lượng
-                    let currentValue = parseInt($quantityInput.val());
-                    if (currentValue < 10) { // Giới hạn số lượng tối đa là 10
-                        $quantityInput.val(currentValue + 1);
-                        updateTotalPrice();
-                    }
-                });
+            // Xử lý tăng số lượng
+            $('.pluss').off('click').on('click', function () {
+                let $foodItem = $(this).closest('.food-item');
+                let $foodSelect = $foodItem.find('.food-select');
+                let $quantityInput = $foodItem.find('.food-quantity');
+                let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
 
-                // Xử lý giảm số lượng
-                $('.minuss').off('click').on('click', function () {
-                    let $quantityInput = $(this).siblings('.food-quantity'); // Lấy input số lượng
-                    let currentValue = parseInt($quantityInput.val());
-                    if (currentValue > 0) {
-                        $quantityInput.val(currentValue - 1);
-                        updateTotalPrice();
-                    }
-                });
+                if ($foodSelect.val() === '') {
+                    $errorSpan.text('Vui lòng chọn món ăn trước!');
+                    showAlert('warning', 'Vui lòng chọn món ăn trước khi tăng số lượng!', 'Thông báo');
+                    return;
+                } else {
+                    $errorSpan.text('');
+                }
 
+                let currentValue = parseInt($quantityInput.val());
+                if (currentValue < 10) {
+                    $quantityInput.val(currentValue + 1);
+                    updateTotalPrice();
+                }
+            });
+
+            // Xử lý giảm số lượng
+            $('.minuss').off('click').on('click', function () {
+                let $foodItem = $(this).closest('.food-item');
+                let $foodSelect = $foodItem.find('.food-select');
+                let $quantityInput = $foodItem.find('.food-quantity');
+                let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
+
+                if ($foodSelect.val() === '') {
+                    $errorSpan.text('Vui lòng chọn món ăn trước!');
+                    showAlert('warning', 'Vui lòng chọn món ăn trước khi giảm số lượng!', 'Thông báo');
+                    return;
+                } else {
+                    $errorSpan.text('');
+                }
+
+                let currentValue = parseInt($quantityInput.val());
+                if (currentValue > 0) {
+                    $quantityInput.val(currentValue - 1);
+                    updateTotalPrice();
+                }
+            });
                 // Xử lý chọn món ăn
                 $('.food-select').off('change').on('change', updateSelectOptions);
 
@@ -295,7 +318,7 @@
                 });
             }
 
-            // Gán sự kiện cho nút "Thêm món ăn"
+
             $('#add').on('click', addFoodItem);
 
             // Thêm sẵn 2 món ăn vào danh sách khi tải trang
@@ -303,35 +326,26 @@
                 addFoodItem();
             }
 
-        $('#comboForm').on('submit', function (e) {
-         let isValid = true; // Biến đánh dấu trạng thái hợp lệ của form
+            $('#comboForm').on('submit', function (e) {
+            let isValid = true; // Biến đánh dấu trạng thái hợp lệ của form
 
-        // Kiểm tra mỗi phần tử food-select trong food list
-        $('.food-select').each(function () {
-            const foodItemError = $(this).siblings('.food-item').find('.text-danger');
-            if ($(this).val() === '') {
-                isValid = false; // Nếu chưa chọn món ăn, đặt trạng thái không hợp lệ
-                foodItemError.text('Vui lòng chọn món ăn'); // Hiển thị lỗi
-            } else {
-                foodItemError.text(''); // Xóa lỗi nếu đã chọn món ăn
-            }
+           // Kiểm tra mỗi phần tử food-select trong food list
+            $('.food-select').each(function () {
+                const foodItemError = $(this).siblings('.food-item').find('.text-danger');
+                if ($(this).val() === '') {
+                    isValid = false; // Nếu chưa chọn món ăn, đặt trạng thái không hợp lệ
+                    foodItemError.text('Vui lòng chọn món ăn'); // Hiển thị lỗi
+                } else {
+                    foodItemError.text(''); // Xóa lỗi nếu đã chọn món ăn
+                }
+                });
+
+                // Nếu form không hợp lệ, ngừng submit
+                if (!isValid) {
+                    e.preventDefault();
+                    showAlert('warning', 'Vui lòng chọn đồ ăn trước khi thêm mới!', 'Bạn chưa chọn đồ ăn');
+                }
             });
-
-            // Nếu form không hợp lệ, ngừng submit
-            if (!isValid) {
-                e.preventDefault();
-                showAlert('warning', 'Vui lòng chọn đồ ăn trước khi thêm mới!', 'Bạn chưa chọn đồ ăn');
-            }
-        });
-
-    // Thêm sự kiện cho nút "Thêm món ăn" để đảm bảo sau khi thêm mới, món ăn phải được chọn
-    $('#add').on('click', function () {
-        // Xử lý thêm món ăn như đã thực hiện trước đó
-        addFoodItem();
-
-        // Validate ngay sau khi thêm món ăn
-        $('.food-select').trigger('change');
-    });
 
         // Validate các trường input
         $("#name").on("input", function () {

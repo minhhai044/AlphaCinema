@@ -48,7 +48,7 @@ class ComboRequest extends FormRequest
             'img_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'nullable|numeric|min:0|max:99999999',
             'price_sale' => 'nullable|numeric|min:0|max:99999999|lt:price', // Giá sale phải nhỏ hơn giá gốc
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'combo_food.*' => 'required|exists:food,id',  // Đảm bảo đồ ăn được chọn có tồn tại trong DB
             'combo_quantity.*' => 'required|integer|min:1|max:9'
@@ -67,7 +67,7 @@ class ComboRequest extends FormRequest
             'img_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
             'price' => 'nullable|numeric|min:0|max:99999999',
             'price_sale' => 'nullable|numeric|min:0|max:99999999|lt:price',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'combo_food.*' => 'required|exists:food,id',  // Đảm bảo đồ ăn được chọn có tồn tại trong DB
             'combo_quantity.*' => 'required|integer|min:1|max:9'

@@ -43,11 +43,16 @@ document.addEventListener("DOMContentLoaded", function () {
             },
             error: function (err) {
                 console.log(err);
-                showErrors(err.responseJSON.errors, "create");
+
+                // Kiểm tra xem 'err.responseJSON' và 'err.responseJSON.errors' có tồn tại không
+                if (err.responseJSON && err.responseJSON.errors) {
+                    showErrors(err.responseJSON.errors, "create");
+                } else {
+                    console.error("Không có lỗi phản hồi từ server");
+                }
             },
         });
-    };
-
+    }
     const showErrors = (errors, prefix) => {
         console.log(errors);
         // return;
@@ -94,7 +99,6 @@ document.addEventListener("DOMContentLoaded", function () {
 /**
  * Update
  */
-
 $(".openUpdateFoodModal").on("click", function () {
     const modal = $("#updateFoodModal");
 
