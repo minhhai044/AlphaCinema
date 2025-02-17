@@ -22,7 +22,7 @@
                                                 class="form-control" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Đường dẫn phim</label>
+                                            <label class="form-label">Slug</label>
                                             <input disabled type="text" name="slug" value="{{ $movie->slug }}"
                                                 class="form-control" required>
                                         </div>
@@ -66,6 +66,11 @@
                                                 class="form-control" required>
                                         </div>
                                         <div class="mb-3">
+                                            <label class="form-label">URL phim</label>
+                                            <input disabled type="text" name="trailer_url" value="{{ $movie->trailer_url }}"
+                                                class="form-control" required>
+                                        </div>
+                                        <div class="mb-3">
                                             <label class="form-label">Thời lượng phim</label>
                                             <input disabled type="txt"name="duration" value="{{ $movie->duration }}"
                                                 class="form-control">
@@ -75,12 +80,12 @@
                                             <div class="input-daterange input-group" id="datepicker6"
                                                 data-date-format="dd M, yyyy" data-date-autoclose="true"
                                                 data-provide="datepicker" data-date-container="#datepicker6">
-                                                <input disabled type="datetime-local" class="form-control"
+                                                <input disabled type="date" class="form-control"
                                                     name="release_date"
-                                                    value="{{ old('release_date', $movie->release_date ? date('Y-m-d\TH:i', strtotime($movie->release_date)) : '') }}">
+                                                    value="{{ old('release_date', $movie->release_date ? date('Y-m-d', strtotime($movie->release_date)) : '') }}">
 
-                                                <input disabled type="datetime-local" class="form-control" name="end_date"
-                                                    value="{{ old('end_date', $movie->end_date ? date('Y-m-d\TH:i', strtotime($movie->end_date)) : '') }}">
+                                                <input disabled type="date" class="form-control" name="end_date"
+                                                    value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}">
 
                                             </div>
                                         </div>
@@ -90,9 +95,21 @@
                                                 value="{{ $movie->surcharge }}" required>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim</label>
-                                            <input disabled type="text" name="movie_genres" class="form-control"
-                                                value="{{ $movie->movie_genres }}" required>
+                                            <label class="form-label">Thể loại phim</label>
+                                            @php
+                                                $selectedVersions = json_decode($movie->movie_genres, true) ?? [];
+                                            @endphp
+                                            <input type="checkbox" name="movie_genres[]" value="2D"
+                                                {{ in_array('2D', $selectedVersions) ? 'checked' : '' }}> 2D
+
+                                            <input type="checkbox" name="movie_genres[]" value="3D"
+                                                {{ in_array('3D', $selectedVersions) ? 'checked' : '' }}> 3D
+
+                                            <input type="checkbox" name="movie_genres[]" value="4D"
+                                                {{ in_array('4D', $selectedVersions) ? 'checked' : '' }}> 4D
+                                            @error('movie_genres')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Đánh giá</label>

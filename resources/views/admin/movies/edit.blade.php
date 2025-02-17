@@ -5,7 +5,7 @@
 
         <h1 class="card-title">Sửa phim: {{ $movie->name }}</h1>
         <div class="col-12">
-            <<form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data">
+            <form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
                 @method('PUT')
                 <div class="row">
@@ -112,13 +112,13 @@
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu</label>
                                             <div class="input-group">
-                                                <input type="datetime-local" class="form-control" name="release_date"
+                                                <input type="date" class="form-control" name="release_date"
                                                     value="{{ old('release_date', $movie->release_date ? date('Y-m-d\TH:i', strtotime($movie->release_date)) : '') }}">
                                                 @error('release_date')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
 
-                                                <input type="datetime-local" class="form-control" name="end_date"
+                                                <input type="date" class="form-control" name="end_date"
                                                     value="{{ old('end_date', $movie->end_date ? date('Y-m-d\TH:i', strtotime($movie->end_date)) : '') }}">
                                                 @error('end_date')
                                                     <div class="text-danger">{{ $message }}</div>

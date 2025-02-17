@@ -19,7 +19,7 @@ class MovieService
         $totalRecords = $query->count(); // Tổng số phim
         $filteredRecords = $totalRecords; // Số phim sau khi lọc
 
-        $movies = $query->paginate(request()->get('length', 30)); // Lấy số lượng từ request
+        $movies = $query->paginate(request()->get('length', 10)); // Lấy số lượng từ request
 
         return [
             "draw" => request()->get('draw', 0),
