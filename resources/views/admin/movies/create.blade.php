@@ -298,25 +298,29 @@
                 });
             });
 
-            document.addEventListener('DOMContentLoaded', function() {
-                var publishCheckbox = document.getElementById('square-switch_special');
-                var surchargeContainer = document.getElementById('surcharge_container');
+            document.addEventListener('DOMContentLoaded', function () {
+                    var publishCheckbox = document.getElementById('square-switch_special');
+                    var surchargeContainer = document.getElementById('surcharge_container');
+                    // Lấy thẻ input trong container "Phụ phí"
+                    var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
 
-                function toggleSurchargeInput() {
-                    console.log('toggleSurchargeInput triggered, publishCheckbox.checked:', publishCheckbox.checked);
-                    if (publishCheckbox.checked) {
-                        surchargeContainer.style.display = 'block';
-                    } else {
-                        surchargeContainer.style.display = 'none';
+                    function toggleSurchargeInput() {
+                        console.log('toggleSurchargeInput triggered, publishCheckbox.checked:', publishCheckbox.checked);
+                        if (publishCheckbox.checked) {
+                            surchargeContainer.style.display = 'block';
+                            surchargeInput.disabled = false; // Cho phép nhập liệu, gửi dữ liệu lên server
+                        } else {
+                            surchargeContainer.style.display = 'none';
+                            surchargeInput.disabled = true; // Vô hiệu hóa input, không gửi dữ liệu
+                        }
                     }
-                }
 
-                // Gọi khi tải trang để đảm bảo trạng thái ban đầu đúng
-                toggleSurchargeInput();
+                    // Gọi khi tải trang để đảm bảo trạng thái ban đầu đúng
+                    toggleSurchargeInput();
 
-                // Lắng nghe sự kiện thay đổi của checkbox (dùng "change" để đảm bảo trạng thái cập nhật)
-                publishCheckbox.addEventListener('change', toggleSurchargeInput);
-            });
+                    // Lắng nghe sự kiện thay đổi của checkbox (dùng "change" để đảm bảo trạng thái cập nhật)
+                    publishCheckbox.addEventListener('change', toggleSurchargeInput);
+                });
 
             function generateUUID() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
