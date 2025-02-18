@@ -20,53 +20,49 @@ class MovieController extends Controller
     {
         $this->movieService = $movieService;
     }
+
     public function index(Request $request)
     {
         try {
-            // Lấy tổng số bản ghi (không lọc)
+            // Tổng số bản ghi (không lọc)
             $totalRecords = Movie::count();
 
             // Tạo query gốc
             $query = Movie::query();
 
-            // Lọc theo tên phim từ form lọc (nếu có)
+            // Lọc theo tên phim
             if ($request->filled('name')) {
                 $query->where('name', 'LIKE', '%' . $request->name . '%');
             }
 
-            // Lọc theo phiên bản phim (movie_versions) nếu có
+            // Lọc theo movie_versions (dữ liệu JSON)
             if ($request->filled('movie_versions')) {
-                // Nếu cột movie_versions lưu dưới dạng JSON
-                $query->whereJsonContains('movie_versions', $request->movie_versions);
-                // Nếu không, có thể dùng:
-                // $query->where('movie_versions', 'LIKE', '%' . $request->movie_versions . '%');
+                $versions = is_array($request->movie_versions) ? $request->movie_versions : [$request->movie_versions];
+                foreach ($versions as $version) {
+                    $query->whereJsonContains('movie_versions', $version);
+                }
             }
 
-            // Lọc theo thể loại phim (movie_genres) nếu có
+            // Lọc theo movie_genres (dữ liệu JSON)
             if ($request->filled('movie_genres')) {
-                // Nếu cột movie_genres lưu dưới dạng JSON
-                $query->whereJsonContains('movie_genres', $request->movie_genres);
-                // Nếu không, có thể dùng:
-                // $query->where('movie_genres', 'LIKE', '%' . $request->movie_genres . '%');
+                $genres = is_array($request->movie_genres) ? $request->movie_genres : [$request->movie_genres];
+                foreach ($genres as $genre) {
+                    $query->whereJsonContains('movie_genres', $genre);
+                }
             }
 
-            // Nếu DataTables có truyền tham số tìm kiếm (mảng search)
+            // Tìm kiếm từ DataTables (nếu có)
             if ($request->has('search') && !empty($request->search['value'])) {
                 $searchValue = $request->search['value'];
-                $query->where(function ($q) use ($searchValue) {
-                    // Tìm kiếm theo tên phim (có thể bổ sung thêm các cột khác nếu cần)
-                    $q->orWhere('name', 'LIKE', "%{$searchValue}%");
-                });
+                $query->where('name', 'LIKE', "%{$searchValue}%");
             }
 
             // Số bản ghi sau khi lọc
             $filteredRecords = $query->count();
 
-            // Lấy tham số phân trang của DataTables
+            // Phân trang
             $length = $request->input('length', 10);
             $start = $request->input('start', 0);
-
-            // Lấy dữ liệu theo phân trang
             $movies = $query->skip($start)->take($length)->get();
 
             return response()->json([
@@ -79,42 +75,6 @@ class MovieController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
-
-    // public function index(Request $request)
-    // {
-    //     try {
-    //         $query = Movie::query();
-
-    //         // Lưu tổng số bản ghi không lọc
-    //         $totalRecords = $query->count();
-
-    //         // Lọc theo tên phim (nếu có)
-    //         if ($request->has('search') && !empty($request->search['value'])) {
-    //             $searchValue = $request->search['value'];
-    //             $query->where('name', 'LIKE', "%$searchValue%");
-    //         }
-
-    //         // Số bản ghi sau khi lọc
-    //         $filteredRecords = $query->count();
-
-    //         // Lấy tham số start và length từ request
-    //         $length = $request->input('length', 10);
-    //         $start = $request->input('start', 0);
-
-    //         // Lấy dữ liệu theo trang
-    //         $movies = $query->skip($start)->take($length)->get();
-
-    //         return response()->json([
-    //             "draw" => intval($request->draw),
-    //             "recordsTotal" => $totalRecords,   // Tổng số bản ghi (không lọc)
-    //             "recordsFiltered" => $filteredRecords, // Tổng số bản ghi sau khi lọc
-    //             "data" => $movies,
-    //         ]);
-    //     } catch (\Exception $e) {
-    //         return response()->json(['error' => $e->getMessage()], Response::HTTP_INTERNAL_SERVER_ERROR);
-    //     }
-    // }
-
 
     public function show(string $id)
     {

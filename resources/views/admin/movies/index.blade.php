@@ -33,7 +33,7 @@
                         </div>
                     </div>
 
-                    <!-- Form lọc (ẩn/hiện) -->
+                    <!-- Form lọc  -->
                     <div class="collapse" id="searchForm">
                         <div class="card card-body mb-3">
                             <form id="filterForm">
@@ -48,9 +48,10 @@
                                         <label class="form-label">Phiên bản</label>
                                         <select name="movie_versions" class="form-control">
                                             <option value="">-- Chọn phiên bản --</option>
-                                            <option value="Action">Action</option>
-                                            <option value="Horror">Horror</option>
-                                            <option value="Comedy">Comedy</option>
+
+                                            <option value="2D">2D</option>
+                                            <option value="3D">3D</option>
+                                            <option value="4D">4D</option>
                                         </select>
                                     </div>
                                     <!-- Thể loại -->
@@ -58,9 +59,9 @@
                                         <label class="form-label">Thể loại</label>
                                         <select name="movie_genres" class="form-control">
                                             <option value="">-- Chọn thể loại --</option>
-                                            <option value="2D">2D</option>
-                                            <option value="3D">3D</option>
-                                            <option value="4D">4D</option>
+                                            <option value="Action">Action</option>
+                                            <option value="Horror">Horror</option>
+                                            <option value="Comedy">Comedy</option>
                                         </select>
                                     </div>
                                 </div>
@@ -102,7 +103,7 @@
         type="text/css" />
 
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Khởi tạo DataTable
             var table = $('#movieTable').DataTable({
                 processing: true,
@@ -110,122 +111,125 @@
                 ajax: {
                     url: "{{ route('api.movies.index') }}",
                     type: "GET",
-                    data: function(d) {
+                    data: function (d) {
                         d.name = $('input[name="name"]').val();
                         d.movie_versions = $('select[name="movie_versions"]').val();
                         d.movie_genres = $('select[name="movie_genres"]').val();
+                        console.log(d);
+
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error("Lỗi API:", xhr.responseText);
                     }
+
                 },
                 columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'img_thumbnail',
-                        render: function(data) {
-                            return `<img src="/storage/${data}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
-                        }
-                    },
-                    {
-                        data: 'movie_genres',
-                        render: function(data) {
-                            try {
-                                let genres = JSON.parse(data);
-                                return Array.isArray(genres) ? genres.join(', ') : data;
-                            } catch (e) {
-                                return data;
-                            }
-                        }
-                    },
-                    {
-                        data: 'movie_versions',
-                        render: function(data) {
-                            try {
-                                let versions = JSON.parse(data);
-                                return Array.isArray(versions) ? versions.join(', ') : data;
-                            } catch (e) {
-                                return data;
-                            }
-                        }
-                    },
-                    {
-                        data: 'is_active',
-                        render: function(data) {
-                            return data ?
-                                '<span class="badge bg-success">Active</span>' :
-                                '<span class="badge bg-danger">Inactive</span>';
-                        }
-                    },
-                    {
-                        data: 'is_hot',
-                        render: function(data) {
-                            return data ?
-                                '<span class="badge bg-success">Hot</span>' :
-                                '<span class="badge bg-danger">No Hot</span>';
-                        }
-                    },
-                    {
-                        data: 'duration',
-                        name: 'duration'
-                    },
-                    {
-                        data: 'id',
-                        render: function(data) {
-                            return `
-                                <div class="dropdown text-center">
-                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                        ...
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="/admin/movies/${data}" class="dropdown-item text-info">
-                                                <i class="fas fa-eye"></i> Xem
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="/admin/movies/${data}/edit" class="dropdown-item text-warning">
-                                                <i class="fas fa-edit"></i> Sửa
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <form action="/admin/movies/${data}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger"
-                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                                    <i class="fas fa-trash-alt"></i> Xóa
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>
-                            `;
-                        },
-                        orderable: false,
-                        searchable: false
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'name',
+                    name: 'name'
+                },
+                {
+                    data: 'img_thumbnail',
+                    render: function (data) {
+                        return `<img src="/storage/${data}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
                     }
+                },
+                {
+                    data: 'movie_genres',
+                    render: function (data) {
+                        try {
+                            let genres = JSON.parse(data);
+                            return Array.isArray(genres) ? genres.join(', ') : data;
+                        } catch (e) {
+                            return data;
+                        }
+                    }
+                },
+                {
+                    data: 'movie_versions',
+                    render: function (data) {
+                        try {
+                            let versions = JSON.parse(data);
+                            return Array.isArray(versions) ? versions.join(', ') : data;
+                        } catch (e) {
+                            return data;
+                        }
+                    }
+                },
+                {
+                    data: 'is_active',
+                    render: function (data) {
+                        return data ?
+                            '<span class="badge bg-success">Active</span>' :
+                            '<span class="badge bg-danger">Inactive</span>';
+                    }
+                },
+                {
+                    data: 'is_hot',
+                    render: function (data) {
+                        return data ?
+                            '<span class="badge bg-success">Hot</span>' :
+                            '<span class="badge bg-danger">No Hot</span>';
+                    }
+                },
+                {
+                    data: 'duration',
+                    name: 'duration'
+                },
+                {
+                    data: 'id',
+                    render: function (data) {
+                        return `
+                                    <div class="dropdown text-center">
+                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                            ...
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <a href="/admin/movies/${data}" class="dropdown-item text-info">
+                                                    <i class="fas fa-eye"></i> Xem
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="/admin/movies/${data}/edit" class="dropdown-item text-warning">
+                                                    <i class="fas fa-edit"></i> Sửa
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <form action="/admin/movies/${data}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger"
+                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                                        <i class="fas fa-trash-alt"></i> Xóa
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                `;
+                    },
+                    orderable: false,
+                    searchable: false
+                }
                 ],
                 pageLength: 5,
                 lengthChange: false
             });
 
-            $('#pageLength').on('change', function() {
+            $('#pageLength').on('change', function () {
                 table.page.len($(this).val()).draw();
             });
-            $('#filterForm').on('submit', function(e) {
+            $('#filterForm').on('submit', function (e) {
                 e.preventDefault();
                 table.ajax.reload();
             });
 
-            $('#resetFilter').on('click', function() {
-                setTimeout(function() {
+            $('#resetFilter').on('click', function () {
+                setTimeout(function () {
                     table.ajax.reload();
                 }, 50);
             });
