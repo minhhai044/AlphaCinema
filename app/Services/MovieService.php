@@ -40,8 +40,8 @@ class MovieService
             if (isset($data['img_thumbnail'])) {
                 $data['img_thumbnail'] = Storage::put('movieImages', $data['img_thumbnail']);
             }
-            $data['movie_versions'] = json_encode($data['movie_versions']) ;
-            $data['movie_genres'] = json_encode($data['movie_genres']) ;
+            // $data['movie_versions'] = json_encode($data['movie_versions']) ;
+            // $data['movie_genres'] = json_encode($data['movie_genres']) ;
             // dd($data['movie_versions']);
             return Movie::create($data);
         });
@@ -56,20 +56,26 @@ class MovieService
             $data['is_hot'] = $data['is_hot'] ?? 0;
             $data['is_special'] = $data['is_special'] ?? 0;
             $data['is_publish'] = $data['is_publish'] ?? 0;
+
+            // Kiểm tra và giữ lại giá trị cũ nếu không cập nhật
+            $data['release_date'] = $data['release_date'] ?? $movie->release_date;
+            $data['end_date'] = $data['end_date'] ?? $movie->end_date;
+
             if (isset($data['img_thumbnail'])) {
                 if (Storage::exists($movie->img_thumbnail)) {
                     Storage::delete($movie->img_thumbnail);
                 }
                 $data['img_thumbnail'] = Storage::put('movie_images', $data['img_thumbnail']);
             }
-            $data['movie_versions'] = isset($data['movie_versions']) ? json_encode($data['movie_versions']) : json_encode([]);
-            $data['movie_genres'] = isset($data['movie_genres']) ? json_encode($data['movie_genres']) : json_encode([]);
 
+            $data['movie_versions'] = isset($data['movie_versions']) ? ($data['movie_versions']) : ([]);
+            $data['movie_genres'] = isset($data['movie_genres']) ? ($data['movie_genres']) : ([]);
 
             $movie->update($data);
             return $movie;
         });
     }
+
 
     public function deleteMovie($id)
     {

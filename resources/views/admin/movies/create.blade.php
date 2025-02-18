@@ -79,13 +79,13 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Thể loại phim</label>
-                                            <input type="checkbox" name="movie_versions[]" value="Action"> Action
-                                            <input type="checkbox" name="movie_versions[]" value="Horror"> Horror
-                                            <input type="checkbox" name="movie_versions[]" value="Comedy"> Comedy
+                                            <input type="checkbox" name="movie_genres[]" value="Action"> Action
+                                            <input type="checkbox" name="movie_genres[]" value="Horror"> Horror
+                                            <input type="checkbox" name="movie_genres[]" value="Comedy"> Comedy
                                             <div
-                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('movie_versions'))
-                                                    {{ $errors->first('movie_versions') }}
+                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('movie_genres'))
+                                                    {{ $errors->first('movie_genres') }}
                                                 @endif
                                             </div>
                                         </div>
@@ -172,13 +172,13 @@
 
                                         <div class="mb-3">
                                             <label class="form-label">Phiên bản phim</label>
-                                            <input type="checkbox" name="movie_genres[]" value="2D"> 2D
-                                            <input type="checkbox" name="movie_genres[]" value="3D"> 3D
-                                            <input type="checkbox" name="movie_genres[]" value="4D"> 4D
+                                            <input type="checkbox" name="movie_versions[]" value="2D"> 2D
+                                            <input type="checkbox" name="movie_versions[]" value="3D"> 3D
+                                            <input type="checkbox" name="movie_versions[]" value="4D"> 4D
                                             <div
-                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('movie_genres'))
-                                                    {{ $errors->first('movie_genres') }}
+                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('movie_versions'))
+                                                    {{ $errors->first('movie_versions') }}
                                                 @endif
                                             </div>
                                         </div>

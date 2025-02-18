@@ -31,8 +31,8 @@ class MovieController extends Controller
             $query = Movie::query();
 
             // Lọc theo tên phim
-            if ($request->filled('name')) {
-                $query->where('name', 'LIKE', '%' . $request->name . '%');
+            if ($request->filled('id')) {
+                $query->where('id', 'LIKE', '%' . $request->id . '%');
             }
 
             // Lọc theo movie_versions (dữ liệu JSON)

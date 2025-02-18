@@ -54,23 +54,6 @@
                                             @enderror
                                         </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim</label>
-                                            @php
-                                                $selectedVersions = json_decode($movie->movie_versions, true) ?? [];
-                                            @endphp
-                                            <input type="checkbox" name="movie_versions[]" value="Action"
-                                                {{ in_array('Action', $selectedVersions) ? 'checked' : '' }}> Action
-
-                                            <input type="checkbox" name="movie_versions[]" value="Horror"
-                                                {{ in_array('Horror', $selectedVersions) ? 'checked' : '' }}> Horror
-
-                                            <input type="checkbox" name="movie_versions[]" value="Comedy"
-                                                {{ in_array('Comedy', $selectedVersions) ? 'checked' : '' }}> Comedy
-                                            @error('movie_versions')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
 
                                         <div class="mb-3">
                                             <label class="form-label">Mô tả</label>
@@ -107,19 +90,83 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                        @php
+                                            $selectedVersions = (array) old(
+                                                'movie_versions',
+                                                $movie->movie_versions ?? [],
+                                            );
+                                            $selectedGenres = (array) old('movie_genres', $movie->movie_genres ?? []);
+                                        @endphp
+
+                                        <!-- Thể loại phim -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Thể loại phim</label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                        value="Action" id="genre_action"
+                                                        {{ in_array('Action', $selectedGenres) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="genre_action">Action</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                        value="Horror" id="genre_horror"
+                                                        {{ in_array('Horror', $selectedGenres) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="genre_horror">Horror</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                        value="Comedy" id="genre_comedy"
+                                                        {{ in_array('Comedy', $selectedGenres) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="genre_comedy">Comedy</label>
+                                                </div>
+                                            </div>
+                                            @error('movie_genres')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        <!-- Phiên bản phim -->
+                                        <div class="mb-3">
+                                            <label class="form-label">Phiên bản phim</label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="movie_versions[]" value="2D" id="version_2d"
+                                                        {{ in_array('2D', $selectedVersions) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="version_2d">2D</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="movie_versions[]" value="3D" id="version_3d"
+                                                        {{ in_array('3D', $selectedVersions) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="version_3d">3D</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="movie_versions[]" value="4D" id="version_4d"
+                                                        {{ in_array('4D', $selectedVersions) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="version_4d">4D</label>
+                                                </div>
+                                            </div>
+                                            @error('movie_versions')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
 
 
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu</label>
                                             <div class="input-group">
                                                 <input type="date" class="form-control" name="release_date"
-                                                    value="{{ old('release_date', $movie->release_date ? date('Y-m-d\TH:i', strtotime($movie->release_date)) : '') }}">
+                                                    value="{{ old('release_date', $movie->release_date ? date('Y-m-d', strtotime($movie->release_date)) : '') }}">
                                                 @error('release_date')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
 
                                                 <input type="date" class="form-control" name="end_date"
-                                                    value="{{ old('end_date', $movie->end_date ? date('Y-m-d\TH:i', strtotime($movie->end_date)) : '') }}">
+                                                    value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}">
                                                 @error('end_date')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
@@ -134,25 +181,6 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Thể loại phim</label>
-                                            @php
-                                                $selectedVersions = json_decode($movie->movie_genres, true) ?? [];
-                                            @endphp
-                                            <input type="checkbox" name="movie_genres[]" value="2D"
-                                                {{ in_array('2D', $selectedVersions) ? 'checked' : '' }}> 2D
-
-                                            <input type="checkbox" name="movie_genres[]" value="3D"
-                                                {{ in_array('3D', $selectedVersions) ? 'checked' : '' }}> 3D
-
-                                            <input type="checkbox" name="movie_genres[]" value="4D"
-                                                {{ in_array('4D', $selectedVersions) ? 'checked' : '' }}> 4D
-                                            @error('movie_genres')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
 
 
                                         <div class="mb-3">
@@ -221,7 +249,7 @@
 
                 </div>
 
-                </form>
+            </form>
         </div>
     </div>
     <!-- end select2 -->

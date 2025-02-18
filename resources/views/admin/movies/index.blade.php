@@ -40,8 +40,8 @@
                                 <div class="row">
                                     <!-- Tên phim -->
                                     <div class="col-md-4">
-                                        <label class="form-label">Tên phim</label>
-                                        <input type="text" name="name" class="form-control" placeholder="Tên phim">
+                                        <label class="form-label">Tìm nhanh theo ID</label>
+                                        <input type="text" name="id" class="form-control" placeholder="Nhập ID">
                                     </div>
                                     <!-- Phiên bản -->
                                     <div class="col-md-4">
@@ -112,7 +112,7 @@
                     url: "{{ route('api.movies.index') }}",
                     type: "GET",
                     data: function (d) {
-                        d.name = $('input[name="name"]').val();
+                        d.id = $('input[name="id"]').val();
                         d.movie_versions = $('select[name="movie_versions"]').val();
                         d.movie_genres = $('select[name="movie_genres"]').val();
                         console.log(d);
