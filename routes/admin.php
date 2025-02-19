@@ -45,7 +45,7 @@ Route::get('/', [DashBoardController::class, 'index'])->name('index');
 
 Route::resource('cinemas', CinemaController::class);
 Route::resource('ranks', RankController::class);
-Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
+
 
 // Route Food
 // Đảm bảo rằng route được khai báo trong nhóm `foods` nếu muốn đặt tên cho route đúng cách.
