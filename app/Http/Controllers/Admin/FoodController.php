@@ -2,21 +2,25 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Request;
-use Storage;
 use App\Models\Food;
+use App\Helpers\Alert;
+use App\Helpers\Toastr;
 use App\Services\FoodService;
+use Illuminate\Http\Response;
+use App\Traits\ApiResponseTrait;
 use App\Http\Requests\FoodRequest;
 use App\Http\Controllers\Controller;
-
-
+use Illuminate\Support\Facades\Storage;
 
 class FoodController extends Controller
 {
+    use ApiResponseTrait;
     /**
      * Display a listing of the resource.
      */
-    const PATH_VIEW = 'admin.foods.';
+    private const PATH_VIEW = 'admin.foods.';
+
+
     protected $foodService;
 
     public function __construct(FoodService $foodService)
@@ -25,38 +29,34 @@ class FoodController extends Controller
     }
 
     // 1. Hiển thị danh sách Food
-    public function index(Request $request)
+    public function index()
     {
         $data = $this->foodService->getAllFoodService();
+        // dd($data->toArray());
 
-        //            // filter
-//            $selectedNameFood = $request->get('name');
-//            $selectedPriceFood = $request->get('price');
-//
-//            if(!empty($selectedNameFood) && $selectedNameFood !== 'Tất cả'){
-//                $data->where('name', $request->get('name'));
-//            }
-//
-//            $namesFood = Food::
-        return view(self::PATH_VIEW . __FUNCTION__, [
-            'data' => $data,
-        ]);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
     }
 
     // 2. Hiển thị form thêm mới đồ ăn
     public function create()
     {
-        return view(self::PATH_VIEW . __FUNCTION__);
+        $typeFoods = Food::TYPE_FOOD;
+        // dd($typeFoods);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('typeFoods'));
     }
 
     // 3. Lưu đồ ăn mới
     public function store(FoodRequest $foodRequest)
     {
+        // dd($foodRequest->toArray());
         try {
             $data = $foodRequest->validated();
+
             $this->foodService->createFoodService($data);
 
-            return redirect()->route('admin.foods.index')->with('success', 'Thêm mới đồ ăn thành công!');
+            Toastr::success(null, 'Thêm mới đồ ăn thành công!');
+
+            return $this->successResponse($data, 'Thêm mới đồ ăn thành công!', Response::HTTP_OK);
         } catch (\Throwable $th) {
             return back()->with('Thêm mới không thành công');
         }
@@ -72,46 +72,64 @@ class FoodController extends Controller
     // 5. Hiển thị form chỉnh sửa đồ ăn
     public function edit($id)
     {
+        $typeFoods = Food::TYPE_FOOD;
         $data = $this->foodService->getFoodByIdService($id);
-        return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
+        // dd($data->toArray());
+        return view(self::PATH_VIEW . __FUNCTION__, compact('data', 'typeFoods'));
     }
 
     // 6. Cập nhật đồ ăn
     public function update(FoodRequest $foodRequest, string $id)
     {
+        // dd($foodRequest->toArray());
         try {
             $data = $foodRequest->validated();
 
-           // Xử lý loại bỏ dấu phẩy trong trường 'price'
-          
 
             $this->foodService->updateFoodService($id, $data);
-            return redirect()->route('admin.foods.index')->with('success', 'Cập nhật đồ ăn thành công!');
+            Toastr::success(null, 'Cập nhật đồ ăn thành công!');
+
+            return $this->successResponse($data, 'Cập nhật đồ ăn', Response::HTTP_OK);
         } catch (\Throwable $th) {
             return back()->with('Cập nhật không thành công');
         }
     }
 
     // 7. Xóa đồ ăn
-    public function forceDestroy($id)
+    public function forceDestroy(Food $food)
     {
-        $this->foodService->forceDeleteFoodService($id);
-        return redirect()->route('admin.foods.index')->with('success', 'Xóa đồ ăn thành công!');
+        try {
+            // if ($food->combos()->count() > 0) {
+            //     return back()->with('error', 'Không thể xóa đồ ăn vì đã có combo đang sử dụng.');
+            // }
+            $food->delete();
+            if ($food->img_thumbnail && Storage::exists($food->img_thumbnail)) {
+                Storage::delete($food->img_thumbnail);
+            }
+
+            Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
+            return redirect()->route('admin.foods.index');
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
+        }
     }
+
+
 
     // xóa mềm
     public function solfDestroy(Food $food)
     {
         try {
-            //            dd($food);
+
+            // $food = Food::findOrFail($id);
+
             if (!empty($food->img_thumbnail) && Storage::exists($food->img_thumbnail)) {
                 Storage::delete($food->img_thumbnail);
             }
 
             $food->delete();  // xóa mềm
-
-            return redirect()->route('admin.foods.index')->with('success', 'Xóa thành công');
-
+            Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
+            return redirect()->route('admin.foods.index');
         } catch (\Throwable $th) {
             return back()->with('error', 'Xóa không thành công');
         }
