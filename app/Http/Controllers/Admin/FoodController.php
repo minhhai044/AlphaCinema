@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Models\Food;
 use App\Helpers\Alert;
 use App\Helpers\Toastr;
+use Illuminate\Http\Request;
 use App\Services\FoodService;
 use Illuminate\Http\Response;
 use App\Traits\ApiResponseTrait;
@@ -111,27 +112,6 @@ class FoodController extends Controller
             return redirect()->route('admin.foods.index');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
-        }
-    }
-
-
-
-    // xóa mềm
-    public function solfDestroy(Food $food)
-    {
-        try {
-
-            // $food = Food::findOrFail($id);
-
-            if (!empty($food->img_thumbnail) && Storage::exists($food->img_thumbnail)) {
-                Storage::delete($food->img_thumbnail);
-            }
-
-            $food->delete();  // xóa mềm
-            Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
-            return redirect()->route('admin.foods.index');
-        } catch (\Throwable $th) {
-            return back()->with('error', 'Xóa không thành công');
         }
     }
 }
