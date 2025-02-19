@@ -38,7 +38,7 @@
                         <div class="card card-body mb-3">
                             <form id="filterForm">
                                 <div class="row">
-                                    <!-- Tên phim -->
+                                    <!-- Tìm nhanh theo ID -->
                                     <div class="col-md-4">
                                         <label class="form-label">Tìm nhanh theo ID</label>
                                         <input type="text" name="id" class="form-control" placeholder="Nhập ID">
@@ -48,7 +48,6 @@
                                         <label class="form-label">Phiên bản</label>
                                         <select name="movie_versions" class="form-control">
                                             <option value="">-- Chọn phiên bản --</option>
-
                                             <option value="2D">2D</option>
                                             <option value="3D">3D</option>
                                             <option value="4D">4D</option>
@@ -72,6 +71,7 @@
                             </form>
                         </div>
                     </div>
+
                     <div class="table-responsive">
                         <table id="movieTable" class="table table-bordered w-100">
                             <thead>
@@ -97,6 +97,7 @@
 @endsection
 
 @section('script')
+    {{-- Styles cho DataTables --}}
     <link href="assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet"
@@ -108,81 +109,75 @@
             var table = $('#movieTable').DataTable({
                 processing: true,
                 serverSide: true,
+                responsive: true,
+                autoWidth: false,
+                order: [],
                 ajax: {
                     url: "{{ route('api.movies.index') }}",
                     type: "GET",
                     data: function (d) {
+                        // Lấy dữ liệu từ form filter
                         d.id = $('input[name="id"]').val();
                         d.movie_versions = $('select[name="movie_versions"]').val();
                         d.movie_genres = $('select[name="movie_genres"]').val();
-                        console.log(d);
-
                     },
                     error: function (xhr, status, error) {
                         console.error("Lỗi API:", xhr.responseText);
                     }
-
                 },
-                columns: [{
-                    data: 'id',
-                    name: 'id'
-                },
-                {
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'img_thumbnail',
-                    render: function (data) {
-                        return `<img src="/storage/${data}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
-                    }
-                },
-                {
-                    data: 'movie_genres',
-                    render: function (data) {
-                        try {
-                            let genres = JSON.parse(data);
-                            return Array.isArray(genres) ? genres.join(', ') : data;
-                        } catch (e) {
-                            return data;
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    {
+                        data: 'img_thumbnail',
+                        render: function (data) {
+                            return `<img src="/storage/${data}"
+                                             style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
                         }
-                    }
-                },
-                {
-                    data: 'movie_versions',
-                    render: function (data) {
-                        try {
-                            let versions = JSON.parse(data);
-                            return Array.isArray(versions) ? versions.join(', ') : data;
-                        } catch (e) {
-                            return data;
+                    },
+                    {
+                        data: 'movie_genres',
+                        render: function (data) {
+                            try {
+                                let genres = JSON.parse(data);
+                                return Array.isArray(genres) ? genres.join(', ') : data;
+                            } catch (e) {
+                                return data;
+                            }
                         }
-                    }
-                },
-                {
-                    data: 'is_active',
-                    render: function (data) {
-                        return data ?
-                            '<span class="badge bg-success">Active</span>' :
-                            '<span class="badge bg-danger">Inactive</span>';
-                    }
-                },
-                {
-                    data: 'is_hot',
-                    render: function (data) {
-                        return data ?
-                            '<span class="badge bg-success">Hot</span>' :
-                            '<span class="badge bg-danger">No Hot</span>';
-                    }
-                },
-                {
-                    data: 'duration',
-                    name: 'duration'
-                },
-                {
-                    data: 'id',
-                    render: function (data) {
-                        return `
+                    },
+                    {
+                        data: 'movie_versions',
+                        render: function (data) {
+                            try {
+                                let versions = JSON.parse(data);
+                                return Array.isArray(versions) ? versions.join(', ') : data;
+                            } catch (e) {
+                                return data;
+                            }
+                        }
+                    },
+                    {
+                        data: 'is_active',
+                        render: function (data) {
+                            return data
+                                ? '<span class="badge bg-success">Active</span>'
+                                : '<span class="badge bg-danger">Inactive</span>';
+                        }
+                    },
+                    {
+                        data: 'is_hot',
+                        render: function (data) {
+                            return data
+                                ? '<span class="badge bg-success">Hot</span>'
+                                : '<span class="badge bg-danger">No Hot</span>';
+                        }
+                    },
+                    { data: 'duration', name: 'duration' },
+                    {
+                        data: 'id',
+                        render: function (data) {
+                            return `
                                     <div class="dropdown text-center">
                                         <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
                                             ...
@@ -211,24 +206,40 @@
                                         </ul>
                                     </div>
                                 `;
-                    },
-                    orderable: false,
-                    searchable: false
-                }
+                        },
+                        orderable: false,
+                        searchable: false
+                    }
                 ],
-                pageLength: 5,
-                lengthChange: false
+                pageLength: 5,      // Số bản ghi hiển thị mặc định
+                lengthChange: false, // Tắt dropdown mặc định của DataTable
+                language: {
+                    search: "Tìm kiếm:",
+                    paginate: {
+                        next: "Tiếp theo",
+                        previous: "Trước"
+                    },
+                    lengthMenu: "Hiển thị _MENU_ mục",
+                    info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    emptyTable: "Không có dữ liệu để hiển thị",
+                    zeroRecords: "Không tìm thấy kết quả phù hợp"
+                }
             });
 
+            // Thay đổi số dòng hiển thị theo dropdown tùy chỉnh
             $('#pageLength').on('change', function () {
                 table.page.len($(this).val()).draw();
             });
+
+            // Lọc dữ liệu
             $('#filterForm').on('submit', function (e) {
                 e.preventDefault();
                 table.ajax.reload();
             });
 
+            // Reset lọc
             $('#resetFilter').on('click', function () {
+                // Thêm một chút độ trễ để form reset xong
                 setTimeout(function () {
                     table.ajax.reload();
                 }, 50);
