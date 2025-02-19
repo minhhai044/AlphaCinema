@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\BranchController;
+use App\Http\Controllers\Admin\RoleController;
 use App\Http\Controllers\Admin\ShowtimeController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\UserVoucherController;
@@ -163,13 +164,6 @@ Route::prefix('showtimes')->as('showtimes.')->group(function () {
     // Route::put('{id}/update', [RoomController::class, 'update'])->name('update');
 });
 
-Route::resource('accounts', UserController::class);
-// Xóa mềm  (soft delete)
-Route::delete('accounts', [UserController::class, 'solfDestroy'])->name('solfDestroy');
-// Route::prefix('accounts')->name('accounts.')->group(function() {
-
-// });
-
 Route::group([
     'prefix' => 'users',  // Tiền tố URL cho tất cả route
     'as' => 'users.',     // Nhóm tên route (vd: users.index, users.store)
@@ -203,6 +197,7 @@ Route::group([
 });
 
 
+Route::resource("roles", RoleController::class );
 
 Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
 

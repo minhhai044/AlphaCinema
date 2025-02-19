@@ -47,7 +47,7 @@ class UserController extends Controller
     {
         $data = $userRequest->validated();
         $data['type_user'] = 1;
-
+dd($data);
         $user =  $this->userService->storeUser($data);
 
         if ($userRequest->has('role_id')) {
@@ -57,7 +57,8 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Thêm người dùng thành công!');
     }
 
-    public function show($id){
+    public function show($id)
+    {
         $user =  $this->userRepository->findByIdUserRepository($id);
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('user'));
@@ -65,17 +66,29 @@ class UserController extends Controller
 
     public function edit($id)
     {
+
+        $typeAdmin = User::TYPE_ADMIN;
+        $roles = Role::all();
+
+        $cinemas = Cinema::where('is_active', '1')->first('branch_id')->get();
+
         $user =  $this->userRepository->findByIdUserRepository($id);
         // dd($user);
-        return view(self::PATH_VIEW . __FUNCTION__, compact('user'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas', 'user']));
     }
 
     public function update(UserRequest $userRequest, $id)
     {
 
         $data = $userRequest->validated();
-
+        $data['type_user'] = 1;
         $result = $this->userService->updateUser($id, $data);
+
+        if ($userRequest->has('role_id')) {
+            $result->roles()->sync($userRequest->role_id);
+        }else{
+            $result->roles()->detach();
+        }
 
         if ($result) {
             return redirect()->route('admin.users.index')->with('success', 'Cập nhật tài khoản thành công.');

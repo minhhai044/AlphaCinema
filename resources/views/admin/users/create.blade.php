@@ -199,9 +199,7 @@
                                         <span class="required">*</span> </label>
                                     <select class="form-select" id="simpleSelect">
                                         @foreach ($cinemas as $cinema)
-                                            @if ($cinema->name != 'System Admin')
-                                                <option id="{{ $cinema->id }}"> {{ $cinema->name }}</option>
-                                            @endif
+                                                <option value="{{ $cinema->id }}"> {{ $cinema->name }}</option>
                                         @endforeach
                                     </select>
                                 </div>
@@ -214,7 +212,7 @@
                                 <select class="form-select select2" name="role_id[]" id="multiSelect" multiple="multiple">
                                     @foreach ($roles as $role)
                                         @if ($role->name != 'System Admin')
-                                            <option id="{{ $role->name }}"> {{ $role->name }}</option>
+                                            <option value="{{ $role->name }}"> {{ $role->name }}</option>
                                         @endif
                                     @endforeach
                                 </select>

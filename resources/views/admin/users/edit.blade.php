@@ -185,6 +185,46 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="account-cinema" class="form-label">
+                                        Cơ sở
+                                        <span class="required">*</span> </label>
+                                    <select class="form-select" id="simpleSelect">
+                                        @foreach ($cinemas as $cinema)
+                                            <option value="{{ $cinema->id }}"
+                                                {{ $cinema->id == $user->cinema_id ? 'selected' : '' }}>
+                                                {{ $cinema->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <label for="account-gender" class="form-label">
+                                    Vai trò
+                                    <span class="required">*</span> </label>
+                                <select class="form-select select2" name="role_id[]" id="multiSelect"
+                                    multiple="multiple">
+                                    @foreach ($roles as $role)
+                                        @if ($role->name != 'System Admin')
+                                            <option value="{{ $role->id }}"
+                                                {{ $user->roles->contains($role) ? 'selected' : '' }}> {{ $role->name }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select>
+
+                                <div class="text-danger"> <strong id="errorSelect2"></strong> </div>
+
+                                @error('role')
+                                    <span class="text-danger">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+
                         </div>
                     </div>
 
@@ -196,66 +236,44 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div class="mb-3 d-flex gap-2">
-                                    <label for="account-description" class="form-label">
-                                        <span class="required">*</span>
-                                        Admin
-                                    </label>
-                                    <div class="square-switch">
-                                        <input type="checkbox" id="square-switch3" switch="bool" value="1"
-                                            {{ $user->type_user == 1 ? 'checked' : '' }} name="type_user">
-                                        <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
-                                    </div>
+                                <div id="image-container" class="position-relative d-none">
+                                    <!-- Preview ảnh -->
+                                    <img id="image-preview" alt="Preview" class="align-items-center"
+                                        class="img-fluid rounded avatar-xl mb-2"
+                                        style="max-width: 100%; max-height: 60%;">
 
-                                    @error('type_user')
-                                        <span class="text-danger">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
+                                    <!-- Nút xóa ảnh -->
+                                    <button type="button" id="delete-image"
+                                        class="btn btn-danger position-absolute top-0 end-0 p-1">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
                                 </div>
 
-                                <div>
-                                    <div class="mb-3">
-                                        <label for="account-image" class="form-label">
-                                            <span class="required">*</span>
-                                            Ảnh
-                                        </label>
-                                        <input class="form-control" type="file" name="avatar" id="account-image">
-                                    </div>
-
-                                    <!-- Display selected image and delete button -->
-                                    <div id="image-container" class=" position-relative">
-                                        @if ($user->avatar && Storage::exists($user->avatar))
-                                            <img id="image-preview" src="{{ Storage::url($user->avatar) }}"
-                                                alt="Preview" class="img-fluid rounded avatar-xl mb-2"
-                                                style="max-width: 100%; max-height: 100%;">
-                                        @endif
-                                        <!-- Icon thùng rác ở góc phải -->
-                                        <button type="button" id="delete-image"
-                                            class="btn btn-danger position-absolute top-0 end-0 p-1">
-                                            <i class="fas fa-trash-alt"></i>
-                                        </button>
-                                    </div>
+                                <!-- Input file để chọn ảnh -->
+                                <div class="mt-3">
+                                    <input type="file" id="account-image" accept="image/*" class="d-none">
+                                    <button type="button" id="change-image" class="btn btn-primary">Chọn ảnh</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-lg-12">
+        <div class="col-lg-12">
 
-                <div class="card-footer">
-                    <button type="submit" class="btn btn-primary">
-                        Cập nhật
-                        <i class="bx bx-chevron-right ms-1"></i>
-                    </button>
-                    <a href="{{ route('admin.users.index') }}" class="btn btn-danger">
-                        Hủy
-                        <i class="bx bx-chevron-right ms-1"></i>
-                    </a>
-                </div>
+            <div class="card-footer">
+                <button type="submit" class="btn btn-primary">
+                    Cập nhật
+                    <i class="bx bx-chevron-right ms-1"></i>
+                </button>
+                <a href="{{ route('admin.users.index') }}" class="btn btn-danger">
+                    Hủy
+                    <i class="bx bx-chevron-right ms-1"></i>
+                </a>
             </div>
+        </div>
 
         </div>
     </form>
@@ -263,9 +281,10 @@
 @endsection
 
 @section('script')
-
+    <script src="{{ asset('assets/js/common.js') }}"></script>
     <script>
         // Function to display selected image
+        // Hàm xem trước ảnh khi chọn
         function previewImage(event) {
             const file = event.target.files[0];
             const reader = new FileReader();
@@ -274,8 +293,6 @@
                 // Hiển thị ảnh và nút xóa
                 const imagePreview = document.getElementById('image-preview');
                 const imageContainer = document.getElementById('image-container');
-                console.log(imageContainer);
-
                 imagePreview.src = reader.result;
                 imageContainer.classList.remove('d-none'); // Hiển thị container ảnh và nút xóa
             }
@@ -285,7 +302,7 @@
             }
         }
 
-        // Function to delete the selected image
+        // Hàm xóa ảnh đã chọn
         document.addEventListener('DOMContentLoaded', function() {
             const accountImageInput = document.querySelector('#account-image');
             const deleteImageButton = document.querySelector('#delete-image');
@@ -299,9 +316,14 @@
 
             // Xóa ảnh khi click vào nút xóa
             deleteImageButton.addEventListener('click', function() {
-                imageContainer.classList.add('d-none');
-                accountImageInput.value = '';
-                imagePreview.src = '';
+                imageContainer.classList.add('d-none'); // Ẩn container ảnh
+                accountImageInput.value = ''; // Xóa file đã chọn
+                imagePreview.src = ''; // Xóa ảnh xem trước
+            });
+
+            // Mở file input khi click vào nút "Chọn ảnh mới"
+            document.querySelector('#change-image').addEventListener('click', function() {
+                accountImageInput.click();
             });
         });
     </script>
