@@ -14,10 +14,11 @@
 <!-- Plugins js-->
 <script src="{{ asset('theme/admin/assets/libs/pristinejs/pristine.min.js') }}"></script>
 
+<script src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}">
+</script>
 <script
-    src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
-<script
-    src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js') }}"></script>
+    src="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/maps/jquery-jvectormap-world-mill-en.js') }}">
+</script>
 <script src="{{ asset('theme/admin/assets/js/pages/form-validation.init.js') }}"></script>
 
 <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
@@ -38,4 +39,5 @@
 
 
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
+{{-- zod schema --}}
+<script src="https://cdn.jsdelivr.net/npm/zod@3.24.2/lib/index.umd.min.js"></script>

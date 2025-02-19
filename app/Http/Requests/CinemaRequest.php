@@ -9,7 +9,7 @@ use Illuminate\Validation\Rule;
 class CinemaRequest extends FormRequest
 {
     // Chuyển validate thành Json
-    // use ApiRequestJsonTrait;
+    use ApiRequestJsonTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
@@ -25,10 +25,6 @@ class CinemaRequest extends FormRequest
      */
     public function rules(): array
     {
-
-        // post => rulesForCreate 
-        // put/patch => rulesForUpdate
-
         if ($this->isMethod('post')) {
             return $this->rulesForCreate();
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
