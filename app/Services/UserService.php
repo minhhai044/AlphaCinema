@@ -51,7 +51,7 @@ class UserService
             $data['type_user'] = $data['type_user'] ?? 0;
 
             $data['password'] = empty($data['password']) ? $user->password : $data['password'];
-
+            
             if (!empty($data['avatar']) && Storage::exists($user['avatar'])) {
                 Storage::delete($user['avatar']);
             }
@@ -59,7 +59,9 @@ class UserService
                 $data['avatar'] = Storage::put('avatar', $data['avatar']);
             }
 
-            return  $user->update($data);
+            $user->update($data);
+
+            return $user;
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
         }

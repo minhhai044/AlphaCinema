@@ -1,6 +1,9 @@
 <?php
 
+use App\Http\Controllers\Admin\RoleController;
+
 use Illuminate\Support\Facades\Route;
+
 use App\Http\Controllers\Admin\DayController;
 use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\RankController;
@@ -42,7 +45,6 @@ Route::get('/', [DashBoardController::class, 'index'])->name('index');
 
 Route::resource('cinemas', CinemaController::class);
 Route::resource('ranks', RankController::class);
-Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
 
 // Route Food
 // Đảm bảo rằng route được khai báo trong nhóm `foods` nếu muốn đặt tên cho route đúng cách.
@@ -137,24 +139,6 @@ Route::prefix('showtimes')->as('showtimes.')->group(function () {
     // Route::put('{id}/update', [RoomController::class, 'update'])->name('update');
 });
 
-Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
-
-
-Route::resource('vouchers', VoucherController::class);
-
-Route::prefix('seat-templates')->group(function () {
-    Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
-    Route::post('/store', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
-    Route::get('{id}/edit', [SeatTemplateControler::class, 'edit'])->name('edit.seat_templates');
-    Route::put('{id}/update', [SeatTemplateControler::class, 'update'])->name('update.seat_templates');
-    Route::put('{id}/update_seat', [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
-});
-
-Route::prefix('rooms')->as('rooms.')->group(function () {
-    Route::get('/', [RoomController::class, 'index'])->name('index');
-
-});
-
 
 Route::group([
     'prefix' => 'users',  // Tiền tố URL cho tất cả route
@@ -187,6 +171,29 @@ Route::group([
     // Hiển thị chi tiết user phải khai báo cuối cùng trong route
     Route::get('{users}', [UserController::class, 'show'])->name('show');
 });
+
+
+Route::resource("roles", RoleController::class );
+
+Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
+
+
+Route::resource('vouchers', VoucherController::class);
+
+Route::prefix('seat-templates')->group(function () {
+    Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
+    Route::post('/store', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
+    Route::get('{id}/edit', [SeatTemplateControler::class, 'edit'])->name('edit.seat_templates');
+    Route::put('{id}/update', [SeatTemplateControler::class, 'update'])->name('update.seat_templates');
+    Route::put('{id}/update_seat', [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
+});
+
+Route::prefix('rooms')->as('rooms.')->group(function () {
+    Route::get('/', [RoomController::class, 'index'])->name('index');
+
+});
+
+
 
 Route::prefix('movies')->name('movies.')->group(function () {
     // Danh sách phim

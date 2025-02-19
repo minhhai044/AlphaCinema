@@ -38,8 +38,6 @@
                     </li>
 
                     <li>
-
-
                         <a href="{{ route('admin.ranks.index') }}">
                             <span data-key="t-ranks">Ranks</span>
 
@@ -112,11 +110,11 @@
                         </a>
                     </li>
 
-                    <li>
-                        <a href="{{ route('admin.user-vouchers.index') }}">
-                            <span data-key="t-vouchers">Áp mã</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="{{ route('admin.user-vouchers.index') }}">
+                                <span data-key="t-vouchers">Áp mã</span>
+                            </a>
+                        </li>
 
                     <li>
                         <a href="javascript: void(0);" class="has-arrow">
@@ -202,19 +200,19 @@
                 </a>
             </li>
             <li>
-                <a href="{{route('admin.rooms.index')}}">
+                <a href="{{ route('admin.rooms.index') }}">
                     <i data-feather="layout"></i>
                     <span data-key="t-rooms">Quản lý phòng chiếu</span>
                 </a>
             </li>
             <li>
-                <a href="{{route('admin.index.seat_templates')}}">
+                <a href="{{ route('admin.index.seat_templates') }}">
                     <i data-feather="box"></i>
                     <span data-key="t-rooms">Quản lý mẫu ghế</span>
                 </a>
             </li>
             <li>
-                <a href="{{route('admin.showtimes.index')}}">
+                <a href="{{ route('admin.showtimes.index') }}">
                     <i data-feather="box"></i>
                     <span data-key="t-rooms">Quản lý xuất chiếu</span>
                 </a>
