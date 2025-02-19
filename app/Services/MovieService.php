@@ -57,6 +57,9 @@ class MovieService
             $data['is_special'] = $data['is_special'] ?? 0;
             $data['is_publish'] = $data['is_publish'] ?? 0;
 
+            // Kiểm tra phị phí nếu là đặc biệt
+            $data['surcharge']= $data['is_special']== 0 ? 0 : $movie->surcharge;
+
             // Kiểm tra và giữ lại giá trị cũ nếu không cập nhật
             $data['release_date'] = $data['release_date'] ?? $movie->release_date;
             $data['end_date'] = $data['end_date'] ?? $movie->end_date;

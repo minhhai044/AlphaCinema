@@ -153,9 +153,6 @@
                                                             <div class="text-danger">{{ $message }}</div>
                                                         @enderror
                                                     </div>
-
-
-
                                                     <div class="mb-4">
                                                         <label>Ngày trình chiếu</label>
                                                         <div class="input-group">
@@ -172,7 +169,6 @@
                                                             @enderror
                                                         </div>
                                                     </div>
-
                                                 <div class="mb-3" id="surcharge_container" style="display: none;">
                                                     <label class="form-label">Phụ phí</label>
                                                     <input type="number" name="surcharge"
@@ -182,9 +178,6 @@
                                                         <div class="invalid-feedback">{{ $errors->first('surcharge') }}</div>
                                                     @endif
                                                 </div>
-
-
-
                                                     <div class="mb-3">
                                                         <label class="form-label">Đánh giá</label>
                                                         <input type="number" name="rating" class="form-control"

@@ -98,10 +98,10 @@
 
 @section('script')
     {{-- Styles cho DataTables --}}
-    <link href="assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
+    {{-- <link href="assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css" rel="stylesheet" type="text/css" />
     <link href="assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css" rel="stylesheet"
-        type="text/css" />
+        type="text/css" /> --}}
 
     <script>
         $(document).ready(function () {
@@ -216,8 +216,8 @@
                 language: {
                     search: "Tìm kiếm:",
                     paginate: {
-                        next: "Tiếp theo",
-                        previous: "Trước"
+                        next: ">",
+                        previous: "<"
                     },
                     lengthMenu: "Hiển thị _MENU_ mục",
                     info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
