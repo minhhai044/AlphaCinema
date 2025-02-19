@@ -30,12 +30,19 @@
 <script src="{{ asset('assets/js/config.js') }}"></script>
 
 {{-- select2 --}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+{{--
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script> --}}
 
 
+{{--
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script> --}}
 
 
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+{{--
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script> --}}
 
+<script src="{{ asset('theme/admin/assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+
+{{-- zod validate --}}
+<script src="https://cdn.jsdelivr.net/npm/zod@3.24.2/lib/index.umd.min.js"></script>

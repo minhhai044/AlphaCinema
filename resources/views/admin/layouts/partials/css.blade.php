@@ -1,5 +1,10 @@
 <!-- App favicon -->
 <link rel="shortcut icon" href="{{ asset('theme/admin/assets/images/favicon.ico') }}">
+
+
+<link href="{{ asset('theme/admin/assets/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet"
+    type="text/css" />
+
 <link rel="stylesheet"
     href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
 
@@ -30,15 +35,20 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
-
-
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 
-<style>
+{{--
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
+
+{{--
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
+
+{{--
+<link rel="stylesheet" href="{{ asset('theme/admin/assets/css/select2.min.css') }}"> --}}
+
+{{-- <style>
     /* Mặc định */
     .select2-container--default .select2-selection--single {
         background-color: #f8f9fa;
@@ -73,5 +83,68 @@
         border-radius: 4px;
         padding: 5px;
     }
+</style> --}}
+
+<style>
+    /* .select2-container--default .select2-selection--multiple {
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        background-color: var(--bs-tertiary-bg);
+        min-height: 38px;
+    } */
 </style>
 
+{{-- <style>
+    .select2-container--default .select2-selection--multiple {
+        border: 1px solid #ced4da;
+        /* Match your input border color */
+        border-radius: 4px;
+        /* Match your input border radius */
+        /* padding: .47rem 2.25rem .47rem .75rem; */
+        /* Match your input padding */
+        background-color: var(--bs-tertiary-bg);
+        /* Match your input background color */
+        min-height: 38px;
+        /* Adjust as needed for height */
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+        background-color: #007bff;
+        /* Example: Blue background for selected items */
+        border-color: #007bff;
+        /* Example: Blue border for selected items */
+        color: white;
+        padding: 2px 6px;
+        margin-right: 4px;
+        border-radius: 4px;
+    }
+
+    .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+        color: white;
+        margin-left: 4px;
+    }
+
+    /* Style the dropdown list */
+    .select2-container--default .select2-results__option--highlighted.select2-results__option--selectable {
+        background-color: #f0f0f0;
+        /* Example: Highlight color on hover */
+    }
+
+    .select2-results__option {
+        padding: 6px;
+        /* Example: Padding for dropdown items */
+    }
+
+    /* Style the search box within the dropdown (if enabled) */
+    .select2-container--default .select2-search--dropdown .select2-search__field {
+        border: 1px solid #ced4da;
+        /* Match your input border color */
+        border-radius: 4px;
+        /* Match your input border radius */
+        padding: 6px !important;
+    }
+
+    /* .select2-container .select2-search--inline .select2-search__field {
+        padding: unset !important;
+    } */
+</style> --}}

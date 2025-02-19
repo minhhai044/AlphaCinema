@@ -159,8 +159,8 @@
                                             </div>
 
                                             <div class="form-check form-radio-info mb-3">
-                                                <input class="form-check-input" type="radio" name="gender"
-                                                    value="1" id="formRadioColor3" />
+                                                <input class="form-check-input" type="radio" name="gender" value="1"
+                                                    id="formRadioColor3" />
                                                 <label class="form-check-label" for="formRadioColor3">
                                                     Nữ
                                                 </label>
@@ -208,16 +208,40 @@
                             </div>
 
                             <div class="col-lg-6">
+                                @php
+                                    $roles = [
+                                        [
+                                            'name' => 'System Admin'
+                                        ],
+                                        [
+                                            'name' => 'Admin'
+                                        ],
+                                        [
+                                            'name' => 'Nhân Viên'
+                                        ],
+                                    ]
+                                @endphp
                                 <label for="account-gender" class="form-label">
                                     Vai trò
-                                    <span class="required">*</span> </label>
-                                <select class="form-select select2" name="role_id[]" id="multiSelect" multiple="multiple">
+                                    <span class="required">*</span>
+                                </label>
+
+                                <select class="form-control" name="role_id[]" id="choices-multiple-remove-button"
+                                    placeholder="Chọn một hoặc nhiều mục" multiple>
                                     @foreach ($roles as $role)
-                                        @if ($role->name != 'System Admin')
-                                            <option id="{{ $role->name }}"> {{ $role->name }}</option>
+                                        @if ($role['name'] != 'System Admin')
+                                            <option id="{{ $role['name'] }}"> {{ $role['name'] }}</option>
                                         @endif
                                     @endforeach
                                 </select>
+
+                                {{-- <select class="form-select" pla name="role_id[]" id="multiSelect" multiple="multiple">
+                                    @foreach ($roles as $role)
+                                    @if ($role['name'] != 'System Admin')
+                                    <option id="{{ $role['name'] }}"> {{ $role['name'] }}</option>
+                                    @endif
+                                    @endforeach
+                                </select> --}}
 
                                 <div class="text-danger"> <strong id="errorSelect2"></strong> </div>
 
@@ -288,6 +312,14 @@
 @section('script')
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script>
+
+        $(document).ready(function () {
+            new Choices("#choices-multiple-remove-button", {
+                removeItemButton: true,
+            })
+        });
+
+
         let flagSubmit = false;
         let btnSubmit = $('#btnSubmit');
 
@@ -308,7 +340,7 @@
             const file = event.target.files[0];
             const reader = new FileReader();
 
-            reader.onload = function() {
+            reader.onload = function () {
                 $('#image-preview').attr('src', reader.result);
                 $('#image-container').removeClass('d-none');
             }
@@ -327,7 +359,7 @@
             });
         }
 
-        accountNameId.on('blur', function() {
+        accountNameId.on('blur', function () {
             let errorMessage = accountNameId.closest(".mb-3").find(".text-danger");
 
             if (accountNameId.val().trim() === '') {
@@ -406,7 +438,7 @@
 
             let passwordValue = accountPasswordId.val().trim();
 
-            if (passwordValue.length  < 8) {
+            if (passwordValue.length < 8) {
                 accountPasswordId.after(
                     '<span class="text-danger"><strong>Mật khẩu không được để trống phải lớn hơn 8 ký tự</strong></span>');
                 flagSubmit = false
@@ -455,7 +487,7 @@
         });
 
 
-        accountRoleId.on('select2:close', function() {
+        accountRoleId.on('select2:close', function () {
             let errorMessage = accountRoleId.closest(".mb-3").find(".text-danger");
 
             if (errorMessage.length) {
