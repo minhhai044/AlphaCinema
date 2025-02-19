@@ -79,13 +79,13 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Thể loại phim</label>
-                                            <input type="checkbox" name="movie_versions[]" value="Action"> Action
-                                            <input type="checkbox" name="movie_versions[]" value="Horror"> Horror
-                                            <input type="checkbox" name="movie_versions[]" value="Comedy"> Comedy
+                                            <input type="checkbox" name="movie_genres[]" value="Action"> Action
+                                            <input type="checkbox" name="movie_genres[]" value="Horror"> Horror
+                                            <input type="checkbox" name="movie_genres[]" value="Comedy"> Comedy
                                             <div
-                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('movie_versions'))
-                                                    {{ $errors->first('movie_versions') }}
+                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('movie_genres'))
+                                                    {{ $errors->first('movie_genres') }}
                                                 @endif
                                             </div>
                                         </div>
@@ -169,7 +169,20 @@
 
                                             </div>
                                         </div>
+
                                         <div class="mb-3">
+                                            <label class="form-label">Phiên bản phim</label>
+                                            <input type="checkbox" name="movie_versions[]" value="2D"> 2D
+                                            <input type="checkbox" name="movie_versions[]" value="3D"> 3D
+                                            <input type="checkbox" name="movie_versions[]" value="4D"> 4D
+                                            <div
+                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('movie_versions'))
+                                                    {{ $errors->first('movie_versions') }}
+                                                @endif
+                                            </div>
+                                        </div>
+                                        <div class="mb-3" id="surcharge_container" style="display: none;">
                                             <label class="form-label">Phụ phí</label>
                                             <input type="number" name="surcharge"
                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
@@ -178,18 +191,6 @@
                                                 class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('surcharge'))
                                                     {{ $errors->first('surcharge') }}
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim</label>
-                                            <input type="checkbox" name="movie_genres[]" value="2D"> 2D
-                                            <input type="checkbox" name="movie_genres[]" value="3D"> 3D
-                                            <input type="checkbox" name="movie_genres[]" value="4D"> 4D
-                                            <div
-                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('movie_genres'))
-                                                    {{ $errors->first('movie_genres') }}
                                                 @endif
                                             </div>
                                         </div>
@@ -260,7 +261,7 @@
                                 <div class="d-flex align-items-center gap-2">
                                     <div class="square-switch">
                                         <input type="checkbox" id="square-switch_publish" switch="bool"
-                                            {{ old('is_special', 1) ? 'checked' : '' }} />
+                                            {{ old('is_publish', 1) ? 'checked' : '' }} />
                                         <label for="square-switch_publish" data-on-label="Yes"
                                             data-off-label="No"></label>
                                     </div>
@@ -287,18 +288,39 @@
         </div>
         <!-- end select2 -->
         <script>
+            // Cập nhật giá trị của hidden input cho các checkbox
             document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function(checkbox) {
                 checkbox.addEventListener('change', function() {
-                    var label = this.nextElementSibling;
-                    label.textContent = this.checked ? label.getAttribute('data-on-label') : label.getAttribute(
-                        'data-off-label');
-
                     var hiddenInput = document.getElementById(this.id.replace('square-switch', 'is'));
                     if (hiddenInput) {
                         hiddenInput.value = this.checked ? '1' : '0';
                     }
                 });
             });
+
+            document.addEventListener('DOMContentLoaded', function () {
+                    var publishCheckbox = document.getElementById('square-switch_special');
+                    var surchargeContainer = document.getElementById('surcharge_container');
+                    // Lấy thẻ input trong container "Phụ phí"
+                    var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
+
+                    function toggleSurchargeInput() {
+                        console.log('toggleSurchargeInput triggered, publishCheckbox.checked:', publishCheckbox.checked);
+                        if (publishCheckbox.checked) {
+                            surchargeContainer.style.display = 'block';
+                            surchargeInput.disabled = false; // Cho phép nhập liệu, gửi dữ liệu lên server
+                        } else {
+                            surchargeContainer.style.display = 'none';
+                            surchargeInput.disabled = true; // Vô hiệu hóa input, không gửi dữ liệu
+                        }
+                    }
+
+                    // Gọi khi tải trang để đảm bảo trạng thái ban đầu đúng
+                    toggleSurchargeInput();
+
+                    // Lắng nghe sự kiện thay đổi của checkbox (dùng "change" để đảm bảo trạng thái cập nhật)
+                    publishCheckbox.addEventListener('change', toggleSurchargeInput);
+                });
 
             function generateUUID() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
