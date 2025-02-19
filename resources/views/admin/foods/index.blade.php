@@ -71,116 +71,119 @@
                     </div>
 
                     <!-- Bảng danh sách-->
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="table-responsive">
-                                <table
-                                    class="table table-bordered align-middle table-nowrap dt-responsive align-middle nowrap w-100"
-                                    id="customerList-table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Tên đồ ăn</th>
-                                            <th>Loại đồ ăn</th>
-                                            <th>Hình ảnh</th>
-                                            <th>Giá bán</th>
-                                            <th>Hoạt động</th>
-                                            <th>Chức năng</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
+                    <div class="card-body">
+                        <table id="example" class="table table-bordered dt-responsive nowrap align-middle w-100">
+                            <thead class='table-light'>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên đồ ăn</th>
+                                    <th>Loại đồ ăn</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Giá bán</th>
+                                    <th>Hoạt động</th>
+                                    <th>Chức năng</th>
+                                </tr>
+                            </thead>
+                            <tbody>
 
-                                        @foreach ($data as $food)
-                                            <tr>
-                                                <td class="sorting_1 dtr-control">
-                                                    <div class="d-none">{{ $food->id }}</div>
-                                                    <div class="form-check font-size-{{ $food->id }}">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="customerlistcheck-{{ $food->id }}">
-                                                        <label class="form-check-label"
-                                                            for="customerlistcheck-{{ $food->id }}"></label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    {{ $food->name }}
-                                                </td>
-                                                <td>
-                                                    {{ $food->type }}
-                                                </td>
-                                                <td class="text-center">
-                                                    @if ($food->img_thumbnail)
-                                                        <img class="img-thumbnail" alt="" width="100px" height="60px"
-                                                            src="{{ Storage::url($food->img_thumbnail) }}">
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <strong class="text-red-500">{{ number_format($food->price) }}
-                                                        VNĐ</strong>
-                                                </td>
+                                @foreach ($data as $food)
+                                    <tr>
+                                        <td class="sorting_1 dtr-control">
+                                            <div class="d-none">{{ $food->id }}</div>
+                                            <div class="form-check font-size-{{ $food->id }}">
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="customerlistcheck-{{ $food->id }}">
+                                                <label class="form-check-label"
+                                                    for="customerlistcheck-{{ $food->id }}"></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            {{ $food->name }}
+                                        </td>
+                                        <td>
+                                            {{ $food->type }}
+                                        </td>
+                                        <td class="text-center">
+                                            @if ($food->img_thumbnail)
+                                                <img class="img-thumbnail" alt="" width="100px" height="60px"
+                                                    src="{{ Storage::url($food->img_thumbnail) }}">
+                                            @endif
+                                        </td>
+                                        <td>
+                                            <strong class="text-red-500">{{ number_format($food->price) }}
+                                                VNĐ</strong>
+                                        </td>
 
-                                                <td>
+                                        {{-- <td>
                                                     <input type="checkbox" id="is_active{{$food->id}}"
                                                         data-publish="{{ $food->is_publish }}" switch="success"
                                                         @checked($food->is_active) />
                                                     <label for="is_active{{$food->id}}"></label>
-                                                </td>
+                                                </td> --}}
+                                        <td>
+                                            <div class="form-check form-switch form-switch-success">
+                                                <input class="form-check-input switch-is-active changeActive"
+                                                    name="is_active" type="checkbox" role="switch"
+                                                    data-food-id="{{ $food->id }}"
+                                                    {{ $food->is_active ? 'checked' : '' }}
+                                                    onclick="return confirm('Bạn có chắc muốn thay đổi ?')">
+                                            </div>
+                                        </td>
 
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown"
-                                                            aria-expanded="false">
-                                                            <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                                        <td>
+                                            <div class="dropdown">
+                                                <a href="#" class="dropdown-toggle card-drop"
+                                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                                    <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                                                </a>
+                                                <ul class="dropdown-menu dropdown-menu-end" style="">
+                                                    <li>
+                                                        <a class="dropdown-item edit-list cursor-pointer openUpdateFoodModal"
+                                                            data-food-id="{{ $food->id }}"
+                                                            data-food-name="{{ $food->name }}"
+                                                            data-food-description="{{ $food->description }}"
+                                                            data-food-img_thumbnail="{{ $food->img_thumbnail }}"
+                                                            data-food-type="{{ $food->type }}"
+                                                            data-food-price="{{ formatPrice($food->price) }}">
+                                                            <i class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
+                                                            Cập nhật
                                                         </a>
-                                                        <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                            <li>
-                                                                <a class="dropdown-item edit-list cursor-pointer openUpdateFoodModal"
-                                                                    data-food-id="{{ $food->id }}"
-                                                                    data-food-name="{{ $food->name }}"
-                                                                    data-food-description="{{ $food->description }}"
-                                                                    data-food-img_thumbnail="{{ $food->img_thumbnail }}"
-                                                                    data-food-type="{{ $food->type }}"
-                                                                    data-food-price="{{ $food->price }}">
-                                                                    <i
-                                                                        class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
-                                                                    Cập nhật
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                @if ($food->combos()->count() == 0)
-                                                                    <form action="{{ route('admin.foods.forceDestroy', $food) }}"
-                                                                        method="POST" id="delete-food-{{ $food->id }}">
-                                                                        @method('DELETE')
-                                                                        @csrf
+                                                    </li>
+                                                    <li>
+                                                        @if ($food->combos()->count() == 0)
+                                                            <form action="{{ route('admin.foods.forceDestroy', $food) }}"
+                                                                method="POST" id="delete-food-{{ $food->id }}">
+                                                                @method('DELETE')
+                                                                @csrf
 
-                                                                        <button type="button" class="dropdown-item remove-list"
-                                                                            onclick="handleDelete({{ $food->id }})">
-                                                                            <i
-                                                                                class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                            Xóa
-                                                                        </button>
-                                                                    </form>
-                                                                @endif
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ $data->onEachSide(1)->links('admin.layouts.components.pagination') }}
+                                                                <button type="button" class="dropdown-item remove-list"
+                                                                    onclick="handleDelete({{ $food->id }})">
+                                                                    <i
+                                                                        class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
+                                                                    Xóa
+                                                                </button>
+                                                            </form>
+                                                        @endif
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
+            <div class="row">
+                {{ $data->onEachSide(1)->links('admin.layouts.components.pagination') }}
+            </div>
         </div>
     </div>
+    </div>
+    </div>
     {{-- model create --}}
-    <div class="modal fade" id="createFoodModal" tabindex="-1" aria-labelledby="createFoodModalLabel"
-        aria-hidden="true">
+    <div class="modal fade" id="createFoodModal" tabindex="-1" aria-labelledby="createFoodModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -231,6 +234,7 @@
                                 </label>
                                 <input type="tel" class="form-control" id="createPrice" name="price" required
                                     placeholder="Nhập giá tiền">
+                                <input type="hidden" name="price" id="price_hidden" value="{{ old('price') }}">
                                 <span class="text-danger mt-3" id="createPriceError"></span>
                             </div>
 
@@ -239,7 +243,8 @@
                                     <span class="text-danger">*</span>
                                     Hình ảnh:
                                 </label>
-                                <input type="file" name="img_thumbnail" id="createImgThumbnail" class="form-control ">
+                                <input type="file" name="img_thumbnail" id="createImgThumbnail"
+                                    class="form-control ">
                                 <span class="text-danger mt-3" id="createImgThumbnailError"></span>
                             </div>
 
@@ -263,7 +268,9 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel" aria-hidden="true">
+    {{-- modal update --}}
+    <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel"
+        aria-hidden="true">
         <input type="hidden" id="updateFoodId" name="food_id">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -314,10 +321,11 @@
                                     <span class="text-danger">*</span>
                                     Giá tiền:
                                 </label>
-                                <input type="tel" class="form-control" id="updatePrice" name="price" required
+                                <input type="tel" class="form-control" id="updatePrice" name="price"
                                     placeholder="Nhập giá tiền">
                                 <span class="text-danger mt-3" id="updatePriceError"></span>
                             </div>
+
                             <div class="col-md-6 mb-3">
                                 <label for="updateImgThumbnail" class="form-label">
                                     <span class="text-danger">*</span> Hình ảnh:
@@ -351,5 +359,103 @@
 @endsection
 
 @section('script')
+    <!--datatable css-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
+    <!--datatable responsive css-->
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <!--datatable js-->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
     <script src="{{ asset('assets/js/food/index.js') }}"></script>
+    <script>
+        $(document).ready(function() {
+            // Khởi tạo DataTable
+            // let table = $('#example').DataTable({
+            //     order: [],
+            //     language: {
+            //         search: "Tìm kiếm:",
+            //         paginate: {
+            //             next: "Tiếp theo",
+            //             previous: "Trước"
+            //         },
+            //         lengthMenu: "Hiển thị _MENU_ mục",
+            //         info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
+            //         emptyTable: "Không có dữ liệu để hiển thị",
+            //         zeroRecords: "Không tìm thấy kết quả phù hợp"
+            //     },
+            // });
+            // Xử lý sự kiện change cho checkbox .changeActive
+            $(document).on("change", ".changeActive", function() {
+                let foodId = $(this).data("food-id");
+                let is_active = $(this).is(":checked") ? 1 : 0;
+
+                // Swal.fire({
+                //     title: "Đang xử lý...",
+                //     text: "Vui lòng chờ trong giây lát.",
+                //     allowOutsideClick: false,
+                //     didOpen: () => {
+                //         Swal.showLoading();
+                //     },
+                // });
+
+                // Gửi AJAX cập nhật trạng thái
+                $.ajax({
+                    url: "{{ route('food.change-active') }}", // route api
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: foodId,
+                        is_active: is_active,
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            let checkbox = $(`[data-food-id="${foodId}"]`);
+                            checkbox.prop("checked", response.data.is_active === 1);
+
+                            Swal.fire({
+                                icon: "success",
+                                title: "Thành công!",
+                                text: "Trạng thái hoạt động đã được cập nhật.",
+                                confirmButtonText: "Đóng",
+                                timer: 3000,
+                                timerProgressBar: true,
+                            });
+                            // location.reload();
+                        } else {
+                            Swal.fire({
+                                icon: "error",
+                                title: "Lỗi!",
+                                text: response.message || "Có lỗi xảy ra.",
+                                confirmButtonText: "Đóng",
+                            });
+                        }
+                    },
+                    error: function(xhr) {
+                        console.log(xhr.responseText); // Debug lỗi nếu có
+                        Swal.fire({
+                            icon: "error",
+                            title: "Lỗi!",
+                            text: "Có lỗi xảy ra khi cập nhật trạng thái.",
+                            confirmButtonText: "Đóng",
+                        });
+
+                        let checkbox = $(`[data-food-id="${foodId}"]`);
+                        checkbox.prop("checked", !is_active);
+                    },
+                });
+
+                console.log("Đã gửi yêu cầu thay đổi trạng thái.");
+            });
+        });
+    </script>
+
 @endsection

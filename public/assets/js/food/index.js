@@ -4,10 +4,45 @@ const handleDelete = (id) => {
     });
 };
 
+const resetCreateAndUpdateErors = (prefix) => {
+    document.getElementById(`${prefix}NameError`).innerText = "";
+    document.getElementById(`${prefix}PriceError`).innerText = "";
+    document.getElementById(`${prefix}ImgThumbnailError`).innerText = "";
+    document.getElementById(`${prefix}DescriptionError`).innerText = "";
+    document.getElementById(`${prefix}TypeError`).innerText = "";
+
+    $(`#${prefix}Name`).removeClass("is-invalid");
+    $(`#${prefix}Price`).removeClass("is-invalid");
+    $(`#${prefix}ImgThumbnail`).removeClass("is-invalid");
+    $(`#${prefix}Description`).removeClass("is-invalid");
+    $(`#${prefix}Type`).removeClass("is-invalid");
+};
+
 document.addEventListener("DOMContentLoaded", function () {
     /**
      * Xử lý logic modal create food
      */
+
+    // format price ','
+    const formattedInput = document.getElementById("createPrice");
+    const hiddenInput = document.getElementById("price_hidden");
+
+    formattedInput.addEventListener("input", function (e) {
+        let value = e.target.value.replace(/\D/g, ""); // Loại bỏ ký tự không phải số
+        if (value !== "") {
+            formattedInput.value = Number(value).toLocaleString("en-US"); // Hiển thị có dấu phẩy
+            hiddenInput.value = value; // Lưu giá trị thực không có dấu phẩy
+        } else {
+            hiddenInput.value = "0";
+        }
+    });
+
+    formattedInput.addEventListener("blur", function (e) {
+        if (e.target.value === "") {
+            e.target.value = "0";
+            hiddenInput.value = "0";
+        }
+    });
 
     $(".openCreateFoodModal").on("click", function () {
         const modal = $("#createFoodModal");
@@ -52,22 +87,12 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
             },
         });
-    }
+    };
     const showErrors = (errors, prefix) => {
         console.log(errors);
         // return;
 
-        document.getElementById(`${prefix}NameError`).innerText = "";
-        document.getElementById(`${prefix}PriceError`).innerText = "";
-        document.getElementById(`${prefix}ImgThumbnailError`).innerText = "";
-        document.getElementById(`${prefix}DescriptionError`).innerText = "";
-        document.getElementById(`${prefix}TypeError`).innerText = "";
-
-        $(`#${prefix}Name`).removeClass("is-invalid");
-        $(`#${prefix}Price`).removeClass("is-invalid");
-        $(`#${prefix}ImgThumbnail`).removeClass("is-invalid");
-        $(`#${prefix}Description`).removeClass("is-invalid");
-        $(`#${prefix}Type`).removeClass("is-invalid");
+        resetCreateAndUpdateErors(prefix);
 
         if (errors.name) {
             $(`#${prefix}Name`).addClass("is-invalid");
@@ -100,6 +125,26 @@ document.addEventListener("DOMContentLoaded", function () {
  * Update
  */
 $(".openUpdateFoodModal").on("click", function () {
+    const formattedInput = document.getElementById("updatePrice");
+    const hiddenInput = document.getElementById("price_hidden");
+
+    formattedInput.addEventListener("input", function (e) {
+        let value = e.target.value.replace(/\D/g, ""); // Loại bỏ ký tự không phải số
+        if (value !== "") {
+            formattedInput.value = Number(value).toLocaleString("en-US"); // Hiển thị có dấu phẩy
+            hiddenInput.value = value; // Lưu giá trị thực không có dấu phẩy
+        } else {
+            hiddenInput.value = "0";
+        }
+    });
+
+    formattedInput.addEventListener("blur", function (e) {
+        if (e.target.value === "") {
+            e.target.value = "0";
+            hiddenInput.value = "0";
+        }
+    });
+
     const modal = $("#updateFoodModal");
 
     const foodId = $(this).data("food-id");
@@ -132,7 +177,7 @@ $(".openUpdateFoodModal").on("click", function () {
         $("#previewImgThumbnail").hide();
     }
     new bootstrap.Modal(modal[0]).show();
-    resetUpdateErrors("update");
+    resetCreateAndUpdateErors("update");
 });
 
 // Xử lý khi chọn ảnh mới
@@ -168,6 +213,7 @@ $("#updateFoodBtn").on("click", function (event) {
 
     handleUpdate(url, formData);
 });
+
 const handleUpdate = async (url, data) => {
     return await $.ajax({
         url: url,
@@ -195,25 +241,11 @@ const handleUpdate = async (url, data) => {
     });
 };
 
-const resetUpdateErrors = (prefix) => {
-    document.getElementById(`${prefix}NameError`).innerText = "";
-    document.getElementById(`${prefix}PriceError`).innerText = "";
-    document.getElementById(`${prefix}ImgThumbnailError`).innerText = "";
-    document.getElementById(`${prefix}DescriptionError`).innerText = "";
-    document.getElementById(`${prefix}TypeError`).innerText = "";
-
-    $(`#${prefix}Name`).removeClass("is-invalid");
-    $(`#${prefix}Price`).removeClass("is-invalid");
-    $(`#${prefix}ImgThumbnail`).removeClass("is-invalid");
-    $(`#${prefix}Description`).removeClass("is-invalid");
-    $(`#${prefix}Type`).removeClass("is-invalid");
-};
-
 const showErrorsEdit = (errors = null, prefix = null) => {
     console.log(errors);
     // return;
 
-    resetUpdateErrors(prefix);
+    resetCreateAndUpdateErors(prefix);
 
     if (errors.name) {
         $(`#${prefix}Name`).addClass("is-invalid");
@@ -240,3 +272,6 @@ const showErrorsEdit = (errors = null, prefix = null) => {
         $(`#${prefix}ImgThumbnailError`).text(errors.img_thumbnail);
     }
 };
+
+
+

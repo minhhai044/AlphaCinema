@@ -207,7 +207,7 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <form action="{{ route('admin.combos.forceDestroy', $combo) }}"
+                                                                <form action="{{ route('admin.combos.destroy', $combo) }}"
                                                                     method="POST" id="delete-combo-{{ $combo->id }}">
                                                                     @method('DELETE')
                                                                     @csrf
