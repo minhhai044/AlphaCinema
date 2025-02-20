@@ -4,6 +4,7 @@ use App\Http\Controllers\Api\CinemaController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\SeatTemplateController;
 use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\Api\ShowtimeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +25,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::put('{id}/active-seat-template',[SeatTemplateController::class,'activeSeatTemplate']);
 Route::put('{id}/active-room',[RoomController::class,'activeRoom']);
+Route::get('{id}/showtime',[ShowtimeController::class,'getByDate']);
 
 // Route::get('/cinemas',[CinemaController::class,'index']);
 // Route::get('{id}/showcinemas',[CinemaController::class,'show']);

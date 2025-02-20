@@ -157,8 +157,8 @@ Route::prefix('rooms')->as('rooms.')->group(function () {
 
 Route::prefix('showtimes')->as('showtimes.')->group(function () {
     Route::get('/', [ShowtimeController::class, 'index'])->name('index');
-    Route::get('/create', [ShowtimeController::class, 'create'])->name('create');
-    Route::post('/', [ShowtimeController::class, 'store'])->name('store');
+    Route::get('{id}/create', [ShowtimeController::class, 'create'])->name('create');
+    Route::post('/store', [ShowtimeController::class, 'store'])->name('store');
     // Route::get('{id}/show', [RoomController::class, 'show'])->name('show');
     // Route::put('{id}/update', [RoomController::class, 'update'])->name('update');
 });
