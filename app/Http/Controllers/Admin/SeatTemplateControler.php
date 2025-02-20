@@ -46,8 +46,8 @@ class SeatTemplateControler extends Controller
     }
     public function edit(string $id)
     {
-         [$seatTemplate, $matrix, $seatMap] =$this->seatTemplateService->editService($id);
-        return view(self::PATH_VIEW . __FUNCTION__, compact('matrix', 'seatTemplate', 'seatMap'));
+         [$seatTemplate, $matrix, $seatMap,$type_seats] = $this->seatTemplateService->editService($id);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('matrix', 'seatTemplate', 'seatMap','type_seats'));
     }
     public function update_seat(SeatTemplateStructureRequest $seatTemplateStructureRequest, string $id)
     {

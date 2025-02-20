@@ -324,7 +324,6 @@
     </div>
 
    
-    
 
 @endsection
 @section('script')
@@ -483,12 +482,14 @@
                 }
             });
         }
-
+        let type_seats = @json($type_seats);
+    
         $('#seatForm').submit(function(e) {
             let seatStructure = [];
 
             $('.box-item-seat').each(function(index) {
-                
+              
+               
                 var img = $(this).find('img');
                 if (!img.attr('src').includes('seat-add.svg')) {
                     let tdElement = $(this).closest('td');
@@ -498,9 +499,13 @@
 
                     seatStructure.push({
                         id:index+1,
+                        user_id : null,
+                        price: type_seats.filter((item)=> item.id == type_seat_id)[0].price,
                         coordinates_x: coordinates_x,
                         coordinates_y: coordinates_y,
                         type_seat_id: type_seat_id,
+                        status:'available',
+                        hold_expires_at : 10
                     });
                 }
             });

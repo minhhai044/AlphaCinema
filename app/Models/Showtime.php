@@ -16,7 +16,6 @@ class Showtime extends Model
         'room_id',
         'seat_structure',
         'slug',
-        'format',
         'date',
         'price_special',
         'description_special',
@@ -40,6 +39,13 @@ class Showtime extends Model
         $formattedPart2 = substr($part2, 0, 8) . '-' . substr($part2, 8, 4) . '-' . substr($part2, 12, 4) . '-' . substr($part2, 16, 4) . '-' . substr($part2, 20);
 
         return $formattedPart1 . '-' . $formattedPart2;
+    }
+    public const SPECIALSHOWTIMES = [
+        ['id' => 1, 'name' => 'Suất thường'],
+        ['id' => 2, 'name' => 'Suất đặc biệt'],
+    ];
+    public function room(){
+        return $this->belongsTo(Room::class);
     }
 
 }

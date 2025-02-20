@@ -25,7 +25,7 @@
                                         style="color: red">*</span></label>
                                 <input type="text" name="name" required
                                     class="form-control @error('name') is-invalid @enderror"
-                                    placeholder="Nhập tên phòng chiếu">
+                                    placeholder="Nhập tên phòng chiếu"  value="{{ old('name') }}">
                                 @error('name')
                                     <small class="text-danger fst-italic">{{ $message }}</small>
                                 @enderror
@@ -264,7 +264,13 @@
     @endphp
 @endsection
 @section('script')
+
     <script>
+        $(document).ready(function () {
+            @if ($errors->any())
+                $('#exampleModal').modal('show'); // Giữ modal mở nếu có lỗi
+            @endif
+        });
         const data = @json($branchsRelation);
 
         $('#cinemas').prop('disabled', true);
