@@ -67,6 +67,40 @@ class ShowtimeRequest extends FormRequest
     // messages chung
     public function messages()
     {
-        return [];
+        return [
+            'movie_id.required'       => 'Vui lòng chọn phim !!!',
+            'movie_id.exists'         => 'Phim không hợp lệ !!!',
+
+            'branch_id.required'      => 'Vui lòng chọn chi nhánh !!!',
+            'branch_id.exists'        => 'Chi nhánh không hợp lệ !!!',
+
+            'cinema_id.required'      => 'Vui lòng chọn rạp chiếu !!!',
+            'cinema_id.exists'        => 'Rạp chiếu không hợp lệ !!!',
+
+            'day_id.required'         => 'Vui lòng chọn ngày chiếu !!!',
+            'day_id.exists'           => 'Ngày chiếu không hợp lệ !!!',
+
+            'room_id.required'        => 'Vui lòng chọn phòng chiếu !!!',
+            'room_id.exists'          => 'Phòng chiếu không hợp lệ !!!',
+
+            'seat_structure.required' => 'Vui lòng nhập cấu trúc ghế !!!',
+
+            'slug.required'           => 'Vui lòng nhập slug !!!',
+            'slug.string'             => 'Slug phải là chuỗi !!!',
+            'slug.max'                => 'Slug không được vượt quá 255 ký tự !!!',
+
+            'date.required'           => 'Vui lòng chọn ngày chiếu !!!',
+            'date.date'               => 'Ngày chiếu không hợp lệ !!!',
+
+            'start_time.required'     => 'Vui lòng nhập thời gian bắt đầu !!!',
+            'start_time.array'        => 'Thời gian bắt đầu phải là một mảng !!!',
+            'start_time.*.date_format' => 'Thời gian bắt đầu phải có định dạng HH:mm !!!',
+
+            'end_time.required'       => 'Vui lòng nhập thời gian kết thúc !!!',
+            'end_time.array'          => 'Thời gian kết thúc phải là một mảng !!!',
+            'end_time.*.date_format'  => 'Thời gian kết thúc phải có định dạng HH:mm !!!',
+
+            'status_special.required' => 'Vui lòng chọn trạng thái đặc biệt !!!',
+        ];
     }
 }

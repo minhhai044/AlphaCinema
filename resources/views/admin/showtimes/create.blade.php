@@ -173,8 +173,8 @@
                 </div>
 
                 <div class="m-3">
-                    <button id="submitForm" type="button" class="btn btn-primary">Thêm suất chiếu</button>
-                    <button type="button" class="btn btn-danger">Quay lại</button>
+                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary">Thêm</button>
+                    <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger">Quay lại</button></a>
                 </div>
             </div>
         </div>

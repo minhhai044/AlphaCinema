@@ -253,6 +253,11 @@
 @section('script')
     <script>
         $(document).ready(function () {
+            @if ($errors->any())
+                $('#exampleModal').modal('show'); // Giữ modal mở nếu có lỗi
+            @endif
+        });
+        $(document).ready(function () {
             let matrixData = @json($matrixs);
 
             function handleMatrixChange(selectId, regularId, vipId, doubleId) {
