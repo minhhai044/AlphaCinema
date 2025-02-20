@@ -54,4 +54,9 @@ class ShowtimeService
         }
         return true;
     }
+    public function deleteService(string $id) {
+        $showtime = Showtime::query()->findOrFail($id);
+        $showtime->delete();
+        return true;
+    }
 }

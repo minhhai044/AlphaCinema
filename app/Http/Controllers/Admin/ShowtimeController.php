@@ -31,11 +31,19 @@ class ShowtimeController extends Controller
     {
         try {
             $this->showtimeService->storeService($showtimeRequest->validated());
-            return back()->with('success','Thao tác thành công !!!');
+            return back()->with('success', 'Thao tác thành công !!!');
         } catch (\Throwable $th) {
             Log::error(__CLASS__ . __FUNCTION__, [$th->getMessage()]);
-            return back()->with('error','Thao tác không thành công !!!');
-
+            return back()->with('error', 'Thao tác không thành công !!!');
+        }
+    }
+    public function delete(Request $request)
+    {
+        try {
+            $this->showtimeService->deleteService($request->showtime_id);
+            return back()->with('success', 'Thao tác thành công !!!');
+        } catch (\Throwable $th) {
+            return back()->with('error', 'Thao tác không thành công !!!');
         }
     }
 }

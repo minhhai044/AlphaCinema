@@ -226,7 +226,7 @@
 
         // Tự động tạo suất chiếu
         const operatingStart = "08:00";
-        const operatingEnd = "23:00";
+        const operatingEnd = "23:59";
         const gapTime = 30;
 
         const getAllShowtime = (room_id, dataDate) => {
@@ -245,24 +245,30 @@
                         showtimes.forEach((item) => {
                             dataShowtimeCheck.push(item);
                             $('#listShowtime').append(`
-                                                                            <div class="list-group-item d-flex align-items-center justify-content-between py-3">
-                                                                                <div>
-                                                                                    <strong class="text-dark">${item.start_time}</strong> - <strong class="text-dark">${item.end_time}</strong><br>
-                                                                                    <small><a href="#" class="text-danger text-decoration-none">Xóa</a></small>
-                                                                                </div>
-                                                                                <div class="d-flex align-items-center">
-                                                                                    <span class="badge bg-success px-3 py-2">${item.room.type_room.name}</span>
-                                                                                </div>
-                                                                            </div>
-                                                                        `);
+                                                                                                        <div class="list-group-item d-flex align-items-center justify-content-between py-3">
+                                                                                                            <div>
+                                                                                                                <strong class="text-dark">${item.start_time}</strong> - <strong class="text-dark">${item.end_time}</strong><br>
+                                                                                                                <small>
+                                                                                                                    <form action="{{route('admin.showtimes.delete') }}" method="POST">
+                                                                                                                        @csrf
+                                                                                                                        <input type="hidden" name="showtime_id" value="${item.id}">
+                                                                                                                        <button type="submit" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-sm text-danger fw-bold">Xóa</button>
+                                                                                                                    </form>
+                                                                                                                </small>
+                                                                                                            </div>
+                                                                                                            <div class="d-flex align-items-center">
+                                                                                                                <span class="badge bg-success px-3 py-2">${item.room.type_room.name}</span>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    `);
                         });
                     } else {
                         dataShowtimeCheck = [];
                         $('#listShowtime').append(`
-                                                                        <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                            Hiện tại chưa có suất chiếu nào 
-                                                                        </div>
-                                                                    `);
+                                                                                                    <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
+                                                                                                        Hiện tại chưa có suất chiếu nào 
+                                                                                                    </div>
+                                                                                                `);
                     }
 
                 }
@@ -273,40 +279,40 @@
             dataShowtimeCheck = [];
             $('#listShowtime').empty();
             $('#listShowtime').append(`
-                                                                        <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                            Hiện tại chưa có suất chiếu nào 
-                                                                        </div>
-                                                                    `);
+                                                                                                    <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
+                                                                                                        Hiện tại chưa có suất chiếu nào 
+                                                                                                    </div>
+                                                                                                `);
         }
 
 
         function addTimeRow() {
             const id = idRowCounter++;
             const html = `
-                                                                                <div class="row align-items-center" id="row_${id}">
-                                                                                    <div class="col-lg-5">
-                                                                                        <div class="mb-3">
-                                                                                            <label for="start_time_${id}" class="form-label">
-                                                                                                Thời gian bắt đầu <span class="text-danger">*</span>
-                                                                                            </label>
-                                                                                            <input type="time" required class="form-control" name="start_time[]" data-id="${id}" id="start_time_${id}" aria-label="Chọn thời gian">
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-lg-5">
-                                                                                        <div class="mb-3">
-                                                                                            <label for="end_time_${id}" class="form-label">
-                                                                                                Thời gian kết thúc <span class="text-danger">*</span>
-                                                                                            </label>
-                                                                                            <input type="time" required class="form-control" name="end_time[]" id="end_time_${id}" readonly>
-                                                                                        </div>
-                                                                                    </div>
-                                                                                    <div class="col-lg-2 ps-5 d-flex align-items-center">
-                                                                                        <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${id}">
-                                                                                            <i class="bi bi-trash"></i>
-                                                                                        </button>
-                                                                                    </div>
-                                                                                </div>
-                                                                            `;
+                                                                                                            <div class="row align-items-center" id="row_${id}">
+                                                                                                                <div class="col-lg-5">
+                                                                                                                    <div class="mb-3">
+                                                                                                                        <label for="start_time_${id}" class="form-label">
+                                                                                                                            Thời gian bắt đầu <span class="text-danger">*</span>
+                                                                                                                        </label>
+                                                                                                                        <input type="time" required class="form-control" name="start_time[]" data-id="${id}" id="start_time_${id}" aria-label="Chọn thời gian">
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                                <div class="col-lg-5">
+                                                                                                                    <div class="mb-3">
+                                                                                                                        <label for="end_time_${id}" class="form-label">
+                                                                                                                            Thời gian kết thúc <span class="text-danger">*</span>
+                                                                                                                        </label>
+                                                                                                                        <input type="time" required class="form-control" name="end_time[]" id="end_time_${id}" readonly>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                                <div class="col-lg-2 ps-5 d-flex align-items-center">
+                                                                                                                    <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${id}">
+                                                                                                                        <i class="bi bi-trash"></i>
+                                                                                                                    </button>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        `;
             $('#listTime').append(html);
         }
 
@@ -332,7 +338,7 @@
         $('#autoGenerate').prop('disabled', true);
         $('#price_special').prop('disabled', true);
         $('input[name="start_time[]"]').prop('disabled', true);
-
+        // branch_id
         $('#branch_id').change(function () {
             // Khi chọn branch sẽ sinh ra các cinema của branch đó
             let id = $(this).val();
@@ -396,7 +402,7 @@
 
 
         });
-
+        // cinema_id
         $('#cinema_id').change(function () {
             let id = $(this).val();
             // Khi cinema thay đổi thì set giá trị cho các room của cinema đó
@@ -435,7 +441,7 @@
             }
 
         })
-
+        // room_id
         $('#room_id').change(function () {
             // Khi room thay đổi thì set seat_structure 
             let id = $(this).val();
@@ -463,7 +469,7 @@
             $('#seat_structure').val(JSON.stringify(dataSeatStructure));
         });
 
-        // Thêm dòng 
+        // Thêm time
         $('#addTime').click(function () {
             let date = $('#date').val();
             addTimeRow();
@@ -472,12 +478,12 @@
             }
         });
 
-        // Xóa dòng 
+        // Xóa time 
         $('#listTime').on('click', '.removeItem', function () {
             const id = $(this).data('id');
             $(`#row_${id}`).remove();
         });
-
+        // Chọn date
         $('#date').change(function () {
             $('#autoGenerate').prop('disabled', false);
             $('input[name="start_time[]"]').prop('disabled', false);
@@ -579,7 +585,6 @@
             $('#surchargeDay').val(surchargeDay);
 
         })
-
         // Khi start_time thay đổi 
         $('#listTime').on('change', 'input[name="start_time[]"]', function () {
             const currentId = $(this).data('id'); // id của div đó
@@ -678,82 +683,123 @@
                     }
                 }
 
-                console.log(screeningsChecks);
             }
 
 
             // Nếu thỏa mãn các điều kiện, cập nhật thời gian kết thúc của xuất chiếu hiện tại
             $(`#end_time_${currentId}`).val(convertMinutesToTime(currentEndMinutes));
         });
-
+        // Auto gen time
         $('#autoGenerate').click(function () {
-            // Thời lượng phim
             const durationMovie = +$('#duration').val();
-
+            let dataDate = $('#date').val();
             if (!durationMovie) {
                 toastr.error('Thời lượng phim không hợp lệ!');
                 return;
             }
 
-            // Chuyển đổi thời gian của rạp về số nguyên
-            const startOperatingMinutes = convertTimeToMinutes(operatingStart);
-            const endOperatingMinutes = convertTimeToMinutes(operatingEnd);
+            const startOperatingMinutes = convertTimeToMinutes(operatingStart); // 8:00
+            const endOperatingMinutes = convertTimeToMinutes(operatingEnd); // 23:00
 
-            // Xóa toàn bộ danh sách
             $('#listTime').empty();
-
             idRowCounter = 1;
 
-            // Tính toán và tạo các suất chiếu
-            let currentTime = startOperatingMinutes;
+            const fixedShowTimes = [
+                convertTimeToMinutes("08:00"),
+                convertTimeToMinutes("10:00"),
+                convertTimeToMinutes("12:00"),
+                convertTimeToMinutes("15:00"),
+                convertTimeToMinutes("17:00"),
+                convertTimeToMinutes("19:00"),
+                convertTimeToMinutes("21:00"),
+                convertTimeToMinutes("23:00"),
+            ];
 
-            // Lặp cho đến khi suất chiếu mới vượt quá giờ đóng cửa
-            while (currentTime + durationMovie <= endOperatingMinutes) {
+            let screeningsChecks = [];
 
-                const showStart = convertMinutesToTime(currentTime); // Giá trị của start_time
-                const showEnd = convertMinutesToTime(currentTime + durationMovie); // Giá trị của end_time
-
-                // Tạo HTML cho dòng xuất chiếu
-                const row = `
-                                                                                         <div class="row align-items-center" id="row_${idRowCounter}">
-                                                                                             <div class="col-lg-5">
-                                                                                                 <div class="mb-3">
-                                                                                                     <label for="start_time_${idRowCounter}" class="form-label">
-                                                                                                         Thời gian bắt đầu <span class="text-danger">*</span>
-                                                                                                     </label>
-                                                                                                     <input type="time" required class="form-control" name="start_time[]" data-id="${idRowCounter}" id="start_time_${idRowCounter}" value="${showStart}">
-                                                                                                 </div>
-                                                                                             </div>
-                                                                                             <div class="col-lg-5">
-                                                                                                 <div class="mb-3">
-                                                                                                     <label for="end_time_${idRowCounter}" class="form-label">
-                                                                                                         Thời gian kết thúc <span class="text-danger">*</span>
-                                                                                                     </label>
-                                                                                                     <input type="time" required class="form-control" name="end_time[]" id="end_time_${idRowCounter}" value="${showEnd}" readonly>
-                                                                                                 </div>
-                                                                                             </div>
-                                                                                             <div class="col-lg-2 ps-5 d-flex align-items-center">
-                                                                                                 <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${idRowCounter}">
-                                                                                                     <i class="bi bi-trash"></i>
-                                                                                                 </button>
-                                                                                             </div>
-                                                                                         </div>
-                                                                                                                                                        `;
-
-                // Thêm dòng vào danh sách
-                $('#listTime').append(row);
-                idRowCounter++;
-
-                // Tính thời gian bắt đầu của suất chiếu tiếp theo
-                currentTime += durationMovie + gapTime;
+            if (dataShowtimeCheck) {
+                dataShowtimeCheck.forEach((item) => {
+                    screeningsChecks.push({
+                        id: item.id,
+                        startMinutes: convertTimeToMinutes(item.start_time),
+                        endMinutes: convertTimeToMinutes(item.end_time)
+                    });
+                });
             }
 
-            // Nếu không có suất chiếu nào được tạo (ví dụ, nếu khoảng thời gian hoạt động quá ngắn)
+            let lastEndTime = startOperatingMinutes; // Lưu lại thời gian kết thúc của suất chiếu trước đó
+
+            fixedShowTimes.forEach(startTime => {
+                // Nếu suất chiếu trước đó kết thúc gần sát suất hiện tại -> bỏ qua
+                if (lastEndTime !== startOperatingMinutes && lastEndTime + 10 > startTime) {
+                    return;
+                }
+
+                const endTime = startTime + durationMovie;
+                if (endTime > endOperatingMinutes) return;
+
+                // Kiểm tra có chồng lấn suất chiếu cũ không
+                let isOverlapping = screeningsChecks.some(existing => {
+                    return (
+                        (startTime >= existing.startMinutes && startTime < existing.endMinutes) || // Bắt đầu trong khoảng cũ
+                        (endTime > existing.startMinutes && endTime <= existing.endMinutes) || // Kết thúc trong khoảng cũ
+                        (startTime <= existing.startMinutes && endTime >= existing.endMinutes) // Bao trùm suất cũ
+                    );
+                });
+
+                // Kiểm tra nếu có khoảng trống giữa các suất chiếu cũ để chèn vào
+                let canFitBetween = screeningsChecks.every(existing => {
+                    return (
+                        endTime <= existing.startMinutes || startTime >= existing.endMinutes
+                    );
+                });
+
+                if (!isOverlapping || canFitBetween) {
+                    const showStart = convertMinutesToTime(startTime);
+                    const showEnd = convertMinutesToTime(endTime);
+
+                    const row = `
+                            <div class="row align-items-center" id="row_${idRowCounter}">
+                                <div class="col-lg-5">
+                                    <div class="mb-3">
+                                        <label for="start_time_${idRowCounter}" class="form-label">
+                                            Thời gian bắt đầu <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="time" required class="form-control" name="start_time[]" data-id="${idRowCounter}" id="start_time_${idRowCounter}" value="${showStart}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="mb-3">
+                                        <label for="end_time_${idRowCounter}" class="form-label">
+                                            Thời gian kết thúc <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="time" required class="form-control" name="end_time[]" id="end_time_${idRowCounter}" value="${showEnd}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-2 ps-5 d-flex align-items-center">
+                                    <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${idRowCounter}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `;
+
+                    $('#listTime').append(row);
+                    idRowCounter++;
+
+                    lastEndTime = endTime; // Cập nhật thời gian kết thúc của suất chiếu hiện tại
+                }
+            });
+
             if ($('#listTime').children().length === 0) {
+                addTimeRow();
+                if (!dataDate) {
+                    $('input[name="start_time[]"]').prop('disabled', true);
+                }
                 toastr.error('Không đủ thời gian để tạo suất chiếu theo cấu hình hiện tại!');
             }
         });
-
+        // submit
         $('#submitForm').click(function (e) {
 
 
