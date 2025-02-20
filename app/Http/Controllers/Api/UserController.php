@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\UserService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
@@ -23,21 +24,51 @@ class UserController extends Controller
         $this->userService = $userService;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         try {
-            $users = $this->userService->getAllPaginateUsers(10, 'id');
-            $roles = Role::all();
+            // Tổng số bản ghi (không lọc)
+            $totalRecords = User::count();
 
-            return $this->successResponse([
-                'users' => $users,
-                'roles' => $roles
-            ], 'Thao tác thành công', Response::HTTP_OK);
-        } catch (\Throwable $e) {
-            return $this->errorResponse(
-                $e->getMessage(),
-                Response::HTTP_INTERNAL_SERVER_ERROR
-            );
+            // Tạo query gốc
+            $query = User::query();
+
+            // Lọc theo giới tính (gender)
+            if ($request->filled('gender')) {
+                $query->where('gender', $request->gender);
+            }
+
+            // Lọc theo role (type_user)
+            if ($request->filled('type_user')) {
+                $query->where('type_user', $request->type_user);
+            }
+
+            // Tìm kiếm theo tên hoặc email (DataTables search)
+            if ($request->has('search') && !empty($request->search['value'])) {
+                $searchValue = $request->search['value'];
+                $query->where(function ($q) use ($searchValue) {
+                    $q->where('name', 'LIKE', "%{$searchValue}%")
+                        ->orWhere('email', 'LIKE', "%{$searchValue}%");
+                });
+            }
+
+            // Số bản ghi sau khi lọc
+            $filteredRecords = $query->count();
+
+            // Phân trang
+            $length = $request->input('length', 10); // Số bản ghi mỗi trang (mặc định 10)
+            $start = $request->input('start', 0);   // Bắt đầu từ bản ghi thứ start
+            $users = $query->skip($start)->take($length)->get();
+
+            // Trả về kết quả
+            return response()->json([
+                "draw" => intval($request->draw),
+                "recordsTotal" => $totalRecords,     // Tổng số bản ghi trước lọc
+                "recordsFiltered" => $filteredRecords, // Số bản ghi sau khi lọc
+                "data" => $users,                    // Danh sách người dùng
+            ]);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
         }
     }
 

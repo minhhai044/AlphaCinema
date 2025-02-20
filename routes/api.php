@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\ComboController;
 use App\Http\Controllers\Api\FoodController;
 use App\Http\Controllers\Api\SeatTemplateController;
 use App\Http\Controllers\Api\UpdateActiveController;
+use App\Http\Controllers\Api\UserController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,11 @@ Route::delete('{id}/deletecinemas',[CinemaController::class,'delete']);
 Route::prefix('movies')->group(function () {
     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
 });
+
+Route::prefix('users')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('api.users.index');
+});
+
 
 Route::prefix('foods')->group(function () {
     Route::get('/', [FoodController::class, 'index'])->name('api.foods.index');
