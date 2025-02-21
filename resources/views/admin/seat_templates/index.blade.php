@@ -162,6 +162,7 @@
             @endforeach
         </tbody>
     </table>
+    {{$dataAll->links()}}
     @php
         $appUrl = env('APP_URL');
     @endphp
