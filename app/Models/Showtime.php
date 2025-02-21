@@ -47,5 +47,17 @@ class Showtime extends Model
     public function room(){
         return $this->belongsTo(Room::class);
     }
-
+    public function movie(){
+        return $this->belongsTo(Movie::class);
+    }
+    public function cinema(){
+        return $this->belongsTo(Cinema::class);
+    }
+    public function day(){
+        return $this->belongsTo(Day::class);
+    }
+    public function branch(){
+        return $this->belongsTo(Branch::class);
+    }
+    
 }
