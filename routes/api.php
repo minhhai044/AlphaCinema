@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\CinemaController;
 use App\Http\Controllers\Api\SeatTemplateController;
 use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\API\SiteSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -40,3 +41,4 @@ Route::delete('{id}/deletecinemas',[CinemaController::class,'delete']);
 //     Route::put('/{id}', [MovieController::class, 'update']);
 //     Route::delete('/{id}', [MovieController::class, 'destroy']);
 // });
+Route::get('/settings',[SiteSettingController::class,'index']);

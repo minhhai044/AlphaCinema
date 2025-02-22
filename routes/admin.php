@@ -19,6 +19,7 @@ use App\Http\Controllers\Admin\FoodController;
 use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\RoomController;
+use App\Http\Controllers\Admin\SiteSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -200,3 +201,11 @@ Route::post('days/update/{id}', [DayController::class, 'update']);
 
 Route::resource('type_seats', TypeSeatController::class);
 
+Route::group([
+    'prefix' => 'settings',  // Tiền tố URL cho tất cả route
+    'as' => 'settings.',    
+],function (){
+Route::get('/',[SiteSettingController::class,'index'])->name('index');
+Route::put('/update/{id}',[SiteSettingController::class,'update'])->name('update');
+Route::post('/reset',[SiteSettingController::class,'resetToDefault'])->name('reset');
+});

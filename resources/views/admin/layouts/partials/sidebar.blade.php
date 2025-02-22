@@ -23,7 +23,7 @@
                     <span data-key="t-dashboard">Trang chủ</span>
                 </a>
             </li>
-          
+
 
             <li>
                 <a href="javascript: void(0);" class="has-arrow">
@@ -42,10 +42,10 @@
                         <a href="{{ route('admin.ranks.index') }}">
                             <span data-key="t-ranks">Ranks</span>
 
-                        <a href="{{ route('admin.branches.index') }}">
-                            <span data-key="t-branches">Branches</span>
+                            <a href="{{ route('admin.branches.index') }}">
+                                <span data-key="t-branches">Branches</span>
 
-                        </a>
+                            </a>
                     </li>
 
                     <li>
@@ -88,56 +88,69 @@
                     <i data-feather="grid"></i>
                     <span data-key="t-cinema-systems">Quản lí loại ghế </span>
                 </a>
-                {{-- <ul class="sub-menu" aria-expanded="false">
+            </li>
+            <li>
+                <a href="javascript: void(0);" class="has-arrow">
+                    <i data-feather="grid"></i>
+                    <span data-key="t-cinema-systems">Phim và suất chiếu </span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
                     <li>
-                        <a href="{{ route('admin.typerooms.index') }}">
-                            <span data-key="t-cinemas">Danh sách loại phòng</span>
+                        <a href="">
+                            <span data-key="t-cinemas">Quản lý Hóa đơn </span>
                         </a>
                     </li>
-                </ul> --}}
+                {{-- </ul>
+                <ul class="sub-menu" aria-expanded="false"> --}}
+                    <li>
+                        <a href="{{ route('admin.rooms.index') }}">
+                            <span data-key="t-rooms">Quản lý phòng chiếu</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
             <li>
 
                 <a href="{{ route('admin.users.index') }}">
 
-                <a href="javascript: void(0);" class="has-arrow">
-                    <i data-feather="grid"></i>
-                    <span data-key="t-service-systems">Dịch vụ và ưu đãi</span>
-                </a>
-                <ul class="sub-menu" aria-expanded="false">
-                    <li>
-                        <a href="{{ route('admin.vouchers.index') }}">
-                            <span data-key="t-vouchers">Mã giảm giá</span>
-                        </a>
-                    </li>
+                    <a href="javascript: void(0);" class="has-arrow">
+                        <i data-feather="grid"></i>
+                        <span data-key="t-service-systems">Dịch vụ và ưu đãi</span>
+                    </a>
+                    <ul class="sub-menu" aria-expanded="false">
+                        <li>
+                            <a href="{{ route('admin.vouchers.index') }}">
+                                <span data-key="t-vouchers">Mã giảm giá</span>
+                            </a>
+                        </li>
 
-                    <li>
-                        <a href="{{ route('admin.user-vouchers.index') }}">
-                            <span data-key="t-vouchers">Áp mã</span>
-                        </a>
-                    </li>
+                        <li>
+                            <a href="{{ route('admin.user-vouchers.index') }}">
+                                <span data-key="t-vouchers">Áp mã</span>
+                            </a>
+                        </li>
 
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow">
-                            <span data-key="t-email">Email</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="apps-email-inbox.html" data-key="t-inbox">Inbox</a></li>
-                            <li><a href="apps-email-read.html" data-key="t-read-email">Read Email</a></li>
-                        </ul>
-                    </li>
-                    <li>
-                        <a href="javascript: void(0);" class="has-arrow">
-                            <span data-key="t-invoices">Invoices</span>
-                        </a>
-                        <ul class="sub-menu" aria-expanded="false">
-                            <li><a href="apps-invoices-list.html" data-key="t-invoice-list">Invoice List</a>
-                            </li>
-                            <li><a href="apps-invoices-detail.html" data-key="t-invoice-detail">Invoice
-                                    Detail</a></li>
-                        </ul>
-                    </li>
-                </ul>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <span data-key="t-email">Email</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="apps-email-inbox.html" data-key="t-inbox">Inbox</a></li>
+                                <li><a href="apps-email-read.html" data-key="t-read-email">Read Email</a></li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="javascript: void(0);" class="has-arrow">
+                                <span data-key="t-invoices">Invoices</span>
+                            </a>
+                            <ul class="sub-menu" aria-expanded="false">
+                                <li><a href="apps-invoices-list.html" data-key="t-invoice-list">Invoice List</a>
+                                </li>
+                                <li><a href="apps-invoices-detail.html" data-key="t-invoice-detail">Invoice
+                                        Detail</a></li>
+                            </ul>
+                        </li>
+                    </ul>
             </li>
 
             <li>
@@ -200,14 +213,9 @@
                     <span data-key="t-movies">Day</span>
                 </a>
             </li>
+
             <li>
-                <a href="{{route('admin.rooms.index')}}">
-                    <i data-feather="layout"></i>
-                    <span data-key="t-rooms">Quản lý phòng chiếu</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{route('admin.index.seat_templates')}}">
+                <a href="{{ route('admin.index.seat_templates') }}">
                     <i data-feather="box"></i>
                     <span data-key="t-rooms">Seat Templates</span>
                 </a>
@@ -229,6 +237,12 @@
                     <li><a href="form-wizard.html" data-key="t-form-wizard">Wizard</a></li>
                     <li><a href="form-mask.html" data-key="t-form-mask">Mask</a></li>
                 </ul>
+            </li>
+            <li>
+                <a href="{{ route('admin.settings.index') }}" class="has-arrow">
+                    <i data-feather="grid"></i>
+                    <span data-key="t-cinema-systems">Cấu hình website </span>
+                </a>
             </li>
         </ul>
     </div>
