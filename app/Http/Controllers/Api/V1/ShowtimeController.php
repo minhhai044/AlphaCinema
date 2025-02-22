@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Events\RealTimeSeatEvent;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\ShowtimeRequest;
 use App\Models\Movie;
 use App\Models\Showtime;
 use App\Traits\ApiResponseTrait;
@@ -74,6 +76,39 @@ class ShowtimeController extends Controller
                 $th->getMessage(),
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
+        }
+    }
+    public function changeSeatStatus(ShowtimeRequest $showtimeRequest, string $id)
+    {
+        try {
+            $showtime = Showtime::query()->findOrFail($id);
+            $seat_structures = json_decode($showtime->seat_structure, true);
+
+            if (!empty($seat_structures)) {
+                foreach ($seat_structures as &$seat_structure) {
+                    if ($seat_structure['id'] == $showtimeRequest->seat_id) {
+                        $seat_structure['user_id'] = $showtimeRequest->user_id;
+                        $seat_structure['status'] = $showtimeRequest->status;
+                        break;
+                    }
+                }
+            }
+
+            $showtime->update([
+                'seat_structure' => json_encode($seat_structures),
+            ]);
+            if ($seat_structure['status'] === 'hold') {
+                broadcast(new RealTimeSeatEvent($seat_structure['id'], $seat_structure['status']))->toOthers();
+            }
+            return $this->successResponse(
+                $seat_structures,
+                'Thao tác thành công'
+            );
+        } catch (\Throwable $th) {
+            return response()->json([
+                'error' => 'Thao tác không thành công',
+                'message' => $th->getMessage()
+            ], 500);
         }
     }
 }
