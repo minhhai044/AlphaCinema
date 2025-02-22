@@ -116,6 +116,7 @@
                                                 @endif
                                             </div>
                                         </div>
+                                       
                                         <div class="mb-3">
                                             <label class="form-label">URL</label>
                                             <input type="text" name="trailer_url"

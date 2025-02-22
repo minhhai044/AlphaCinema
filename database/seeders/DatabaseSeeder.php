@@ -17,7 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-       
+
         \App\Models\User::factory(50)->create();
 
         \App\Models\User::factory()->create([
@@ -93,6 +93,9 @@ class DatabaseSeeder extends Seeder
             'Thêm giá',
             'Sửa giá',
             'Xóa giá',
+            // 'Thêm giá',
+            'Sửa giá',
+            // 'Xóa giá',
             'Danh sách bài viết',
             'Thêm bài viết',
             'Sửa bài viết',
@@ -116,9 +119,19 @@ class DatabaseSeeder extends Seeder
 
         ];
 
-        // // Tạo các quyền từ danh sách
+
+        // Tạo các quyền từ danh sách
         foreach ($permissions as $permission) {
             Permission::create(['name' => $permission]);
+        }
+        $roles = [
+            'System Admin',
+            'Quản lý cơ sở',
+            'Nhân viên'
+        ];
+
+        foreach ($roles as $roleName) {
+            Role::create(['name' => $roleName]);
         }
 
         $adminRole = Role::findByName('System Admin');
