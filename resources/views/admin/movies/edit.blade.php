@@ -1,230 +1,287 @@
 @extends('admin.layouts.master')
 @section('content')
-    <!-- start page title -->
-    <div class="row">
-
-        <h1 class="card-title">Sửa phim: {{ $movie->name }}</h1>
-        <div class="col-12">
-            <<form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                @method('PUT')
+                <!-- start page title -->
                 <div class="row">
-                    <!-- Khối 9/12 -->
-                    <div class="col-lg-9">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tên phim</label>
-                                            <input type="text" name="name" value="{{ old('name', $movie->name) }}"
-                                                class="form-control">
-                                            @error('name')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Đường dẫn phim</label>
-                                            <input type="text" name="slug" value="{{ old('slug', $movie->slug) }}"
-                                                class="form-control">
-                                            @error('slug')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                    <h1 class="card-title">Sửa phim: {{ $movie->name }}</h1>
+                    <div class="col-12">
+                        <form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data">
+                            @csrf
+                            @method('PUT')
+                            <div class="row">
+                                <!-- Khối 9/12 -->
+                                <div class="col-lg-9">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <div class="row">
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Tên phim</label>
+                                                        <input type="text" name="name" value="{{ old('name', $movie->name) }}"
+                                                            class="form-control">
+                                                        @error('name')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Danh mục phim</label>
-                                            <input type="text" name="category"
-                                                value="{{ old('category', $movie->category) }}" class="form-control">
-                                            @error('category')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Đường dẫn phim</label>
+                                                        <input type="text" name="slug" value="{{ old('slug', $movie->slug) }}"
+                                                            class="form-control">
+                                                        @error('slug')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Ảnh</label>
-                                            <input type="file" name="img_thumbnail" class="form-control">
-                                            @if ($movie->img_thumbnail)
-                                                <img src="{{ asset('storage/' . $movie->img_thumbnail) }}" width="100"
-                                                    class="mt-2">
-                                            @endif
-                                            @error('img_thumbnail')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Danh mục phim</label>
+                                                        <input type="text" name="category"
+                                                            value="{{ old('category', $movie->category) }}" class="form-control">
+                                                        @error('category')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim</label>
-                                            @php
-                                                $selectedVersions = json_decode($movie->movie_versions, true) ?? [];
-                                            @endphp
-                                            <input type="checkbox" name="movie_versions[]" value="Action"
-                                                {{ in_array('Action', $selectedVersions) ? 'checked' : '' }}> Action
-
-                                            <input type="checkbox" name="movie_versions[]" value="Horror"
-                                                {{ in_array('Horror', $selectedVersions) ? 'checked' : '' }}> Horror
-
-                                            <input type="checkbox" name="movie_versions[]" value="Comedy"
-                                                {{ in_array('Comedy', $selectedVersions) ? 'checked' : '' }}> Comedy
-                                            @error('movie_versions')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Mô tả</label>
-                                            <textarea name="description" class="form-control">{{ old('description', $movie->description) }}</textarea>
-                                            @error('description')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tác giả</label>
-                                            <input type="text" name="director"
-                                                value="{{ old('director', $movie->director) }}" class="form-control">
-                                            @error('director')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Thời lượng phim</label>
-                                            <input type="text" name="trailer_url"
-                                                value="{{ old('trailer_url', $movie->trailer_url) }}" class="form-control">
-                                            @error('trailer_url')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Thời lượng phim</label>
-                                            <input type="text" name="duration"
-                                                value="{{ old('duration', $movie->duration) }}" class="form-control">
-                                            @error('duration')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Ảnh</label>
+                                                        <input type="file" name="img_thumbnail" class="form-control">
+                                                        @if ($movie->img_thumbnail)
+                                                            <img src="{{ asset('storage/' . $movie->img_thumbnail) }}" width="100"
+                                                                class="mt-2">
+                                                        @endif
+                                                        @error('img_thumbnail')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
 
 
-                                        <div class="mb-4">
-                                            <label>Ngày trình chiếu</label>
-                                            <div class="input-group">
-                                                <input type="datetime-local" class="form-control" name="release_date"
-                                                    value="{{ old('release_date', $movie->release_date ? date('Y-m-d\TH:i', strtotime($movie->release_date)) : '') }}">
-                                                @error('release_date')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Mô tả</label>
+                                                        <textarea name="description" class="form-control">{{ old('description', $movie->description) }}</textarea>
+                                                        @error('description')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
 
-                                                <input type="datetime-local" class="form-control" name="end_date"
-                                                    value="{{ old('end_date', $movie->end_date ? date('Y-m-d\TH:i', strtotime($movie->end_date)) : '') }}">
-                                                @error('end_date')
-                                                    <div class="text-danger">{{ $message }}</div>
-                                                @enderror
+                                                <div class="col-lg-6">
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Tác giả</label>
+                                                        <input type="text" name="director"
+                                                            value="{{ old('director', $movie->director) }}" class="form-control">
+                                                        @error('director')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Thời lượng phim</label>
+                                                        <input type="text" name="trailer_url"
+                                                            value="{{ old('trailer_url', $movie->trailer_url) }}" class="form-control">
+                                                        @error('trailer_url')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Thời lượng phim</label>
+                                                        <input type="text" name="duration"
+                                                            value="{{ old('duration', $movie->duration) }}" class="form-control">
+                                                        @error('duration')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                    @php
+    $selectedVersions = (array) old(
+        'movie_versions',
+        $movie->movie_versions ?? [],
+    );
+    $selectedGenres = (array) old('movie_genres', $movie->movie_genres ?? []);
+                                                    @endphp
+
+                                                    <!-- Thể loại phim -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Thể loại phim</label>
+                                                        <div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                                    value="Action" id="genre_action"
+                                                                    {{ in_array('Action', $selectedGenres) ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="genre_action">Action</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                                    value="Horror" id="genre_horror"
+                                                                    {{ in_array('Horror', $selectedGenres) ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="genre_horror">Horror</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                                    value="Comedy" id="genre_comedy"
+                                                                    {{ in_array('Comedy', $selectedGenres) ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="genre_comedy">Comedy</label>
+                                                            </div>
+                                                        </div>
+                                                        @error('movie_genres')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+
+                                                    <!-- Phiên bản phim -->
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Phiên bản phim</label>
+                                                        <div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="movie_versions[]" value="2D" id="version_2d"
+                                                                    {{ in_array('2D', $selectedVersions) ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="version_2d">2D</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="movie_versions[]" value="3D" id="version_3d"
+                                                                    {{ in_array('3D', $selectedVersions) ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="version_3d">3D</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="checkbox"
+                                                                    name="movie_versions[]" value="4D" id="version_4d"
+                                                                    {{ in_array('4D', $selectedVersions) ? 'checked' : '' }}>
+                                                                <label class="form-check-label" for="version_4d">4D</label>
+                                                            </div>
+                                                        </div>
+                                                        @error('movie_versions')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                    <div class="mb-4">
+                                                        <label>Ngày trình chiếu</label>
+                                                        <div class="input-group">
+                                                            <input type="date" class="form-control" name="release_date"
+                                                                value="{{ old('release_date', $movie->release_date ? date('Y-m-d', strtotime($movie->release_date)) : '') }}">
+                                                            @error('release_date')
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+
+                                                            <input type="date" class="form-control" name="end_date"
+                                                                value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}">
+                                                            @error('end_date')
+                                                                <div class="text-danger">{{ $message }}</div>
+                                                            @enderror
+                                                        </div>
+                                                    </div>
+                                                <div class="mb-3" id="surcharge_container" style="display: none;">
+                                                    <label class="form-label">Phụ phí</label>
+                                                    <input type="number" name="surcharge"
+                                                        class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
+                                                        value="{{ old('surcharge', $movie->surcharge ?? '') }}">
+                                                    @if ($errors->has('surcharge'))
+                                                        <div class="invalid-feedback">{{ $errors->first('surcharge') }}</div>
+                                                    @endif
+                                                </div>
+                                                    <div class="mb-3">
+                                                        <label class="form-label">Đánh giá</label>
+                                                        <input type="number" name="rating" class="form-control"
+                                                            value="{{ old('rating', $movie->rating) }}">
+                                                        @error('rating')
+                                                            <div class="text-danger">{{ $message }}</div>
+                                                        @enderror
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Phụ phí</label>
-                                            <input type="number" name="surcharge" class="form-control"
-                                                value="{{ old('surcharge', $movie->surcharge) }}">
-                                            @error('surcharge')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Thể loại phim</label>
-                                            @php
-                                                $selectedVersions = json_decode($movie->movie_genres, true) ?? [];
-                                            @endphp
-                                            <input type="checkbox" name="movie_genres[]" value="2D"
-                                                {{ in_array('2D', $selectedVersions) ? 'checked' : '' }}> 2D
-
-                                            <input type="checkbox" name="movie_genres[]" value="3D"
-                                                {{ in_array('3D', $selectedVersions) ? 'checked' : '' }}> 3D
-
-                                            <input type="checkbox" name="movie_genres[]" value="4D"
-                                                {{ in_array('4D', $selectedVersions) ? 'checked' : '' }}> 4D
-                                            @error('movie_genres')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Đánh giá</label>
-                                            <input type="number" name="rating" class="form-control"
-                                                value="{{ old('rating', $movie->rating) }}">
-                                            @error('rating')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                    </div>
 
 
 
-                    <!-- Khối 3/12 -->
-                    <div class="col-lg-3">
-                        <div class="card">
-                            <div class="card-body">
-                                @php
-                                    $statuses = [
-                                        'is_active' => 'Active',
-                                        'is_hot' => 'Hot',
-                                        'is_special' => 'Special',
-                                        'is_publish' => 'Publish',
-                                    ];
-                                @endphp
+                                <!-- Khối 3/12 -->
+                                <div class="col-lg-3">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            @php
+    $statuses = [
+        'is_active' => 'Active',
+        'is_hot' => 'Hot',
+        'is_special' => 'Special',
+        'is_publish' => 'Publish',
+    ];
+                                            @endphp
 
-                                @foreach ($statuses as $key => $label)
-                                    <div class="d-flex align-items-center gap-2 mb-2">
-                                        <div class="square-switch">
-                                            <input type="checkbox" id="square-switch_{{ $key }}" switch="bool"
-                                                {{ $movie->$key ? 'checked' : '' }} />
-                                            <label for="square-switch_{{ $key }}" data-on-label="Yes"
-                                                data-off-label="No"></label>
+                                            @foreach ($statuses as $key => $label)
+                                                <div class="d-flex align-items-center gap-2 mb-2">
+                                                    <div class="square-switch">
+                                                        <input type="checkbox" id="square-switch_{{ $key }}" switch="bool"
+                                                            {{ $movie->$key ? 'checked' : '' }} />
+                                                        <label for="square-switch_{{ $key }}" data-on-label="Yes"
+                                                            data-off-label="No"></label>
+                                                    </div>
+                                                    <span>{{ $label }}</span>
+                                                </div>
+                                                <input type="hidden" name="{{ $key }}" id="{{ $key }}"
+                                                    value="{{ $movie->$key }}">
+                                            @endforeach
                                         </div>
-                                        <span>{{ $label }}</span>
                                     </div>
-                                    <input type="hidden" name="{{ $key }}" id="{{ $key }}"
-                                        value="{{ $movie->$key }}">
-                                @endforeach
+                                    <div class="d-flex flex-wrap gap-2">
+                                        <a href="">
+                                            <button type="submit" class="btn btn-primary waves-effect waves-light">
+                                                Submit
+                                            </button>
+                                        </a>
+                                        <a href="{{ route('admin.movies.index') }}" class="btn btn-secondary mb-3">Quay lại</a>
+                                    </div>
+                                </div>
+
+                                <script>
+                                    document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function(checkbox) {
+                                        checkbox.addEventListener("change", function() {
+                                            let hiddenInput = document.getElementById(this.id.replace("square-switch_", ""));
+                                            hiddenInput.value = this.checked ? 1 : 0;
+                                        });
+                                    });
+                                </script>
+
+
                             </div>
-                        </div>
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="">
-                                <button type="submit" class="btn btn-primary waves-effect waves-light">
-                                    Submit
-                                </button>
-                            </a>
-                            <a href="{{ route('admin.movies.index') }}" class="btn btn-secondary mb-3">Quay lại</a>
-                        </div>
+
+                        </form>
                     </div>
-
-                    <script>
-                        document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function(checkbox) {
-                            checkbox.addEventListener("change", function() {
-                                let hiddenInput = document.getElementById(this.id.replace("square-switch_", ""));
-                                hiddenInput.value = this.checked ? 1 : 0;
-                            });
-                        });
-                    </script>
-
+                </div>
+                <!-- end select2 -->
 
                 </div>
-
-                </form>
-        </div>
-    </div>
-    <!-- end select2 -->
-
-    </div>
 @endsection
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var specialCheckbox = document.getElementById('square-switch_is_special');
+        var surchargeContainer = document.getElementById('surcharge_container');
+        var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
+
+        function toggleSurchargeInput() {
+            if (specialCheckbox.checked) {
+                surchargeContainer.style.display = 'block';
+                surchargeInput.disabled = false; // Cho phép nhập liệu
+            } else {
+                surchargeContainer.style.display = 'none';
+                surchargeInput.disabled = true; // Không cho nhập, không gửi dữ liệu
+                surchargeInput.value = ''; // Xóa giá trị khi ẩn để tránh lưu dữ liệu không mong muốn
+            }
+        }
+
+        // Kiểm tra trạng thái khi tải trang
+        toggleSurchargeInput();
+
+        // Lắng nghe sự kiện thay đổi của checkbox "Special"
+        specialCheckbox.addEventListener('change', toggleSurchargeInput);
+    });
+
+    // Cập nhật giá trị của hidden input cho các checkbox trạng thái
+    document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function (checkbox) {
+        checkbox.addEventListener('change', function () {
+            var hiddenInput = document.getElementById(this.id.replace('square-switch_', ''));
+            if (hiddenInput) {
+                hiddenInput.value = this.checked ? '1' : '0';
+            }
+        });
+    });
+</script>

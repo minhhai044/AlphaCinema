@@ -80,7 +80,6 @@
                                 <a data-bs-toggle="modal" class="add_type_room btn btn-light waves-effect waves-light"
                                     data-bs-target="#addModal">
                                     <i class="mdi mdi-plus"></i>
-
                                     Thêm mới
                                 </a>
                             </div>
@@ -148,7 +147,7 @@
 
                                             </td>
                                             <td>
-                                                <div>{{ $item->created_at->format('d/m/Y H:i:s') }}</div>
+                                                <div>{{ $item->created_at }}</div>
 
                                             </td>
                                             <td>
@@ -167,7 +166,7 @@
                                                                 data-surcharge={{ $item->surcharge }}>
                                                                 <i
                                                                     class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                                Edit
+                                                                Sửa 
                                                             </button>
                                                         </li>
                                                         {{-- xoas --}}
@@ -179,8 +178,7 @@
                                                                 @method('DELETE')
                                                                 <button type="submit" class="dropdown-item edit-list"
                                                                     onclick="return confirm('Bạn có muốn xóa không')">
-                                                                    <i
-                                                                        class="mdi mdi-pencil font-size-16 text-danger me-1"></i>
+                                                                    <i class="mdi mdi-pencil font-size-16 text-danger me-1"></i>
                                                                     Xóa
                                                                 </button>
                                                             </form>

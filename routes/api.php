@@ -1,13 +1,17 @@
 <?php
 
+
+use App\Http\Controllers\Api\ShowtimeController;
+
+use App\Http\Controllers\Api\CinemaController;
+use App\Http\Controllers\Api\SeatTemplateController;
+use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\API\SiteSettingController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\RoomController;
-use App\Http\Controllers\Api\MovieController;
-use App\Http\Controllers\Api\CinemaController;
 use App\Http\Controllers\Api\ComboController;
 use App\Http\Controllers\Api\FoodController;
-use App\Http\Controllers\Api\SeatTemplateController;
 use App\Http\Controllers\Api\UpdateActiveController;
 
 /*
@@ -27,6 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
 Route::put('{id}/active-seat-template',[SeatTemplateController::class,'activeSeatTemplate']);
 Route::put('{id}/active-room',[RoomController::class,'activeRoom']);
+Route::get('{id}/showtime',[ShowtimeController::class,'getByDate']);
 
 Route::get('/cinemas',[CinemaController::class,'index']);
 Route::get('{id}/showcinemas',[CinemaController::class,'show']);
@@ -56,3 +61,10 @@ Route::prefix('combos')->group(function () {
 // Change active
 Route::post('food/change-active',       [UpdateActiveController::class, 'food'])->name('food.change-active');
 Route::post('combos/change-active',     [UpdateActiveController::class, 'combo'])->name('combos.change-active');
+// Route::prefix('admin/movies')->group(function () {
+//     Route::get('/', [MovieController::class, 'index']);
+//     Route::post('/', [MovieController::class, 'store']);
+//     Route::put('/{id}', [MovieController::class, 'update']);
+//     Route::delete('/{id}', [MovieController::class, 'destroy']);
+// });
+Route::get('/settings',[SiteSettingController::class,'index']);

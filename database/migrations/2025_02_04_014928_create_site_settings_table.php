@@ -26,11 +26,11 @@ return new class extends Migration
             $table->string('youtube_link')->nullable();
             $table->string('instagram_link')->nullable();
             $table->string('privacy_policy_image')->nullable()->comment('Hình ảnh chính sách bảo mật');
-            $table->string('privacy_policy')->nullable()->comment('Chính sách bảo mật');
+            $table->mediumText('privacy_policy')->nullable()->comment('Chính sách bảo mật');
             $table->string('terms_of_service_image')->nullable()->comment('Hình ảnh điều khoản dịch vụ');
-            $table->string('terms_of_service')->nullable()->comment('Điều khoản dịch vụ');
+            $table->mediumText('terms_of_service')->nullable()->comment('Điều khoản dịch vụ');
             $table->string('introduction_image')->nullable()->comment('Hình ảnh giới thiệu');
-            $table->string('introduction')->nullable()->comment('Giới thiệu');
+            $table->mediumText('introduction')->nullable()->comment('Giới thiệu');
             $table->string('copyright')->nullable()->comment('Bản quyền');
             $table->timestamps();
         });
