@@ -51,7 +51,7 @@
                                 <label for="code" class="form-label">
                                     <span class="required">*</span> Mã giảm giá (Tự động)
                                 </label>
-                                <input type="text" name="code" id="code" class="form-control" value="{{ old('code', $voucher->code) }}" readonly>
+                                <input type="text" name="code" id="code" class="form-control" value="{{ old('code', $voucher->code) }}">
                                 @error('code')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror

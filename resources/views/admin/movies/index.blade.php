@@ -119,11 +119,22 @@
                                         <img src="{{ Storage::url($movie->img_thumbnail) }}" alt="" width="100px">
                                     </td>
                                     <td>
-                                        {{ implode(', ', json_decode($movie->movie_versions, true) ?? []) }}
+                                        @php
+                                            $versions = is_string($movie->movie_versions)
+                                                ? json_decode($movie->movie_versions, true)
+                                                : $movie->movie_versions;
+                                        @endphp
+                                        {{ implode(', ', $versions ?? []) }}
                                     </td>
                                     <td>
-                                        {{ implode(', ', json_decode($movie->movie_genres, true) ?? []) }}
+                                        {{-- {{ implode(', ', json_decode($movie->movie_genres, true) ?? []) }} --}}
                                         {{-- {{ $movie->movie_genres }} --}}
+                                        @php
+                                            $genres = is_string($movie->movie_genres)
+                                                ? json_decode($movie->movie_genres, true)
+                                                : $movie->movie_genres;
+                                        @endphp
+                                        {{ implode(', ', $genres ?? []) }}
                                     </td>
                                     <td>
                                         <span class="badge {{ $movie->is_active ? 'bg-success' : 'bg-danger' }}">

@@ -160,7 +160,7 @@
                                                                 for="customerlistcheck-{{ $voucher->id }}"></label>
                                                         </div>
                                                     </td>
-                                                    <td>
+                                                    <td class="voucher-code">
                                                         {{ $voucher->code }}
                                                     </td>
                                                     <td>
@@ -176,7 +176,7 @@
                                                     </td>
 
                                                     <td>
-                                                        {{ number_format($voucher->discount )}} VNĐ
+                                                        {{ number_format($voucher->discount) }} VNĐ
 
                                                     </td>
                                                     <td>
@@ -191,25 +191,44 @@
                                                             {{ $voucher->is_active ? 'Active' : 'No Active' }}
                                                         </div>
                                                     </td>
-                                                    <td>
-                                                        <a href="{{ route('admin.vouchers.show', $voucher) }}">
-                                                            <button title="xem" class="btn btn-success btn-sm "
-                                                                type="button"><i class="bi bi-eye"></i></button>
-                                                        </a>
 
-                                                        <a href="{{ route('admin.vouchers.edit', $voucher) }}">
-                                                            <button title="xem" class="btn btn-warning btn-sm "
-                                                                type="button"><i class="fas fa-edit"></i></button>
-                                                        </a>
-                                                        <form action="{{ route('admin.vouchers.destroy', $voucher) }}"
-                                                            method="POST" class="d-inline-block">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                                onclick="return confirm('Bạn có muốn xóa không')">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
+                                                    <td>
+                                                        <div class="dropdown">
+                                                            <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                                                            </a>
+                                                            <ul class="dropdown-menu dropdown-menu-end" style="">
+                                                                <li>
+                                                                    <a href="{{ route('admin.vouchers.edit', $voucher) }}" class="dropdown-item edit-list" data-edit-id="{{ $voucher->id }}">
+                                                                        <i class="mdi mdi-pencil font-size-16 text-success me-1"></i>
+                                                                        Edit
+                                                                    </a>
+                                                                </li>
+                                                                <li>
+                                                                    <form method="POST"
+                                                                        action="{{ route('admin.vouchers.destroy', $voucher) }}"
+                                                                        class="d-inline-block">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="dropdown-item edit-list"
+                                                                            onclick="return confirm('Bạn có muốn xóa không')">
+                                                                            <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
+                                                                            Xóa
+                                                                        </button>
+                                                                    </form>
+                                                                </li>
+                                                                <li>
+                                                                    {{-- <button @method('DELETE') href="{{ route('admin.vouchers.show', $voucher) }}" class="dropdown-item edit-list" data-edit-id="{{ $voucher->id }}">
+                                                                        <i class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
+                                                                        Show
+                                                                    </button> --}}
+                                                                    {{-- <button class="dropdown-item remove-list" data-remove-id="{{ $cinema->id }}">
+                                                                        <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
+                                                                        Delete
+                                                                    </button> --}}
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -291,47 +310,26 @@
 @endsection
 
 <script>
+    //Tìm kiếm mã voucher
     document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput'); // Lấy ô tìm kiếm
-        const rows = document.querySelectorAll('#customerList-table tbody tr'); // Lấy tất cả hàng trong bảng
+        const searchInput = document.getElementById('searchInput');
+        const rows = document.querySelectorAll('#customerList-table tbody tr');
 
-        // Tìm kiếm ngay khi nhập
-        // if (searchInput) {
-        //     searchInput.addEventListener('input', function() {
-        //         const keyword = searchInput.value
-        //     .toLowerCase(); // Lấy từ khóa tìm kiếm và chuyển về chữ thường
+        if (searchInput) {
+            searchInput.addEventListener('input', function() {
+                const keyword = searchInput.value.toLowerCase();
 
-        //         rows.forEach(row => {
-        //             const branchName = row.querySelector('.branch-name').textContent
-        //                 .toLowerCase(); // Lấy tên chi nhánh
+                rows.forEach(row => {
+                    const voucherCode = row.querySelector('.voucher-code')?.textContent
+                        .toLowerCase();
 
-        //             // So sánh từ khóa với tên chi nhánh
-        //             if (branchName.includes(keyword)) {
-        //                 row.style.display = ''; // Hiện hàng nếu khớp
-        //             } else {
-        //                 row.style.display = 'none'; // Ẩn hàng nếu không khớp
-        //             }
-        //         });
-        //     });
-        // }
-
-        // Modal sửa chi nhánh
-        document.querySelectorAll('.editBranch').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const name = this.dataset.name;
-                const isActive = this.dataset.active == 1;
-
-                // Cập nhật form trong modal
-                const form = document.getElementById('editBranchForm');
-                form.action = `/admin/branches/${id}`;
-                document.getElementById('branchName').value = name;
-                document.getElementById('branchActive').checked = isActive;
-
-                // Hiển thị modal
-                const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
-                modal.show();
+                    if (voucherCode.includes(keyword)) {
+                        row.style.display = '';
+                    } else {
+                        row.style.display = 'none';
+                    }
+                });
             });
-        });
+        }
     });
 </script>

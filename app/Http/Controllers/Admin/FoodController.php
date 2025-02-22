@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Request;
-use Storage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use App\Models\Food;
 use App\Services\FoodService;
 use App\Http\Requests\FoodRequest;

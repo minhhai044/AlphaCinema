@@ -46,11 +46,12 @@ class SeatTemplateControler extends Controller
     public function edit(string $id)
     {
         $seatTemplate = Seat_template::query()->findOrFail($id);
+        // dd($seatTemplate);
         $matrix = Seat_template::getMatrixById($seatTemplate->matrix);
         $seatMap = [];
         if ($seatTemplate->seat_structure) {
             $seats = json_decode($seatTemplate->seat_structure, true);
-            
+            // dd(json_decode($seatTemplate->seat_structure));
 
             // Đếm tổng số ghế
             $totalSeats = 0; // Khởi tạo biến tổng số ghế
