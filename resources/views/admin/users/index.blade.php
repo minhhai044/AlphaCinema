@@ -137,10 +137,9 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                @if ($user->avatar)
-                                                    <img src="{{ Storage::url($user->avatar) }}" class="img-thumbnail"
-                                                        alt="Avatar của người dùng" width="100px">
-                                                @endif
+                                                <img id="image-preview"
+                                                src="{{ ($user->avatar &&  Storage::exists($user->avatar)) ? Storage::url($user->avatar) : 'https://graph.facebook.com/4/picture?type=large' }}"
+                                                class="img-fluid rounded avatar-xl"  width="80px">
                                             </td>
                                             <td>
                                                 {{ $user->name }}

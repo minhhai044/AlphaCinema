@@ -26,7 +26,7 @@ class UserRequest extends FormRequest
             return $this->rulesForCreate();
         } elseif ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             return $this->rulesForUpdate($userId);
-        }
+        } 
 
         return [];
     }

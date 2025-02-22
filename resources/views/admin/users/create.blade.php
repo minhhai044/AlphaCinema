@@ -209,10 +209,11 @@
                                 <label for="account-gender" class="form-label">
                                     Vai trò
                                     <span class="required">*</span> </label>
-                                <select class="form-select select2" name="role_id[]" id="multiSelect" multiple="multiple">
+                                    <select class="form-control" name="role_id[]" id="choices-multiple-remove-button"
+                                    placeholder="Chọn một hoặc nhiều mục" multiple>
                                     @foreach ($roles as $role)
-                                        @if ($role->name != 'System Admin')
-                                            <option value="{{ $role->name }}"> {{ $role->name }}</option>
+                                        @if ($role['name'] != 'System Admin')
+                                            <option id="{{ $role['name'] }}"> {{ $role['name'] }}</option>
                                         @endif
                                     @endforeach
                                 </select>
@@ -286,6 +287,11 @@
 @section('script')
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script>
+        $(document).ready(function () {
+            new Choices("#choices-multiple-remove-button", {
+                removeItemButton: true,
+            })
+        });
         let flagSubmit = false;
         let btnSubmit = $('#btnSubmit');
 
