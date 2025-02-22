@@ -24,9 +24,8 @@
                 </a>
             </li>
 
-
+            
             <li>
-
                 <a href="javascript: void(0);" class="has-arrow">
                     <i data-feather="grid"></i>
                     <span data-key="t-service-systems">Dịch vụ và ưu đãi</span>
@@ -34,6 +33,7 @@
                 <ul class="sub-menu" aria-expanded="false">
                     <li>
                         <a href="{{ route('admin.vouchers.index') }}">
+
                             <span data-key="t-vouchers">Quản lý mã giảm giá</span>
                         </a>
                     </li>
@@ -156,6 +156,7 @@
                     <span data-key="t-site-setting">Cấu hình cài đặt </span>
                 </a>
             </li>
+
         </ul>
     </div>
     <!-- Sidebar -->

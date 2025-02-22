@@ -101,7 +101,7 @@ class FoodController extends Controller
     }
 
     // 7. Xóa đồ ăn
-    public function forceDestroy(Food $food)
+    public function destroy(Food $food)
     {
         try {
             // if ($food->combos()->count() > 0) {

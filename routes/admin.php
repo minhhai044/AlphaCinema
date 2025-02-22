@@ -45,7 +45,6 @@ Route::get('/', [DashBoardController::class, 'index'])->name('index');
 Route::resource('cinemas', CinemaController::class);
 Route::resource('ranks', RankController::class);
 
-
 // Route Food
 // Đảm bảo rằng route được khai báo trong nhóm `foods` nếu muốn đặt tên cho route đúng cách.
 Route::group([
@@ -58,7 +57,7 @@ Route::group([
     Route::post('/', [FoodController::class, 'store'])->name('store');
     Route::get('{food}/edit', [FoodController::class, 'edit'])->name('edit');
     Route::put('{food}', [FoodController::class, 'update'])->name('update');
-    Route::delete('{food}/forceDestroy', [FoodController::class, 'forceDestroy'])->name('forceDestroy');
+    Route::delete('{food}/destroy', [FoodController::class, 'destroy'])->name('destroy');
     // Route::get('{food}/restore', [FoodController::class, 'restore'])->name('restore');
     Route::get('{food}', [FoodController::class, 'show'])->name('show');
     // Cập nhật trạng thái "active" cho food
@@ -85,9 +84,6 @@ Route::group([
 
     // Cập nhật
     Route::put('{combo}', [ComboController::class, 'update'])->name('update');
-
-    // Xóa mềm  (soft delete)
-    // Route::delete('{combo}', [ComboController::class, 'solfDestroy'])->name('solfDestroy');
 
     // Xóa vĩnh viễn
     Route::delete('{combo}/destroy', [ComboController::class, 'destroy'])->name('destroy');
@@ -137,6 +133,7 @@ Route::prefix('showtimes')->as('showtimes.')->group(function () {
     Route::post('/store', [ShowtimeController::class, 'store'])->name('store');
     Route::post('/delete', [ShowtimeController::class, 'delete'])->name('delete');
 });
+
 
 Route::group([
     'prefix' => 'users',  // Tiền tố URL cho tất cả route
@@ -192,37 +189,6 @@ Route::prefix('rooms')->as('rooms.')->group(function () {
 });
 
 
-Route::group([
-    'prefix' => 'users',  // Tiền tố URL cho tất cả route
-    'as' => 'users.',     // Nhóm tên route (vd: users.index, users.store)
-], function () {
-    // Danh sách user
-    Route::get('/', [UserController::class, 'index'])->name('index');
-
-    // Hiển thị form tạo user mới
-    Route::get('create', [UserController::class, 'create'])->name('create');
-
-    // Lưu user mới vào database
-    Route::post('/', [UserController::class, 'store'])->name('store');
-
-    // Hiển thị form chỉnh sửa user
-    Route::get('{users}/edit', [UserController::class, 'edit'])->name('edit');
-
-    // Cập nhật user
-    Route::put('{users}', [UserController::class, 'update'])->name('update');
-
-    // Xóa mềm user (soft delete)
-    Route::delete('{users}', [UserController::class, 'solfDestroy'])->name('solfDestroy');
-
-    // Xóa vĩnh viễn user
-    // Route::delete('{users}/forceDestroy', [UserController::class, 'forceDestroy'])->name('forceDestroy');
-
-    // Khôi phục user đã xóa mềm
-    // Route::get('{users}/restore', [UserController::class, 'restore'])->name('restore');
-
-    // Hiển thị chi tiết user phải khai báo cuối cùng trong route
-    Route::get('{users}', [UserController::class, 'show'])->name('show');
-});
 
 Route::prefix('movies')->name('movies.')->group(function () {
     // Danh sách phim
