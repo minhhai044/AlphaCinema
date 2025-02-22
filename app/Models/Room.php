@@ -17,7 +17,8 @@ class Room extends Model
         'type_room_id',
         'description',
         'is_publish',
-        'is_active'
+        'is_active',
+        'matrix_colume'
     ];
     protected $casts = [
         'is_publish' => 'boolean',

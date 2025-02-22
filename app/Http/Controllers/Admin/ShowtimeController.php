@@ -17,10 +17,12 @@ class ShowtimeController extends Controller
     {
         $this->showtimeService = $showtimeService;
     }
-    public function index()
+    public function index(Request $request)
     {
-        [$movies] = $this->showtimeService->getService();
-        return view(self::PATH_VIEW . __FUNCTION__, compact('movies'));
+       
+
+        [$branchs,$branchsRelation ,$listShowtimes,$movies] = $this->showtimeService->getService($request);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs','branchsRelation','listShowtimes','movies'));
     }
     public function create(string $id)
     {
