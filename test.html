@@ -1,50 +1,43 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Time Picker</title>
-
-  <!-- Bootstrap 5.3 CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-
-  <style>
-    body {
-      background-color: #f8f9fa;
-    }
-
-    .container {
-      margin-top: 100px;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Chọn phim và tạo suất chiếu</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
-
 <body>
+    <div class="container mt-5">
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movieModal">Chọn phim</button>
+    </div>
 
+    <!-- Modal chọn phim -->
+    <div class="modal fade" id="movieModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Chọn phim</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <ul class="list-group">
+                        <li class="list-group-item movie-item" data-movie="Avengers">Avengers</li>
+                        <li class="list-group-item movie-item" data-movie="Inception">Inception</li>
+                        <li class="list-group-item movie-item" data-movie="Interstellar">Interstellar</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
 
-  <div class="input-group">
-    <span class="input-group-text"><i class="bi bi-clock"></i></span>
-    <input type="text" id="timePicker" class="form-control" placeholder="Chọn giờ">
-  </div>
-
-
-
-  <!-- Bootstrap JS & Flatpickr -->
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-
-  <script>
-    flatpickr("#timePicker", {
-      enableTime: true,
-      noCalendar: true,
-      dateFormat: "H:i",
-      time_24hr: true,
-      minuteIncrement: 15
-    });
-  </script>
-
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.querySelectorAll('.movie-item').forEach(item => {
+            item.addEventListener('click', function() {
+                let movieName = this.getAttribute('data-movie');
+                window.location.href = "showtime.html?movie=" + encodeURIComponent(movieName);
+            });
+        });
+    </script>
 </body>
-
 </html>

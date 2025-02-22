@@ -76,7 +76,7 @@
 
         <div class="col-12 mb-3">
             <table class="table table-bordered table-hover">
-                <thead class="table-dark">
+                <thead>
                     <tr>
                         <th>Tên phòng</th>
                         <th>Chi nhánh</th>

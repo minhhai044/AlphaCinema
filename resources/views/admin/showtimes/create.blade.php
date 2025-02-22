@@ -7,19 +7,29 @@
 @section('content')
 <div class="row">
     <div class="col-12">
-        <div class=" d-sm-flex align-items-center justify-content-between">
-            <h4 class="mb-sm-0 font-size-18">Thêm suất chiếu cho phim
-                <span class="fw-semibold fs-4 text-info">{{ $movie->name }}</span>
-                <p class="text-success fs-5 mt-2">
-
-                    {{ \Carbon\Carbon::parse($movie->created_at)->format('d/m/Y') }}
-                    -
-                    {{ \Carbon\Carbon::parse($movie->release_date)->format('d/m/Y') }}
-                    - {{\Carbon\Carbon::parse($movie->end_date)->format('d/m/Y') }}
+        <div class="d-sm-flex align-items-center justify-content-between text-center row">
+            <div class="text-center col-lg-9">
+                <h4 class="mb-2 text-primary fw-bold">
+                    <i class="bi bi-film"></i> Thêm suất chiếu cho phim :
+                    <span class="text-info">{{ $movie->name }}</span>
+                </h4>
+                <p class="text-muted fs-6">
+                    <i class="bi bi-calendar-event"></i> Ngày tạo: 
+                    <span class="text-warning fw-semibold">
+                        {{ \Carbon\Carbon::parse($movie->created_at)->format('d/m/Y') }}
+                    </span>
+                    | <i class="bi bi-calendar-check"></i> Ngày phát hành: 
+                    <span class="text-success fw-semibold">
+                        {{ \Carbon\Carbon::parse($movie->release_date)->format('d/m/Y') }}
+                    </span>
+                    | <i class="bi bi-calendar-x"></i> Ngày kết thúc: 
+                    <span class="text-danger fw-semibold">
+                        {{ \Carbon\Carbon::parse($movie->end_date)->format('d/m/Y') }}
+                    </span>
                 </p>
-            </h4>
+            </div>
 
-            <div class="page-title-right">
+            <div class="page-title-right col-lg-3">
                 <ol class="breadcrumb m-0">
                     <li class="breadcrumb-item">
                         <a href="{{ route('admin.showtimes.index') }}">Quản lý suất chiếu</a>
@@ -481,6 +491,12 @@
         // Xóa time 
         $('#listTime').on('click', '.removeItem', function () {
             const id = $(this).data('id');
+            let count = $('input[name="start_time[]"]').length;
+            if (count == 1) {
+                toastr.error('Phải có ít nhất 1 khoảng thời gian !!!');
+                return;
+            }
+
             $(`#row_${id}`).remove();
         });
         // Chọn date

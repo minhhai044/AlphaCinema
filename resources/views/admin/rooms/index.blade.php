@@ -1,6 +1,7 @@
 @extends('admin.layouts.master')
 @section('content')
-    <h1>Quản lý phòng chiếu</h1>
+    <h5 class="fw-bold">Quản lý phòng chiếu</h5>
+    
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary float-end mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Tạo phòng chiếu
@@ -110,24 +111,24 @@
     </form>
 
 
-    <table class="table table-bordered">
+    <table class="table table-bordered text-center">
         <thead>
             <tr>
-                <th>STT</th>
-                <th>Tên phòng</th>
-                <th>Chi nhánh</th>
-                <th>Rạp phim</th>
-                <th>Loại phòng</th>
-                <th>Hoạt động</th>
-                <th>Chức năng</th>
+                <th class="fw-semibold">STT</th>
+                <th class="fw-semibold">Tên phòng</th>
+                <th class="fw-semibold">Chi nhánh</th>
+                <th class="fw-semibold">Rạp phim</th>
+                <th class="fw-semibold">Loại phòng</th>
+                <th class="fw-semibold">Hoạt động</th>
+                <th class="fw-semibold">Chức năng</th>
             </tr>
         </thead>
         <tbody>
             @if (!empty($rooms))
                 @foreach ($rooms as $room)
                     <tr>
-                        <td>{{ $room->id}}</td>
-                        <td>{{ $room->name}}</td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td class="fw-semibold">{{ $room->name}}</td>
                         <td>{{ $room->branch->name ?? 'Không có chi nhánh' }}</td>
                         <td>{{ $room->cinema->name ?? 'Không có rạp' }}</td>
                         <td>{{ $room->type_room->name ?? 'Không có loại phòng' }}</td>

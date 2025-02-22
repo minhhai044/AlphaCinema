@@ -31,6 +31,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 Route::put('{id}/active-seat-template',[SeatTemplateController::class,'activeSeatTemplate']);
 Route::put('{id}/active-room',[RoomController::class,'activeRoom']);
 Route::get('{id}/showtime',[ShowtimeController::class,'getByDate']);
+Route::put('{id}/active-showtime',[ShowtimeController::class,'activeShowtime']);
 
 Route::get('/cinemas',[CinemaController::class,'index']);
 Route::get('{id}/showcinemas',[CinemaController::class,'show']);
