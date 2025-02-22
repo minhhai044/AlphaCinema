@@ -27,8 +27,7 @@ use App\Http\Controllers\Admin\DashBoardController;
 
 use App\Http\Controllers\Admin\SeatTemplateControler;
 use App\Http\Controllers\Admin\UserVoucherController;
-
-
+use App\Http\Controllers\Admin\SiteSettingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -261,3 +260,11 @@ Route::resource('type_seats', TypeSeatController::class);
 Route::post('days/update/{id}', [DayController::class, 'update'])->name('days.update');
 
 
+Route::group([
+    'prefix' => 'settings',  // Tiền tố URL cho tất cả route
+    'as' => 'settings.',    
+],function (){
+Route::get('/',[SiteSettingController::class,'index'])->name('index');
+Route::put('/update/{id}',[SiteSettingController::class,'update'])->name('update');
+Route::post('/reset',[SiteSettingController::class,'resetToDefault'])->name('reset');
+});

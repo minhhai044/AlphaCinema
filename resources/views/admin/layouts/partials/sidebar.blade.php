@@ -25,12 +25,7 @@
             </li>
 
 
-
-
-
-
             <li>
-
 
                 <a href="javascript: void(0);" class="has-arrow">
                     <i data-feather="grid"></i>
@@ -68,6 +63,7 @@
                     </li>
 
                 </ul>
+
             </li>
 
             <li>
@@ -154,14 +150,12 @@
                     </li>
                 </ul>
             </li>
-
-
-
-
-
-
-
-
+            <li>
+                <a href="{{ route('admin.settings.index') }}">
+                    <i data-feather="grid"></i>
+                    <span data-key="t-site-setting">Cấu hình cài đặt </span>
+                </a>
+            </li>
         </ul>
     </div>
     <!-- Sidebar -->
