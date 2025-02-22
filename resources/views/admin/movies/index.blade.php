@@ -171,28 +171,7 @@
                                                  style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
                         }
                     },
-                    // {
-                    //     data: 'movie_genres',
-                    //     render: function (data) {
-                    //         try {
-                    //             let genres = JSON.parse(data);
-                    //             return Array.isArray(genres) ? genres.join(', ') : data;
-                    //         } catch (e) {
-                    //             return data;
-                    //         }
-                    //     }
-                    // },
-                    // {
-                    //     data: 'movie_versions',
-                    //     render: function (data) {
-                    //         try {
-                    //             let versions = JSON.parse(data);
-                    //             return Array.isArray(versions) ? versions.join(', ') : data;
-                    //         } catch (e) {
-                    //             return data;
-                    //         }
-                    //     }
-                    // },
+                    
                     {
                         data: 'is_active',
                         render: function (data) {
