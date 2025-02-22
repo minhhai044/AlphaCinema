@@ -147,7 +147,7 @@
 
                                             </td>
                                             <td>
-                                                <div>{{ $item->created_at->format('d/m/Y H:i:s') }}</div>
+                                                <div>{{ $item->created_at }}</div>
 
                                             </td>
                                             <td>

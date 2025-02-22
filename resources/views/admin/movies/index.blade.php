@@ -76,6 +76,7 @@
                         <table id="movieTable" class="table table-bordered w-100">
                             <thead>
                                 <tr>
+
                                     <th>ID</th>
                                     <th>Tên phim</th>
                                     <th>Ảnh</th>
@@ -85,6 +86,75 @@
                                     <th>Nổi bật</th>
                                     <th>Thời lượng</th>
                                     <th>Hành động</th>
+
+                                    <td></td>
+                                    <td>{{ $movie->name }}</td>
+                                    <td>
+                                        <img src="{{ Storage::url($movie->img_thumbnail) }}" alt="" width="100px">
+                                    </td>
+                                    <td>
+                                        @php
+                                            $versions = is_string($movie->movie_versions)
+                                                ? json_decode($movie->movie_versions, true)
+                                                : $movie->movie_versions;
+                                        @endphp
+                                        {{ implode(', ', $versions ?? []) }}
+                                    </td>
+                                    <td>
+                                        {{-- {{ implode(', ', json_decode($movie->movie_genres, true) ?? []) }} --}}
+                                        {{-- {{ $movie->movie_genres }} --}}
+                                        @php
+                                            $genres = is_string($movie->movie_genres)
+                                                ? json_decode($movie->movie_genres, true)
+                                                : $movie->movie_genres;
+                                        @endphp
+                                        {{ implode(', ', $genres ?? []) }}
+                                    </td>
+                                    <td>
+                                        <span class="badge {{ $movie->is_active ? 'bg-success' : 'bg-danger' }}">
+                                            {{ $movie->is_active ? 'Active' : 'No Active' }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge {{ $movie->is_hot ? 'bg-success' : 'bg-danger' }}">
+                                            {{ $movie->is_hot ? 'Hot' : 'No Hot' }}
+                                        </span>
+                                    </td>
+                                    <td>{{ $movie->duration }} phút</td>
+                                    <td>
+                                        <div class="dropdown text-center">
+                                            <button class="btn btn-secondary btn-sm dropdown-toggle" type="button"
+                                                data-bs-toggle="dropdown">
+                                                ...
+                                            </button>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="{{ route('admin.movies.show', $movie->id) }}"
+                                                        class="dropdown-item text-info">
+                                                        <i class="fas fa-eye"></i> Xem
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="{{ route('admin.movies.edit', $movie->id) }}"
+                                                        class="dropdown-item text-warning">
+                                                        <i class="fas fa-edit"></i> Sửa
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <form action="{{ route('admin.movies.destroy', $movie->id) }}"
+                                                        method="POST" class="d-inline">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <button type="submit" class="dropdown-item text-danger"
+                                                            onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                                            <i class="fas fa-trash-alt"></i> Xóa
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </td>
+
                                 </tr>
                             </thead>
                         </table>
