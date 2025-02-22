@@ -27,7 +27,7 @@ return new class extends Migration
             // $table->string('service_id')->nullable(); // ?
             // $table->string('service_name')->nullable(); // ?
             $table->boolean('type_user')->default(0)->comment("0 : UserMember , 1 : Admin");
-            $table->integer('cinema_id')->default(0); // ?
+            $table->integer('cinema_id')->nullable(); // ?
             $table->softDeletes();
             $table->timestamps();
         });

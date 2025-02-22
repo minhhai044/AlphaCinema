@@ -45,7 +45,7 @@
                                             <span class="required">*</span>
                                         </label>
                                         <input class="form-control" type="text" name="name" id="account-name"
-                                            placeholder="Nhập tên">
+                                            placeholder="Nhập tên" value="{{ old('name') }}">
 
                                         @error('name')
                                             <span class="text-danger">
@@ -63,7 +63,7 @@
                                             Số điện thoại <span class="required">*</span>
                                         </label>
                                         <input class="form-control" type="tel" name="phone" id="account-phone"
-                                            placeholder="Nhập số điện thoại">
+                                            placeholder="Nhập số điện thoại" value="{{ old('phone') }}">
 
                                         @error('phone')
                                             <span class="text-danger">
@@ -79,7 +79,8 @@
                                         <label for="account-birthday" class="form-label">
                                             Ngày sinh
                                             <span class="required">*</span> </label>
-                                        <input class="form-control" type="date" name="birthday" id="account-birthday" />
+                                        <input class="form-control" type="date" name="birthday" id="account-birthday"
+                                            value="{{ old('birthday') }}" />
 
                                         @error('birthday')
                                             <span class="text-danger">
@@ -98,7 +99,7 @@
                                             Email
                                             <span class="required">*</span> </label>
                                         <input class="form-control" type="email" name="email" id="account-email"
-                                            placeholder="Nhập email">
+                                            placeholder="Nhập email" value="{{ old('email') }}">
 
                                         @error('email')
                                             <span class="text-danger">
@@ -152,7 +153,8 @@
                                         <div class="d-flex gap-3">
                                             <div class="form-check form-radio-warning mb-3">
                                                 <input class="form-check-input" type="radio" value="0" name="gender"
-                                                    id="account-gender" checked />
+                                                    id="account-gender" checked
+                                                    {{ old('gender') == '0' ? 'checked' : '' }} />
                                                 <label class="form-check-label" for="account-gender">
                                                     Nam
                                                 </label>
@@ -160,7 +162,8 @@
 
                                             <div class="form-check form-radio-info mb-3">
                                                 <input class="form-check-input" type="radio" name="gender"
-                                                    value="1" id="formRadioColor3" />
+                                                    value="1" id="formRadioColor3"
+                                                    {{ old('gender') == '1' ? 'checked' : '' }} />
                                                 <label class="form-check-label" for="formRadioColor3">
                                                     Nữ
                                                 </label>
@@ -181,7 +184,7 @@
                                             Địa chỉ
                                             <span class="required">*</span> </label>
                                         <input class="form-control" type="text" name="address" id="account-address"
-                                            placeholder="Nhập địa chỉ">
+                                            placeholder="Nhập địa chỉ" value="{{ old('address') }}">
 
                                         @error('address')
                                             <span class="text-danger">
@@ -197,11 +200,19 @@
                                     <label for="account-cinema" class="form-label">
                                         Cơ sở
                                         <span class="required">*</span> </label>
-                                    <select class="form-select" id="simpleSelect">
+                                    <select class="form-select" id="simpleSelect" name="cinema"
+                                        value="{{ old('cinema') }}">
                                         @foreach ($cinemas as $cinema)
-                                                <option value="{{ $cinema->id }}"> {{ $cinema->name }}</option>
+                                            <option value="{{ $cinema->id }}"
+                                                {{ old('cinema') == $cinema->id ? 'selected' : '' }}> {{ $cinema->name }}
+                                            </option>
                                         @endforeach
                                     </select>
+                                    @error('cinema')
+                                        <div class="text-danger">
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -209,13 +220,28 @@
                                 <label for="account-gender" class="form-label">
                                     Vai trò
                                     <span class="required">*</span> </label>
-                                <select class="form-select select2" name="role_id[]" id="multiSelect" multiple="multiple">
+                                {{-- <select class="form-select select2" name="role_id[]" id="multiSelect"
+                                    multiple="multiple">
+                                        @foreach ($roles as $role)
+                                            @if ($role->name != 'System Admin')
+                                            <option value="{{ $role->name }}"
+                                                {{ in_array($role->name, old('role_id', []))  ? 'selected' : '' }}>
+                                                {{ $role->name }}</option>
+                                        @endif
+                                    @endforeach
+                                </select> --}}
+
+                                <select class="form-control" name="role_id[]" id="choices-multiple-remove-button"
+                                    placeholder="Chọn một hoặc nhiều mục" multiple>
                                     @foreach ($roles as $role)
-                                        @if ($role->name != 'System Admin')
-                                            <option value="{{ $role->name }}"> {{ $role->name }}</option>
+                                        @if ($role['name'] != 'System Admin')
+                                            <option id="{{ $role['name'] }}"
+                                                {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}>>
+                                                {{ $role['name'] }}</option>
                                         @endif
                                     @endforeach
                                 </select>
+
 
                                 <div class="text-danger"> <strong id="errorSelect2"></strong> </div>
 
@@ -286,6 +312,11 @@
 @section('script')
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script>
+        $(document).ready(function() {
+            new Choices("#choices-multiple-remove-button", {
+                removeItemButton: true,
+            })
+        });
         let flagSubmit = false;
         let btnSubmit = $('#btnSubmit');
 
@@ -404,9 +435,10 @@
 
             let passwordValue = accountPasswordId.val().trim();
 
-            if (passwordValue.length  < 8) {
+            if (passwordValue.length < 8) {
                 accountPasswordId.after(
-                    '<span class="text-danger"><strong>Mật khẩu không được để trống phải lớn hơn 8 ký tự</strong></span>');
+                    '<span class="text-danger"><strong>Mật khẩu không được để trống phải lớn hơn 8 ký tự</strong></span>'
+                );
                 flagSubmit = false
             }
 

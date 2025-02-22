@@ -1,9 +1,11 @@
 <?php
 
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\CinemaController;
 use App\Http\Controllers\Api\RoomController;
 use App\Http\Controllers\Api\SeatTemplateController;
 use App\Http\Controllers\Api\MovieController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -21,6 +23,9 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/users',[AuthController::class,'signUp']);
+Route::get('/users',[AuthController::class,'signIn']);
 
 Route::put('{id}/active-seat-template',[SeatTemplateController::class,'activeSeatTemplate']);
 Route::put('{id}/active-room',[RoomController::class,'activeRoom']);

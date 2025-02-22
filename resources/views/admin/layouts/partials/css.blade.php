@@ -1,7 +1,9 @@
 <!-- App favicon -->
 <link rel="shortcut icon" href="{{ asset('theme/admin/assets/images/favicon.ico') }}">
-<link rel="stylesheet"
-    href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/line-awesome@1.3.0/dist/line-awesome/css/line-awesome.min.css">
+
+<link href="{{ asset('theme/admin/assets/libs/choices.js/public/assets/styles/choices.min.css') }}" rel="stylesheet"
+    type="text/css" />
 
 <!-- plugin css -->
 <link href="{{ asset('theme/admin/assets/libs/admin-resources/jquery.vectormap/jquery-jvectormap-1.2.2.css') }}"
@@ -30,15 +32,15 @@
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
 
 
-<link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" />
+{{-- <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css" rel="stylesheet" /> --}}
 
 
 <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
 
 
-<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+{{-- <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" /> --}}
 
-<style>
+{{-- <style>
     /* Mặc định */
     .select2-container--default .select2-selection--single {
         background-color: #f8f9fa;
@@ -74,6 +76,5 @@
         padding: 5px;
     }
 
-    
-</style>
 
+</style> --}}

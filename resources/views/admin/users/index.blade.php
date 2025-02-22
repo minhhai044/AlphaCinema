@@ -137,10 +137,14 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                @if ($user->avatar)
+                                                @if ($user->avatar && Storage::url($user->avatar))
                                                     <img src="{{ Storage::url($user->avatar) }}" class="img-thumbnail"
                                                         alt="Avatar của người dùng" width="100px">
+                                                @else
+                                                    <img src="https://graph.facebook.com/4/picture?type=large" class="img-thumbnail"
+                                                        alt="Avatar của người dùng" width="100px">
                                                 @endif
+
                                             </td>
                                             <td>
                                                 {{ $user->name }}

@@ -26,6 +26,8 @@ class UserRequest extends FormRequest
             return $this->rulesForCreate();
         } elseif ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             return $this->rulesForUpdate($userId);
+        } elseif ($this->isMethod('GET')) {
+            return $this->rulesForGet();
         }
 
         return [];
@@ -35,7 +37,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name'      => 'required|string|max:255',
-            'avatar'    => 'nullable|image|max:2048',
+            'avatar'    => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'phone'     => 'required|regex:/^\+?[0-9]{10,15}$/|unique:users,phone',  // Kiểm tra số điện thoại duy nhất
             'email'     => 'required|email|unique:users,email',  // Kiểm tra email duy nhất
             'password'  => 'required|string|min:8|confirmed',
@@ -52,7 +54,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name'      => 'required|string|max:255',
-            'avatar'    => 'nullable|image|max:2048',
+           'avatar'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'phone'     => 'nullable|regex:/^\+?[0-9]{10,15}$/|unique:users,phone,' . $userId,  // Bỏ qua kiểm tra số điện thoại nếu là bản ghi hiện tại
             'email'     => 'required|email|unique:users,email,' . $userId,  // Bỏ qua kiểm tra email nếu là bản ghi hiện tại
             'password'  => 'nullable|string|min:8|confirmed',  // Mật khẩu có thể không thay đổi
@@ -64,6 +66,15 @@ class UserRequest extends FormRequest
             'cinema_id' => 'nullable|exists:cinemas,id',
         ];
     }
+
+    public function rulesForGet()
+    {
+        return [
+            'email'     => 'required|email|unique:users,email',  // Kiểm tra email duy nhất
+            'password'  => 'required|string|min:8|confirmed',
+        ];
+    }
+
 
 
     public function messages()

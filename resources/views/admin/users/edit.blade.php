@@ -202,15 +202,27 @@
                             </div>
 
                             <div class="col-lg-6">
-                                <label for="account-gender" class="form-label">
+                                <label for="account-role" class="form-label">
                                     Vai trò
                                     <span class="required">*</span> </label>
-                                <select class="form-select select2" name="role_id[]" id="multiSelect"
+                                {{-- <select class="form-select select2" name="role_id[]" id="multiSelect"
                                     multiple="multiple">
                                     @foreach ($roles as $role)
                                         @if ($role->name != 'System Admin')
                                             <option value="{{ $role->id }}"
                                                 {{ $user->roles->contains($role) ? 'selected' : '' }}> {{ $role->name }}
+                                            </option>
+                                        @endif
+                                    @endforeach
+                                </select> --}}
+
+                                <select class="form-control" name="role_id[]" id="choices-multiple-remove-button"
+                                    multiple="multiple">
+                                    @foreach ($roles as $role)
+                                        @if ($role->name != 'System Admin')
+                                            <option value="{{ $role->id }}"
+                                                {{ $user->roles->contains($role) ? 'selected' : '' }}>
+                                                {{ $role->name }}
                                             </option>
                                         @endif
                                     @endforeach
@@ -236,11 +248,16 @@
                     <div class="card-body">
                         <div class="row">
                             <div class="col-lg-12">
-                                <div id="image-container" class="position-relative d-none">
+                                <div id="image-container" class="position-relative "
+                                    style="width: 100%; height: 60%px; display: flex; align-items: center; justify-content: center; overflow: hidden;">
                                     <!-- Preview ảnh -->
-                                    <img id="image-preview" alt="Preview" class="align-items-center"
-                                        class="img-fluid rounded avatar-xl mb-2"
-                                        style="max-width: 100%; max-height: 60%;">
+
+                                    <img id="image-preview"
+                                        src="{{ $user->avatar ? Storage::url($user->avatar) : 'https://graph.facebook.com/4/picture?type=large' }}"
+                                        class="img-fluid rounded avatar-xl"
+                                        style="width: 100%; height: 60%; object-fit: cover;">
+
+
 
                                     <!-- Nút xóa ảnh -->
                                     <button type="button" id="delete-image"
@@ -251,7 +268,8 @@
 
                                 <!-- Input file để chọn ảnh -->
                                 <div class="mt-3">
-                                    <input type="file" id="account-image" accept="image/*" class="d-none">
+                                    <input type="file" id="account-image" name="avatar" accept="image/*"
+                                        class="d-none">
                                     <button type="button" id="change-image" class="btn btn-primary">Chọn ảnh</button>
                                 </div>
                             </div>
@@ -259,10 +277,10 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
-        <div class="col-lg-12">
-
+        <div class="col-lg-12 mb-3">
             <div class="card-footer">
                 <button type="submit" class="btn btn-primary">
                     Cập nhật
@@ -285,46 +303,38 @@
     <script>
         // Function to display selected image
         // Hàm xem trước ảnh khi chọn
-        function previewImage(event) {
-            const file = event.target.files[0];
-            const reader = new FileReader();
+        $(document).ready(function() {
 
-            reader.onload = function() {
-                // Hiển thị ảnh và nút xóa
-                const imagePreview = document.getElementById('image-preview');
-                const imageContainer = document.getElementById('image-container');
-                imagePreview.src = reader.result;
-                imageContainer.classList.remove('d-none'); // Hiển thị container ảnh và nút xóa
-            }
+            new Choices("#choices-multiple-remove-button", {
+                removeItemButton: true, // Enable remove item button for each selected option
+                searchEnabled: true, // Enable search in the dropdown
+                placeholderValue: 'Select roles', // Set placeholder text
+            });
 
+        });
+
+        $('#change-image').click(function() {
+            $('#account-image').click();
+        });
+
+        // Khi người dùng chọn ảnh mới
+        $('#account-image').change(function(event) {
+            let file = event.target.files[0];
             if (file) {
+                let reader = new FileReader();
+                reader.onload = function(e) {
+                    $('#image-preview').attr('src', e.target.result).removeClass('d-none');
+                    $('#image-container').removeClass('d-none');
+                };
                 reader.readAsDataURL(file);
             }
-        }
+        });
 
-        // Hàm xóa ảnh đã chọn
-        document.addEventListener('DOMContentLoaded', function() {
-            const accountImageInput = document.querySelector('#account-image');
-            const deleteImageButton = document.querySelector('#delete-image');
-            const imageContainer = document.querySelector('#image-container');
-            const imagePreview = document.querySelector('#image-preview');
-
-            // Gán sự kiện onchange cho input file
-            accountImageInput.addEventListener('change', function(event) {
-                previewImage(event);
-            });
-
-            // Xóa ảnh khi click vào nút xóa
-            deleteImageButton.addEventListener('click', function() {
-                imageContainer.classList.add('d-none'); // Ẩn container ảnh
-                accountImageInput.value = ''; // Xóa file đã chọn
-                imagePreview.src = ''; // Xóa ảnh xem trước
-            });
-
-            // Mở file input khi click vào nút "Chọn ảnh mới"
-            document.querySelector('#change-image').addEventListener('click', function() {
-                accountImageInput.click();
-            });
+        // Khi nhấn nút "Xóa ảnh"
+        $('#delete-image').click(function() {
+            $('#image-preview').attr('src', '').addClass('d-none');
+            $('#image-container').addClass('d-none');
+            $('#account-image').val('');
         });
     </script>
 @endsection

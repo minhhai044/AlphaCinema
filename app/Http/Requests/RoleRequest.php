@@ -21,8 +21,6 @@ class RoleRequest extends FormRequest
      */
     public function rules(): array
     {
-
-
         if ($this->isMethod('post')) {
             return $this->rulesForCreate();
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {

@@ -63,7 +63,7 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return $this->type === self::TYPE_ADMIN;
+        return $this->type_user === self::TYPE_ADMIN;
     }
 
     public function cinema(){
