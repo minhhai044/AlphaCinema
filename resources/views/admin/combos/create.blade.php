@@ -159,10 +159,6 @@
     </form>
 @endsection
 
-@section('script-libs')
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-@endsection
 
 @section('script')
     <script>
@@ -185,38 +181,37 @@
                 }
                 const id = 'food_' + Date.now(); // Tạo ID duy nhất cho món ăn
                 const foodItemHtml = `
-                        <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded" id="${id}_item">
-                            <div class="col-md-6">
-                                <label for="${id}_select" class="form-label">Đồ ăn</label>
-                                <select name="combo_food[]" id="${id}_select" class="form-control food-select">
-                                    <option value="">--Chọn đồ ăn--</option>
-                                    @foreach ($food as $itemId => $itemName)
-                                        <option value="{{ $itemId }}">{{ $itemName }}</option>
-                                    @endforeach
-                                </select>
-                                <span class="text-danger" id="${id}_food_error"></span>
-                            </div>
+                     <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded shadow-sm" id="${id}_item">
+                        <div class="col-md-5">
+                            <label for="${id}_select" class="form-label fw-bold">Đồ ăn</label>
+                            <select name="combo_food[]" id="${id}_select" class="form-control food-select">
+                                <option value="">--Chọn đồ ăn--</option>
+                                @foreach ($food as $itemId => $itemName)
+                                    <option value="{{ $itemId }}">{{ $itemName }}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger small" id="${id}_food_error"></span>
+                        </div>
 
-                            <div class="col-md-3 mx-4">
-                                <label for="${id}" class="form-label align-items-center">Số lượng</label>
-                                <div class="d-flex flex-wrap align-items-start">
-                                    <div class="input-step step-primary full-width p-1 d-flex align-items-center border rounded">
-                                        <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
-                                        <input type="number" name="combo_quantity[]" class="food-quantity text-center border-0 mx-2"
-                                            id="${id}" value="0" min="0" max="10" readonly>
-                                        <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
-                                    </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-between">
+                            <div class="w-100">
+                                <label for="${id}" class="form-label fw-bold">Số lượng</label>
+                                <div class="d-flex align-items-center rounded p-2">
+                                    <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
+                                    <input type="number" name="combo_quantity[]" class="food-quantity text-center border-0 bg-transparent"
+                                        id="${id}" value="0" min="0" max="10" readonly>
+                                    <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
                                 </div>
-                                <span class="text-danger" id="${id}_quantity_error"></span>
-                            </div>
-
-                            <div class="col-md-2 text-center">
-                                <button type="button" class="btn btn-danger remove-food">
-                                    <span class="bx bx-trash"></span>
-                                </button>
-                                </div>
+                                <span class="text-danger small" id="${id}_quantity_error"></span>
                             </div>
                         </div>
+                        
+                        <div class="col-md-2 d-flex align-items-end justify-content-center mt-3">
+                            <button type="button" class="btn btn-danger remove-food">
+                                <span class="bx bx-trash"></span>
+                            </button>
+                        </div>
+                    </div>
                     `;
 
                 foodList.append(foodItemHtml); // Thêm HTML vào danh sách món ăn

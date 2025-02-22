@@ -60,10 +60,10 @@ class ComboController extends Controller
             return redirect()
                 ->route('admin.combos.index');
         } catch (\Throwable $th) {
-            return back()->with('error', $th->getMessage());
-            // Log::error($th->getMessage());
-            // Toastr::error(null, 'Thêm mới không thành công!');  // thông báo lỗi
-            // return back();
+            // return back()->with('error', $th->getMessage());
+            Log::error($th->getMessage());
+            Toastr::error(null, 'Thêm mới không thành công!');  // thông báo lỗi
+            return back();
         }
     }
 
@@ -110,16 +110,10 @@ class ComboController extends Controller
     }
 
     // // 7. Xóa đồ ăn
-    public function destroy($id)
+    public function destroy(string $id)
     {
-        try{
-            $this->comboService->forceDeleteComboService($id);
-            Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
-            return redirect()->route('admin.combos.index');
-        }catch(\Throwable $th){
-            Log::error($th->getMessage());
-            return back();
-        }
+        $this->comboService->forceDeleteComboService($id);
+        Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
+        return back();
     }
-
 }

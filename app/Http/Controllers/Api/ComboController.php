@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ComboRequest;
 use App\Models\Combo;
+use App\Models\Food;
 use App\Services\ComboService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
@@ -24,11 +25,16 @@ class ComboController extends Controller
     public function index(Request $request)
     {
         try {
+            $foods = Food::query()->select('id', 'name', 'type')->get();
+
             // Tổng số bản ghi (không lọc)
             $totalRecords = Combo::count();
+    
+            // Lấy danh sách combo kèm theo danh sách food trong combo
+            // $comboFood = Combo::with('comboFood')->get();
 
             // Tạo query gốc
-            $query = Combo::query();
+            $query = Combo::with('comboFood');
 
             // Lọc theo tên 
             if ($request->filled('id')) {
@@ -54,6 +60,7 @@ class ComboController extends Controller
                 "recordsTotal" => $totalRecords,     // Tổng số bản ghi trước lọc
                 "recordsFiltered" => $filteredRecords,  // Số bản ghi sau khi lọc
                 "data" => $combos,
+                "food" => $foods
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

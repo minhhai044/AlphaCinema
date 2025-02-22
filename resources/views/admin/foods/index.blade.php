@@ -127,8 +127,10 @@
                                                     data-food-id="{{ $food->id }}"
                                                     {{ $food->is_active ? 'checked' : '' }}
                                                     onclick="return confirm('Bạn có chắc muốn thay đổi ?')">
+
                                             </div>
                                         </td>
+
 
                                         <td>
                                             <div class="dropdown">
@@ -151,7 +153,7 @@
                                                     </li>
                                                     <li>
                                                         @if ($food->combos()->count() == 0)
-                                                            <form action="{{ route('admin.foods.forceDestroy', $food) }}"
+                                                            <form action="{{ route('admin.foods.destroy', $food) }}"
                                                                 method="POST" id="delete-food-{{ $food->id }}">
                                                                 @method('DELETE')
                                                                 @csrf
@@ -356,43 +358,20 @@
             </div>
         </div>
     </div>
+    @php
+        $appUrl = env('APP_URL');
+    @endphp
 @endsection
 
 @section('script')
-    <!--datatable css-->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
-    <!--datatable responsive css-->
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
-    <!--datatable js-->
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    <script src="{{ asset('assets/js/food/index.js') }}"></script>
+<script>
+    var appURL = @json($appUrl);
+</script>
+    <script src="{{ asset('assets/js/food/index.js') }}">
+        // console.log($appURL);
+    </script>
     <script>
         $(document).ready(function() {
-            // Khởi tạo DataTable
-            // let table = $('#example').DataTable({
-            //     order: [],
-            //     language: {
-            //         search: "Tìm kiếm:",
-            //         paginate: {
-            //             next: "Tiếp theo",
-            //             previous: "Trước"
-            //         },
-            //         lengthMenu: "Hiển thị _MENU_ mục",
-            //         info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
-            //         emptyTable: "Không có dữ liệu để hiển thị",
-            //         zeroRecords: "Không tìm thấy kết quả phù hợp"
-            //     },
-            // });
             // Xử lý sự kiện change cho checkbox .changeActive
             $(document).on("change", ".changeActive", function() {
                 let foodId = $(this).data("food-id");
@@ -419,7 +398,7 @@
                     success: function(response) {
                         if (response.success) {
                             let checkbox = $(`[data-food-id="${foodId}"]`);
-                            checkbox.prop("checked", response.data.is_active === 1);
+                            checkbox.prop("checked", response.data.is_active);
 
                             Swal.fire({
                                 icon: "success",

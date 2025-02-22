@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name')->unique();
             $table->string('img_thumbnail')->nullable();
+            $table->string('type')->nullable();
             $table->decimal('price', 10, 0)->default(0);
             $table->text('description')->nullable();
             $table->boolean('is_active')->default(1)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");

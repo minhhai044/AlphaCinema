@@ -47,7 +47,7 @@ class UserController extends Controller
     {
         $data = $userRequest->validated();
         $data['type_user'] = 1;
-dd($data);
+// dd($data);
         $user =  $this->userService->storeUser($data);
 
         if ($userRequest->has('role_id')) {

@@ -58,7 +58,7 @@ Route::group([
     Route::post('/', [FoodController::class, 'store'])->name('store');
     Route::get('{food}/edit', [FoodController::class, 'edit'])->name('edit');
     Route::put('{food}', [FoodController::class, 'update'])->name('update');
-    Route::delete('{food}/forceDestroy', [FoodController::class, 'forceDestroy'])->name('forceDestroy');
+    Route::delete('{food}/destroy', [FoodController::class, 'destroy'])->name('destroy');
     // Route::get('{food}/restore', [FoodController::class, 'restore'])->name('restore');
     Route::get('{food}', [FoodController::class, 'show'])->name('show');
     // Cập nhật trạng thái "active" cho food
@@ -85,9 +85,6 @@ Route::group([
 
     // Cập nhật
     Route::put('{combo}', [ComboController::class, 'update'])->name('update');
-
-    // Xóa mềm  (soft delete)
-    // Route::delete('{combo}', [ComboController::class, 'solfDestroy'])->name('solfDestroy');
 
     // Xóa vĩnh viễn
     Route::delete('{combo}/destroy', [ComboController::class, 'destroy'])->name('destroy');

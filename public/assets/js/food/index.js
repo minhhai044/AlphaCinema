@@ -3,275 +3,119 @@ const handleDelete = (id) => {
         $(`#delete-food-${id}`).submit();
     });
 };
-
-const resetCreateAndUpdateErors = (prefix) => {
-    document.getElementById(`${prefix}NameError`).innerText = "";
-    document.getElementById(`${prefix}PriceError`).innerText = "";
-    document.getElementById(`${prefix}ImgThumbnailError`).innerText = "";
-    document.getElementById(`${prefix}DescriptionError`).innerText = "";
-    document.getElementById(`${prefix}TypeError`).innerText = "";
-
-    $(`#${prefix}Name`).removeClass("is-invalid");
-    $(`#${prefix}Price`).removeClass("is-invalid");
-    $(`#${prefix}ImgThumbnail`).removeClass("is-invalid");
-    $(`#${prefix}Description`).removeClass("is-invalid");
-    $(`#${prefix}Type`).removeClass("is-invalid");
-};
-
 document.addEventListener("DOMContentLoaded", function () {
-    /**
-     * Xử lý logic modal create food
-     */
+    const appURL = "https://alphacinema.me"; // Đổi URL nếu cần
 
-    // format price ','
-    const formattedInput = document.getElementById("createPrice");
-    const hiddenInput = document.getElementById("price_hidden");
+    // Hàm reset lỗi
+    const resetErrors = (prefix) => {
+        ["Name", "Price", "ImgThumbnail", "Description", "Type"].forEach(field => {
+            document.getElementById(`${prefix}${field}Error`).innerText = "";
+            $(`#${prefix}${field}`).removeClass("is-invalid");
+        });
+    };
 
-    formattedInput.addEventListener("input", function (e) {
-        let value = e.target.value.replace(/\D/g, ""); // Loại bỏ ký tự không phải số
-        if (value !== "") {
-            formattedInput.value = Number(value).toLocaleString("en-US"); // Hiển thị có dấu phẩy
-            hiddenInput.value = value; // Lưu giá trị thực không có dấu phẩy
-        } else {
-            hiddenInput.value = "0";
-        }
-    });
+    // Format giá tiền
+    const formatPriceInput = (input, hiddenInput) => {
+        input.addEventListener("input", function (e) {
+            let value = e.target.value.replace(/\D/g, "");
+            input.value = value ? Number(value).toLocaleString("en-US") : "";
+            hiddenInput.value = value || "0";
+        });
 
-    formattedInput.addEventListener("blur", function (e) {
-        if (e.target.value === "") {
-            e.target.value = "0";
-            hiddenInput.value = "0";
-        }
-    });
+        input.addEventListener("blur", function (e) {
+            if (!e.target.value) {
+                e.target.value = "0";
+                hiddenInput.value = "0";
+            }
+        });
+    };
 
+    formatPriceInput(document.getElementById("createPrice"), document.getElementById("price_hidden"));
+    formatPriceInput(document.getElementById("updatePrice"), document.getElementById("price_hidden"));
+
+    // Mở modal tạo món ăn
     $(".openCreateFoodModal").on("click", function () {
-        const modal = $("#createFoodModal");
+        resetErrors("create");
+        new bootstrap.Modal($("#createFoodModal")[0]).show();
+    });
 
+    // Mở modal cập nhật món ăn
+    $(".openUpdateFoodModal").on("click", function () {
+        const modal = $("#updateFoodModal");
+        resetErrors("update");
+        
+        const foodId = $(this).data("food-id");
+        $("#updateFoodId").val(foodId);
+        ["Name", "Price", "Description", "Type"].forEach(field => {
+            $("#update" + field).val($(this).data("food-" + field.toLowerCase()));
+        });
+        
+        let foodImg = $(this).data("food-img_thumbnail");
+        if (foodImg) {
+            $("#previewImgThumbnail").attr("src", `${appURL}/storage/${foodImg.replace("public/", "")}`).show();
+        } else {
+            $("#previewImgThumbnail").hide();
+        }
+        
         new bootstrap.Modal(modal[0]).show();
     });
 
-    $("#createFoodBtn").on("click", function (event) {
-        event.preventDefault();
-
-        const url = `https://alphacinema.me/admin/foods`;
-
-        // const formData = $("#createFoodForm").serializeArray();
-        const formData = new FormData($("#createFoodForm")[0]);
-        handleCreate(url, formData);
+    // Xử lý chọn ảnh mới trong update
+    $("#updateImgThumbnail").on("change", function () {
+        const file = this.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = e => $("#previewImgThumbnail").attr("src", e.target.result).show();
+            reader.readAsDataURL(file);
+        }
     });
 
-    const handleCreate = async (url, data) => {
+    // Hàm gửi request
+    const sendRequest = async (url, method, formData, prefix) => {
         return await $.ajax({
-            url: url,
-            type: "POST",
-            data: data,
+            url,
+            type: method,
+            data: formData,
             dataType: "json",
             contentType: false,
             processData: false,
-            success: function (res) {
-                console.log(res);
-                // $("#createFoodForm").modal("hide");
-                const modal = $("#createFoodModal");
-
-                new bootstrap.Modal(modal[0]).hide();
+            success: () => {
+                new bootstrap.Modal($("#" + prefix + "FoodModal")[0]).hide();
                 location.reload();
             },
-            error: function (err) {
-                console.log(err);
-
-                // Kiểm tra xem 'err.responseJSON' và 'err.responseJSON.errors' có tồn tại không
+            error: (err) => {
                 if (err.responseJSON && err.responseJSON.errors) {
-                    showErrors(err.responseJSON.errors, "create");
-                } else {
-                    console.error("Không có lỗi phản hồi từ server");
+                    showErrors(err.responseJSON.errors, prefix);
                 }
-            },
+            }
         });
     };
+
+    // Hiển thị lỗi
     const showErrors = (errors, prefix) => {
-        console.log(errors);
-        // return;
-
-        resetCreateAndUpdateErors(prefix);
-
-        if (errors.name) {
-            $(`#${prefix}Name`).addClass("is-invalid");
-            $(`#${prefix}NameError`).text(errors.name);
-        }
-
-        if (errors.price) {
-            $(`#${prefix}Price`).addClass("is-invalid");
-            $(`#${prefix}PriceError`).text(errors.price);
-        }
-
-        if (errors.description) {
-            $(`#${prefix}Description`).addClass("is-invalid");
-            $(`#${prefix}DescriptionError`).text(errors.description);
-        }
-
-        if (errors.type) {
-            $(`#${prefix}Type`).addClass("is-invalid");
-            $(`#${prefix}TypeError`).text(errors.type);
-        }
-
-        if (errors.img_thumbnail) {
-            $(`#${prefix}ImgThumbnail`).addClass("is-invalid");
-            $(`#${prefix}ImgThumbnailError`).text(errors.img_thumbnail);
-        }
+        resetErrors(prefix);
+        Object.keys(errors).forEach(key => {
+            $(`#${prefix}${key.charAt(0).toUpperCase() + key.slice(1)}`).addClass("is-invalid");
+            $(`#${prefix}${key.charAt(0).toUpperCase() + key.slice(1)}Error`).text(errors[key]);
+        });
     };
-});
 
-/**
- * Update
- */
-$(".openUpdateFoodModal").on("click", function () {
-    const formattedInput = document.getElementById("updatePrice");
-    const hiddenInput = document.getElementById("price_hidden");
+    // Xử lý tạo món ăn
+    $("#createFoodBtn").on("click", function (event) {
+        event.preventDefault();
+        sendRequest(`${appURL}/admin/foods`, "POST", new FormData($("#createFoodForm")[0]), "create");
+    });
 
-    formattedInput.addEventListener("input", function (e) {
-        let value = e.target.value.replace(/\D/g, ""); // Loại bỏ ký tự không phải số
-        if (value !== "") {
-            formattedInput.value = Number(value).toLocaleString("en-US"); // Hiển thị có dấu phẩy
-            hiddenInput.value = value; // Lưu giá trị thực không có dấu phẩy
-        } else {
-            hiddenInput.value = "0";
+    // Xử lý cập nhật món ăn
+    $("#updateFoodBtn").on("click", function (event) {
+        event.preventDefault();
+        const foodId = $("#updateFoodId").val();
+        const formData = new FormData($("#updateFoodForm")[0]);
+        
+        if (!$("#updateImgThumbnail")[0].files.length) {
+            formData.append("old_img_thumbnail", $("#previewImgThumbnail").attr("src").replace(`${appURL}/storage/`, ""));
         }
+        
+        sendRequest(`${appURL}/admin/foods/${foodId}`, "POST", formData, "update");
     });
-
-    formattedInput.addEventListener("blur", function (e) {
-        if (e.target.value === "") {
-            e.target.value = "0";
-            hiddenInput.value = "0";
-        }
-    });
-
-    const modal = $("#updateFoodModal");
-
-    const foodId = $(this).data("food-id");
-    const foodName = $(this).data("food-name");
-    const foodPrice = $(this).data("food-price");
-    const foodDescription = $(this).data("food-description");
-    let foodImgThumbnail = $(this).data("food-img_thumbnail");
-    const foodType = $(this).data("food-type");
-
-    $("#updateFoodId").val(foodId);
-    $("#updateName").val(foodName);
-    $("#updatePrice").val(foodPrice);
-    $("#updateDescription").val(foodDescription);
-    $("#updateType").val(foodType);
-
-    // Hiển thị ảnh cũ thay vì cố gắng đặt value cho input file
-    if (foodImgThumbnail) {
-        $("#previewImgThumbnail").attr("src", foodImgThumbnail).show();
-    } else {
-        $("#previewImgThumbnail").hide();
-    }
-    // Kiểm tra và hiển thị đúng ảnh cũ với đường dẫn đầy đủ
-    if (foodImgThumbnail) {
-        foodImgThumbnail = `https://alphacinema.me/storage/${foodImgThumbnail.replace(
-            "public/",
-            ""
-        )}`;
-        $("#previewImgThumbnail").attr("src", foodImgThumbnail).show();
-    } else {
-        $("#previewImgThumbnail").hide();
-    }
-    new bootstrap.Modal(modal[0]).show();
-    resetCreateAndUpdateErors("update");
 });
-
-// Xử lý khi chọn ảnh mới
-$("#updateImgThumbnail").on("change", function () {
-    const file = this.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function (e) {
-            $("#previewImgThumbnail").attr("src", e.target.result).show();
-        };
-        reader.readAsDataURL(file);
-    }
-});
-
-// Xử lý cập nhật
-$("#updateFoodBtn").on("click", function (event) {
-    event.preventDefault();
-
-    const url = `https://alphacinema.me/admin/foods/${$(
-        "#updateFoodId"
-    ).val()}`;
-    const formData = new FormData($("#updateFoodForm")[0]);
-
-    // Nếu không có ảnh mới, gửi đường dẫn ảnh cũ
-    if (!$("#updateImgThumbnail")[0].files.length) {
-        formData.append(
-            "old_img_thumbnail",
-            $("#previewImgThumbnail")
-                .attr("src")
-                .replace("https://alphacinema.me/storage/", "")
-        );
-    }
-
-    handleUpdate(url, formData);
-});
-
-const handleUpdate = async (url, data) => {
-    return await $.ajax({
-        url: url,
-        type: "POST",
-        data: data,
-        dataType: "json",
-        contentType: false,
-        processData: false,
-        success: function (res) {
-            console.log(res);
-            // $("#updateFoodModal").modal("hide");
-            // $("#updateFoodModal").modal("hide");
-
-            const modal = $("#createFoodModal");
-
-            new bootstrap.Modal(modal[0]).hide();
-            location.reload();
-        },
-        error: function (err) {
-            console.log(err.responseJSON);
-            // console.log(err.responseJSON.errors);
-
-            showErrorsEdit(err.responseJSON.errors, "update");
-        },
-    });
-};
-
-const showErrorsEdit = (errors = null, prefix = null) => {
-    console.log(errors);
-    // return;
-
-    resetCreateAndUpdateErors(prefix);
-
-    if (errors.name) {
-        $(`#${prefix}Name`).addClass("is-invalid");
-        $(`#${prefix}NameError`).text(errors.name);
-    }
-
-    if (errors.price) {
-        $(`#${prefix}Price`).addClass("is-invalid");
-        $(`#${prefix}PriceError`).text(errors.price);
-    }
-
-    if (errors.description) {
-        $(`#${prefix}Description`).addClass("is-invalid");
-        $(`#${prefix}DescriptionError`).text(errors.description);
-    }
-
-    if (errors.type) {
-        $(`#${prefix}Type`).addClass("is-invalid");
-        $(`#${prefix}TypeError`).text(errors.type);
-    }
-
-    if (errors.img_thumbnail) {
-        $(`#${prefix}ImgThumbnail`).addClass("is-invalid");
-        $(`#${prefix}ImgThumbnailError`).text(errors.img_thumbnail);
-    }
-};
-
-
-
