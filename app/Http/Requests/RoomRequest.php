@@ -49,7 +49,8 @@ class RoomRequest extends FormRequest
             'type_room_id'      => ['required', Rule::exists(Type_room::class, 'id')],
             'description'       => 'nullable',
             'is_publish'       => 'nullable',
-            'seat_structure'   => 'required'
+            'seat_structure'   => 'required',
+            'matrix_colume'    => 'required',
         ];
     }
 
@@ -64,6 +65,7 @@ class RoomRequest extends FormRequest
             'description'       => 'nullable',
             'is_publish'       => 'nullable',
             'seat_structure'   => 'required',
+            'matrix_colume'    => 'required',
         ];
     }
 

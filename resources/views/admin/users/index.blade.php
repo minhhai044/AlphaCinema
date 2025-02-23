@@ -1,247 +1,217 @@
 @extends('admin.layouts.master')
-@section('title', 'Quản lý tài khoản')
-
 @section('style')
     <style>
-        .card {
-            box-shadow: 0px 1px 10px 3px #dedede;
+        .table {
+            vertical-align: middle !important;
         }
 
-        .al-table-length label {
-            font-weight: normal;
-            text-align: left;
-            white-space: nowrap;
-        }
-
-        .al-table-length .al-table-select {
-            width: auto;
-            display: inline-block;
-        }
-
-        .al-table-length .al-table-input {
-            margin-left: .5em;
-            display: inline-block;
-            width: auto;
-        }
-
-        .al-table-info {
-            padding-top: .85em;
-        }
-
-        .al-table-paginate {
-            margin: 0;
-            white-space: nowrap;
-            text-align: right;
-        }
-
-        .al-table-paginate .pagination {
-            margin: 2px 0;
-            white-space: nowrap;
-            justify-content: flex-end;
+        table.dataTable thead th,
+        table.dataTable thead td,
+        table.dataTable tfoot th,
+        table.dataTable tfoot td {
+            text-align: center;
         }
     </style>
 @endsection
-
 @section('content')
-    <!-- start page title -->
     <div class="row">
         <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Users Managers</h4>
-
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item">
-                            <a href="javascript: void(0);">Users</a>
-                        </li>
-                        <li class="breadcrumb-item active">User List</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
-    <!-- end page title -->
-    <div class="row">
-        <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="mb-4">
-                                <h6 class="mb-sm-0 font-size-16"> List Account</h6>
+                    <h4 class="card-title">Danh sách người dùng</h4>
+
+                    <div class="row align-items-center mb-3">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">Hiển thị:</span>
+                                <select id="pageLength" class="form-select w-auto">
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                    <option value="1000">Tất cả</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-sm-auto">
-                            <div class="mb-4">
-                                <a href="{{ route('admin.users.create') }}" class="btn btn-light waves-effect waves-light">
-                                    <i class="bx bx-plus me-1"></i>
-                                    Add user
-                                </a>
-                            </div>
+                        <div class="col-md-6 text-end">
+                            <a href="{{ route('admin.users.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#searchForm">
+                                <i class="fas fa-filter"></i> Bộ lọc
+                            </button>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="al-table-length">
-                                <label>
-                                    Show
-                                    <select name="example_length" aria-controls="example"
-                                        class="form-select form-select-sm al-table-select">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                    </select>
-                                    entries
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="al-table-length text-end">
-                                <label>
-                                    Search:
-                                    <input type="search" class="form-control form-control-sm al-table-input"
-                                        placeholder="Search đê">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="table-responsive">
-                                <table class="table align-middle table-nowrap dt-responsive nowrap w-100"
-                                    id="customerList-table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Avatar</th>
-                                            <th>Tên</th>
-                                            <th>Email</th>
-                                            <th>Địa chỉ</th>
-                                            <th>Giới tính </th>
-                                            <th>Loại</th>
-                                            <th>Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @foreach ($users as $user)
-                                            <td class="sorting_1 dtr-control">
-                                                <div class="d-none">{{ $user->id }}</div>
-                                                <div class="form-check font-size-{{ $user->id }}">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        id="customerlistcheck-{{ $user->id }}">
-                                                    <label class="form-check-label"
-                                                        for="customerlistcheck-{{ $user->id }}"></label>
-                                                </div>
-                                            </td>
-                                            <td>
-                                                <img id="image-preview"
-                                                src="{{ ($user->avatar &&  Storage::exists($user->avatar)) ? Storage::url($user->avatar) : 'https://graph.facebook.com/4/picture?type=large' }}"
-                                                class="img-fluid rounded avatar-xl"  width="80px">
-                                            </td>
-                                            <td>
-                                                {{ $user->name }}
-                                            </td>
-
-                                            <td>
-                                                {{ $user->email }}
-                                            </td>
-                                            <td>
-                                                {{ $user->address }}
-                                            </td>
-                                            <td>
-                                                {{ $user->gender == 0 ? 'Nam' : 'Nữ' }}
-                                            </td>
-                                            <td>
-                                                @if ($user->roles->isNotEmpty())
-                                                    @foreach ($user->roles as $role)
-                                                        <span class="badge bg-primary">{{ $role->name }}</span>
-                                                    @endforeach
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a href="#" class="dropdown-toggle card-drop"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                                                    </a>
-                                                    <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                        <li>
-                                                            <a href="{{ route('admin.users.edit', $user) }}"
-                                                                class="dropdown-item edit-list"
-                                                                data-edit-id="{{ $user->id }}">
-                                                                <i
-                                                                    class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                                Edit
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route('admin.users.show', $user) }}"
-                                                                class="dropdown-item edit-list"
-                                                                data-edit-id="{{ $user->id }}">
-                                                                <i
-                                                                    class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
-                                                                Show
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <form action="{{ route('admin.users.solfDestroy', $user) }}"
-                                                                method="POST">
-                                                                @method('DELETE')
-                                                                @csrf
-
-                                                                <button type="submit" class="dropdown-item remove-list"
-                                                                    onclick="return confirm('Bạn có muốn xóa ?')">
-                                                                    <i
-                                                                        class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                    Xóa
-                                                                </button>
-                                                            </form>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
+                    <div class="collapse" id="searchForm">
+                        <div class="card card-body mb-3">
+                            <form id="filterForm">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Tìm nhanh theo ID</label>
+                                        <input type="text" name="id" class="form-control" placeholder="Nhập ID">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Giới tính</label>
+                                        <select name="gender" class="form-control">
+                                            <option value="">-- Chọn giới tính --</option>
+                                            <option value="0">Nam</option>
+                                            <option value="1">Nữ</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Loại tài khoản</label>
+                                        <select name="type_user" class="form-control">
+                                            <option value="">-- Chọn loại tài khoản --</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="user">User</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">Lọc</button>
+                                    <button type="reset" class="btn btn-secondary" id="resetFilter">Reset</button>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-sm-12 col-md-5">
-                            <div class="al-table-info" id="customerList-table_info" role="status" aria-live="polite">
-                                Showing 1 to 10 of 12 entries
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-7">
-                            <div class="al-table-paginate paging_simple_numbers pagination-rounded"
-                                id="customerList-table_paginate">
-                                <ul class="pagination">
-                                    <li class="paginate_button page-item previous disabled"
-                                        id="customerList-table_previous"><a aria-controls="customerList-table"
-                                            aria-disabled="true" role="link" data-dt-idx="previous" tabindex="-1"
-                                            class="page-link"><i class="mdi mdi-chevron-left"></i></a></li>
-                                    <li class="paginate_button page-item active"><a href="#"
-                                            aria-controls="customerList-table" role="link" aria-current="page"
-                                            data-dt-idx="0" tabindex="0" class="page-link">1</a></li>
-                                    <li class="paginate_button page-item "><a href="#"
-                                            aria-controls="customerList-table" role="link" data-dt-idx="1"
-                                            tabindex="0" class="page-link">2</a></li>
-                                    <li class="paginate_button page-item next" id="customerList-table_next"><a
-                                            href="#" aria-controls="customerList-table" role="link"
-                                            data-dt-idx="next" tabindex="0" class="page-link"><i
-                                                class="mdi mdi-chevron-right"></i></a></li>
-                                </ul>
-                            </div>
-                        </div>
+
+                    <div class="table-responsive">
+                        <table id="userTable" class="table table-bordered w-100 text-center">
+                            <thead>
+                                <tr class="text-center">
+                                    <th>ID</th>
+                                    <th>Tên</th>
+                                    <th>Ảnh</th>
+                                    <th>Email</th>
+                                    <th>Giới tính</th>
+                                    <th>Loại</th>
+                                    <th>Hành động</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+@endsection
 
+@section('script')
+    <script>
+        $(document).ready(function() {
+            var table = $('#userTable').DataTable({
+                processing: true,
+                serverSide: true,
+                responsive: true,
+                autoWidth: false,
+                order: [],
+                ajax: {
+                    url: "{{ route('api.users.index') }}",
+                    type: "GET",
+                    data: function(d) {
+                        d.id = $('input[name="id"]').val();
+                        d.gender = $('select[name="gender"]').val();
+                        d.type_user = $('select[name="type_user"]').val();
+                    },
+                    error: function(xhr, status, error) {
+                        console.error("Lỗi API:", xhr.responseText);
+                    }
+                },
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'avatar',
+                        render: function(data) {
+                            const avatarUrl = data ? '/storage/' + data :
+                                "https://graph.facebook.com/4/picture?type=small";
+                            return `<img src="${avatarUrl}"
+                                                 style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
+                        }
+                    },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
+                    {
+                        data: 'gender',
+                        name: 'gender',
+                        render: function(data) {
+                            if (data === 0) return '<span class="badge bg-primary">Nam</span>';
+                            if (data === 1) return '<span class="badge bg-danger">Nữ</span>';
+                            return '<span class="badge bg-secondary">Khác</span>';
+                        }
+                    },
+                    {
+                        data: 'gender',
+                        name: 'gender',
+                        render: function(data) {
+                            if (data === 0) return '<span class="badge bg-primary">Nam</span>';
+                            if (data === 1) return '<span class="badge bg-danger">Nữ</span>';
+                            return '<span class="badge bg-secondary">Khác</span>';
+                        }
+                    },
+                    {
+                        data: 'id',
+                        render: function(data) {
+                            return `
+                                <div class="dropdown text-center">
+                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">...
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li><a href="/admin/users/${data}" class="dropdown-item text-info"><i class="fas fa-eye"></i> Xem</a></li>
+                                        <li><a href="/admin/users/${data}/edit" class="dropdown-item text-warning"><i class="fas fa-edit"></i> Sửa</a></li>
+                                        <li>
+                                            <form action="/admin/users/${data}" method="POST" class="d-inline">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                                    <i class="fas fa-trash-alt"></i> Xóa
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </div>`;
+                        },
+                        orderable: false,
+                        searchable: false
+                    }
+                ],
+                pageLength: 5,
+                lengthChange: false,
+                language: {
+                    search: "Tìm kiếm:",
+                    paginate: {
+                        next: ">",
+                        previous: "<"
+                    },
+                    lengthMenu: "Hiển thị _MENU_ mục",
+                    info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    emptyTable: "Không có dữ liệu để hiển thị",
+                    zeroRecords: "Không tìm thấy kết quả phù hợp"
+                }
+            });
+
+            $('#pageLength').on('change', function() {
+                table.page.len($(this).val()).draw();
+            });
+
+            $('#filterForm').on('submit', function(e) {
+                e.preventDefault();
+                table.ajax.reload();
+            });
+
+            $('#resetFilter').on('click', function() {
+                setTimeout(function() {
+                    table.ajax.reload();
+                }, 50);
+            });
+        });
+    </script>
 @endsection

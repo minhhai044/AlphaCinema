@@ -1,144 +1,104 @@
 @extends('admin.layouts.master')
+
 @section('content')
-    <!-- start page title -->
-    <div class="row">
-        <div class="col-12">
-            <h1 class="card-title">Xem chi tiết: {{ $movie->name }}</h1>
-            <a href="{{ route('admin.movies.index') }}" class="btn btn-primary mb-3">Quay lại</a>
-            <form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data"
-                class="custom-validation">
-                @csrf
-                @method('PUT')
-                <div class="row">
-                    <!-- Khối 9/12 -->
-                    <div class="col-lg-9">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tên phim</label>
-                                            <input disabled type="text" name="name" value="{{ $movie->name }}"
-                                                class="form-control" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Đường dẫn phim</label>
-                                            <input disabled type="text" name="slug" value="{{ $movie->slug }}"
-                                                class="form-control" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Danh mục phim</label>
-                                            <input disabled type="text" name="category" value="{{ $movie->category }}"
-                                                class="form-control" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Ảnh </label>
-                                            <input disabled type="file" name="img_thumbnail" class="form-control">
-                                            @if ($movie->img_thumbnail)
-                                                <img src="{{ asset('storage/' . $movie->img_thumbnail) }}" width="100"
-                                                    class="mt-2">
-                                            @endif
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim </label>
-                                            @php
-                                                $selectedVersions = json_decode($movie->movie_versions, true) ?? [];
-                                            @endphp
-                                            <input type="checkbox" name="movie_versions[]" value="Action"
-                                                {{ in_array('Action', $selectedVersions) ? 'checked' : '' }}>  Action
-
-                                            <input type="checkbox" name="movie_versions[]" value="Horror"
-                                                {{ in_array('Horror', $selectedVersions) ? 'checked' : '' }}> Horror
-
-                                            <input type="checkbox" name="movie_versions[]" value="Comedy"
-                                                {{ in_array('Comedy', $selectedVersions) ? 'checked' : '' }}> Comedy
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Mô tả </label>
-                                            <textarea disabled name="description" class="form-control" required>{{ old('description', $movie->description) }}</textarea>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tác giả</label>
-                                            <input disabled type="text" name="director" value="{{ $movie->director }}"
-                                                class="form-control" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Thời lượng phim</label>
-                                            <input disabled type="txt"name="duration" value="{{ $movie->duration }}"
-                                                class="form-control">
-                                        </div>
-                                        <div class="mb-4">
-                                            <label>Ngày trình chiếu</label>
-                                            <div class="input-daterange input-group" id="datepicker6"
-                                                data-date-format="dd M, yyyy" data-date-autoclose="true"
-                                                data-provide="datepicker" data-date-container="#datepicker6">
-                                                <input disabled type="datetime-local" class="form-control"
-                                                    name="release_date"
-                                                    value="{{ old('release_date', $movie->release_date ? date('Y-m-d\TH:i', strtotime($movie->release_date)) : '') }}">
-
-                                                <input disabled type="datetime-local" class="form-control" name="end_date"
-                                                    value="{{ old('end_date', $movie->end_date ? date('Y-m-d\TH:i', strtotime($movie->end_date)) : '') }}">
-
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Phụ phí</label>
-                                            <input disabled type="number" name="surcharge" class="form-control"
-                                                value="{{ $movie->surcharge }}" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim</label>
-                                            <input disabled type="text" name="movie_genres" class="form-control"
-                                                value="{{ $movie->movie_genres }}" required>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Đánh giá</label>
-                                            <input disabled type="number" name="rating" class="form-control"
-                                                value="{{ $movie->rating }}" required>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+    <div class="container my-4">
+        <h1 class="mb-4 text-center">Chi tiết phim: {{ $movie->name }}</h1>
+        <div class="card">
+            <div class="card-body">
+                <div class="row mb-3">
+                    <!-- Ảnh phim -->
+                    <div class="col-md-4 text-center">
+                        @if ($movie->img_thumbnail)
+                            <img src="{{ asset('storage/' . $movie->img_thumbnail) }}" alt="{{ $movie->name }}"
+                                class="img-fluid rounded">
+                        @else
+                            <img src="https://via.placeholder.com/300x400?text=No+Image" alt="No Image"
+                                class="img-fluid rounded">
+                        @endif
                     </div>
-
-                    <!-- Khối 3/12 -->
-                    <!-- Khối 3/12 -->
-                    <div class="col-lg-3">
-                        <div class="card">
-                            <div class="card-body">
-                                @php
-                                    $statuses = [
-                                        'is_active' => 'Active',
-                                        'is_hot' => 'Hot',
-                                        'is_special' => 'Special',
-                                        'is_publish' => 'Publish',
-                                    ];
-                                @endphp
-
-                                @foreach ($statuses as $key => $label)
-                                    <div class="d-flex align-items-center gap-2 mb-2">
-                                        <div class="square-switch">
-                                            <input type="checkbox" id="square-switch_{{ $key }}" switch="bool"
-                                                {{ $movie->$key ? 'checked' : '' }} />
-                                            <label for="square-switch_{{ $key }}" data-on-label="Yes"
-                                                data-off-label="No"></label>
-                                        </div>
-                                        <span>{{ $label }}</span>
-                                    </div>
-                                    <input type="hidden" name="{{ $key }}" id="{{ $key }}"
-                                        value="{{ $movie->$key }}">
-                                @endforeach
-                            </div>
-                        </div>
+                    <!-- Thông tin cơ bản -->
+                    <div class="col-md-8">
+                        <h3>{{ $movie->name }}</h3>
+                        <p><strong>Slug:</strong> {{ $movie->slug }}</p>
+                        <p><strong>Danh mục:</strong> {{ $movie->category }}</p>
+                        <p><strong>Tác giả:</strong> {{ $movie->director }}</p>
+                        <p><strong>Trailer:</strong> <a href="{{ $movie->trailer_url }}"
+                                target="_blank">{{ $movie->trailer_url }}</a></p>
+                        <p><strong>Thời lượng:</strong> {{ $movie->duration }}</p>
+                        <p>
+                            <strong>Trạng thái:</strong>
+                            <span class="badge bg-{{ $movie->is_active ? 'success' : 'secondary' }}">
+                                {{ $movie->is_active ? 'Active' : 'Inactive' }}
+                            </span>
+                            <span class="badge bg-{{ $movie->is_hot ? 'danger' : 'secondary' }}">
+                                {{ $movie->is_hot ? 'Hot' : 'Normal' }}
+                            </span>
+                            <span class="badge bg-{{ $movie->is_special ? 'info' : 'secondary' }}">
+                                {{ $movie->is_special ? 'Special' : 'Standard' }}
+                            </span>
+                            <span class="badge bg-{{ $movie->is_publish ? 'primary' : 'secondary' }}">
+                                {{ $movie->is_publish ? 'Published' : 'Unpublished' }}
+                            </span>
+                        </p>
                     </div>
-
                 </div>
 
-            </form>
+                <!-- Mô tả phim -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h5>Mô tả phim:</h5>
+                        <p>{{ $movie->description }}</p>
+                    </div>
+                </div>
+
+                <!-- Thông tin chi tiết theo lưới -->
+                <div class="row mb-3">
+                    <div class="col-md-6">
+                        <p><strong>Ngày trình chiếu:</strong> {{ $movie->release_date }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Ngày kết thúc:</strong> {{ $movie->end_date }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Phụ phí:</strong> {{ $movie->surcharge }}</p>
+                    </div>
+                    <div class="col-md-6">
+                        <p><strong>Đánh giá:</strong> {{ $movie->rating }}</p>
+                    </div>
+                </div>
+
+                <!-- Phiên bản phim -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h5>Phiên bản phim:</h5>
+                        @if(is_array($movie->movie_versions))
+                            @foreach($movie->movie_versions as $version)
+                                <span class="badge bg-info text-dark me-1">{{ $version }}</span>
+                            @endforeach
+                        @else
+                            <span class="badge bg-info text-dark">{{ $movie->movie_versions }}</span>
+                        @endif
+                    </div>
+                </div>
+
+                <!-- Thể loại phim -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <h5>Thể loại phim:</h5>
+                        @if(is_array($movie->movie_genres))
+                            @foreach($movie->movie_genres as $genre)
+                                <span class="badge bg-secondary me-1">{{ $genre }}</span>
+                            @endforeach
+                        @else
+                            <span class="badge bg-secondary">{{ $movie->movie_genres }}</span>
+                        @endif
+                    </div>
+                </div>
+
+            </div>
+        </div>
+        <div class="mt-4 text-center">
+            <a href="{{ route('admin.movies.index') }}" class="btn btn-secondary">Quay lại</a>
         </div>
     </div>
 @endsection

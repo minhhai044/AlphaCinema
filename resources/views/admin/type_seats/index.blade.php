@@ -62,26 +62,14 @@
                                             <ul class="dropdown-menu dropdown-menu-end" style="">
                                                 <li>
                                                     <a data-bs-toggle="modal"
-                                                        class="edit_type_seat  btn btn-light waves-effect waves-light"
+                                                        class="edit_type_seat  btn waves-effect waves-light"
                                                         data-bs-target="#exampleModal" data-id={{ $item->id }}
                                                         data-name="{{ $item->name }}" data-price={{ $item->price }}>
                                                         <i class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                        Edit
+                                                        Sửa 
                                                     </a>
                                                 </li>
-                                                <li>
-                                                    <form action="{{ route('admin.type_seats.destroy', $item) }}"
-                                                        method="POST" class="d-inline-block">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="dropdown-item edit-list"
-                                                            onclick="return confirm('Bạn có muốn xóa không')">
-                                                            <i class="mdi mdi-pencil font-size-16 text-danger me-1"></i>
-
-                                                            Xóa
-                                                        </button>
-                                                    </form>
-                                                </li>
+                                                
                                             </ul>
                                         </div>
                                     </td>

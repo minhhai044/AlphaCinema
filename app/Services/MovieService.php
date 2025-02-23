@@ -19,7 +19,7 @@ class MovieService
         $totalRecords = $query->count(); // Tổng số phim
         $filteredRecords = $totalRecords; // Số phim sau khi lọc
 
-        $movies = $query->paginate(request()->get('length', 30)); // Lấy số lượng từ request
+        $movies = $query->paginate(request()->get('length', 10)); // Lấy số lượng từ request
 
         return [
             "draw" => request()->get('draw', 0),
@@ -40,8 +40,8 @@ class MovieService
             if (isset($data['img_thumbnail'])) {
                 $data['img_thumbnail'] = Storage::put('movieImages', $data['img_thumbnail']);
             }
-            $data['movie_versions'] = json_encode($data['movie_versions']) ;
-            $data['movie_genres'] = json_encode($data['movie_genres']) ;
+            // $data['movie_versions'] = json_encode($data['movie_versions']) ;
+            // $data['movie_genres'] = json_encode($data['movie_genres']) ;
             // dd($data['movie_versions']);
             return Movie::create($data);
         });
@@ -56,20 +56,29 @@ class MovieService
             $data['is_hot'] = $data['is_hot'] ?? 0;
             $data['is_special'] = $data['is_special'] ?? 0;
             $data['is_publish'] = $data['is_publish'] ?? 0;
+
+            // Kiểm tra phị phí nếu là đặc biệt
+            $data['surcharge']= $data['is_special']== 0 ? 0 : $movie->surcharge;
+
+            // Kiểm tra và giữ lại giá trị cũ nếu không cập nhật
+            $data['release_date'] = $data['release_date'] ?? $movie->release_date;
+            $data['end_date'] = $data['end_date'] ?? $movie->end_date;
+
             if (isset($data['img_thumbnail'])) {
                 if (Storage::exists($movie->img_thumbnail)) {
                     Storage::delete($movie->img_thumbnail);
                 }
                 $data['img_thumbnail'] = Storage::put('movie_images', $data['img_thumbnail']);
             }
-            $data['movie_versions'] = isset($data['movie_versions']) ? json_encode($data['movie_versions']) : json_encode([]);
-            $data['movie_genres'] = isset($data['movie_genres']) ? json_encode($data['movie_genres']) : json_encode([]);
 
+            $data['movie_versions'] = isset($data['movie_versions']) ? ($data['movie_versions']) : ([]);
+            $data['movie_genres'] = isset($data['movie_genres']) ? ($data['movie_genres']) : ([]);
 
             $movie->update($data);
             return $movie;
         });
     }
+
 
     public function deleteMovie($id)
     {

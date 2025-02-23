@@ -18,8 +18,14 @@ class VoucherController extends Controller
     private const PATH_VIEW = 'admin.vouchers.';
     public function index(Request $request)
     {
-        $vouchers = Voucher::latest('id')->paginate(5);
-        return view(self::PATH_VIEW . __FUNCTION__, compact('vouchers'));
+        $search = $request->input('search'); // Lấy từ khóa tìm kiếm từ request
+
+        // Chỉ lọc danh sách voucher theo mã
+        $vouchers = Voucher::when($search, function ($query, $search) {
+            return $query->where('code', 'like', '%' . $search . '%');
+        })->latest('id')->paginate(5);
+    
+        return view(self::PATH_VIEW . __FUNCTION__, compact('vouchers', 'search'));
     }
 
     public function create()
@@ -31,20 +37,28 @@ class VoucherController extends Controller
 
     {
         try {
-            do {
+            // Nếu không nhập mã, tạo mã ngẫu nhiên
+            $code = $request->code ?? strtoupper(Str::random(10));
+    
+            // Kiểm tra trùng lặp
+            while (Voucher::where('code', $code)->exists()) {
                 $code = strtoupper(Str::random(10));
-            } while (Voucher::where('code', $code)->exists());
-
+            }
+    
             $data = $request->all();
             $data['code'] = $code;
             $data['is_active'] ??= 1;
             $data['limit_by_user'] = $data['limit_by_user'] ?? 1;
             $data['discount'] = $data['discount'] ?? 0;
-
+    
             Voucher::create($data);
-
+    
+            session()->forget('voucher_code');
+    
             return redirect()->route('admin.vouchers.index')->with('success', 'Thêm mới mã giảm giá thành công!');
         } catch (\Throwable $th) {
+            session()->flash('voucher_code', $request->code);
+    
             return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
         }
     }

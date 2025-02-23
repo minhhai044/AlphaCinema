@@ -11,6 +11,7 @@ use App\Services\ComboService;
 use App\Http\Requests\ComboRequest;
 use Illuminate\Support\Facades\Log;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Storage;
 
 class ComboController extends Controller
 {
@@ -59,10 +60,10 @@ class ComboController extends Controller
             return redirect()
                 ->route('admin.combos.index');
         } catch (\Throwable $th) {
-            return back()->with('error', $th->getMessage());
-            // Log::error($th->getMessage());
-            // Toastr::error(null, 'Thêm mới không thành công!');  // thông báo lỗi
-            // return back();
+            // return back()->with('error', $th->getMessage());
+            Log::error($th->getMessage());
+            Toastr::error(null, 'Thêm mới không thành công!');  // thông báo lỗi
+            return back();
         }
     }
 
@@ -90,11 +91,11 @@ class ComboController extends Controller
         try {
 
             $data = $comboRequest->validated();
-            
-            if(empty($data['price_sale'])){
+
+            if (empty($data['price_sale'])) {
                 $data['price_sale'] = 0;
             }
-            
+
             $this->comboService->updateComboService($id, $data);
 
             Toastr::success(null, 'Cập nhật đồ ăn thành công!'); // thông báo lỗi
@@ -108,29 +109,11 @@ class ComboController extends Controller
         }
     }
 
-    // 7. Xóa đồ ăn
-    public function forceDestroy($id)
+    // // 7. Xóa đồ ăn
+    public function destroy(string $id)
     {
         $this->comboService->forceDeleteComboService($id);
-        Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
-        return redirect()->route('admin.combos.index');
+        Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
+        return back();
     }
-
-    // xóa mềm
-    // public function solfDestroy(Combo $combo)
-    // {
-    //     try {
-    //         //            dd($food);
-    //         if (!empty($combo->img_thumbnail) && Storage::exists($combo->img_thumbnail)) {
-    //             Storage::delete($combo->img_thumbnail);
-    //         }
-
-    //         $combo->delete();  // xóa mềm
-
-    //         return redirect()->route('admin.combos.index')->with('success', 'Xóa thành công');
-
-    //     } catch (\Throwable $th) {
-    //         return back()->with('error', 'Xóa không thành công');
-    //     }
-    // }
 }

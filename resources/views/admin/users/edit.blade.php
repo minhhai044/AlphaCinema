@@ -302,7 +302,6 @@
         // Function to display selected image
         // Hàm xem trước ảnh khi chọn
         $(document).ready(function() {
-
             new Choices("#choices-multiple-remove-button", {
                 removeItemButton: true, // Enable remove item button for each selected option
                 searchEnabled: true, // Enable search in the dropdown

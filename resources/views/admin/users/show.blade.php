@@ -171,18 +171,20 @@
                                         class="badge rounded-pill {{ $user->type_user === 1 ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $user->type_user === 1 ? 'Admin' : 'Người dùng' }}
                                     </span>
-
                                 </div>
-
 
                                 <div class="mt-5">
                                     <div class="mb-3">
                                         <label for="account-image" class="form-label">
                                             Avatar
                                         </label>
-                                        <img id="image-preview"
-                                            src="{{ $user->avatar && Storage::exists($user->avatar) ? Storage::url($user->avatar) : 'https://graph.facebook.com/4/picture?type=large' }}"
-                                            class="img-fluid rounded avatar-xl" width="80px">
+                                        @if ($user->avatar && Storage::url($user->avatar))
+                                            <img src="{{ Storage::url($user->avatar) }}" class="img-thumbnail"
+                                                alt="Avatar của người dùng" width="100px">
+                                        @else
+                                            <img src="https://graph.facebook.com/4/picture?type=large"
+                                                class="img-thumbnail" alt="Avatar của người dùng" width="100px">
+                                        @endif
 
                                     </div>
                                 </div>

@@ -122,12 +122,12 @@
                                 <div class="mb-3">
                                     <label for="created_at" class="form-label">Thời gian thêm mới: </label>
                                     <input type="text" name="created_at" id="created_at" class="form-control "
-                                        value="{{ $data->created_at->format('H:i d/m/Y') }}" placeholder="Nhập tên món ăn">
+                                        value="{{ $data->created_at }}" placeholder="Nhập tên món ăn">
                                 </div>
                                 <div class="mb-3">
                                     <label for="updated_at" class="form-label">Thời gian cập nhật: </label>
                                     <input type="text" name="updated_at" id="updated_at" class="form-control "
-                                        value="{{ $data->updated_at->format('H:i d/m/Y') }}"
+                                        value="{{ $data->updated_at }}"
                                         placeholder="Nhập tên món ăn">
                                 </div>
                             </div>

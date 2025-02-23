@@ -16,7 +16,6 @@ class Showtime extends Model
         'room_id',
         'seat_structure',
         'slug',
-        'format',
         'date',
         'price_special',
         'description_special',
@@ -41,5 +40,24 @@ class Showtime extends Model
 
         return $formattedPart1 . '-' . $formattedPart2;
     }
-
+    public const SPECIALSHOWTIMES = [
+        ['id' => 1, 'name' => 'Suất thường'],
+        ['id' => 2, 'name' => 'Suất đặc biệt'],
+    ];
+    public function room(){
+        return $this->belongsTo(Room::class);
+    }
+    public function cinema(){
+        return $this->belongsTo(Cinema::class);
+    }
+    public function movie(){
+        return $this->belongsTo(Movie::class);
+    }
+    public function day(){
+        return $this->belongsTo(Day::class);
+    }
+    public function branch(){
+        return $this->belongsTo(Branch::class);
+    }
+    
 }

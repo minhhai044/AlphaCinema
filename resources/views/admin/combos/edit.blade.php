@@ -46,9 +46,7 @@
                             <div id="food_list" class="col-md-12">
                                 <!-- Các phần tử food sẽ được thêm vào đây -->
                                 @foreach ($combo->comboFood as $item)
-                                                            @php
-                                                                // dd($combo->toArray())
-                                                            @endphp
+                                                          
                                                             <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded"
                                                                 id="${id}_item">
                                                                 <div class="col-md-6">

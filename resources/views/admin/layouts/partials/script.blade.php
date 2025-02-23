@@ -46,3 +46,4 @@
 <script src="{{ asset('theme/admin/assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 
 
+<script src="{{ asset('theme/admin/assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>

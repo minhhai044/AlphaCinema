@@ -14,7 +14,18 @@ class FoodService
     {
         return Food::latest('id')->paginate(10);
     }
+    // $query = Food::query();
+    //     $totalRecords = $query->count(); // Tổng số phim
+    //     $filteredRecords = $totalRecords; // Số phim sau khi lọc
 
+    //     $foods = $query->paginate(request()->get('length', 30)); // Lấy số lượng từ request
+    //     // dd($foods);
+    //     return [
+    //         "draw" => request()->get('draw', 0),
+    //         "recordsTotal" => $totalRecords,
+    //         "recordsFiltered" => $filteredRecords,
+    //         "data" => $foods->items()
+    //     ];
     public function getFoodByIdService($id)
     {
         return Food::findOrFail($id);

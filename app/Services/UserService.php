@@ -5,16 +5,20 @@ namespace App\Services;
 use App\Models\User;
 use App\Repositories\Modules\UserRepository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Response;
 
 class UserService
 {
     protected $userRepository;
+    protected $user;
 
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository, User $user)
     {
         $this->userRepository = $userRepository;
+        $this->user = $user;
     }
     public function getAllPaginateUsers($perPage = 10, string $latest = 'id')
     {
@@ -51,7 +55,7 @@ class UserService
             $data['type_user'] = $data['type_user'] ?? 0;
 
             $data['password'] = empty($data['password']) ? $user->password : $data['password'];
-            
+
             if (!empty($data['avatar']) && Storage::exists($user['avatar'])) {
                 Storage::delete($user['avatar']);
             }
@@ -64,6 +68,61 @@ class UserService
             return $user;
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+        }
+    }
+
+    public function getUserApi($email, $password)
+    {
+        try {
+            // Tìm user theo email
+            $user = DB::table('users')->where('email', $email)->first();
+
+            // Kiểm tra nếu user không tồn tại
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Email không tồn tại'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Kiểm tra mật khẩu (So sánh password hash)
+            if (!Hash::check($password, $user->password)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Mật khẩu không đúng'
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
+            // Chuyển user thành Model để có thể tạo token
+            $userModel = User::find($user->id);
+            $token = $userModel->createToken('UserToken')->plainTextToken;
+
+            $cookie = cookie('user_token', $token, 10);
+
+            $_COOKIE['user_token'];
+            // Trả về phản hồi JSON thành công
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Đăng nhập thành công',
+                'data' => [
+                    'user' => $user,
+                    'token' => $token,
+                    'cookie' => $cookie
+                ]
+            ], Response::HTTP_OK);
+        } catch (\Exception $e) {
+            // Ghi log lỗi chi tiết
+            Log::error('Lỗi lấy thông tin user: ' . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Trả về lỗi JSON
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi, vui lòng thử lại'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 }
