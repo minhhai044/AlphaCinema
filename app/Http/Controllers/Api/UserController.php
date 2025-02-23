@@ -32,6 +32,7 @@ class UserController extends Controller
 
             // Tạo query gốc
             $query = User::query();
+            $roles = Role::all();
 
             // Lọc theo giới tính (gender)
             if ($request->filled('gender')) {
@@ -65,7 +66,21 @@ class UserController extends Controller
                 "draw" => intval($request->draw),
                 "recordsTotal" => $totalRecords,     // Tổng số bản ghi trước lọc
                 "recordsFiltered" => $filteredRecords, // Số bản ghi sau khi lọc
-                "data" => $users,                    // Danh sách người dùng
+                "data" =>  $users->map(function ($user) {
+                    return [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'avatar' => $user->avatar,
+                        'gender' => $user->gender,
+                        'roles' => $user->roles->map(function ($role) {
+                            return [
+                                'id' => $role->id,
+                                'name' => $role->name
+                            ];
+                        })
+                    ];
+                })
             ]);
         } catch (\Exception $e) {
             return response()->json(['error' => $e->getMessage()], 500);

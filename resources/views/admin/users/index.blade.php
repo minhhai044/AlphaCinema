@@ -62,8 +62,8 @@
                                         <label class="form-label">Loại tài khoản</label>
                                         <select name="type_user" class="form-control">
                                             <option value="">-- Chọn loại tài khoản --</option>
-                                            <option value="admin">Admin</option>
-                                            <option value="user">User</option>
+                                            <option value="1">Admin</option>
+                                            <option value="0">User</option>
                                         </select>
                                     </div>
                                 </div>
@@ -149,12 +149,15 @@
                         }
                     },
                     {
-                        data: 'gender',
-                        name: 'gender',
+                        data: 'roles',
+                        name: 'roles',
                         render: function(data) {
-                            if (data === 0) return '<span class="badge bg-primary">Nam</span>';
-                            if (data === 1) return '<span class="badge bg-danger">Nữ</span>';
-                            return '<span class="badge bg-secondary">Khác</span>';
+                            if (!data || data.length === 0) {
+                                return '<span class="badge bg-secondary">Không có vai trò</span>';
+                            }
+                            return data.map(role =>
+                                `<span class="badge bg-primary me-1">${role.name}</span>`).join(
+                                ' ');
                         }
                     },
                     {

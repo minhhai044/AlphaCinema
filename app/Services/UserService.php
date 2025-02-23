@@ -71,45 +71,13 @@ class UserService
         }
     }
 
-    public function getUserApi($email, $password)
+    public function getUserApi($email)
     {
         try {
             // Tìm user theo email
-            $user = DB::table('users')->where('email', $email)->first();
-
+            $user = User::where('email', $email)->first();
+            return $user;
             // Kiểm tra nếu user không tồn tại
-            if (!$user) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Email không tồn tại'
-                ], Response::HTTP_NOT_FOUND);
-            }
-
-            // Kiểm tra mật khẩu (So sánh password hash)
-            if (!Hash::check($password, $user->password)) {
-                return response()->json([
-                    'status' => 'error',
-                    'message' => 'Mật khẩu không đúng'
-                ], Response::HTTP_UNAUTHORIZED);
-            }
-
-            // Chuyển user thành Model để có thể tạo token
-            $userModel = User::find($user->id);
-            $token = $userModel->createToken('UserToken')->plainTextToken;
-
-            $cookie = cookie('user_token', $token, 10);
-
-            $_COOKIE['user_token'];
-            // Trả về phản hồi JSON thành công
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Đăng nhập thành công',
-                'data' => [
-                    'user' => $user,
-                    'token' => $token,
-                    'cookie' => $cookie
-                ]
-            ], Response::HTTP_OK);
         } catch (\Exception $e) {
             // Ghi log lỗi chi tiết
             Log::error('Lỗi lấy thông tin user: ' . $e->getMessage(), [

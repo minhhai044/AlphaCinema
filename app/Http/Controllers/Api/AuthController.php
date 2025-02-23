@@ -11,6 +11,7 @@ use App\Services\UserService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Role;
 
@@ -100,24 +101,67 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function signIn(UserRequest $userRequest)
     {
-        // $user =  $this->userService->($id);
         try {
+            // Validate dữ liệu đầu vào
             $data = $userRequest->validated();
-            dd($data);
 
-            $response = $this->userService->getUserApi($data->email, $data->password);
-            return $response;
+            // Lấy user theo email
+            $user = $this->userService->getUserApi($data['email']);
+
+            // Kiểm tra nếu user không tồn tại
+            if (!$user) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Email không tồn tại'
+                ], Response::HTTP_NOT_FOUND);
+            }
+
+            // Kiểm tra mật khẩu (So sánh password hash)
+            if (!Hash::check($data['password'], $user->password)) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Mật khẩu không đúng'
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
+            // Tạo token xác thực
+            $token = $user->createToken('UserToken')->plainTextToken;
+
+            // Tạo cookie chứa token (thời gian sống 24h - 1440 phút)
+            $cookie = cookie('user_token', $token, 1440);
+
+            // Trả về phản hồi JSON thành công
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Đăng nhập thành công',
+                'data' => [
+                    'user' => [
+                        'id' => $user->id,
+                        'name' => $user->name,
+                        'email' => $user->email,
+                        'type_user' => $user->type_user
+                    ],
+                    'token' => $token
+                ]
+            ], Response::HTTP_OK)->withCookie($cookie);
         } catch (\Throwable $th) {
-            Log::error($th->getMessage());
+            // Ghi log chi tiết lỗi
+            Log::error('Lỗi đăng nhập: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString()
+            ]);
 
-            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+            // Trả về lỗi JSON
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Đã xảy ra lỗi, vui lòng thử lại'
+            ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     /**
      * Update the specified resource in storage.

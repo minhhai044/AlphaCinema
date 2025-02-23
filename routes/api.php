@@ -58,6 +58,7 @@ Route::prefix('movies')->group(function () {
 
 Route::prefix('users')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('api.users.index');
+    Route::post('signin', [AuthController::class, 'signIn'])->name('api.users.signin');
 });
 
 
