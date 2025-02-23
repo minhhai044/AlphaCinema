@@ -28,4 +28,18 @@ class ShowtimeController extends Controller
             'Thao tác thành công !!!'
         );
     }
+    public function activeShowtime(Request $request, string $id)
+    {
+        try {
+            $data = $this->showtimeService->updateService($id, $request->all());
+            return $this->successResponse(
+                $data,
+                'Thao tác thành công !!!'
+            );
+        } catch (\Exception $e) {
+            return $this->errorResponse(
+                $e->getMessage()
+            );
+        }
+    }
 }

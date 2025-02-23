@@ -1,6 +1,7 @@
 @extends('admin.layouts.master')
 @section('content')
-    <h1>Quản lý phòng chiếu</h1>
+    <h5 class="fw-bold">Quản lý phòng chiếu</h5>
+    
     <!-- Button trigger modal -->
     <button type="button" class="btn btn-primary float-end mb-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
         Tạo phòng chiếu
@@ -18,6 +19,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <input type="hidden" name="seat_structure" id="seat_structure">
+                            <input type="hidden" name="matrix_colume" id="matrix_colume">
                             {{-- Để tạm is_publish = 1 chưa cần lắm --}}
                             <input type="hidden" name="is_publish" value="1">
                             <div class="col-lg-12 mb-3">
@@ -25,7 +27,7 @@
                                         style="color: red">*</span></label>
                                 <input type="text" name="name" required
                                     class="form-control @error('name') is-invalid @enderror"
-                                    placeholder="Nhập tên phòng chiếu"  value="{{ old('name') }}">
+                                    placeholder="Nhập tên phòng chiếu" value="{{ old('name') }}">
                                 @error('name')
                                     <small class="text-danger fst-italic">{{ $message }}</small>
                                 @enderror
@@ -82,9 +84,9 @@
                                 <select name="type_room_id" class="form-select @error('type_room_id') is-invalid @enderror"
                                     required id="type_room_id">
                                     <option value="" disabled selected>Chọn loại phòng</option>
-                                    @foreach ($type_rooms as  $id => $type_room)
-                                    <option value="{{ $id }}">{{ $type_room }}
-                                    </option>
+                                    @foreach ($type_rooms as $id => $type_room)
+                                        <option value="{{ $id }}">{{ $type_room }}
+                                        </option>
 
                                     @endforeach
                                 </select>
@@ -109,24 +111,24 @@
     </form>
 
 
-    <table class="table table-bordered">
+    <table class="table table-bordered text-center">
         <thead>
             <tr>
-                <th>STT</th>
-                <th>Tên phòng</th>
-                <th>Chi nhánh</th>
-                <th>Rạp phim</th>
-                <th>Loại phòng</th>
-                <th>Hoạt động</th>
-                <th>Chức năng</th>
+                <th class="fw-semibold">STT</th>
+                <th class="fw-semibold">Tên phòng</th>
+                <th class="fw-semibold">Chi nhánh</th>
+                <th class="fw-semibold">Rạp phim</th>
+                <th class="fw-semibold">Loại phòng</th>
+                <th class="fw-semibold">Hoạt động</th>
+                <th class="fw-semibold">Chức năng</th>
             </tr>
         </thead>
         <tbody>
             @if (!empty($rooms))
                 @foreach ($rooms as $room)
                     <tr>
-                        <td>{{ $room->id}}</td>
-                        <td>{{ $room->name}}</td>
+                        <td>{{ $loop->iteration }}</td>
+                        <td class="fw-semibold">{{ $room->name}}</td>
                         <td>{{ $room->branch->name ?? 'Không có chi nhánh' }}</td>
                         <td>{{ $room->cinema->name ?? 'Không có rạp' }}</td>
                         <td>{{ $room->type_room->name ?? 'Không có loại phòng' }}</td>
@@ -161,8 +163,9 @@
                 @endforeach
             @endif
         </tbody>
+       
     </table>
-
+    {{$rooms->links()}}
     <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -176,6 +179,8 @@
                     <div class="modal-body">
                         <div class="row">
                             <input type="hidden" name="seat_structure" id="seat_structure_edit">
+                            <input type="hidden" name="matrix_colume" id="matrix_colume_edit">
+
                             {{-- Để tạm is_publish = 1 chưa cần lắm --}}
                             <input type="hidden" name="is_publish" value="1">
                             <div class="col-lg-12 mb-3">
@@ -189,9 +194,10 @@
                                 @enderror
                             </div>
                             <div class="col-lg-6 mb-3">
-                                <label for="branchEdit" class="form-label">Chi nhánh <span style="color: red">*</span></label>
-                                <select name="branch_id" class="form-select @error('branch_id') is-invalid @enderror" required
-                                    id="branchEdit">
+                                <label for="branchEdit" class="form-label">Chi nhánh <span
+                                        style="color: red">*</span></label>
+                                <select name="branch_id" class="form-select @error('branch_id') is-invalid @enderror"
+                                    required id="branchEdit">
                                     <option value="" disabled selected>Chọn chi nhánh</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -202,10 +208,11 @@
                                 @enderror
                             </div>
                             <div class="col-lg-6 mb-3">
-                                <label for="cinemasEdit" class="form-label">Rạp phim <span style="color: red">*</span></label>
+                                <label for="cinemasEdit" class="form-label">Rạp phim <span
+                                        style="color: red">*</span></label>
 
-                                <select name="cinema_id" class="form-select @error('cinema_id') is-invalid @enderror" required
-                                    id="cinemasEdit">
+                                <select name="cinema_id" class="form-select @error('cinema_id') is-invalid @enderror"
+                                    required id="cinemasEdit">
                                     <option value="" disabled selected>Chọn rạp phim</option>
                                 </select>
                                 @error('cinema_id')
@@ -215,8 +222,9 @@
                             <div class="col-lg-6 mb-3">
                                 <label for="seat_templates_edit" class="form-label">Mẫu ghế <span
                                         style="color: red">*</span></label>
-                                <select name="seat_template_id" class="form-select @error('seat_template_id') is-invalid @enderror"
-                                    required id="seat_templates_edit">
+                                <select name="seat_template_id"
+                                    class="form-select @error('seat_template_id') is-invalid @enderror" required
+                                    id="seat_templates_edit">
                                     <option value="" disabled selected>Chọn mẫu ghế</option>
                                     @foreach ($seat_templates as $seat_template)
                                         <option value="{{ $seat_template->id }}">{{ $seat_template->name }}
@@ -231,8 +239,8 @@
                                 <label for="type_room" class="form-label">Loại phòng <span
                                         style="color: red">*</span></label>
 
-                                <select name="type_room_id" class="form-select @error('type_room_id') is-invalid @enderror" required
-                                    id="type_room">
+                                <select name="type_room_id" class="form-select @error('type_room_id') is-invalid @enderror"
+                                    required id="type_room">
                                     <option value="" disabled selected>Chọn loại phòng</option>
                                     @foreach ($type_rooms as $id => $type_room)
                                         <option value="{{ $id }}">{{ $type_room }}
@@ -296,16 +304,19 @@
             let id = $(this).val();
 
             let dataTemplate = "";
+            let matrix_colume = "";
 
 
             seat_templates.forEach((item) => {
                 if (id == item.id) {
                     dataTemplate = item.seat_structure;
+                    matrix_colume = +item.row_regular + +item.row_vip + +item.row_double;
                     return;
                 }
             })
 
             $('#seat_structure').val(dataTemplate);
+            $('#matrix_colume').val(matrix_colume);
 
         });
 
@@ -349,7 +360,6 @@
             let seat_template_id = $(this).data('seattemplate');
             let description = $(this).data('description');
             let publish = $(this).data('publish');
-
             let filteredData = "";
             Object.entries(data).forEach(([key, value]) => {
 
@@ -373,16 +383,18 @@
             $('#description').val(description);
 
             let dataTemplate = "";
-
+            let matrix_colume = "";
 
             seat_templates.forEach((item) => {
                 if (seat_template_id == item.id) {
                     dataTemplate = item.seat_structure;
+                    matrix_colume = +item.row_regular + +item.row_vip + +item.row_double;
                     return;
                 }
             })
 
             $('#seat_structure_edit').val(dataTemplate);
+            $('#matrix_colume_edit').val(matrix_colume);
 
             $('.submitRoomFormUpdate').attr('action', `rooms/${id}/update`);
 
@@ -409,17 +421,21 @@
 
 
             let dataTemplate = "";
+            let matrix_colume = "";
 
 
             seat_templates.forEach((item) => {
                 if (id == item.id) {
                     dataTemplate = item.seat_structure;
+                    matrix_colume = +item.row_regular + +item.row_vip + +item.row_double;
                     return;
                 }
             })
 
 
             $('#seat_structure_edit').val(dataTemplate);
+            $('#matrix_colume_edit').val(matrix_colume);
+
 
         });
 

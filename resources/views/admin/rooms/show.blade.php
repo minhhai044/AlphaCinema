@@ -76,7 +76,7 @@
 
         <div class="col-12 mb-3">
             <table class="table table-bordered table-hover">
-                <thead class="table-dark">
+                <thead>
                     <tr>
                         <th>Tên phòng</th>
                         <th>Chi nhánh</th>
@@ -112,10 +112,10 @@
                 <div class="seat-map" >
                     <table style="width: 60%" class="table-chart-chair table-none align-middle mx-auto text-center mt-3">
                         <tbody>
-                            @for ($row = 0; $row < count($seatMap); $row++)
+                            @for ($row = 0; $row < $room->matrix_colume; $row++)
                                 <tr>
                                     <td class="box-item">{{ chr(65 + $row) }}</td>
-                                    @for ($col = 0; $col <count($seatMap); $col++)
+                                    @for ($col = 0; $col < $room->matrix_colume; $col++)
                                         @php
                                             $seatType = $seatMap[chr(65 + $row)][$col + 1] ?? null;
                                         @endphp

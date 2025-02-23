@@ -19,7 +19,7 @@
         }
 
         .light-blue {
-            background-color: #ed5555;
+            background-color: #ee9a9a  ;
         }
 
         .light-pink {
@@ -45,7 +45,7 @@
         }
         
     </style>
-    <h1>Sơ đồ ghế</h1>
+    <h4 class="fw-semibold">Mẫu sơ đồ ghế</h4>
      <!-- start page title -->
      {{-- <div class="row">
         <div class="col-12">

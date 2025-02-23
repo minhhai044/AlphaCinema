@@ -1,14 +1,14 @@
 @extends('admin.layouts.master')
 @section('content')
-    <h1>Danh sách mẫu ghế</h1>
+    <h5 class="fw-semibold">Danh sách mẫu ghế</h5>
     <button type="button" class="btn btn-primary mb-3 float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Thêm
+        Thêm mẫu ghế
     </button>
 
-    <form action="{{route('admin.index.seat_templates')}}" method="get">
+    {{-- <form action="{{route('admin.index.seat_templates')}}" method="get">
         <input type="text" name="name" value="{{ request('name') }}">
         <button type="submit">Search</button>
-    </form>
+    </form> --}}
 
     <!-- Button trigger modal -->
 
@@ -97,16 +97,16 @@
     </div>
     {{-- Modal update --}}
 
-    <table class="table table-bordered">
+    <table class="table table-bordered text-center">
         <thead>
             <tr>
-                <th>STT</th>
-                <th>Tên mẫu ghế</th>
-                <th>Mô tả</th>
-                <th>Ma trận</th>
-                <th>Trạng thái</th>
-                <th>Hoạt động</th>
-                <th>Chức năng</th>
+                <th class="fw-semibold">STT</th>
+                <th class="fw-semibold">Tên mẫu ghế</th>
+                <th class="fw-semibold">Mô tả</th>
+                <th class="fw-semibold">Ma trận</th>
+                <th class="fw-semibold">Trạng thái</th>
+                <th class="fw-semibold">Hoạt động</th>
+                <th class="fw-semibold">Chức năng</th>
             </tr>
         </thead>
         <tbody>
@@ -117,8 +117,8 @@
 
                     <tr>
                         <input type="hidden" name="id" id="dataId" value="{{ $data->id }}">
-                        <td id="dataId">{{ $data->id }}</td>
-                        <td>{{ $data->name }}</td>
+                        <td id="dataId">{{ $loop->iteration }}</td>
+                        <td class="fw-semibold">{{ $data->name }}</td>
                         <td>{{ $data->description }}</td>
                         <td>{{ $dataMatrix['name'] }}</td>
                         <td>
@@ -162,6 +162,7 @@
             @endforeach
         </tbody>
     </table>
+    {{$dataAll->links()}}
     @php
         $appUrl = env('APP_URL');
     @endphp
