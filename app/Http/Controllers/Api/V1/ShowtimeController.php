@@ -44,12 +44,42 @@ class ShowtimeController extends Controller
             'Thao tác thành công'
         );
     }
+
+
+    public function movieShowTimes(string $slug)
+    {
+        $movie = Movie::with('showtime')->where('slug', $slug)->first();
+
+        $data = [];
+
+        $showtimes = [];
+
+        foreach ($movie->showtime as $showtime) {
+            $showtimes[$showtime['date']][] = [
+                'id' => $showtime['id'],
+                'start_time' => $showtime['start_time'],
+                'slug' => $showtime['slug'],
+            ];
+        }
+
+        $data = [
+            'showtimes' => $showtimes, // Lịch chiếu theo ngày
+            'movie' => $movie, // Thông tin phim
+        ];
+
+        return $this->successResponse(
+            $data,
+            'Thao tác thành công'
+        );
+    }
+
     public function showtimeDetail(string $slug)
     {
         try {
             $showtime = Showtime::with('branch', 'movie', 'cinema', 'room')
                 ->where('slug', $slug)
                 ->first();
+
             $seatMap = json_decode($showtime['seat_structure'], true);
             $result = [];
             foreach ($seatMap as $seat) {
@@ -67,7 +97,10 @@ class ShowtimeController extends Controller
                 $result[$coordinates_y][$coordinates_x] = $seat;
             }
             return $this->successResponse(
-                $result,
+                [
+                    'seatMap' => $result,
+                    'showTime' => $showtime
+                ],
                 'Thao tác thành công'
             );
         } catch (\Throwable $th) {
@@ -97,14 +130,16 @@ class ShowtimeController extends Controller
             $showtime->update([
                 'seat_structure' => json_encode($seat_structures),
             ]);
-            if ($seat_structure['status'] === 'hold') {
-                broadcast(new RealTimeSeatEvent($seat_structure['id'], $seat_structure['status']))->toOthers();
-            }
+            broadcast(new RealTimeSeatEvent($seat_structure['id'], $seat_structure['status'], $seat_structure['user_id']))->toOthers();
+            // if ($seat_structure['status'] === 'hold') {
+            //     broadcast(new RealTimeSeatEvent($seat_structure['id'], $seat_structure['status']))->toOthers();
+            // }
             return $this->successResponse(
                 $seat_structures,
                 'Thao tác thành công'
             );
         } catch (\Throwable $th) {
+            Log::error($th->getMessage());
             return response()->json([
                 'error' => 'Thao tác không thành công',
                 'message' => $th->getMessage()

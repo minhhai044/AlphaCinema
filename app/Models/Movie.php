@@ -38,4 +38,10 @@ class Movie extends Model
         'is_special' => 'boolean',
         'is_publish' => 'boolean',
     ];
+
+
+    public function showtime()
+    {
+        return $this->hasMany(Showtime::class);
+    }
 }

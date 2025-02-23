@@ -20,7 +20,7 @@ class MovieController extends Controller
     // 1. Hiển thị danh sách phim
     public function index(Request $request)
     {
-        $filters = $request->only(['id','name', 'movie_versions', 'movie_genres']);
+        $filters = $request->only(['id', 'name', 'movie_versions', 'movie_genres']);
 
         $movieFilter = new MovieFilter($filters);
         $movies = $movieFilter->apply()->paginate(10);
