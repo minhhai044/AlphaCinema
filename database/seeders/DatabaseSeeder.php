@@ -23,19 +23,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(50)->create();
-
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
-        // for ($i = 0; $i < 20; $i++) {
-        //     Cinema::query()->create([
-        //         'name' => Str::random(10),
-        //         'address' => Str::random(10),
-        //         'image' => Str::random(10)
-        //     ]);
-        // }
 
         $branches = [
             'Hà nội',
@@ -266,11 +253,13 @@ class DatabaseSeeder extends Seeder
 
         ];
 
-        // Tạo các quyền từ danh sách
-        foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
-        }
-
+        // for ($i = 0; $i < 20; $i++) {
+        //     Cinema::query()->create([
+        //         'name' => Str::random(10),
+        //         'address' => Str::random(10),
+        //         'image' => Str::random(10)
+        //     ]);
+        // }
         $roles = [
             'System Admin',
             'Quản lý cơ sở',
@@ -281,31 +270,16 @@ class DatabaseSeeder extends Seeder
             Role::create(['name' => $roleName]);
         }
 
+        // Tạo các quyền từ danh sách
+        foreach ($permissions as $permission) {
+            Permission::create(['name' => $permission]);
+        }
+
+
         $adminRole = Role::findByName('System Admin');
         $adminRole->syncPermissions(Permission::all());
 
         $managerRole = Role::findByName('Quản lý cơ sở');
-        $managerRole->givePermissionTo([
-            'Danh sách phòng chiếu',
-            'Thêm phòng chiếu',
-            'Sửa phòng chiếu',
-            'Xóa phòng chiếu',
-            'Xem chi tiết phòng chiếu',
-            'Danh sách mẫu sơ đồ ghế',
-
-            'Danh sách phim',
-            'Xem chi tiết phim',
-            'Danh sách suất chiếu',
-            'Thêm suất chiếu',
-            'Sửa suất chiếu',
-            'Xóa suất chiếu',
-            'Xem chi tiết suất chiếu',
-            'Danh sách hóa đơn',
-            'Quét hóa đơn',
-            'Xem chi tiết hóa đơn',
-            'Danh sách combo',
-            'Danh sách thống kê',
-        ]);
 
         $managerRole = Role::findByName('Nhân viên');
         $managerRole->givePermissionTo([

@@ -188,15 +188,6 @@
                                                             <i class="mdi mdi-dots-horizontal font-size-18"></i>
                                                         </a>
                                                         <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                            {{-- <li>
-                                                                <a href="{{ route('admin.combos.show', $combo) }}"
-                                                                    class="dropdown-item edit-list"
-                                                                    data-edit-id="{{ $combo->id }}">
-                                                                    <i
-                                                                        class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                                    Chi tiết
-                                                                </a>
-                                                            </li> --}}
                                                             <li>
                                                                 <a href="{{ route('admin.combos.edit', $combo) }}"
                                                                     class="dropdown-item edit-list"
@@ -207,13 +198,13 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <form action="{{ route('admin.combos.forceDestroy', $combo) }}"
-                                                                    method="POST" id="delete-combo-{{ $combo->id }}">
-                                                                    @method('DELETE')
+                                                                <form action="{{ route('admin.combos.destroy', $combo) }}"
+                                                                    method="POST">
                                                                     @csrf
+                                                                    @method('DELETE')
 
                                                                     <button type="submit" class="dropdown-item remove-list"
-                                                                        onclick="handleDelete({{ $combo->id }})">
+                                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
                                                                         <i
                                                                             class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
                                                                         Xóa

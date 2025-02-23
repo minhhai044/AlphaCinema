@@ -31,7 +31,14 @@ class DayController extends Controller
     public function store(DayRequest $request)
     {
         $validated = $request->validated();
-        $this->dayService->createDay($validated);
+        $day = $this->dayService->createDay($validated); 
+        if ($request->expectsJson()) {
+            return response()->json([
+                'success' => true,
+                'day' => $day,
+            ]);
+        }
+
         return redirect()->route('admin.days.index')->with('success', 'Thêm phim thành công!');
     }
 

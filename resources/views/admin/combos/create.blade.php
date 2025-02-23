@@ -41,7 +41,8 @@
 
                             <div class="col-md-4 mb-3">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label"><span class="text-danger">*</span>Tên Combo</label>
+                                    <label for="name" class="form-label"><span class="text-danger">*</span>Tên
+                                        Combo</label>
                                     <input type="text" name="name" id="name"
                                         class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
                                         data-="" value="{{ old('name') }}" placeholder="Nhập tên món ăn">
@@ -66,8 +67,8 @@
                                         bán (VNĐ)</label>
                                     <input type="text"
                                         class="form-control {{ $errors->has('price_sale') ? 'is-invalid' : (old('price_sale') ? 'is-valid' : '') }}"
-                                        name="price_sale" id="price_sale" placeholder="Nhập giá tiền" value="{{ old('price_sale') }}"
-                                        >
+                                        name="price_sale" id="price_sale" placeholder="Nhập giá tiền"
+                                        value="{{ old('price_sale') }}">
                                     <div class="{{ $errors->has('price_sale') ? 'invalid-feedback' : 'valid-feedback' }}">
                                         @if ($errors->has('price_sale'))
                                             {{ $errors->first('price_sale') }}
@@ -120,13 +121,15 @@
                                                 Hoạt động:
                                             </label>
                                             <div class="square-switch">
-                                                <input type="checkbox" id="square-switch3" switch="bool" value="1"
-                                                    name="is_active">
+                                                <input type="checkbox" id="square-switch3" switch="bool"
+                                                    {{ old('is_active', 1) ? 'checked' : '' }} name="is_active">
                                                 <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
                                             </div>
+                                            <input type="hidden" name="is_active" id="is_active"
+                                                value="{{ old('is_active', 1) }}">
+                                            <!-- Active -->
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </div>
@@ -156,14 +159,10 @@
     </form>
 @endsection
 
-@section('script-libs')
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-    integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
-@endsection
 
 @section('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             let foodCount = 0; // Biến đếm số lượng món ăn được thêm vào
             const minFoodItems = 2; // Số lượng món ăn tối thiểu
             const maxFoodItems = 8; // Số lượng món ăn tối đa
@@ -176,44 +175,43 @@
             // Hàm thêm món ăn vào danh sách
             function addFoodItem() {
                 if (foodCount >= maxFoodItems) {
-                    showAlert('warning ', 'Chỉ được thêm tối đa 8 món ăn' , 'AlphaCinema thông báo');
+                    showAlert('warning ', 'Chỉ được thêm tối đa 8 món ăn', 'AlphaCinema thông báo');
                     // alert('Chỉ được thêm tối đa ' + maxFoodItems + ' món ăn.');
                     return;
                 }
                 const id = 'food_' + Date.now(); // Tạo ID duy nhất cho món ăn
                 const foodItemHtml = `
-                        <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded" id="${id}_item">
-                            <div class="col-md-6">
-                                <label for="${id}_select" class="form-label">Đồ ăn</label>
-                                <select name="combo_food[]" id="${id}_select" class="form-control food-select">
-                                    <option value="">--Chọn đồ ăn--</option>
-                                    @foreach ($food as $itemId => $itemName)
-                                        <option value="{{ $itemId }}">{{ $itemName }}</option>
-                                    @endforeach
-                                </select>
-                                <span class="text-danger" id="${id}_food_error"></span>
-                            </div>
+                     <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded shadow-sm" id="${id}_item">
+                        <div class="col-md-5">
+                            <label for="${id}_select" class="form-label fw-bold">Đồ ăn</label>
+                            <select name="combo_food[]" id="${id}_select" class="form-control food-select">
+                                <option value="">--Chọn đồ ăn--</option>
+                                @foreach ($food as $itemId => $itemName)
+                                    <option value="{{ $itemId }}">{{ $itemName }}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger small" id="${id}_food_error"></span>
+                        </div>
 
-                            <div class="col-md-3 mx-4">
-                                <label for="${id}" class="form-label align-items-center">Số lượng</label>
-                                <div class="d-flex flex-wrap align-items-start">
-                                    <div class="input-step step-primary full-width p-1 d-flex align-items-center border rounded">
-                                        <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
-                                        <input type="number" name="combo_quantity[]" class="food-quantity text-center border-0 mx-2"
-                                            id="${id}" value="0" min="0" max="10" readonly>
-                                        <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
-                                    </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-between">
+                            <div class="w-100">
+                                <label for="${id}" class="form-label fw-bold">Số lượng</label>
+                                <div class="d-flex align-items-center rounded p-2">
+                                    <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
+                                    <input type="number" name="combo_quantity[]" class="food-quantity text-center border-0 bg-transparent"
+                                        id="${id}" value="0" min="0" max="10" readonly>
+                                    <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
                                 </div>
-                                <span class="text-danger" id="${id}_quantity_error"></span>
-                            </div>
-
-                            <div class="col-md-2 text-center">
-                                <button type="button" class="btn btn-danger remove-food">
-                                    <span class="bx bx-trash"></span>
-                                </button>
-                                </div>
+                                <span class="text-danger small" id="${id}_quantity_error"></span>
                             </div>
                         </div>
+                        
+                        <div class="col-md-2 d-flex align-items-end justify-content-center mt-3">
+                            <button type="button" class="btn btn-danger remove-food">
+                                <span class="bx bx-trash"></span>
+                            </button>
+                        </div>
+                    </div>
                     `;
 
                 foodList.append(foodItemHtml); // Thêm HTML vào danh sách món ăn
@@ -232,20 +230,21 @@
                     updateTotalPrice();
                     updateSelectOptions();
                 } else {
-                    showAlert('warning', 'Cần ít nhất 2 món ăn để tạo Combo!' , 'AlphaCinema thông báo');
+                    showAlert('warning', 'Cần ít nhất 2 món ăn để tạo Combo!', 'AlphaCinema thông báo');
                 }
             }
 
             // Hàm cập nhật danh sách các món ăn đã chọn để tránh trùng lặp
             function updateSelectOptions() {
-                const selectedValues = $('.food-select').map(function () {
+                const selectedValues = $('.food-select').map(function() {
                     return $(this).val();
                 }).get().filter(value => value !== "");
 
-                $('.food-select').each(function () {
+                $('.food-select').each(function() {
                     const currentValue = $(this).val();
-                    $(this).find('option').each(function () {
-                        $(this).prop('disabled', $(this).val() !== currentValue && selectedValues.includes($(this).val()));
+                    $(this).find('option').each(function() {
+                        $(this).prop('disabled', $(this).val() !== currentValue && selectedValues
+                            .includes($(this).val()));
                     });
                 });
             }
@@ -253,7 +252,7 @@
             // Hàm tính tổng giá tiền dựa trên số lượng và giá của món ăn
             function updateTotalPrice() {
                 let totalPrice = 0;
-                $('.food-item').each(function () {
+                $('.food-item').each(function() {
                     const foodId = $(this).find('.food-select').val();
                     const quantity = parseInt($(this).find('.food-quantity').val()) || 0;
 
@@ -266,54 +265,54 @@
 
             // Cập nhật sự kiện click khi nhấn nút tăng/giảm số lượng
             function updateEventHandlers() {
-            // Xử lý tăng số lượng
-            $('.pluss').off('click').on('click', function () {
-                let $foodItem = $(this).closest('.food-item');
-                let $foodSelect = $foodItem.find('.food-select');
-                let $quantityInput = $foodItem.find('.food-quantity');
-                let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
+                // Xử lý tăng số lượng
+                $('.pluss').off('click').on('click', function() {
+                    let $foodItem = $(this).closest('.food-item');
+                    let $foodSelect = $foodItem.find('.food-select');
+                    let $quantityInput = $foodItem.find('.food-quantity');
+                    let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
 
-                if ($foodSelect.val() === '') {
-                    $errorSpan.text('Vui lòng chọn món ăn trước!');
-                    showAlert('warning', 'Vui lòng chọn món ăn trước khi tăng số lượng!', 'Thông báo');
-                    return;
-                } else {
-                    $errorSpan.text('');
-                }
+                    if ($foodSelect.val() === '') {
+                        $errorSpan.text('Vui lòng chọn món ăn trước!');
+                        showAlert('warning', 'Vui lòng chọn món ăn trước khi tăng số lượng!', 'Thông báo');
+                        return;
+                    } else {
+                        $errorSpan.text('');
+                    }
 
-                let currentValue = parseInt($quantityInput.val());
-                if (currentValue < 10) {
-                    $quantityInput.val(currentValue + 1);
-                    updateTotalPrice();
-                }
-            });
+                    let currentValue = parseInt($quantityInput.val());
+                    if (currentValue < 10) {
+                        $quantityInput.val(currentValue + 1);
+                        updateTotalPrice();
+                    }
+                });
 
-            // Xử lý giảm số lượng
-            $('.minuss').off('click').on('click', function () {
-                let $foodItem = $(this).closest('.food-item');
-                let $foodSelect = $foodItem.find('.food-select');
-                let $quantityInput = $foodItem.find('.food-quantity');
-                let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
+                // Xử lý giảm số lượng
+                $('.minuss').off('click').on('click', function() {
+                    let $foodItem = $(this).closest('.food-item');
+                    let $foodSelect = $foodItem.find('.food-select');
+                    let $quantityInput = $foodItem.find('.food-quantity');
+                    let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
 
-                if ($foodSelect.val() === '') {
-                    $errorSpan.text('Vui lòng chọn món ăn trước!');
-                    showAlert('warning', 'Vui lòng chọn món ăn trước khi giảm số lượng!', 'Thông báo');
-                    return;
-                } else {
-                    $errorSpan.text('');
-                }
+                    if ($foodSelect.val() === '') {
+                        $errorSpan.text('Vui lòng chọn món ăn trước!');
+                        showAlert('warning', 'Vui lòng chọn món ăn trước khi giảm số lượng!', 'Thông báo');
+                        return;
+                    } else {
+                        $errorSpan.text('');
+                    }
 
-                let currentValue = parseInt($quantityInput.val());
-                if (currentValue > 0) {
-                    $quantityInput.val(currentValue - 1);
-                    updateTotalPrice();
-                }
-            });
+                    let currentValue = parseInt($quantityInput.val());
+                    if (currentValue > 0) {
+                        $quantityInput.val(currentValue - 1);
+                        updateTotalPrice();
+                    }
+                });
                 // Xử lý chọn món ăn
                 $('.food-select').off('change').on('change', updateSelectOptions);
 
                 // Xóa món ăn
-                $('.remove-food').off('click').on('click', function () {
+                $('.remove-food').off('click').on('click', function() {
                     removeFoodItem($(this).closest('.food-item'));
                 });
             }
@@ -326,83 +325,84 @@
                 addFoodItem();
             }
 
-            $('#comboForm').on('submit', function (e) {
-            let isValid = true; // Biến đánh dấu trạng thái hợp lệ của form
+            $('#comboForm').on('submit', function(e) {
+                let isValid = true; // Biến đánh dấu trạng thái hợp lệ của form
 
-           // Kiểm tra mỗi phần tử food-select trong food list
-            $('.food-select').each(function () {
-                const foodItemError = $(this).siblings('.food-item').find('.text-danger');
-                if ($(this).val() === '') {
-                    isValid = false; // Nếu chưa chọn món ăn, đặt trạng thái không hợp lệ
-                    foodItemError.text('Vui lòng chọn món ăn'); // Hiển thị lỗi
-                } else {
-                    foodItemError.text(''); // Xóa lỗi nếu đã chọn món ăn
-                }
+                // Kiểm tra mỗi phần tử food-select trong food list
+                $('.food-select').each(function() {
+                    const foodItemError = $(this).siblings('.food-item').find('.text-danger');
+                    if ($(this).val() === '') {
+                        isValid = false; // Nếu chưa chọn món ăn, đặt trạng thái không hợp lệ
+                        foodItemError.text('Vui lòng chọn món ăn'); // Hiển thị lỗi
+                    } else {
+                        foodItemError.text(''); // Xóa lỗi nếu đã chọn món ăn
+                    }
                 });
 
                 // Nếu form không hợp lệ, ngừng submit
                 if (!isValid) {
                     e.preventDefault();
-                    showAlert('warning', 'Vui lòng chọn đồ ăn trước khi thêm mới!', 'Bạn chưa chọn đồ ăn');
+                    showAlert('warning', 'Vui lòng chọn đồ ăn trước khi thêm mới!',
+                        'Bạn chưa chọn đồ ăn');
                 }
             });
 
-        // Validate các trường input
-        $("#name").on("input", function () {
-            let value = $(this).val().trim();
-            if (value.length === 0) {
-                $(this).removeClass("is-valid").addClass("is-invalid");
-                $(this).next(".invalid-feedback").text("Tên combo không được để trống").show();
-            } else {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-                $(this).next(".invalid-feedback").hide();
-            }
-        });
+            // Validate các trường input
+            $("#name").on("input", function() {
+                let value = $(this).val().trim();
+                if (value.length === 0) {
+                    $(this).removeClass("is-valid").addClass("is-invalid");
+                    $(this).next(".invalid-feedback").text("Tên combo không được để trống").show();
+                } else {
+                    $(this).removeClass("is-invalid").addClass("is-valid");
+                    $(this).next(".invalid-feedback").hide();
+                }
+            });
 
-        $("#price_sale").on("input", function () {
-            let value = $(this).val().trim();
-            if (!/^\d+(\.\d{1,2})?$/.test(value)) { // Chỉ chấp nhận số nguyên hoặc số thập phân
-                $(this).removeClass("is-valid").addClass("is-invalid");
-                $(this).next(".invalid-feedback").text("Giá bán Combo phải là số hợp lệ").show();
-            } else {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-                $(this).next(".invalid-feedback").hide();
-            }
-        });
+            $("#price_sale").on("input", function() {
+                let value = $(this).val().trim();
+                if (!/^\d+(\.\d{1,2})?$/.test(value)) { // Chỉ chấp nhận số nguyên hoặc số thập phân
+                    $(this).removeClass("is-valid").addClass("is-invalid");
+                    $(this).next(".invalid-feedback").text("Giá bán Combo phải là số hợp lệ").show();
+                } else {
+                    $(this).removeClass("is-invalid").addClass("is-valid");
+                    $(this).next(".invalid-feedback").hide();
+                }
+            });
 
-        $("textarea[name='description']").on("input", function () {
-            let value = $(this).val().trim();
-            if (value.length === 0) {
-                $(this).removeClass("is-valid").addClass("is-invalid");
-                $(this).next(".invalid-feedback").text("Mô tả không được để trống").show();
-            } else {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-                $(this).next(".invalid-feedback").hide();
-            }
-        });
+            $("textarea[name='description']").on("input", function() {
+                let value = $(this).val().trim();
+                if (value.length === 0) {
+                    $(this).removeClass("is-valid").addClass("is-invalid");
+                    $(this).next(".invalid-feedback").text("Mô tả không được để trống").show();
+                } else {
+                    $(this).removeClass("is-invalid").addClass("is-valid");
+                    $(this).next(".invalid-feedback").hide();
+                }
+            });
 
-        $("#img_thumbnail").on("change", function () {
-            let value = $(this).val().trim();
-            if (value.length === 0) {
-                $(this).removeClass("is-valid").addClass("is-invalid");
-                $(this).next(".invalid-feedback").text("Vui lòng chọn ảnh").show();
-            } else {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-                $(this).next(".invalid-feedback").hide();
-            }
-        });
+            $("#img_thumbnail").on("change", function() {
+                let value = $(this).val().trim();
+                if (value.length === 0) {
+                    $(this).removeClass("is-valid").addClass("is-invalid");
+                    $(this).next(".invalid-feedback").text("Vui lòng chọn ảnh").show();
+                } else {
+                    $(this).removeClass("is-invalid").addClass("is-valid");
+                    $(this).next(".invalid-feedback").hide();
+                }
+            });
 
-        // Validate giá gốc và giá bán Combo khi thay đổi
-        $("#price, #price_sale").on("input", function () {
-            let value = $(this).val();
-            if (isNaN(value) || value <= 0) {
-                $(this).removeClass("is-valid").addClass("is-invalid");
-                $(this).next(".invalid-feedback").text("Vui lòng nhập giá hợp lệ").show();
-            } else {
-                $(this).removeClass("is-invalid").addClass("is-valid");
-                $(this).next(".invalid-feedback").hide();
-            }
-        });
+            // Validate giá gốc và giá bán Combo khi thay đổi
+            $("#price, #price_sale").on("input", function() {
+                let value = $(this).val();
+                if (isNaN(value) || value <= 0) {
+                    $(this).removeClass("is-valid").addClass("is-invalid");
+                    $(this).next(".invalid-feedback").text("Vui lòng nhập giá hợp lệ").show();
+                } else {
+                    $(this).removeClass("is-invalid").addClass("is-valid");
+                    $(this).next(".invalid-feedback").hide();
+                }
+            });
         });
     </script>
 @endsection

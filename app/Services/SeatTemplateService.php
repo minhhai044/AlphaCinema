@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Seat_template;
+use App\Models\Type_seat;
 
 class SeatTemplateService
 {
@@ -31,6 +32,7 @@ class SeatTemplateService
     {
         $seatTemplate = Seat_template::query()->findOrFail($id);
         $matrix = Seat_template::getMatrixById($seatTemplate->matrix);
+        $type_seats = Type_seat::query()->get();
         $seatMap = [];
         if ($seatTemplate->seat_structure) {
 
@@ -62,6 +64,6 @@ class SeatTemplateService
                 }
             }
         }
-        return [$seatTemplate, $matrix, $seatMap];
+        return [$seatTemplate, $matrix, $seatMap,$type_seats];
     }
 }

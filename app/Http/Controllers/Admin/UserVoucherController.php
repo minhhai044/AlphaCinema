@@ -32,26 +32,6 @@ class UserVoucherController extends Controller
     /**
      * Lưu thông tin User Voucher vào database.
      */
-    // public function store(UserVoucherRequest $request)
-    // {
-    //     try {
-    //         $data = $request->validated();
-
-    //         // Kiểm tra nếu voucher đã được gán cho user
-    //         if (User_voucher::where('user_id', $data['user_id'])
-    //             ->where('voucher_id', $data['voucher_id'])
-    //             ->exists()) {
-    //             return redirect()->back()->with('error', 'Người dùng này đã nhận voucher này rồi.');
-    //         }
-
-    //         User_voucher::create($data);
-
-    //         return redirect()->route('admin.user-vouchers.index')->with('success', 'Thêm mới User Voucher thành công!');
-    //     } catch (\Throwable $th) {
-    //         return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
-    //     }
-    // }
-
 
     public function store(UserVoucherRequest $request)
     {
@@ -90,7 +70,6 @@ class UserVoucherController extends Controller
             return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
         }
     }
-
 
 
 

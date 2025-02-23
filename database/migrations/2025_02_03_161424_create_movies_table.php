@@ -16,7 +16,7 @@ return new class extends Migration
             $table->string('name')->unique();
             $table->string('slug')->nullable();
             $table->string('category')->nullable();;
-            $table->string('img_thumbnail')->nullable();;
+            $table->string('img_thumbnail')->nullable();
             $table->text('description')->nullable();;
             $table->string('director')->nullable()->comment('Tác giả phim');
             $table->string('duration')->nullable()->comment('Diễn viên phim');
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->string('release_date')->comment('Ngày ra mắt');
             $table->string('end_date')->comment('Ngày kết thúc');
             $table->string('trailer_url')->nullable()->comment('Link trailer');
-            $table->decimal('surcharge', 10, 0)->default(0)->comment('Phụ thu');
+            $table->decimal('surcharge', 10, 0)->default(0)->comment('Phụ thu')->nullable();;
             $table->json('movie_versions')->nullable();
             $table->json('movie_genres')->nullable();
             $table->boolean('is_active')->default(0)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");

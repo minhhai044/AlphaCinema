@@ -1,14 +1,14 @@
 @extends('admin.layouts.master')
 @section('content')
-    <h1>Danh sách mẫu ghế</h1>
+    <h5 class="fw-semibold">Danh sách mẫu ghế</h5>
     <button type="button" class="btn btn-primary mb-3 float-end" data-bs-toggle="modal" data-bs-target="#exampleModal">
-        Thêm
+        Thêm mẫu ghế
     </button>
 
-    <form action="{{route('admin.index.seat_templates')}}" method="get">
+    {{-- <form action="{{route('admin.index.seat_templates')}}" method="get">
         <input type="text" name="name" value="{{ request('name') }}">
         <button type="submit">Search</button>
-    </form>
+    </form> --}}
 
     <!-- Button trigger modal -->
 
@@ -44,7 +44,8 @@
                                     id="matrixSelectCreate">
                                     <option value="" disabled selected>Chọn ma trận ghế</option>
                                     @foreach ($matrixs as $matrix)
-                                        <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }} {{ $matrix['description'] }}
+                                        <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }}
+                                            {{ $matrix['description'] }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -82,8 +83,7 @@
                             </div>
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
-                                <textarea class="form-control" name="description" rows="3"
-                                    placeholder="Nhập mô tả..."></textarea>
+                                <textarea class="form-control" name="description" rows="3" placeholder="Nhập mô tả..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -97,75 +97,78 @@
     </div>
     {{-- Modal update --}}
 
-    <table class="table table-bordered">
+    <table class="table table-bordered text-center">
         <thead>
             <tr>
-                <th>STT</th>
-                <th>Tên mẫu ghế</th>
-                <th>Mô tả</th>
-                <th>Ma trận</th>
-                <th>Trạng thái</th>
-                <th>Hoạt động</th>
-                <th>Chức năng</th>
+                <th class="fw-semibold">STT</th>
+                <th class="fw-semibold">Tên mẫu ghế</th>
+                <th class="fw-semibold">Mô tả</th>
+                <th class="fw-semibold">Ma trận</th>
+                <th class="fw-semibold">Trạng thái</th>
+                <th class="fw-semibold">Hoạt động</th>
+                <th class="fw-semibold">Chức năng</th>
             </tr>
         </thead>
         <tbody>
             @foreach ($dataAll as $data)
-                    @php
-                        $dataMatrix = $matrix = \App\Models\Seat_template::getMatrixById($data->matrix);
-                    @endphp
+                @php
+                    $dataMatrix = $matrix = \App\Models\Seat_template::getMatrixById($data->matrix);
+                @endphp
 
-                    <tr>
-                        <input type="hidden" name="id" id="dataId" value="{{ $data->id }}">
-                        <td id="dataId">{{ $data->id }}</td>
-                        <td>{{ $data->name }}</td>
-                        <td>{{ $data->description }}</td>
-                        <td>{{ $dataMatrix['name'] }}</td>
-                        <td>
-                            @if ($data->is_publish)
-                                <span class="badge bg-success">Đã cấu tạo</span>
-                            @else
-                                <span class="badge bg-warning">Chưa cấu tạo</span>
-                            @endif
-                        </td>
-                        <td>
-                            <input type="checkbox" id="is_active{{$data->id}}" data-publish="{{ $data->is_publish }}"
-                                switch="success" @checked($data->is_active) />
-                            <label for="is_active{{$data->id}}"></label>
-                        </td>
-                        <td>
+                <tr>
+                    <input type="hidden" name="id" id="dataId" value="{{ $data->id }}">
+                    <td id="dataId">{{ $loop->iteration }}</td>
+                    <td class="fw-semibold">{{ $data->name }}</td>
+                    <td>{{ $data->description }}</td>
+                    <td>{{ $dataMatrix['name'] }}</td>
+                    <td>
+                        @if ($data->is_publish)
+                            <span class="badge bg-success">Đã cấu tạo</span>
+                        @else
+                            <span class="badge bg-warning">Chưa cấu tạo</span>
+                        @endif
+                    </td>
+                    <td>
+                        <input type="checkbox" id="is_active{{ $data->id }}" data-publish="{{ $data->is_publish }}"
+                            switch="success" @checked($data->is_active) />
+                        <label for="is_active{{ $data->id }}"></label>
+                    </td>
+                    <td>
 
-                            <div class="dropdown">
-                                <span data-bs-toggle="dropdown" aria-expanded="false" class="cursor-pointer">
-                                    <i class=" bx bx-dots-vertical-rounded"></i>
-                                </span>
-                                <ul class="dropdown-menu">
-                                    <li> <a class="dropdown-item" href="{{ route('admin.edit.seat_templates', $data) }}"><i
-                                                class="mdi mdi-plus-circle-outline"></i> Cấu
-                                            tạo
-                                            ghế</a></li>
-                                    <li>
-                                        <a class="dropdown-item edit-seat-template" href="#" data-id="{{ $data->id }}"
-                                            data-name="{{ $data->name }}" data-matrix="{{ $data->matrix }}"
-                                            data-regular="{{ $data->row_regular }}" data-vip="{{ $data->row_vip }}"
-                                            data-double="{{ $data->row_double }}" data-description="{{ $data->description }}"
-                                            data-publish="{{ $data->is_publish }}" data-bs-toggle="modal"
-                                            data-bs-target="#exampleModalEdit">
-                                            <i class="mdi mdi-playlist-edit"></i> Chỉnh sửa
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                        <div class="dropdown">
+                            <span data-bs-toggle="dropdown" aria-expanded="false" class="cursor-pointer">
+                                <i class=" bx bx-dots-vertical-rounded"></i>
+                            </span>
+                            <ul class="dropdown-menu">
+                                <li> <a class="dropdown-item" href="{{ route('admin.edit.seat_templates', $data) }}"><i
+                                            class="mdi mdi-plus-circle-outline"></i> Cấu
+                                        tạo
+                                        ghế</a></li>
+                                <li>
+                                    <a class="dropdown-item edit-seat-template" href="#"
+                                        data-id="{{ $data->id }}" data-name="{{ $data->name }}"
+                                        data-matrix="{{ $data->matrix }}" data-regular="{{ $data->row_regular }}"
+                                        data-vip="{{ $data->row_vip }}" data-double="{{ $data->row_double }}"
+                                        data-description="{{ $data->description }}"
+                                        data-publish="{{ $data->is_publish }}" data-bs-toggle="modal"
+                                        data-bs-target="#exampleModalEdit">
+                                        <i class="mdi mdi-playlist-edit"></i> Chỉnh sửa
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
 
-                        </td>
-                    </tr>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
+    {{ $dataAll->links() }}
     @php
         $appUrl = env('APP_URL');
     @endphp
-    <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form method="post" class="submitSeatTemplateFormUpdate">
@@ -193,7 +196,8 @@
                                     class="form-select @error('matrix') is-invalid @enderror" required>
                                     <option value="" disabled selected>Chọn ma trận ghế</option>
                                     @foreach ($matrixs as $matrix)
-                                        <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }} {{ $matrix['description'] }}
+                                        <option value="{{ $matrix['id'] }}">{{ $matrix['name'] }}
+                                            {{ $matrix['description'] }}
                                         </option>
                                     @endforeach
                                 </select>
@@ -212,7 +216,8 @@
                                 @enderror
                             </div>
                             <div class="col-lg-4 mb-3">
-                                <label for="vipSeat" class="form-label">Ghế Vip <span style="color: red">*</span></label>
+                                <label for="vipSeat" class="form-label">Ghế Vip <span
+                                        style="color: red">*</span></label>
                                 <input required type="text" name="row_vip"
                                     class="form-control @error('row_vip') is-invalid @enderror" id="vipSeatEdit"
                                     placeholder="Nhập số lượng ghế Vip">
@@ -221,7 +226,8 @@
                                 @enderror
                             </div>
                             <div class="col-lg-4 mb-3">
-                                <label for="doubleSeat" class="form-label">Ghế đôi <span style="color: red">*</span></label>
+                                <label for="doubleSeat" class="form-label">Ghế đôi <span
+                                        style="color: red">*</span></label>
                                 <input required type="text" name="row_double"
                                     class="form-control @error('row_double') is-invalid @enderror" id="doubleSeatEdit"
                                     placeholder="Nhập số lượng ghế đôi">
@@ -231,8 +237,7 @@
                             </div>
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
-                                <textarea class="form-control" name="description" id="description" rows="3"
-                                    placeholder="Nhập mô tả..."></textarea>
+                                <textarea class="form-control" name="description" id="description" rows="3" placeholder="Nhập mô tả..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -245,14 +250,15 @@
             </div>
         </div>
     </div>
-
-
-
-
 @endsection
 @section('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
+            @if ($errors->any())
+                $('#exampleModal').modal('show'); // Giữ modal mở nếu có lỗi
+            @endif
+        });
+        $(document).ready(function() {
             let matrixData = @json($matrixs);
 
             function handleMatrixChange(selectId, regularId, vipId, doubleId) {
@@ -270,12 +276,14 @@
                 }
             }
 
-            $('#matrixSelectCreate').change(function () {
-                handleMatrixChange('#matrixSelectCreate', '#regularSeatCreate', '#vipSeatCreate', '#doubleSeatCreate');
+            $('#matrixSelectCreate').change(function() {
+                handleMatrixChange('#matrixSelectCreate', '#regularSeatCreate', '#vipSeatCreate',
+                    '#doubleSeatCreate');
             });
 
-            $('#matrixSelectEdit').change(function () {
-                handleMatrixChange('#matrixSelectEdit', '#regularSeatEdit', '#vipSeatEdit', '#doubleSeatEdit');
+            $('#matrixSelectEdit').change(function() {
+                handleMatrixChange('#matrixSelectEdit', '#regularSeatEdit', '#vipSeatEdit',
+                    '#doubleSeatEdit');
             });
 
             function handleSubmit(formClass, matrixSelectId, regularSeatId, vipSeatId, doubleSeatId) {
@@ -305,18 +313,22 @@
                 }
             }
 
-            $('#submitSeatTemplate').click(function () {
-                handleSubmit('submitSeatTemplateForm', '#matrixSelectCreate', '#regularSeatCreate', '#vipSeatCreate', '#doubleSeatCreate');
+            $('#submitSeatTemplate').click(function() {
+                handleSubmit('submitSeatTemplateForm', '#matrixSelectCreate', '#regularSeatCreate',
+                    '#vipSeatCreate', '#doubleSeatCreate');
             });
 
-            $('#submitSeatTemplateUpdate').click(function () {
-                handleSubmit('submitSeatTemplateFormUpdate', '#matrixSelectEdit', '#regularSeatEdit', '#vipSeatEdit', '#doubleSeatEdit');
+            $('#submitSeatTemplateUpdate').click(function() {
+                handleSubmit('submitSeatTemplateFormUpdate', '#matrixSelectEdit', '#regularSeatEdit',
+                    '#vipSeatEdit', '#doubleSeatEdit');
             });
         });
         // Phần active
-        $(document).ready(function () {
+        $(document).ready(function() {
             let Url = @json($appUrl);
-            $('input[id^="is_active"]').change(function () {
+            console.log(Url);
+
+            $('input[id^="is_active"]').change(function() {
                 let id = this.id.replace('is_active', ''); // Lấy ID động
                 let is_active = this.checked ? 1 : 0; // Kiểm tra trạng thái
                 let publish = $(this).data('publish');
@@ -325,15 +337,21 @@
                 if (publish) {
                     if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
                         $.ajax({
+
                             url: `${Url}/api/${id}/active-seat-template`,
                             method: "PUT",
                             data: {
                                 is_active
                             },
-                            success: function (response) {
+                            headers: {
+                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                            },
+                            success: function(response) {
                                 toastr.success('Thao tác thành công !!!');
                             },
-                            error: function (error) {
+                            error: function(error) {
+                                console.log(error)
+
                                 toastr.error('Thao tác thất bại !!!');
                             }
                         });
@@ -347,7 +365,7 @@
             });
         });
         // Phần edit
-        $('.edit-seat-template').click(function () {
+        $('.edit-seat-template').click(function() {
             let id = $(this).data('id');
             let name = $(this).data('name');
             let matrix = $(this).data('matrix');
@@ -383,6 +401,5 @@
             // Đổi text của nút submit
             $('#submitSeatTemplateUpdate').text('Cập nhật');
         });
-
     </script>
 @endsection

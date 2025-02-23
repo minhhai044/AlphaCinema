@@ -200,22 +200,42 @@
                                                     </td>
                                                     <td>{{ $branch->created_at }}</td>
                                                     <td>{{ $branch->updated_at }}</td>
+
                                                     <td>
-                                                        <a href="javascript:void(0);" class="text-primary editBranch"
-                                                            data-id="{{ $branch->id }}" data-name="{{ $branch->name }}"
-                                                            data-active="{{ $branch->is_active }}">
-                                                            <button title="xem" class="btn btn-warning btn-sm "
-                                                                type="button"><i class="fas fa-edit"></i></button>
-                                                        </a>
-                                                        <form action="{{ route('admin.branches.destroy', $branch) }}"
-                                                            method="POST" class="d-inline-block">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                                onclick="return confirm('Bạn có muốn xóa không')">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
+                                                        <div class="dropdown">
+                                                            <a href="#" class="dropdown-toggle card-drop"
+                                                                data-bs-toggle="dropdown" aria-expanded="false">
+                                                                <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                                                            </a>
+                                                            <ul class="dropdown-menu dropdown-menu-end" style="">
+                                                                {{-- Button edit --}}
+                                                                <li>
+                                                                    <button type="button" data-bs-toggle="modal"
+                                                                        class="edit_type_room dropdown-item editBranch"
+                                                                        data-bs-target="#exampleModal" data-id={{ $branch->id }}
+                                                                        data-name="{{ $branch->name }}"
+                                                                        data-active="{{ $branch->is_active }}">
+                                                                        <i
+                                                                            class="mdi mdi-pencil font-size-16 text-success me-1"></i>
+                                                                        Edit
+                                                                    </button>
+                                                                </li>
+                                                                {{-- xoas --}}
+                                                                <li>
+                                                                    <form method="POST"
+                                                                        action="{{ route('admin.branches.destroy', $branch) }}"
+                                                                        class="d-inline-block">
+                                                                        @csrf
+                                                                        @method('DELETE')
+                                                                        <button type="submit" class="dropdown-item edit-list"
+                                                                            onclick="return confirm('Bạn có muốn xóa không')">
+                                                                            <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
+                                                                            Xóa
+                                                                        </button>
+                                                                    </form>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
                                                     </td>
                                                 </tr>
                                             @endforeach

@@ -1,4 +1,4 @@
-@extends('admin.layouts.master')
+{{-- @extends('admin.layouts.master')
 @section('content')
     <!-- start page title -->
     <div class="row">
@@ -54,4 +54,4 @@
     <!-- end select2 -->
 
     </div>
-@endsection
+@endsection --}}

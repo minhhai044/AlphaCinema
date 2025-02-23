@@ -21,6 +21,7 @@ return new class extends Migration
             $table->foreignIdFor(Cinema::class)->constrained();
             $table->foreignIdFor(Type_room::class)->constrained();
             $table->foreignIdFor(Seat_template::class)->constrained();
+            $table->string('matrix_colume')->comment(comment: "Số cột của ma trận ghế");
             $table->string('name')->unique();
             $table->json('seat_structure');
             $table->text('description')->nullable();

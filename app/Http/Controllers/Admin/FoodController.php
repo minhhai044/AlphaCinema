@@ -2,15 +2,20 @@
 
 namespace App\Http\Controllers\Admin;
 
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+
 use App\Models\Food;
 use App\Helpers\Alert;
 use App\Helpers\Toastr;
+
 use App\Services\FoodService;
 use Illuminate\Http\Response;
 use App\Traits\ApiResponseTrait;
 use App\Http\Requests\FoodRequest;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Storage;
+
 
 class FoodController extends Controller
 {
@@ -96,7 +101,7 @@ class FoodController extends Controller
     }
 
     // 7. Xóa đồ ăn
-    public function forceDestroy(Food $food)
+    public function destroy(Food $food)
     {
         try {
             // if ($food->combos()->count() > 0) {
@@ -111,27 +116,6 @@ class FoodController extends Controller
             return redirect()->route('admin.foods.index');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
-        }
-    }
-
-
-
-    // xóa mềm
-    public function solfDestroy(Food $food)
-    {
-        try {
-
-            // $food = Food::findOrFail($id);
-
-            if (!empty($food->img_thumbnail) && Storage::exists($food->img_thumbnail)) {
-                Storage::delete($food->img_thumbnail);
-            }
-
-            $food->delete();  // xóa mềm
-            Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
-            return redirect()->route('admin.foods.index');
-        } catch (\Throwable $th) {
-            return back()->with('error', 'Xóa không thành công');
         }
     }
 }
