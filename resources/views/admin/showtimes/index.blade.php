@@ -79,7 +79,7 @@
                             <img src="{{ Storage::url($showtimes['movie']->img_thumbnail) }}" alt="" width="100px"
                                 class="img-thumbnail">
                         </td>
-                        <td>{{ implode(', ', json_decode($showtimes['movie']->movie_genres, true) ?? []) }}</td>
+                        <td>{{ implode(', ', $showtimes['movie']->movie_genres) }}</td>
                         <td>{{ $showtimes['movie']->duration }} phút</td>
                         <td>
 
