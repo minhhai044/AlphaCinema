@@ -51,6 +51,8 @@ class UserController extends Controller
         $user =  $this->userService->storeUser($data);
 
         if ($userRequest->has('role_id')) {
+
+            // dd($userRequest->role_id);
             $user->assignRole($userRequest->role_id);
         }
 

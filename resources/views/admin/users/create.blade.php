@@ -236,7 +236,7 @@
                                     @foreach ($roles as $role)
                                         @if ($role['name'] != 'System Admin')
                                             <option id="{{ $role['name'] }}"
-                                                {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}>>
+                                                {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}>
                                                 {{ $role['name'] }}</option>
                                         @endif
                                     @endforeach

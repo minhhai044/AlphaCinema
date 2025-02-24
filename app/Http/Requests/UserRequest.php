@@ -23,11 +23,12 @@ class UserRequest extends FormRequest
     {
         $userId = $this->route('users');
         if ($this->isMethod(method: 'POST')) {
+            if ($this->routeIs('api.users.signin')) { // Nếu là API đăng nhập
+                return $this->rulesForSignIn();
+            }
             return $this->rulesForCreate();
         } elseif ($this->isMethod('PUT') || $this->isMethod('PATCH')) {
             return $this->rulesForUpdate($userId);
-        } elseif ($this->isMethod('GET')) {
-            return $this->rulesForGet();
         }
 
         return [];
@@ -54,7 +55,7 @@ class UserRequest extends FormRequest
     {
         return [
             'name'      => 'required|string|max:255',
-           'avatar'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'avatar'     => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'phone'     => 'nullable|regex:/^\+?[0-9]{10,15}$/|unique:users,phone,' . $userId,  // Bỏ qua kiểm tra số điện thoại nếu là bản ghi hiện tại
             'email'     => 'required|email|unique:users,email,' . $userId,  // Bỏ qua kiểm tra email nếu là bản ghi hiện tại
             'password'  => 'nullable|string|min:8|confirmed',  // Mật khẩu có thể không thay đổi
@@ -67,13 +68,14 @@ class UserRequest extends FormRequest
         ];
     }
 
-    public function rulesForGet()
+    public function rulesForSignIn()
     {
         return [
-            'email'     => 'required|email|unique:users,email',  // Kiểm tra email duy nhất
-            'password'  => 'required|string|min:8|confirmed',
+            'email'    => 'required|email|exists:users,email',
+            'password' => 'required|string|min:8',
         ];
     }
+
 
 
 
@@ -87,7 +89,7 @@ class UserRequest extends FormRequest
             'avatar.image'  => 'Ảnh đại diện phải là một file ảnh.',
             'avatar.max'    => 'Ảnh đại diện không được vượt quá 2MB.',
 
-            'phone.required'=> 'Số điện thoại là bắt buộc',
+            'phone.required' => 'Số điện thoại là bắt buộc',
             'phone.regex'   => 'Số điện thoại không hợp lệ. Vui lòng nhập lại.',
             'phone.unique'  => 'Số điện thoại này đã được đăng ký. Vui lòng chọn một số khác.',  // Thông báo lỗi cho số điện thoại trùng
 

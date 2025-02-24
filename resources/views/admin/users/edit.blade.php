@@ -253,11 +253,9 @@
                                     <!-- Preview ảnh -->
 
                                     <img id="image-preview"
-                                        src="{{ $user->avatar ? Storage::url($user->avatar) : 'https://graph.facebook.com/4/picture?type=large' }}"
+                                        src="{{ ($user->avatar &&  Storage::exists($user->avatar)) ? Storage::url($user->avatar) : 'https://graph.facebook.com/4/picture?type=large' }}"
                                         class="img-fluid rounded avatar-xl"
                                         style="width: 100%; height: 60%; object-fit: cover;">
-
-
 
                                     <!-- Nút xóa ảnh -->
                                     <button type="button" id="delete-image"
@@ -304,7 +302,6 @@
         // Function to display selected image
         // Hàm xem trước ảnh khi chọn
         $(document).ready(function() {
-
             new Choices("#choices-multiple-remove-button", {
                 removeItemButton: true, // Enable remove item button for each selected option
                 searchEnabled: true, // Enable search in the dropdown

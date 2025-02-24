@@ -30,9 +30,8 @@
 {{-- config global --}}
 <script src="{{ asset('assets/js/config.js') }}"></script>
 
-{{-- select2 --}}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+
 <script src="{{ asset('theme/admin/assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
 
 {{-- zod schema --}}
