@@ -331,7 +331,7 @@
                 if (publish) {
                     if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
                         $.ajax({
-                            url: `${Url}/api/${id}/active-seat-template`,
+                            url: `${Url}/api/v1/${id}/active-seat-template`,
                             method: "PUT",
                             data: {
                                 is_active

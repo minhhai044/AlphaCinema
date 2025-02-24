@@ -28,24 +28,7 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::put('{id}/active-seat-template',[SeatTemplateController::class,'activeSeatTemplate']);
-Route::put('{id}/active-room',[RoomController::class,'activeRoom']);
-Route::get('{id}/showtime',[ShowtimeController::class,'getByDate']);
-Route::put('{id}/active-showtime',[ShowtimeController::class,'activeShowtime']);
 
-Route::get('/cinemas',[CinemaController::class,'index']);
-Route::get('{id}/showcinemas',[CinemaController::class,'show']);
-Route::post('/storecinemas',[CinemaController::class,'store']);
-Route::put('{id}/updatecinemas',[CinemaController::class,'update']);
-Route::delete('{id}/deletecinemas',[CinemaController::class,'delete']);
-
-// Route::prefix('movies')->group(function () {
-//     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
-//     Route::get('/{movie}', [MovieController::class, 'show'])->name('api.movies.show');
-//     Route::post('/', [MovieController::class, 'store'])->name('api.movies.store');
-//     Route::put('/{movie}', [MovieController::class, 'update'])->name('api.movies.update');
-//     Route::delete('/{movie}', [MovieController::class, 'delete'])->name('api.movies.delete');
-// });
 
 Route::prefix('movies')->group(function () {
     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');

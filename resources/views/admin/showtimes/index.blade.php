@@ -181,7 +181,7 @@
 
             if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
                 $.ajax({
-                    url: `${Url}/api/${id}/active-showtime`,
+                    url: `${Url}/api/v1/${id}/active-showtime`,
                     method: "PUT",
                     data: {
                         is_active

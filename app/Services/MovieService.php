@@ -43,7 +43,7 @@ class MovieService
             // $data['movie_versions'] = json_encode($data['movie_versions']) ;
             // $data['movie_genres'] = json_encode($data['movie_genres']) ;
             // dd($data['movie_versions']);
-            return Movie::create($data);
+            Movie::create($data);
         });
     }
 
@@ -58,7 +58,7 @@ class MovieService
             $data['is_publish'] = $data['is_publish'] ?? 0;
 
             // Kiểm tra phị phí nếu là đặc biệt
-            $data['surcharge']= $data['is_special']== 0 ? 0 : $movie->surcharge;
+            $data['surcharge'] = $data['is_special'] == 0 ? 0 : $movie->surcharge;
 
             // Kiểm tra và giữ lại giá trị cũ nếu không cập nhật
             $data['release_date'] = $data['release_date'] ?? $movie->release_date;
