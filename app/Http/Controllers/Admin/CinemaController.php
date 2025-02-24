@@ -9,10 +9,13 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\CinemaRequest;
 use App\Models\Branch;
 use App\Services\CinemaService;
+use App\Traits\ApiResponseTrait;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
 class CinemaController extends Controller
 {
+    use ApiResponseTrait;
     private const PATH_VIEW = 'admin.cinemas.';
     private CinemaService $cinemaService;
     public function __construct(CinemaService $cinemaService)
@@ -25,12 +28,13 @@ class CinemaController extends Controller
     public function index()
     {
         $cinemas = $this->cinemaService->getAllPaginateService(10);
+        $branchs = Branch::query()->orderByDesc('id')->get();
 
         if (request()->page > $cinemas->lastPage()) {
             return redirect()->route('admin.cinemas.index', ['page' => 1]);
         }
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('cinemas'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('cinemas', 'branchs'));
     }
     /**
      * Show the form for creating a new resource.
@@ -47,11 +51,15 @@ class CinemaController extends Controller
     public function store(CinemaRequest $request)
     {
         try {
-            $this->cinemaService->storeService($request->validated());
+            $cinema = $this->cinemaService->storeService($request->validated());
 
             Toastr::success('', 'Tạo rạp chiếu phim thành công');
 
-            return redirect()->route('admin.cinemas.index');
+            return $this->successResponse(
+                $cinema,
+                'Thao tác thành công',
+                Response::HTTP_CREATED
+            );
         } catch (\Throwable $th) {
             die('Error' . $th->getMessage());
         }
