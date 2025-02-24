@@ -143,7 +143,8 @@ class AuthController extends Controller
                         'email' => $user->email,
                         'type_user' => $user->type_user
                     ],
-                    'token' => $token
+                    'token' => $token,
+                    'cookie' => $cookie
                 ]
             ], Response::HTTP_OK)->withCookie($cookie);
         } catch (\Throwable $th) {

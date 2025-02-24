@@ -23,7 +23,7 @@ class UserRequest extends FormRequest
     {
         $userId = $this->route('users');
         if ($this->isMethod(method: 'POST')) {
-            if ($this->routeIs('users.signin')) { // Nếu là API đăng nhập
+            if ($this->routeIs('api.users.signin')) { // Nếu là API đăng nhập
                 return $this->rulesForSignIn();
             }
             return $this->rulesForCreate();
