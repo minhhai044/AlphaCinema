@@ -18,7 +18,8 @@
         "php-flasher/flasher-toastr-laravel": "^1.15",
         "predis/predis": "^2.3",
         "spatie/laravel-permission": "^6.12",
-        "tinymce/tinymce": "^7.7"
+        "tinymce/tinymce": "^7.7",
+        "pusher/pusher-php-server": "^7.2"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

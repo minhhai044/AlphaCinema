@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
 use App\Services\RoomService;
@@ -16,9 +16,9 @@ class RoomController extends Controller
     {
         $this->roomService = $roomService;
     }
-    public function activeRoom(Request $request, string $id){
+    public function activeRoom(Request $request,string $id){
         try {
-            $data = $this->roomService->updateService($request->all(),$id );
+            $data = $this->roomService->updateService($request->all(),$id);
             return $this->successResponse(
                 $data,
                 'Thao tác thành công !!!',

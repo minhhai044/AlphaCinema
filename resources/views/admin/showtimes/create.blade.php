@@ -243,7 +243,7 @@
             $.ajax({
                 type: "GET",
                 async: false,
-                url: `${appUrl}/api/${room_id}/showtime?date=${dataDate}`,
+                url: `${appUrl}/api/v1/${room_id}/showtime?date=${dataDate}`,
                 success: function (response) {
 
                     const showtimes = response.data;

@@ -80,6 +80,7 @@
                                 class="img-thumbnail">
                         </td>
                         <td>{{ implode(', ', $showtimes['movie']->movie_genres ?? []) }}</td>
+
                         <td>{{ $showtimes['movie']->duration }} phút</td>
                         <td>
                             <button class="btn" type="button" data-bs-toggle="collapse"
@@ -180,7 +181,7 @@
 
             if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
                 $.ajax({
-                    url: `${Url}/api/${id}/active-showtime`,
+                    url: `${Url}/api/v1/${id}/active-showtime`,
                     method: "PUT",
                     data: {
                         is_active
