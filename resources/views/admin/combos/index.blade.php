@@ -45,7 +45,8 @@
                         <!-- Cột bên phải: Thêm mới và Bộ lọc -->
                         <div class="col-md-6 text-end">
                             <a href="{{ route('admin.combos.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
-                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#searchForm">
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#searchForm">
                                 <i class="fas fa-filter"></i> Bộ lọc
                             </button>
                         </div>
@@ -62,14 +63,15 @@
                                     <div class="col-md-4">
                                         <label class="form-label">Khoảng giá</label>
                                         <div class="d-flex">
-                                            <input type="number" name="price_min" class="form-control me-2" placeholder="Từ">
+                                            <input type="number" name="price_min" class="form-control me-2"
+                                                placeholder="Từ">
                                             <input type="number" name="price_max" class="form-control" placeholder="Đến">
                                         </div>
                                     </div>
                                     <div class="col-md-4">
                                         <label class="form-label">Lọc theo món ăn</label>
-                                        <select name="food_id[]" id="foodSelect" class="form-select select2">
-                                            <!-- Nội dung sẽ được đổ từ API -->
+                                        <select name="food_name" id="foodSelect" class="form-select select2">
+                                            <option value="">--Chọn món ăn--</option>
                                         </select>
                                     </div>
                                 </div>
@@ -122,6 +124,9 @@
                     data: function (d) {
                         d.id = $('input[name="id"]').val();
                         d.name = $('input[name="name"]').val();
+                        d.price_min = $('input[name="price_min"]').val();
+                        d.price_max = $('input[name="price_max"]').val();
+                        d.food_name = $('#foodSelect').val(); // gửi tên món ăn từ select
                     }
                 },
                 columns: [
@@ -145,39 +150,41 @@
                     { data: 'description', name: 'description' },
                     {
                         data: 'is_active',
-                        render: function (data) {
-                            return data
-                                ? '<span class="badge bg-success">Active</span>'
-                                : '<span class="badge bg-danger">Inactive</span>';
+                        render: function (data, type, row) {
+                            var checked = data ? 'checked' : '';
+                            return `
+                                <input type="checkbox" id="is_active${row.id}" data-publish="${row.is_publish}" switch="success" ${checked} class="toggle-active" data-id="${row.id}" />
+                                <label for="is_active${row.id}"></label>
+                            `;
                         }
                     },
                     {
                         data: 'id',
                         render: function (data) {
                             return `
-                                                <div class="dropdown text-center">
-                                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                        ...
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li>
-                                                            <a href="/admin/combos/${data}/edit" class="dropdown-item text-warning">
-                                                                <i class="fas fa-edit"></i> Sửa
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <form action="/admin/combos/${data}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="dropdown-item text-danger"
-                                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                                                    <i class="fas fa-trash-alt"></i> Xóa
-                                                                </button>
-                                                            </form>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            `;
+                                                    <div class="dropdown text-center">
+                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            ...
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="/admin/combos/${data}/edit" class="dropdown-item text-warning">
+                                                                    <i class="fas fa-edit"></i> Sửa
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <form action="/admin/combos/${data}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="dropdown-item text-danger"
+                                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                                                        <i class="fas fa-trash-alt"></i> Xóa
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                `;
                         }
                     }
                 ],
@@ -211,27 +218,55 @@
 
 
 
-            fetch('http://alphacinema.test/api/combos')
-                .then(response => response.json())
-                .then(data => {
-                    // Lấy mảng món ăn từ key "food"
-                    let foods = data.food;
-                    let select = document.getElementById('foodSelect');
+        fetch('http://alphacinema.test/api/combos')
+            .then(response => response.json())
+            .then(data => {
+                // Lấy mảng món ăn từ key "food"
+                let foods = data.food;
+                let select = document.getElementById('foodSelect');
 
-                    // Xóa nội dung cũ (nếu có)
-                    select.innerHTML = "";
+                // Xóa nội dung cũ và thêm option mặc định
+                select.innerHTML = "<option value=''>--Chọn món ăn--</option>";
 
-                    // Lặp qua từng món ăn và tạo option
-                    foods.forEach(food => {
-                        let option = document.createElement('option');
-                        option.value = food.id;
-                        option.textContent = food.name;
-                        select.appendChild(option);
+                // Lặp qua từng món ăn và tạo option
+                foods.forEach(food => {
+                    let option = document.createElement('option');
+                    option.value = food.name; // dùng tên món làm giá trị
+                    option.textContent = food.name;
+                    select.appendChild(option);
+                });
+
+                $(select).trigger('change');
+            })
+            .catch(error => console.error('Lỗi load dữ liệu món ăn:', error));
+
+
+            $(document).on('change', '.toggle-active', function () {
+                    var checkbox = $(this);
+                    var comboId = checkbox.data('id');
+                    var isActive = checkbox.is(':checked') ? 1 : 0;
+
+                    $.ajax({
+                        url: "{{ route('admin.combos.updateStatus') }}",
+                        type: "POST",
+                        data: {
+                            id: comboId,
+                            is_active: isActive,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                // Có thể hiển thị thông báo thành công ở đây
+                                console.log(response.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Cập nhật trạng thái thất bại!');
+                            // Nếu cập nhật thất bại, revert lại trạng thái checkbox
+                            checkbox.prop('checked', !isActive);
+                        }
                     });
-
-                    $(select).trigger('change');
-                })
-                .catch(error => console.error('Lỗi load dữ liệu món ăn:', error));
+                });
 
     </script>
 @endsection

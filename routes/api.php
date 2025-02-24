@@ -64,6 +64,8 @@ Route::prefix('foods')->group(function () {
 Route::prefix('combos')->group(function () {
     Route::get('/', [ComboController::class, 'index'])->name('api.combos.index');
 });
+Route::post('/admin/combos/update-status', [ComboController::class, 'updateStatus'])
+    ->name('admin.combos.updateStatus');
 
 // Change active
 Route::post('food/change-active',       [UpdateActiveController::class, 'food'])->name('food.change-active');

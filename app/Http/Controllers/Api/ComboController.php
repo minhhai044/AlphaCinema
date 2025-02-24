@@ -38,23 +38,25 @@ class ComboController extends Controller
                 $query->where('id', 'LIKE', '%' . $request->id . '%');
             }
 
-            // Lọc theo tên Combo
-            if ($request->filled('name')) {
-                $query->where('name', 'LIKE', '%' . $request->name . '%');
-            }
 
             // Lọc theo khoảng giá
             if ($request->filled('price_min')) {
-                $query->where('price', '>=', $request->price_min);
+                $query->where('price_sale', '>=', $request->price_min);
             }
             if ($request->filled('price_max')) {
-                $query->where('price', '<=', $request->price_max);
+                $query->where('price_sale', '<=', $request->price_max);
             }
 
-            // Lọc theo món ăn
+            // Lọc theo món ăn (ID)
             if ($request->filled('food_id')) {
                 $query->whereHas('comboFood', function ($q) use ($request) {
                     $q->whereIn('food_id', $request->food_id);
+                });
+            }
+
+            if ($request->filled('food_name')) {
+                $query->whereHas('comboFood.food', function ($q) use ($request) {
+                    $q->where('name', 'LIKE', '%' . $request->food_name . '%');
                 });
             }
 
@@ -85,6 +87,7 @@ class ComboController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
 
 
     public function show(string $id)
@@ -140,6 +143,22 @@ class ComboController extends Controller
         }
     }
 
+    public function updateStatus(Request $request)
+{
+    $request->validate([
+        'id' => 'required|integer|exists:combos,id',
+        'is_active' => 'required|boolean',
+    ]);
+
+    $combo = Combo::findOrFail($request->id);
+    $combo->is_active = $request->is_active;
+    $combo->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Trạng thái đã được cập nhật thành công.'
+    ]);
+}
 
     public function delete(string $id)
     {
