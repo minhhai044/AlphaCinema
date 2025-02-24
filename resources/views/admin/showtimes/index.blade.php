@@ -79,8 +79,7 @@
                             <img src="{{ Storage::url($showtimes['movie']->img_thumbnail) }}" alt="" width="100px"
                                 class="img-thumbnail">
                         </td>
-                        <td>{{ implode(', ', $showtimes['movie']->movie_genres ?? []) }}</td>
-
+                        <td>{{ implode(', ',$showtimes['movie']->movie_genres) }}</td>
                         <td>{{ $showtimes['movie']->duration }} phút</td>
                         <td>
                             <button class="btn" type="button" data-bs-toggle="collapse"

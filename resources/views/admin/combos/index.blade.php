@@ -2,235 +2,271 @@
 @section('title', 'Quản lý Combo')
 
 @section('style')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
     <style>
         .card {
             box-shadow: 0px 1px 10px 3px #dedede;
-        }
-
-        .al-table-length label {
-            font-weight: normal;
-            text-align: left;
-            white-space: nowrap;
-        }
-
-        .al-table-length .al-table-select {
-            width: auto;
-            display: inline-block;
-        }
-
-        .al-table-length .al-table-input {
-            margin-left: .5em;
-            display: inline-block;
-            width: auto;
-        }
-
-        .al-table-info {
-            padding-top: .85em;
-        }
-
-        .al-table-paginate {
-            margin: 0;
-            white-space: nowrap;
-            text-align: right;
-        }
-
-        .al-table-paginate .pagination {
-            margin: 2px 0;
-            white-space: nowrap;
-            justify-content: flex-end;
         }
     </style>
 @endsection
 
 @section('content')
-    <!-- start page title -->
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">Quản lý Combo</h4>
-
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item">
-                            <a href="javascript: void(0);">Combo</a>
-                        </li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Combo</a></li>
                         <li class="breadcrumb-item active">Danh sách Combo</li>
                     </ol>
                 </div>
             </div>
         </div>
     </div>
-    <!-- end page title -->
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-
                 <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="mb-4">
-                                <h6 class="mb-sm-0 font-size-16">Danh sách Combo</h6>
+                    <div class="row align-items-center mb-3">
+                        <!-- Cột bên trái: Hiển thị -->
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">Hiển thị:</span>
+                                <select id="pageLength" class="form-select w-auto">
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                    <option value="1000">Tất cả</option>
+                                </select>
                             </div>
                         </div>
-                        <div class="col-sm-auto">
-                            <div class="mb-4">
-
-                                <a href="{{ route('admin.combos.create') }}" class="btn btn-light waves-effect waves-light">
-                                    <i class="bx bx-plus me-1"></i>
-                                    Thêm mới Combo
-                                </a>
-                            </div>
+                        <!-- Cột bên phải: Thêm mới và Bộ lọc -->
+                        <div class="col-md-6 text-end">
+                            <a href="{{ route('admin.combos.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#searchForm">
+                                <i class="fas fa-filter"></i> Bộ lọc
+                            </button>
                         </div>
                     </div>
 
-                    <div class="row mb-4">
-                        <div class="col-12">
-                            <div class="d-flex align-items-center flex-wrap gap-3">
-                                <!-- Bộ lọc số lượng hiển thị -->
-                                <div class="al-table-length">
-                                    <label>
-                                        Hiển thị
-                                        <select name="example_length" aria-controls="example"
-                                            class="form-select form-select-sm al-table-select">
-                                            <option value="10">10</option>
-                                            <option value="25">25</option>
-                                            <option value="50">50</option>
-                                            <option value="100">100</option>
+                    <div class="collapse" id="searchForm">
+                        <div class="card card-body mb-3">
+                            <form id="filterForm">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Tìm nhanh theo ID</label>
+                                        <input type="text" name="id" class="form-control" placeholder="Nhập ID">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Khoảng giá</label>
+                                        <div class="d-flex">
+                                            <input type="number" name="price_min" class="form-control me-2"
+                                                placeholder="Từ">
+                                            <input type="number" name="price_max" class="form-control" placeholder="Đến">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Lọc theo món ăn</label>
+                                        <select name="food_name" id="foodSelect" class="form-select select2">
+                                            <option value="">--Chọn món ăn--</option>
                                         </select>
-                                        mục
-                                    </label>
+                                    </div>
                                 </div>
-                                <!-- Ô tìm kiếm -->
-                                <div class="al-table-length ms-auto">
-                                    <label>
-                                        Tìm kiếm:
-                                        <input type="search" class="form-control form-control-sm al-table-input"
-                                            placeholder="Search đê">
-                                    </label>
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">Lọc</button>
+                                    <button type="reset" class="btn btn-secondary" id="resetFilter">Reset</button>
                                 </div>
-                            </div>
+                            </form>
                         </div>
                     </div>
 
 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="table-responsive">
-                                <table class="table align-middle table-nowrap table-bordered dt-responsive nowrap w-100"
-                                    id="customerList-table">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>#</th>
-                                            <th>Tên Combo</th>
-                                            <th>Hình ảnh</th>
-                                            <th>Thông tin Combo</th>
-                                            <th>Giá bán</th>
-                                            <th>Mô tả</th>
-                                            <th>Hoạt động</th>
-                                            <th>Chức năng</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
 
-                                        @foreach ($data as $combo)
-                                            <tr>
-                                                <td class="sorting_1 dtr-control">
-                                                    <div class="d-none">{{ $combo->id }}</div>
-                                                    <div class="form-check font-size-{{ $combo->id }}">
-                                                        <input class="form-check-input" type="checkbox"
-                                                            id="customerlistcheck-{{ $combo->id }}">
-                                                        <label class="form-check-label"
-                                                            for="customerlistcheck-{{ $combo->id }}"></label>
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    {{ $combo->name }}
-                                                </td>
-
-                                                <td class="text-center">
-                                                    @if ($combo->img_thumbnail)
-                                                        <img class="img-thumbnail" width="150px" height="60px"
-                                                            src="{{ Storage::url($combo->img_thumbnail) }}">
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    @foreach ($combo->food as $itemFood)
-                                                        <ul class="nav nav-sm flex-column">
-                                                            <li class="nav-item mb-2">
-                                                                {{ $itemFood->name }} x
-                                                                ({{ $itemFood->pivot->quantity }})
-                                                            </li>
-                                                        </ul>
-                                                    @endforeach
-                                                </td>
-                                                <td>
-                                                    @if ($combo->price_sale > 0)
-                                                        <strong class="text-red-500">{{ formatPrice($combo->price_sale) }}
-                                                            VNĐ</strong>
-                                                    @else
-                                                        <strong>{{ formatPrice($combo->price) }} VNĐ</strong>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    {{ $combo->description }}
-                                                </td>
-                                                <td>
-                                                    <input type="checkbox" id="is_active{{$combo->id}}"
-                                                        data-publish="{{ $combo->is_publish }}" switch="success"
-                                                        @checked($combo->is_active) />
-                                                    <label for="is_active{{$combo->id}}"></label>
-                                                </td>
-
-                                                <td>
-                                                    <div class="dropdown">
-                                                        <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown"
-                                                            aria-expanded="false">
-                                                            <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                                                        </a>
-                                                        <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                            <li>
-                                                                <a href="{{ route('admin.combos.edit', $combo) }}"
-                                                                    class="dropdown-item edit-list"
-                                                                    data-edit-id="{{ $combo->id }}">
-                                                                    <i
-                                                                        class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
-                                                                    Cập nhật
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <form action="{{ route('admin.combos.destroy', $combo) }}"
-                                                                    method="POST">
-                                                                    @csrf
-                                                                    @method('DELETE')
-
-                                                                    <button type="submit" class="dropdown-item remove-list"
-                                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa không?')">
-                                                                        <i
-                                                                            class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                        Xóa
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        {{ $data->onEachSide(1)->links('admin.layouts.components.pagination') }}
+                    <div class="table-responsive">
+                        <table class="table table-striped table-bordered" id="comboTable">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Tên Combo</th>
+                                    <th>Hình ảnh</th>
+                                    <th>Thông tin Combo</th>
+                                    <th>Giá bán</th>
+                                    <th>Mô tả</th>
+                                    <th>Hoạt động</th>
+                                    <th>Chức năng</th>
+                                </tr>
+                            </thead>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-
 @endsection
 
 @section('script')
-    <script src="{{ asset('assets/js/combo/index.js') }}"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            var table = $('#comboTable').DataTable({
+                processing: false,
+                serverSide: true,
+                responsive: true,
+                autoWidth: false,
+                ajax: {
+                    url: "{{ route('api.combos.index') }}",
+                    type: "GET",
+                    data: function (d) {
+                        d.id = $('input[name="id"]').val();
+                        d.name = $('input[name="name"]').val();
+                        d.price_min = $('input[name="price_min"]').val();
+                        d.price_max = $('input[name="price_max"]').val();
+                        d.food_name = $('#foodSelect').val(); // gửi tên món ăn từ select
+                    }
+                },
+                columns: [
+                    { data: 'id', name: 'id' },
+                    { data: 'name', name: 'name' },
+                    {
+                        data: 'img_thumbnail',
+                        render: function (data) {
+                            return `<img src="/storage/${data}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
+                        }
+                    },
+                    {
+                        data: 'info',
+                        name: 'info',
+                        orderable: false,
+                        render: function (data) {
+                            return data ? data : "Không có thông tin";
+                        }
+                    },
+                    { data: 'price_sale', name: 'price_sale' },
+                    { data: 'description', name: 'description' },
+                    {
+                        data: 'is_active',
+                        render: function (data, type, row) {
+                            var checked = data ? 'checked' : '';
+                            return `
+                                <input type="checkbox" id="is_active${row.id}" data-publish="${row.is_publish}" switch="success" ${checked} class="toggle-active" data-id="${row.id}" />
+                                <label for="is_active${row.id}"></label>
+                            `;
+                        }
+                    },
+                    {
+                        data: 'id',
+                        render: function (data) {
+                            return `
+                                                    <div class="dropdown text-center">
+                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
+                                                            ...
+                                                        </button>
+                                                        <ul class="dropdown-menu">
+                                                            <li>
+                                                                <a href="/admin/combos/${data}/edit" class="dropdown-item text-warning">
+                                                                    <i class="fas fa-edit"></i> Sửa
+                                                                </a>
+                                                            </li>
+                                                            <li>
+                                                                <form action="/admin/combos/${data}" method="POST" class="d-inline">
+                                                                    @csrf
+                                                                    @method('DELETE')
+                                                                    <button type="submit" class="dropdown-item text-danger"
+                                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                                                        <i class="fas fa-trash-alt"></i> Xóa
+                                                                    </button>
+                                                                </form>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                `;
+                        }
+                    }
+                ],
+                pageLength: 5,
+                lengthChange: false,
+                language: {
+                    search: "Tìm kiếm:",
+                    paginate: {
+                        next: ">",
+                        previous: "<"
+                    },
+                    lengthMenu: "Hiển thị _MENU_ mục",
+                    info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                    emptyTable: "Không có dữ liệu để hiển thị",
+                    zeroRecords: "Không tìm thấy kết quả phù hợp"
+                }
+            });
+            $('#pageLength').on('change', function () {
+                table.page.len($(this).val()).draw();
+            });
+            $('#filterForm').on('submit', function (e) {
+                e.preventDefault();
+                table.ajax.reload();
+            });
+            $('#resetFilter').on('click', function () {
+                setTimeout(function () {
+                    table.ajax.reload();
+                }, 50);
+            });
+        });
+
+
+
+        fetch('http://alphacinema.test/api/combos')
+            .then(response => response.json())
+            .then(data => {
+                // Lấy mảng món ăn từ key "food"
+                let foods = data.food;
+                let select = document.getElementById('foodSelect');
+
+                // Xóa nội dung cũ và thêm option mặc định
+                select.innerHTML = "<option value=''>--Chọn món ăn--</option>";
+
+                // Lặp qua từng món ăn và tạo option
+                foods.forEach(food => {
+                    let option = document.createElement('option');
+                    option.value = food.name; // dùng tên món làm giá trị
+                    option.textContent = food.name;
+                    select.appendChild(option);
+                });
+
+                $(select).trigger('change');
+            })
+            .catch(error => console.error('Lỗi load dữ liệu món ăn:', error));
+
+
+            $(document).on('change', '.toggle-active', function () {
+                    var checkbox = $(this);
+                    var comboId = checkbox.data('id');
+                    var isActive = checkbox.is(':checked') ? 1 : 0;
+
+                    $.ajax({
+                        url: "{{ route('admin.combos.updateStatus') }}",
+                        type: "POST",
+                        data: {
+                            id: comboId,
+                            is_active: isActive,
+                            _token: "{{ csrf_token() }}"
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                // Có thể hiển thị thông báo thành công ở đây
+                                console.log(response.message);
+                            }
+                        },
+                        error: function () {
+                            alert('Cập nhật trạng thái thất bại!');
+                            // Nếu cập nhật thất bại, revert lại trạng thái checkbox
+                            checkbox.prop('checked', !isActive);
+                        }
+                    });
+                });
+
+    </script>
 @endsection

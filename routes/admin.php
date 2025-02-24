@@ -93,6 +93,7 @@ Route::group([
 });
 
 
+
 Route::resource('branches', BranchController::class);
 Route::get('/admin/branches', [BranchController::class, 'index'])->name('admin.branches.index');
 
@@ -228,7 +229,7 @@ Route::post('days/update/{id}', [DayController::class, 'update'])->name('days.up
 
 Route::group([
     'prefix' => 'settings',  // Tiền tố URL cho tất cả route
-    'as' => 'settings.',    
+    'as' => 'settings.',
 ],function (){
 Route::get('/',[SiteSettingController::class,'index'])->name('index');
 Route::put('/update/{id}',[SiteSettingController::class,'update'])->name('update');
