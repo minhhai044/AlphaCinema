@@ -398,7 +398,7 @@
                     success: function(response) {
                         if (response.success) {
                             let checkbox = $(`[data-food-id="${foodId}"]`);
-                            checkbox.prop("checked", response.data.is_active);
+                            checkbox.prop("checked", parseInt(response.data.is_active));
 
                             Swal.fire({
                                 icon: "success",

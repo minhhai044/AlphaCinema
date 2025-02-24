@@ -163,6 +163,28 @@
 @section('script')
     <script>
         $(document).ready(function() {
+            // Format giá tiền
+            function formatPriceInput(inputSelector, hiddenInputSelector) {
+                $(inputSelector).on("input", function() {
+                    let value = $(this).val().replace(/\D/g, ""); // Chỉ giữ lại số
+                    let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Thêm dấu ,
+
+                    $(this).val(formattedValue); // Hiển thị dạng số có dấu ,
+                    $(hiddenInputSelector).val(value || "0"); // Lưu dạng số không có dấu , vào input ẩn
+                });
+
+                $(inputSelector).on("blur", function() {
+                    if (!$(this).val()) {
+                        $(this).val("0");
+                        $(hiddenInputSelector).val("0");
+                    }
+                });
+            }
+
+            // Áp dụng cho input giá gốc & giá sale
+            formatPriceInput("#price", "#price_hidden");
+            formatPriceInput("#price_sale", "#price_sale_hidden");
+
             let foodCount = 0; // Biến đếm số lượng món ăn được thêm vào
             const minFoodItems = 2; // Số lượng món ăn tối thiểu
             const maxFoodItems = 8; // Số lượng món ăn tối đa
@@ -348,61 +370,34 @@
             });
 
             // Validate các trường input
+            function validateInput(selector, condition, errorMessage) {
+                let input = $(selector);
+                let value = input.val().trim();
+
+                if (condition(value)) {
+                    input.removeClass("is-invalid").addClass("is-valid");
+                    input.next(".invalid-feedback").hide();
+                } else {
+                    input.removeClass("is-valid").addClass("is-invalid");
+                    input.next(".invalid-feedback").text(errorMessage).show();
+                }
+            }
+
+            // Validate tên combo
             $("#name").on("input", function() {
-                let value = $(this).val().trim();
-                if (value.length === 0) {
-                    $(this).removeClass("is-valid").addClass("is-invalid");
-                    $(this).next(".invalid-feedback").text("Tên combo không được để trống").show();
-                } else {
-                    $(this).removeClass("is-invalid").addClass("is-valid");
-                    $(this).next(".invalid-feedback").hide();
-                }
+                validateInput(this, value => value.length > 0, "Tên combo không được để trống");
             });
 
-            $("#price_sale").on("input", function() {
-                let value = $(this).val().trim();
-                if (!/^\d+(\.\d{1,2})?$/.test(value)) { // Chỉ chấp nhận số nguyên hoặc số thập phân
-                    $(this).removeClass("is-valid").addClass("is-invalid");
-                    $(this).next(".invalid-feedback").text("Giá bán Combo phải là số hợp lệ").show();
-                } else {
-                    $(this).removeClass("is-invalid").addClass("is-valid");
-                    $(this).next(".invalid-feedback").hide();
-                }
-            });
-
+            // Validate mô tả
             $("textarea[name='description']").on("input", function() {
-                let value = $(this).val().trim();
-                if (value.length === 0) {
-                    $(this).removeClass("is-valid").addClass("is-invalid");
-                    $(this).next(".invalid-feedback").text("Mô tả không được để trống").show();
-                } else {
-                    $(this).removeClass("is-invalid").addClass("is-valid");
-                    $(this).next(".invalid-feedback").hide();
-                }
+                validateInput(this, value => value.length > 0, "Mô tả không được để trống");
             });
 
+            // Validate ảnh
             $("#img_thumbnail").on("change", function() {
-                let value = $(this).val().trim();
-                if (value.length === 0) {
-                    $(this).removeClass("is-valid").addClass("is-invalid");
-                    $(this).next(".invalid-feedback").text("Vui lòng chọn ảnh").show();
-                } else {
-                    $(this).removeClass("is-invalid").addClass("is-valid");
-                    $(this).next(".invalid-feedback").hide();
-                }
+                validateInput(this, value => value.length > 0, "Vui lòng chọn ảnh");
             });
 
-            // Validate giá gốc và giá bán Combo khi thay đổi
-            $("#price, #price_sale").on("input", function() {
-                let value = $(this).val();
-                if (isNaN(value) || value <= 0) {
-                    $(this).removeClass("is-valid").addClass("is-invalid");
-                    $(this).next(".invalid-feedback").text("Vui lòng nhập giá hợp lệ").show();
-                } else {
-                    $(this).removeClass("is-invalid").addClass("is-valid");
-                    $(this).next(".invalid-feedback").hide();
-                }
-            });
         });
     </script>
 @endsection
