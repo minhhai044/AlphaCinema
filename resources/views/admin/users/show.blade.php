@@ -31,7 +31,7 @@
     <!-- end page title -->
     <form action="{{ route('admin.users.update', $user) }}" method="POST" enctype="multipart/form-data">
         @csrf
-        @method("PUT")
+        @method('PUT')
         <div class="row">
             <div class="col-lg-9">
                 <div class="card">
@@ -43,8 +43,8 @@
 
                                         Tên
                                     </label>
-                                    <input class="form-control" disabled type="text" name="name" id="account-name" value="{{ old('name', $user->name) }}"
-                                        placeholder="Nhập tên">
+                                    <input class="form-control" disabled type="text" name="name" id="account-name"
+                                        value="{{ old('name', $user->name) }}" placeholder="Nhập tên">
 
                                     @error('name')
                                         <span class="text-danger">
@@ -61,8 +61,8 @@
 
                                         Số điện thoại
                                     </label>
-                                    <input class="form-control" disabled type="tel" name="phone" id="account-phone" value="{{ old('phone', $user->phone) }}"
-                                        placeholder="Nhập số điện thoại">
+                                    <input class="form-control" disabled type="tel" name="phone" id="account-phone"
+                                        value="{{ old('phone', $user->phone) }}" placeholder="Nhập số điện thoại">
 
                                     @error('phone')
                                         <span class="text-danger">
@@ -77,8 +77,8 @@
                                     <label for="account-birthday" class="form-label">
                                         Ngày sinh
                                     </label>
-                                    <input class="form-control" disabled type="date" name="birthday" value="{{$user->birthday }}"
-                                        id="account-birthday" />
+                                    <input class="form-control" disabled type="date" name="birthday"
+                                        value="{{ $user->birthday }}" id="account-birthday" />
 
                                     @error('birthday')
                                         <span class="text-danger">
@@ -94,8 +94,8 @@
 
                                         Email
                                     </label>
-                                    <input class="form-control" disabled type="email" name="email" id="account-email" value="{{ old('email', $user->email) }}"
-                                        placeholder="Nhập email">
+                                    <input class="form-control" disabled type="email" name="email" id="account-email"
+                                        value="{{ old('email', $user->email) }}" placeholder="Nhập email">
 
                                     @error('email')
                                         <span class="text-danger">
@@ -112,16 +112,18 @@
                                     </label>
                                     <div class="d-flex gap-3">
                                         <div class="form-check form-radio-warning mb-3">
-                                            <input class="form-check-input" type="radio" value="0" {{ old('gender', $user->gender) == 0 ? 'checked' : '' }}
-                                                name="gender" id="formRadioColor4" />
+                                            <input class="form-check-input" type="radio" value="0"
+                                                {{ old('gender', $user->gender) == 0 ? 'checked' : '' }} name="gender"
+                                                id="formRadioColor4" />
                                             <label class="form-check-label" for="formRadioColor4">
                                                 Nam
                                             </label>
                                         </div>
 
                                         <div class="form-check form-radio-info mb-3">
-                                            <input class="form-check-input" type="radio" value="1" {{ old('gender', $user->gender) == 1 ? 'checked' : '' }}
-                                                name="gender" id="formRadioColor3" />
+                                            <input class="form-check-input" type="radio" value="1"
+                                                {{ old('gender', $user->gender) == 1 ? 'checked' : '' }} name="gender"
+                                                id="formRadioColor3" />
                                             <label class="form-check-label" for="formRadioColor3">
                                                 Nữ
                                             </label>
@@ -140,8 +142,8 @@
                                     <label for="account-address" class="form-label">
                                         Địa chỉ
                                     </label>
-                                    <input class="form-control" disabled type="text" name="address" value="{{ old('address', $user->address) }}"
-                                        placeholder="Nhập địa chỉ">
+                                    <input class="form-control" disabled type="text" name="address"
+                                        value="{{ old('address', $user->address) }}" placeholder="Nhập địa chỉ">
 
                                     @error('address')
                                         <span class="text-danger">
@@ -165,20 +167,23 @@
                                     <label for="account-description" class="form-label">
                                         Loại:
                                     </label>
-                                    <span class="badge rounded-pill {{ $user->type_user === 1 ? 'bg-success' : 'bg-secondary' }}">
+                                    <span
+                                        class="badge rounded-pill {{ $user->type_user === 1 ? 'bg-success' : 'bg-secondary' }}">
                                         {{ $user->type_user === 1 ? 'Admin' : 'Người dùng' }}
                                     </span>
-
                                 </div>
-
 
                                 <div class="mt-5">
                                     <div class="mb-3">
                                         <label for="account-image" class="form-label">
                                             Avatar
                                         </label>
-                                        @if (Storage::exists($user->avatar))
-                                            <img src="{{ Storage::url($user->avatar) }}" alt=""  class="rounded-circle avatar-lg">
+                                        @if ($user->avatar && Storage::url($user->avatar))
+                                            <img src="{{ Storage::url($user->avatar) }}" class="img-thumbnail"
+                                                alt="Avatar của người dùng" width="100px">
+                                        @else
+                                            <img src="https://graph.facebook.com/4/picture?type=large"
+                                                class="img-thumbnail" alt="Avatar của người dùng" width="100px">
                                         @endif
 
                                     </div>
@@ -192,4 +197,3 @@
         </div>
     </form>
 @endsection
-

@@ -1,5 +1,18 @@
 @extends('admin.layouts.master')
+@section('style')
+    <style>
+        .table {
+            vertical-align: middle !important;
+        }
 
+        table.dataTable thead th,
+        table.dataTable thead td,
+        table.dataTable tfoot th,
+        table.dataTable tfoot td {
+            text-align: center;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -49,8 +62,8 @@
                                         <label class="form-label">Loại tài khoản</label>
                                         <select name="type_user" class="form-control">
                                             <option value="">-- Chọn loại tài khoản --</option>
-                                            <option value="admin">Admin</option>
-                                            <option value="user">User</option>
+                                            <option value="1">Admin</option>
+                                            <option value="0">User</option>
                                         </select>
                                     </div>
                                 </div>
@@ -62,10 +75,11 @@
                         </div>
                     </div>
 
+
                     <div class="table-responsive">
-                        <table id="userTable" class="table table-bordered w-100">
+                        <table id="userTable" class="table table-bordered w-100 text-center">
                             <thead>
-                                <tr>
+                                <tr class="text-center">
                                     <th>ID</th>
                                     <th>Tên</th>
                                     <th>Ảnh</th>
@@ -85,7 +99,7 @@
 
 @section('script')
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             var table = $('#userTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -95,39 +109,60 @@
                 ajax: {
                     url: "{{ route('api.users.index') }}",
                     type: "GET",
-                    data: function (d) {
+                    data: function(d) {
                         d.id = $('input[name="id"]').val();
                         d.gender = $('select[name="gender"]').val();
                         d.type_user = $('select[name="type_user"]').val();
                     },
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         console.error("Lỗi API:", xhr.responseText);
                     }
                 },
-                columns: [
-                    { data: 'id', name: 'id' },
-                    { data: 'name', name: 'name' },
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
                     {
                         data: 'avatar',
-                        render: function (data) {
-                            return `<img src="/storage/${data}"
+                        render: function(data) {
+                            const avatarUrl = data ? '/storage/' + data :
+                                "https://graph.facebook.com/4/picture?type=small";
+                            return `<img src="${avatarUrl}"
                                                  style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
                         }
                     },
-                    { data: 'email', name: 'email' },
+                    {
+                        data: 'email',
+                        name: 'email'
+                    },
                     {
                         data: 'gender',
                         name: 'gender',
-                        render: function (data) {
+                        render: function(data) {
                             if (data === 0) return '<span class="badge bg-primary">Nam</span>';
                             if (data === 1) return '<span class="badge bg-danger">Nữ</span>';
                             return '<span class="badge bg-secondary">Khác</span>';
                         }
                     },
-                    { data: 'created_at', name: 'created_at' },
+                    {
+                        data: 'roles',
+                        name: 'roles',
+                        render: function(data) {
+                            if (!data || data.length === 0) {
+                                return '<span class="badge bg-secondary">Không có vai trò</span>';
+                            }
+                            return data.map(role =>
+                                `<span class="badge bg-primary me-1">${role.name}</span>`).join(
+                                ' ');
+                        }
+                    },
                     {
                         data: 'id',
-                        render: function (data) {
+                        render: function(data) {
                             return `
                                 <div class="dropdown text-center">
                                     <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">...
@@ -155,7 +190,10 @@
                 lengthChange: false,
                 language: {
                     search: "Tìm kiếm:",
-                    paginate: { next: ">", previous: "<" },
+                    paginate: {
+                        next: ">",
+                        previous: "<"
+                    },
                     lengthMenu: "Hiển thị _MENU_ mục",
                     info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
                     emptyTable: "Không có dữ liệu để hiển thị",
@@ -163,17 +201,17 @@
                 }
             });
 
-            $('#pageLength').on('change', function () {
+            $('#pageLength').on('change', function() {
                 table.page.len($(this).val()).draw();
             });
 
-            $('#filterForm').on('submit', function (e) {
+            $('#filterForm').on('submit', function(e) {
                 e.preventDefault();
                 table.ajax.reload();
             });
 
-            $('#resetFilter').on('click', function () {
-                setTimeout(function () {
+            $('#resetFilter').on('click', function() {
+                setTimeout(function() {
                     table.ajax.reload();
                 }, 50);
             });

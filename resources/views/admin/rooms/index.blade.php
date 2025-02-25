@@ -331,7 +331,7 @@
             if (publish) {
                 if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
                     $.ajax({
-                        url: `${Url}/api/${id}/active-room`,
+                        url: `${Url}/api/v1/${id}/active-room`,
                         method: "PUT",
                         data: {
                             is_active

@@ -176,9 +176,6 @@
             $('input[name="permissions[]"]').prop('checked', this.checked);
         });
 
-        console.log(11);
-
-
         $('input[name="permissions[]"]').on('click', function() {
 
             $('#checkboxAll').prop('checked', $('input[name="permissions[]"]').length === $(

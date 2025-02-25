@@ -79,10 +79,9 @@
                             <img src="{{ Storage::url($showtimes['movie']->img_thumbnail) }}" alt="" width="100px"
                                 class="img-thumbnail">
                         </td>
-                        <td>{{ implode(', ', json_decode($showtimes['movie']->movie_genres, true) ?? []) }}</td>
+                        <td>{{ implode(', ',$showtimes['movie']->movie_genres) }}</td>
                         <td>{{ $showtimes['movie']->duration }} phút</td>
                         <td>
-
                             <button class="btn" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#collapse-{{ $movieId }}" aria-expanded="false"
                                 aria-controls="collapse-{{ $movieId }}">
@@ -141,7 +140,7 @@
         </tbody>
     </table>
 </div>
-   
+
     @php
         $appUrl = env('APP_URL');
     @endphp
@@ -181,7 +180,7 @@
 
             if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
                 $.ajax({
-                    url: `${Url}/api/${id}/active-showtime`,
+                    url: `${Url}/api/v1/${id}/active-showtime`,
                     method: "PUT",
                     data: {
                         is_active

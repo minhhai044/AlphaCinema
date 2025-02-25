@@ -1,12 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Api;
 
+use App\Traits\ApiResponseTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
-class RoleRequest extends FormRequest
+class ShowtimeRequest extends FormRequest
 {
-    /**
+    use ApiResponseTrait;
+     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
@@ -21,35 +23,39 @@ class RoleRequest extends FormRequest
      */
     public function rules(): array
     {
+
+        // post => rulesForCreate 
+        // put/patch => rulesForUpdate
+
         if ($this->isMethod('post')) {
             return $this->rulesForCreate();
         } elseif ($this->isMethod('put') || $this->isMethod('patch')) {
             return $this->rulesForUpdate();
         }
+
         return [];
     }
-
     public function rulesForCreate()
     {
         return [
-            'name' => 'required|string|unique:roles,name',
-            'permissions' => 'required|array',
-        ];
-    }
-    public function rulesForUpdate()
-    {
-        return [
-            'name' => 'required|string|unique:roles,name,' . $this->route('role')->id,
-            'permissions' => 'required|array',
+            'user_id' => 'required',
+            'seat_id' => 'required',
+            'status' => 'required',
         ];
     }
 
-    public function messages(): array
+    public function rulesForUpdate()
     {
         return [
-            'name.required' => 'Tên vai trò không được để trống.',
-            'name.unique' => 'Tên vai trò đã tồn tại, vui lòng chọn tên khác.',
-            'permissions.required' => 'Bạn cần chọn ít nhất một quyền.',
+           
+        ];
+    }
+
+    // messages chung
+    public function messages()
+    {
+        return [
+           
         ];
     }
 }

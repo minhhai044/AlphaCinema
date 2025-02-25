@@ -375,7 +375,10 @@
             // Xử lý sự kiện change cho checkbox .changeActive
             $(document).on("change", ".changeActive", function() {
                 let foodId = $(this).data("food-id");
+
                 let is_active = $(this).is(":checked") ? 1 : 0;
+                console.log(is_active);
+
 
                 // Swal.fire({
                 //     title: "Đang xử lý...",
@@ -397,8 +400,10 @@
                     },
                     success: function(response) {
                         if (response.success) {
+                            console.log(response);
+
                             let checkbox = $(`[data-food-id="${foodId}"]`);
-                            checkbox.prop("checked", response.data.is_active);
+                            checkbox.prop("checked", parseInt(response.data.is_active));
 
                             Swal.fire({
                                 icon: "success",
