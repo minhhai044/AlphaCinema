@@ -7,12 +7,12 @@ use Maatwebsite\Excel\Facades\Excel;
 
 class ExportController
 {
-    public function index($table)
+    public function export($table)
     {
         $config = config("excel.exports.custom_tables.{$table}");
 
         if (!$config) {
-            return abort(404);
+            return response()->json(['error' => 'Invalid table'], 404);
         }
 
         $export = new DynamicExport(
@@ -25,4 +25,5 @@ class ExportController
 
         return Excel::download($export, "{$table}.xlsx", \Maatwebsite\Excel\Excel::XLSX);
     }
+    
 }

@@ -2,6 +2,10 @@
 @section('title', 'Quản lý rạp')
 
 @section('content')
+{{-- <a href="{{ route('export', ['table' => 'cinemas']) }}" class="btn btn-success">
+    Xuất Excel
+</a> --}}
+
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
