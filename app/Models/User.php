@@ -69,4 +69,8 @@ class User extends Authenticatable
     public function cinema(){
         return $this->belongsTo(Cinema::class);
     }
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

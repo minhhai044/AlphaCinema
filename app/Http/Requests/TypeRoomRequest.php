@@ -24,7 +24,7 @@ class TypeRoomRequest extends FormRequest
     public function rules(): array
     {
 
-        // post => rulesForCreate 
+        // post => rulesForCreate
         // put/patch => rulesForUpdate
 
         if ($this->isMethod('post')) {
@@ -60,7 +60,7 @@ class TypeRoomRequest extends FormRequest
             'surcharge' => 'required|numeric|min:0|max:9999999999',
         ];
     }
-    
+
     // messages chung
     public function messages()
     {

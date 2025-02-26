@@ -22,7 +22,7 @@ class ShowtimeService
         $cinema_id = $request->query('cinema_id', '');
 
         if (empty($date) || empty($branch_id) || empty($cinema_id)) {
-            $showtimes = collect(); 
+            $showtimes = collect();
         } else {
             $showtimes = Showtime::with('movie', 'room')
                 ->where('date', $date)
@@ -77,7 +77,6 @@ class ShowtimeService
     }
     public function storeService(array $data)
     {
-
         foreach ($data['start_time'] as $key => $start_time) {
             $showtimeData = array_merge($data, [
                 'price_special' => !empty($data['price_special']) ? str_replace('.', '', $data['price_special']) : 0,

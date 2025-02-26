@@ -39,11 +39,7 @@ Route::prefix('movies')->group(function () {
     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
 });
 
-// Route::prefix('users')->group(function () {
-//     Route::get('/', [UserController::class, 'index'])->name('api.users.index');
-//     Route::post('signin', [AuthController::class, 'signIn'])->name('api.users.signin');
-//     Route::post('signup', [AuthController::class, 'signUp'])->name('api.users.signup');
-// });
+
 
 Route::prefix('foods')->group(function () {
     Route::get('/', [FoodController::class, 'index'])->name('api.foods.index');

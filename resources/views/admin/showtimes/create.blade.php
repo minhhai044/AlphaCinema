@@ -5,221 +5,224 @@
 @endsection
 
 @section('content')
-<div class="row">
-    <div class="col-12">
-        <div class="d-sm-flex align-items-center justify-content-between text-center row">
-            <div class="text-center col-lg-9">
-                <h4 class="mb-2 text-primary fw-bold">
-                    <i class="bi bi-film"></i> Thêm suất chiếu cho phim :
-                    <span class="text-info">{{ $movie->name }}</span>
-                </h4>
-                <p class="text-muted fs-6">
-                    <i class="bi bi-calendar-event"></i> Ngày tạo: 
-                    <span class="text-warning fw-semibold">
-                        {{ \Carbon\Carbon::parse($movie->created_at)->format('d/m/Y') }}
-                    </span>
-                    | <i class="bi bi-calendar-check"></i> Ngày phát hành: 
-                    <span class="text-success fw-semibold">
-                        {{ \Carbon\Carbon::parse($movie->release_date)->format('d/m/Y') }}
-                    </span>
-                    | <i class="bi bi-calendar-x"></i> Ngày kết thúc: 
-                    <span class="text-danger fw-semibold">
-                        {{ \Carbon\Carbon::parse($movie->end_date)->format('d/m/Y') }}
-                    </span>
-                </p>
-            </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="d-sm-flex align-items-center justify-content-between text-center row">
+                <div class="text-center col-lg-9">
+                    <h4 class="mb-2 text-primary fw-bold">
+                        <i class="bi bi-film"></i> Thêm suất chiếu cho phim :
+                        <span class="text-info">{{ $movie->name }}</span>
+                    </h4>
+                    <p class="text-muted fs-6">
+                        <i class="bi bi-calendar-event"></i> Ngày tạo:
+                        <span class="text-warning fw-semibold">
+                            {{ \Carbon\Carbon::parse($movie->created_at)->format('d/m/Y') }}
+                        </span>
+                        | <i class="bi bi-calendar-check"></i> Ngày phát hành:
+                        <span class="text-success fw-semibold">
+                            {{ \Carbon\Carbon::parse($movie->release_date)->format('d/m/Y') }}
+                        </span>
+                        | <i class="bi bi-calendar-x"></i> Ngày kết thúc:
+                        <span class="text-danger fw-semibold">
+                            {{ \Carbon\Carbon::parse($movie->end_date)->format('d/m/Y') }}
+                        </span>
+                    </p>
+                </div>
 
-            <div class="page-title-right col-lg-3">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('admin.showtimes.index') }}">Quản lý suất chiếu</a>
-                    </li>
-                    <li class="breadcrumb-item active">Tạo suất chiếu</li>
-                </ol>
+                <div class="page-title-right col-lg-3">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('admin.showtimes.index') }}">Quản lý suất chiếu</a>
+                        </li>
+                        <li class="breadcrumb-item active">Tạo suất chiếu</li>
+                    </ol>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- end page title -->
+    <!-- end page title -->
 
-<form class="FormCreate" action="{{route('admin.showtimes.store')}}" method="POST">
-    @csrf
-    <input type="hidden" name="seat_structure" id="seat_structure">
-    <input type="hidden" name="slug" value="{{ $slug }}">
-    <input type="hidden" name="movie_id" value="{{$movie->id }}">
-    <input type="hidden" name="day_id">
-    <input type="hidden" name="status_special">
+    <form class="FormCreate" action="{{ route('admin.showtimes.store') }}" method="POST">
+        @csrf
+        <input type="hidden" name="seat_structure" id="seat_structure">
+        <input type="hidden" name="slug" value="{{ $slug }}">
+        <input type="hidden" name="movie_id" value="{{ $movie->id }}">
+        <input type="hidden" name="day_id">
+        <input type="hidden" name="status_special">
 
-    <div class="row">
-        <div class="col-lg-9">
-            <div class="card">
-                <div class="card-body" style="border: none">
-                    <div class="row">
-                        <!-- Các trường thông tin cơ bản -->
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label for="branch_id" class="form-label">
-                                    Chi nhánh <span style="color: red" class="required">*</span>
-                                </label>
-                                <select name="branch_id" class="form-select @error('branch_id') is-invalid @enderror"
-                                    required id="branch_id">
-                                    <option value="" disabled selected>Chọn chi nhánh</option>
-                                    @foreach ($branchs as $branch)
-                                        <option value="{{ $branch['id'] }}">{{ $branch['name'] }}</option>
-                                    @endforeach
-                                </select>
-                                @error('branch_id')
-                                    <span class="text-danger"><strong>{{ $message }}</strong></span>
-                                @enderror
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-body" style="border: none">
+                        <div class="row">
+                            <!-- Các trường thông tin cơ bản -->
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label for="branch_id" class="form-label">
+                                        Chi nhánh <span style="color: red" class="required">*</span>
+                                    </label>
+                                    <select name="branch_id" class="form-select @error('branch_id') is-invalid @enderror"
+                                        required id="branch_id">
+                                        <option value="" disabled selected>Chọn chi nhánh</option>
+                                        @foreach ($branchs as $branch)
+                                            <option value="{{ $branch['id'] }}">{{ $branch['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('branch_id')
+                                        <span class="text-danger"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>
-                        <!-- Rạp phim -->
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label for="cinema_id" class="form-label">
-                                    Rạp phim <span style="color: red" class="required">*</span>
-                                </label>
-                                <select name="cinema_id" class="form-select @error('cinema_id') is-invalid @enderror"
-                                    required id="cinema_id">
-                                    <option value="" disabled selected>Chọn rạp</option>
-                                </select>
-                                @error('cinema_id')
-                                    <span class="text-danger"><strong>{{ $message }}</strong></span>
-                                @enderror
+                            <!-- Rạp phim -->
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label for="cinema_id" class="form-label">
+                                        Rạp phim <span style="color: red" class="required">*</span>
+                                    </label>
+                                    <select name="cinema_id" class="form-select @error('cinema_id') is-invalid @enderror"
+                                        required id="cinema_id">
+                                        <option value="" disabled selected>Chọn rạp</option>
+                                    </select>
+                                    @error('cinema_id')
+                                        <span class="text-danger"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
                             </div>
-                        </div>
-                        <!-- Phòng -->
-                        <div class="col-lg-4">
-                            <div class="mb-3">
-                                <label for="room_id" class="form-label">
-                                    Phòng <span style="color: red" class="required">*</span>
-                                </label>
-                                <select name="room_id" class="form-select @error('room_id') is-invalid @enderror"
-                                    required id="room_id">
-                                    <option value="" disabled selected>Chọn phòng</option>
-                                    {{-- @foreach ($rooms as $room)
+                            <!-- Phòng -->
+                            <div class="col-lg-4">
+                                <div class="mb-3">
+                                    <label for="room_id" class="form-label">
+                                        Phòng <span style="color: red" class="required">*</span>
+                                    </label>
+                                    <select name="room_id" class="form-select @error('room_id') is-invalid @enderror"
+                                        required id="room_id">
+                                        <option value="" disabled selected>Chọn phòng</option>
+                                        {{-- @foreach ($rooms as $room)
                                     <option value="{{ $room['id'] }}">{{ $room['name'] }}</option>
                                     @endforeach --}}
-                                </select>
-                                @error('room_id')
-                                    <span class="text-danger"><strong>{{ $message }}</strong></span>
-                                @enderror
+                                    </select>
+                                    @error('room_id')
+                                        <span class="text-danger"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- Ngày chiếu -->
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="date" class="form-label">
+                                        Ngày <span style="color: red" class="required">*</span>
+                                    </label>
+                                    <input type="date" class="form-control" name="date" id="date" required>
+                                    @error('date')
+                                        <span class="text-danger"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- Ngày -->
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="day_id" class="form-label">
+                                        Loại ngày <span style="color: red" class="required">*</span>
+                                    </label>
+                                    <select class="form-select @error('day_id') is-invalid @enderror" required
+                                        id="day_id">
+                                        <option value="" disabled selected>Loại ngày</option>
+                                        @foreach ($days as $day)
+                                            <option @disabled($day['id'] == 1 || $day['id'] == 2) value="{{ $day['id'] }}">
+                                                {{ $day['name'] }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('day_id')
+                                        <span class="text-danger"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                            </div>
+                            {{-- Loại xuất chiếu --}}
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="status_special" class="form-label">
+                                        Loại suất chiếu <span style="color: red" class="required">*</span>
+                                    </label>
+                                    <select class="form-select @error('status_special') is-invalid @enderror" required
+                                        id="status_special">
+                                        <option value="" disabled selected>Loại suất chiếu</option>
+                                        @foreach ($specialshowtimes as $specialshowtime)
+                                            <option @disabled($specialshowtime['id'] == 1 || $specialshowtime['id'] == 2) value="{{ $specialshowtime['id'] }}">
+                                                {{ $specialshowtime['name'] }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('day_id')
+                                        <span class="text-danger"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="price_special" class="form-label">
+                                        Phụ phí <span class="text-secondary">(Nếu là suất đặc biệt !!!)</span>
+                                    </label>
+                                    <input type="text" name="price_special"
+                                        class="@error('price_special') is-invalid @enderror form-control"
+                                        id="price_special" placeholder="Chỉ có suất chiếu đặc biệt mới có phụ phí !!!">
+                                    @error('price_special')
+                                        <span class="text-danger"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                            </div>
+                            <!-- Nút thêm xuất chiếu -->
+                            <div class="col-lg-12">
+                                <button type="button" id="addTime" class="btn btn-primary float-end ms-3">Thêm thời
+                                    gian</button>
+                                <button type="button" id="autoGenerate" class="btn btn-success float-end">Tự
+                                    động</button>
+                            </div>
+                            <!-- Danh sách xuất chiếu -->
+                            <div class="col-lg-12" id="listTime">
+
                             </div>
                         </div>
-                        <!-- Ngày chiếu -->
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label for="date" class="form-label">
-                                    Ngày <span style="color: red" class="required">*</span>
-                                </label>
-                                <input type="date" class="form-control" name="date" id="date" required>
-                                @error('date')
-                                    <span class="text-danger"><strong>{{ $message }}</strong></span>
-                                @enderror
-                            </div>
-                        </div>
-                        <!-- Ngày -->
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label for="day_id" class="form-label">
-                                    Loại ngày <span style="color: red" class="required">*</span>
-                                </label>
-                                <select class="form-select @error('day_id') is-invalid @enderror" required id="day_id">
-                                    <option value="" disabled selected>Loại ngày</option>
-                                    @foreach ($days as $day)
-                                        <option @disabled($day['id'] == 1 || $day['id'] == 2) value="{{ $day['id'] }}">
-                                            {{ $day['name'] }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                                @error('day_id')
-                                    <span class="text-danger"><strong>{{ $message }}</strong></span>
-                                @enderror
-                            </div>
-                        </div>
-                        {{-- Loại xuất chiếu --}}
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label for="status_special" class="form-label">
-                                    Loại suất chiếu <span style="color: red" class="required">*</span>
-                                </label>
-                                <select class="form-select @error('status_special') is-invalid @enderror" required
-                                    id="status_special">
-                                    <option value="" disabled selected>Loại suất chiếu</option>
-                                    @foreach ($specialshowtimes as $specialshowtime)
-                                        <option @disabled($specialshowtime['id'] == 1 || $specialshowtime['id'] == 2)
-                                            value="{{ $specialshowtime['id'] }}">{{ $specialshowtime['name'] }}</option>
-                                    @endforeach
-                                </select>
-                                @error('day_id')
-                                    <span class="text-danger"><strong>{{ $message }}</strong></span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="col-lg-6">
-                            <div class="mb-3">
-                                <label for="price_special" class="form-label">
-                                    Phụ phí <span class="text-secondary">(Nếu là suất đặc biệt !!!)</span>
-                                </label>
-                                <input type="text" name="price_special"
-                                    class="@error('price_special') is-invalid @enderror form-control" id="price_special"
-                                    placeholder="Chỉ có suất chiếu đặc biệt mới có phụ phí !!!">
-                                @error('price_special')
-                                    <span class="text-danger"><strong>{{ $message }}</strong></span>
-                                @enderror
-                            </div>
-                        </div>
-                        <!-- Nút thêm xuất chiếu -->
-                        <div class="col-lg-12">
-                            <button type="button" id="addTime" class="btn btn-primary float-end ms-3">Thêm thời
-                                gian</button>
-                            <button type="button" id="autoGenerate" class="btn btn-success float-end">Tự động</button>
-                        </div>
-                        <!-- Danh sách xuất chiếu -->
-                        <div class="col-lg-12" id="listTime">
+                    </div>
+
+                    <div class="m-3">
+                        <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')"
+                            class="btn btn-primary">Thêm</button>
+                        <a href="{{ route('admin.showtimes.index') }}"><button type="button"
+                                class="btn btn-danger">Quay lại</button></a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cột bên phải hiển thị xuất chiếu đã có trong ngày -->
+            <div class="col-lg-3">
+                <div class="card shadow-sm border-0 rounded-3">
+                    <div class="card-body">
+                        <h4 class="mb-3 text-center text-warning">Suất chiếu hiện có trong ngày</h4>
+
+                        <div class="list-group" id="listShowtime">
 
                         </div>
                     </div>
                 </div>
-
-                <div class="m-3">
-                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary">Thêm</button>
-                    <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger">Quay lại</button></a>
-                </div>
             </div>
+
+
+
         </div>
+    </form>
+    <input type="hidden" id="duration" value="{{ $movie->duration }}">
+    <input type="hidden" id="surchargeMovie" value="{{ $movie->surcharge }}">
+    <input type="hidden" id="surchargeBranch">
+    <input type="hidden" id="surchargeTypeRoom">
+    <input type="hidden" id="surchargeDay">
 
-        <!-- Cột bên phải hiển thị xuất chiếu đã có trong ngày -->
-        <div class="col-lg-3">
-            <div class="card shadow-sm border-0 rounded-3">
-                <div class="card-body">
-                    <h4 class="mb-3 text-center text-warning">Suất chiếu hiện có trong ngày</h4>
-
-                    <div class="list-group" id="listShowtime">
-
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
-
-    </div>
-</form>
-<input type="hidden" id="duration" value="{{$movie->duration}}">
-<input type="hidden" id="surchargeMovie" value="{{$movie->surcharge}}">
-<input type="hidden" id="surchargeBranch">
-<input type="hidden" id="surchargeTypeRoom">
-<input type="hidden" id="surchargeDay">
-
-@php
-    $appUrl = env('APP_URL');
-@endphp
+    @php
+        $appUrl = env('APP_URL');
+    @endphp
 @endsection
 
 @section('script')
     <script>
-
         const appUrl = @json($appUrl);
         const branchs = @json($branchs);
         const data = @json($branchsRelation);
@@ -244,7 +247,7 @@
                 type: "GET",
                 async: false,
                 url: `${appUrl}/api/v1/${room_id}/showtime?date=${dataDate}`,
-                success: function (response) {
+                success: function(response) {
 
                     const showtimes = response.data;
 
@@ -259,7 +262,7 @@
                                                                                                             <div>
                                                                                                                 <strong class="text-dark">${item.start_time}</strong> - <strong class="text-dark">${item.end_time}</strong><br>
                                                                                                                 <small>
-                                                                                                                    <form action="{{route('admin.showtimes.delete') }}" method="POST">
+                                                                                                                    <form action="{{ route('admin.showtimes.delete') }}" method="POST">
                                                                                                                         @csrf
                                                                                                                         <input type="hidden" name="showtime_id" value="${item.id}">
                                                                                                                         <button type="submit" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-sm text-danger fw-bold">Xóa</button>
@@ -276,7 +279,7 @@
                         dataShowtimeCheck = [];
                         $('#listShowtime').append(`
                                                                                                     <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                                                        Hiện tại chưa có suất chiếu nào 
+                                                                                                        Hiện tại chưa có suất chiếu nào
                                                                                                     </div>
                                                                                                 `);
                     }
@@ -289,40 +292,40 @@
             dataShowtimeCheck = [];
             $('#listShowtime').empty();
             $('#listShowtime').append(`
-                                                                                                    <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                                                        Hiện tại chưa có suất chiếu nào 
-                                                                                                    </div>
-                                                                                                `);
+                <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
+                    Hiện tại chưa có suất chiếu nào
+                </div>
+            `);
         }
 
 
         function addTimeRow() {
             const id = idRowCounter++;
             const html = `
-                                                                                                            <div class="row align-items-center" id="row_${id}">
-                                                                                                                <div class="col-lg-5">
-                                                                                                                    <div class="mb-3">
-                                                                                                                        <label for="start_time_${id}" class="form-label">
-                                                                                                                            Thời gian bắt đầu <span class="text-danger">*</span>
-                                                                                                                        </label>
-                                                                                                                        <input type="time" required class="form-control" name="start_time[]" data-id="${id}" id="start_time_${id}" aria-label="Chọn thời gian">
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                                <div class="col-lg-5">
-                                                                                                                    <div class="mb-3">
-                                                                                                                        <label for="end_time_${id}" class="form-label">
-                                                                                                                            Thời gian kết thúc <span class="text-danger">*</span>
-                                                                                                                        </label>
-                                                                                                                        <input type="time" required class="form-control" name="end_time[]" id="end_time_${id}" readonly>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                                <div class="col-lg-2 ps-5 d-flex align-items-center">
-                                                                                                                    <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${id}">
-                                                                                                                        <i class="bi bi-trash"></i>
-                                                                                                                    </button>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        `;
+                    <div class="row align-items-center" id="row_${id}">
+                        <div class="col-lg-5">
+                            <div class="mb-3">
+                                <label for="start_time_${id}" class="form-label">
+                                    Thời gian bắt đầu <span class="text-danger">*</span>
+                                </label>
+                                <input type="time" required class="form-control" name="start_time[]" data-id="${id}" id="start_time_${id}" aria-label="Chọn thời gian">
+                            </div>
+                        </div>
+                        <div class="col-lg-5">
+                            <div class="mb-3">
+                                <label for="end_time_${id}" class="form-label">
+                                    Thời gian kết thúc <span class="text-danger">*</span>
+                                </label>
+                                <input type="time" required class="form-control" name="end_time[]" id="end_time_${id}" readonly>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 ps-5 d-flex align-items-center">
+                            <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${id}">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
             $('#listTime').append(html);
         }
 
@@ -349,7 +352,7 @@
         $('#price_special').prop('disabled', true);
         $('input[name="start_time[]"]').prop('disabled', true);
         // branch_id
-        $('#branch_id').change(function () {
+        $('#branch_id').change(function() {
             // Khi chọn branch sẽ sinh ra các cinema của branch đó
             let id = $(this).val();
             let surchargeBranch = 0;
@@ -413,7 +416,7 @@
 
         });
         // cinema_id
-        $('#cinema_id').change(function () {
+        $('#cinema_id').change(function() {
             let id = $(this).val();
             // Khi cinema thay đổi thì set giá trị cho các room của cinema đó
             let filteredDataRoom = "";
@@ -452,8 +455,8 @@
 
         })
         // room_id
-        $('#room_id').change(function () {
-            // Khi room thay đổi thì set seat_structure 
+        $('#room_id').change(function() {
+            // Khi room thay đổi thì set seat_structure
             let id = $(this).val();
             let dataDate = $('#date').val();
 
@@ -480,7 +483,7 @@
         });
 
         // Thêm time
-        $('#addTime').click(function () {
+        $('#addTime').click(function() {
             let date = $('#date').val();
             addTimeRow();
             if (!date) {
@@ -488,8 +491,8 @@
             }
         });
 
-        // Xóa time 
-        $('#listTime').on('click', '.removeItem', function () {
+        // Xóa time
+        $('#listTime').on('click', '.removeItem', function() {
             const id = $(this).data('id');
             let count = $('input[name="start_time[]"]').length;
             if (count == 1) {
@@ -500,7 +503,7 @@
             $(`#row_${id}`).remove();
         });
         // Chọn date
-        $('#date').change(function () {
+        $('#date').change(function() {
             $('#autoGenerate').prop('disabled', false);
             $('input[name="start_time[]"]').prop('disabled', false);
             // Lấy các giá trị của thời gian
@@ -523,8 +526,8 @@
                 $('input[name="start_time[]"]').prop('disabled', true);
                 return;
             }
-            // Thêm . khi nhập số 
-            $('#price_special').on('input', function (e) {
+            // Thêm . khi nhập số
+            $('#price_special').on('input', function(e) {
                 e.preventDefault();
                 let valueDiscount = $(this).val().replace(/\D/g, '');
                 let setValueDiscount = new Intl.NumberFormat('vi-VN').format(valueDiscount);
@@ -587,7 +590,7 @@
 
         });
         // Gán dữ liệu cho surchargeDay
-        $('#day_id').change(function () {
+        $('#day_id').change(function() {
             let day_id = $(this).val();
             let surchargeDay = 0;
 
@@ -601,11 +604,11 @@
             $('#surchargeDay').val(surchargeDay);
 
         })
-        // Khi start_time thay đổi 
-        $('#listTime').on('change', 'input[name="start_time[]"]', function () {
+        // Khi start_time thay đổi
+        $('#listTime').on('change', 'input[name="start_time[]"]', function() {
             const currentId = $(this).data('id'); // id của div đó
             const currentStart = $(this).val(); // Thời gian của start_time
-            const durationMovie = +$('#duration').val(); // thời lượng phim 
+            const durationMovie = +$('#duration').val(); // thời lượng phim
 
             if (!currentStart) return;
             const currentStartMinutes = convertTimeToMinutes(currentStart);
@@ -613,11 +616,15 @@
 
             // Thu thập tất cả các dòng xuất chiếu có giá trị start time
             let screenings = [];
-            $('#listTime > .row').each(function () {
+            $('#listTime > .row').each(function() {
                 let rid = $(this).attr('id').replace('row_', ''); // lấy id của row đó
                 let st = $(`#start_time_${rid}`).val(); // lấy giá trị của start_time_id
                 if (st) {
-                    screenings.push({ id: +rid, start: st, startMinutes: convertTimeToMinutes(st) }); // Thêm vào mảng
+                    screenings.push({
+                        id: +rid,
+                        start: st,
+                        startMinutes: convertTimeToMinutes(st)
+                    }); // Thêm vào mảng
                 }
             });
 
@@ -633,7 +640,8 @@
                 const prevStart = $(`#start_time_${prevId}`).val(); // lấy value item trước đó
                 const prevStartMinutes = convertTimeToMinutes(prevStart); // Chuyển đổi value đó thành số nguyên
                 const prevEndMinutes = prevStartMinutes + durationMovie; // Lấy giá trị đó + thời lượng phim
-                if (currentStartMinutes < prevEndMinutes + 10) { // Nếu như start time vừa nhập mà nhỏ hơn giá trị đó + thời lượng phim + 10P
+                if (currentStartMinutes < prevEndMinutes +
+                    10) { // Nếu như start time vừa nhập mà nhỏ hơn giá trị đó + thời lượng phim + 10P
                     toastr.error('Xuất chiếu mới phải cách suất chiếu trước ít nhất 10 phút!');
                     $(this).val("");
                     $(`#end_time_${currentId}`).val("");
@@ -646,7 +654,8 @@
                 const nextId = screenings[index + 1].id; // lấy id item sau đó
                 const nextStart = $(`#start_time_${nextId}`).val(); // lấy value item sau đó
                 const nextStartMinutes = convertTimeToMinutes(nextStart);
-                if (currentEndMinutes > nextStartMinutes - 10) { // Nếu như end time vừa nhập mà lớn hơn giá trị sau đó + thời lượng phim - 10P
+                if (currentEndMinutes > nextStartMinutes -
+                    10) { // Nếu như end time vừa nhập mà lớn hơn giá trị sau đó + thời lượng phim - 10P
                     toastr.error('Xuất chiếu mới phải kết thúc ít nhất 10 phút trước khi suất chiếu sau bắt đầu!');
                     $(this).val("");
                     $(`#end_time_${currentId}`).val("");
@@ -691,7 +700,8 @@
                     // Nếu có startMinutes từ dữ liệu cũ, sử dụng nó:
                     const nextStartMinutes = nextScreening.startMinutes;
                     if (currentEndMinutes > nextStartMinutes - 10) {
-                        toastr.error('Xuất chiếu mới phải kết thúc ít nhất 10 phút trước khi suất chiếu sau bắt đầu!');
+                        toastr.error(
+                            'Xuất chiếu mới phải kết thúc ít nhất 10 phút trước khi suất chiếu sau bắt đầu!');
                         $(`#end_time_${currentId}`).val("");
                         $(this).val("");
 
@@ -706,7 +716,7 @@
             $(`#end_time_${currentId}`).val(convertMinutesToTime(currentEndMinutes));
         });
         // Auto gen time
-        $('#autoGenerate').click(function () {
+        $('#autoGenerate').click(function() {
             const durationMovie = +$('#duration').val();
             let dataDate = $('#date').val();
             if (!durationMovie) {
@@ -757,9 +767,12 @@
                 // Kiểm tra có chồng lấn suất chiếu cũ không
                 let isOverlapping = screeningsChecks.some(existing => {
                     return (
-                        (startTime >= existing.startMinutes && startTime < existing.endMinutes) || // Bắt đầu trong khoảng cũ
-                        (endTime > existing.startMinutes && endTime <= existing.endMinutes) || // Kết thúc trong khoảng cũ
-                        (startTime <= existing.startMinutes && endTime >= existing.endMinutes) // Bao trùm suất cũ
+                        (startTime >= existing.startMinutes && startTime < existing
+                        .endMinutes) || // Bắt đầu trong khoảng cũ
+                        (endTime > existing.startMinutes && endTime <= existing.endMinutes) ||
+                        // Kết thúc trong khoảng cũ
+                        (startTime <= existing.startMinutes && endTime >= existing
+                        .endMinutes) // Bao trùm suất cũ
                     );
                 });
 
@@ -816,7 +829,7 @@
             }
         });
         // submit
-        $('#submitForm').click(function (e) {
+        $('#submitForm').click(function(e) {
 
 
 
@@ -838,7 +851,9 @@
                 seat_structure.forEach((item) => {
                     data_seat_structure.push({
                         ...item,
-                        price: +type_seats.filter((element) => element.id == item.type_seat_id)[0].price + surchargeMovie + surchargeBranch + surchargeTypeRoom + surchargeDay + price_special,
+                        price: +type_seats.filter((element) => element.id == item.type_seat_id)[0]
+                            .price + surchargeMovie + surchargeBranch + surchargeTypeRoom +
+                            surchargeDay + price_special,
                     })
                 });
 
