@@ -47,11 +47,6 @@ class AuthController extends Controller
             if (!Hash::check($data['password'], $user->password)) {
 
                 return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
-
-                // return $this->successResponse([
-                //     'status' => false,
-                //     'message' => 'Thông tin tài khoản không chính xác'
-                // ], Response::HTTP_UNAUTHORIZED);
             }
 
             // Tạo token xác thực
@@ -64,23 +59,6 @@ class AuthController extends Controller
                 'user' => $user,
                 'token' => $token
             ], 'Đăng nhập thành công', Response::HTTP_OK);
-
-
-            // Trả về phản hồi JSON thành công
-            // return response()->json([
-            //     'status' => 'success',
-            //     'message' => 'Đăng nhập thành công',
-            //     'data' => [
-            //         'user' => [
-            //             'id' => $user->id,
-            //             'name' => $user->name,
-            //             'email' => $user->email,
-            //             'type_user' => $user->type_user
-            //         ],
-            //         'token' => $token,
-            //         'cookie' => $cookie
-            //     ]
-            // ], Response::HTTP_OK)->withCookie($cookie);
         } catch (\Throwable $th) {
             // Ghi log chi tiết lỗi
             Log::error('Lỗi đăng nhập: ' . $th->getMessage(), [

@@ -1,17 +1,14 @@
 const { z } = Zod;
 
 $(document).ready(function () {
-  // const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
   const prefix = "create";
   const prefixUpdate = "update";
-
   const schema = z.object({
     branch_id: z.string().nonempty("Vui lòng chọn chi nhánh"),
     name: z.string().min(1, "Vui lòng điền tên").max(255, "Tối đa 255 kí tự"),
     address: z.string().min(1, "Vui lòng điền địa chỉ"),
     description: z.string().max(255, "Tối đa 255 kí tự").optional(),
   });
-
   /**
    * Mở modal create
    */
@@ -145,13 +142,14 @@ const updateCinema = async (url, data) => {
       location.reload();
     },
     error: function (err) {
-      // console.log(err.responseJSON);
       showErrors(err.responseJSON.errors, "update");
     },
   });
 };
 /**
- * Xóa tất cả lỗi
+ * Xóa tất cả lỗi hiện có
+ *
+ * @param {string} prefix - Tiền tố id của input và tag in ra lỗi
  */
 const resetErros = (prefix) => {
   $(`#${prefix}BranchError`).text("");
@@ -164,14 +162,17 @@ const resetErros = (prefix) => {
   $(`#${prefix}Address`).removeClass("is-invalid");
   $(`#${prefix}Description`).removeClass("is-invalid");
 };
-
+/**
+ * Xóa tất cả hiện có ở modal
+ *
+ * @param {string} prefix - Tiền tố id của input trong modal
+ */
 const resetData = (prefix) => {
   $(`#${prefix}Branch`).val("");
   $(`#${prefix}Name`).val("");
   $(`#${prefix}Address`).val("");
   $(`#${prefix}Description`).val("");
 };
-
 /**
  * Hiển thị lỗi
  */

@@ -4,7 +4,7 @@
 
 document.addEventListener("DOMContentLoaded", function () {
   $(".openUpdateRankModal").on("click", function () {
-    const modal = $("#updateRankModal");
+    const modal = new bootstrap.Modal($("#updateRankModal")[0]);
 
     const rankId = $(this).data("rank-id");
     const rankName = $(this).data("rank-name");
@@ -24,19 +24,14 @@ document.addEventListener("DOMContentLoaded", function () {
       .prop("disabled", rankDefault)
       .toggleClass("disabled", rankDefault);
 
-    new bootstrap.Modal(modal[0]).show();
+    modal.show();
   });
 
   $("#updateRankBtn").on("click", function (event) {
     event.preventDefault();
-
-    const url = `https://alphacinema.me/admin/ranks/${$(
-      "#updateRankId"
-    ).val()}`;
-
     const formData = $("#updateRankForm").serializeArray();
 
-    handleUpdate(url, formData);
+    handleUpdate(`${APP_URL}/ranks/${$("#updateRankId").val()}`, formData);
   });
 });
 
@@ -60,7 +55,8 @@ const handleUpdate = async (url, data) => {
     processData: true,
     success: function (res) {
       console.log(res);
-      $("#updateRankModal").modal("hide");
+      const modal = new bootstrap.Modal($("#updateRankModal")[0]);
+      modal.hide();
       location.reload();
     },
     error: function (err) {
