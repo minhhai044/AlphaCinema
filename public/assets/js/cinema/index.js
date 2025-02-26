@@ -1,9 +1,9 @@
 const { z } = Zod;
 
 $(document).ready(function () {
-  const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
+  // const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
   const prefix = "create";
-  const prifixUpdate = "update";
+  const prefixUpdate = "update";
 
   const schema = z.object({
     branch_id: z.string().nonempty("Vui lòng chọn chi nhánh"),
@@ -18,19 +18,11 @@ $(document).ready(function () {
   $("#openCreateCinemaModal").on("click", function () {
     resetErros(prefix);
     resetData(prefix);
+    const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
     modal.show();
   });
   /**
-   * Mở modal update
-   */
-  $("#openUpdateCinemaModal").on("click", function () {
-    const modal = new bootstrap.Modal($("#updateCinemaModal")[0]);
-    // resetErros(prefix);
-    // resetData(prefix);
-    modal.show();
-  });
-  /**
-   * Xử lý khi click button trong modal
+   * Xử lý khi click button trong modal create
    */
   $("#createCinemaBtn").on("click", () => {
     const formData = getFormData("#createCinemaForm");
@@ -57,10 +49,59 @@ $(document).ready(function () {
       handleValidateField(prefix, schema, field, value);
     }
   );
+  /**
+   * Mở modal update
+   */
+  $(".openUpdateCinemaModal").on("click", function () {
+    const modal = new bootstrap.Modal($("#updateCinemaModal")[0]);
+
+    const cinemaId = $(this).data("edit-id");
+    const cinemaBranchId = $(this).data("branch-id");
+    const cinemaName = $(this).data("name");
+    const cinemaAddress = $(this).data("address");
+    const cinemaDescription = $(this).data("description");
+
+    $("#updatedId").val(cinemaId);
+    $("#updateName").val(cinemaName);
+    $("#updateBranch").val(cinemaBranchId);
+    $("#updateAddress").val(cinemaAddress);
+    $("#updateDescription").val(cinemaDescription);
+
+    resetErros(prefixUpdate);
+    modal.show();
+  });
+  /**
+   * Xử lý button modal update
+   */
+  $("#updateCinemaBtn").on("click", () => {
+    const formData = getFormData("#updateCinemaForm");
+    const updatedId = $("#updatedId").val();
+    const validation = schema.safeParse(formData);
+
+    if (!validation.success) {
+      handleValidateErrors(prefixUpdate, validation.error);
+      return;
+    }
+
+    updateCinema(`${APP_URL}/cinemas/${updatedId}`, formData);
+  });
+  /**
+   * Hiển thị lỗi khi có data thay đổi
+   */
+  $("#updateCinemaForm").on(
+    "input change",
+    "input, textarea, select",
+    function () {
+      const field = $(this).attr("name");
+      const value = $(this).val();
+
+      handleValidateField(prefixUpdate, schema, field, value);
+    }
+  );
 });
 
 /**
- * Call api tạo chi nhánh
+ * Call api tạo rạp chiếu
  *
  * @param {*} url
  * @param {*} data
@@ -75,7 +116,8 @@ const createCinema = async (url, data) => {
     processData: true,
     success: function (res) {
       console.log(res);
-      $("#createCinemaModal").modal("hide");
+      const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
+      modal.hide();
       location.reload();
     },
     error: function (err) {
@@ -87,7 +129,27 @@ const createCinema = async (url, data) => {
     },
   });
 };
-
+/**
+ * Call api sửa rạp chiếu
+ */
+const updateCinema = async (url, data) => {
+  return await $.ajax({
+    url: url,
+    type: "POST",
+    data: data,
+    processData: true,
+    success: function (res) {
+      console.log(res);
+      const modal = new bootstrap.Modal($("#updateCinemaModal")[0]);
+      modal.hide();
+      location.reload();
+    },
+    error: function (err) {
+      // console.log(err.responseJSON);
+      showErrors(err.responseJSON.errors, "update");
+    },
+  });
+};
 /**
  * Xóa tất cả lỗi
  */

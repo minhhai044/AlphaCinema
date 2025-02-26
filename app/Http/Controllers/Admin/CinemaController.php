@@ -89,8 +89,8 @@ class CinemaController extends Controller
     {
         try {
             $this->cinemaService->updateSevice($cinema, $request->validated());
-
-            return back();
+            Toastr::success('', 'Sửa rạp chiếu thành công');
+            return $this->successResponse([], 'Sửa rạp chiếu thành công');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
         }

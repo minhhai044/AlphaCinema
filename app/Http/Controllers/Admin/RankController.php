@@ -89,7 +89,11 @@ class RankController extends Controller
 
                 $rank->update($data);
             });
-            return $this->successResponse($request->all(), 'Cập nhật thành công');
+            Toastr::success('', 'Cập nhật thành công');
+            return $this->successResponse([
+                'rank' => $rank,
+                'res' => $request->all()
+            ], 'Cập nhật thành công');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return $this->errorResponse(

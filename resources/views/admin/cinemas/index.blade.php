@@ -123,9 +123,12 @@
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-end" style="">
                                                         <li>
-                                                            <a id="openUpdateCinemaModal"
-                                                                class="dropdown-item edit-list cursor-pointer"
-                                                                data-edit-id="{{ $cinema->id }}">
+                                                            <a class="dropdown-item edit-list cursor-pointer openUpdateCinemaModal"
+                                                                data-edit-id="{{ $cinema->id }}"
+                                                                data-branch-id="{{ $cinema->branch_id }}"
+                                                                data-name="{{ $cinema->name }}"
+                                                                data-address="{{ $cinema->address }}"
+                                                                data-description="{{ $cinema->description }}">
                                                                 <i
                                                                     class="mdi mdi-pencil font-size-16 text-success me-1"></i>
                                                                 Edit
@@ -251,6 +254,7 @@
                         @csrf
                         @method('PUT')
                         <div class="row">
+                            <input type="hidden" id="updatedId">
 
                             <div class="col-md-6 mb-3">
                                 <label for="updateName" class="form-label">
@@ -303,7 +307,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
-                    <button type="button" class="btn btn-primary" id="updateCinemaBtn">Thêm</button>
+                    <button type="button" class="btn btn-primary" id="updateCinemaBtn">Sửa</button>
                 </div>
             </div>
         </div>
