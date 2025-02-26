@@ -1,7 +1,6 @@
 const { z } = Zod;
 
 $(document).ready(function () {
-  const url = "https://alphacinema.me/admin";
   const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
   const prefix = "create";
 
@@ -33,7 +32,7 @@ $(document).ready(function () {
     }
 
     console.log(formData);
-    createCinema(`${url}/cinemas`, formData);
+    createCinema(`${APP_URL}/cinemas`, formData);
   });
   /**
    * Hiển thị lỗi khi có data thay đổi

@@ -34,14 +34,14 @@
                             <div class="mb-4">
                                 <a id="openCreateCinemaModal" class="btn btn-light waves-effect waves-light">
                                     <i class="bx bx-plus me-1"></i>
-                                    Add Cinema
+                                    Thêm Mới
                                 </a>
                             </div>
                             <div class="mb-4">
                                 <a href="{{ route('admin.export', 'cinemas') }}"
                                     class="btn btn-warning waves-effect waves-light">
                                     <i class="bx bx-download me-1"></i>
-                                    Export Excel
+                                    Xuất Excel
                                 </a>
                             </div>
                         </div>

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class checkAdminMiddleware
+class CheckAdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,7 +16,7 @@ class checkAdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::check() && Auth::user()->isAdmin()){
+        if (Auth::check() && Auth::user()->isAdmin()) {
             return $next($request);
         }
 
