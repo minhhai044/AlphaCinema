@@ -399,7 +399,7 @@
                         if (response.success) {
                             let checkbox = $(`[data-food-id="${foodId}"]`);
                             checkbox.prop("checked", parseInt(response.data.is_active));
-
+                            
                             Swal.fire({
                                 icon: "success",
                                 title: "Thành công!",

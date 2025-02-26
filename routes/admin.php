@@ -28,6 +28,7 @@ use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\SeatTemplateControler;
 use App\Http\Controllers\Admin\UserVoucherController;
 use App\Http\Controllers\Admin\SiteSettingController;
+use App\Http\Controllers\Admin\SlideShowController;
 
 /*
 |--------------------------------------------------------------------------
@@ -45,6 +46,7 @@ Route::get('/', [DashBoardController::class, 'index'])->name('index');
 Route::resource('cinemas', CinemaController::class);
 Route::resource('ranks', RankController::class);
 
+Route::resource('slideshows', SlideShowController::class);
 // Route Food
 // Đảm bảo rằng route được khai báo trong nhóm `foods` nếu muốn đặt tên cho route đúng cách.
 Route::group([

@@ -68,6 +68,8 @@ Route::prefix('combos')->group(function () {
 // Change active
 Route::post('food/change-active',       [UpdateActiveController::class, 'food'])->name('food.change-active');
 Route::post('combos/change-active',     [UpdateActiveController::class, 'combo'])->name('combos.change-active');
+Route::post('slideshows/change-active', [UpdateActiveController::class, 'slideshow'])->name('slideshows.change-active');
+
 // Route::prefix('admin/movies')->group(function () {
 //     Route::get('/', [MovieController::class, 'index']);
 //     Route::post('/', [MovieController::class, 'store']);
