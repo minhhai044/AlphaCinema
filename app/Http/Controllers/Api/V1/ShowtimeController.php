@@ -25,25 +25,6 @@ class ShowtimeController extends Controller
             'Thao tác thành công'
         );
     }
-    public function listShowtimes(string $movie)
-    {
-        $showtimes = Showtime::query()
-            ->where('movie_id', $movie)
-            ->get();
-        $data = [];
-        foreach ($showtimes as $showtime) {
-            $data[$showtime['date']][] = [
-                'id' => $showtime['id'],
-                'start_time' => $showtime['start_time'],
-                'slug' => $showtime['slug'],
-            ];
-        }
-
-        return $this->successResponse(
-            $data,
-            'Thao tác thành công'
-        );
-    }
 
 
     public function movieShowTimes(string $slug)
@@ -158,7 +139,12 @@ class ShowtimeController extends Controller
                 if (empty($seat_structures)) {
                     return response()->json(['error' => 'Không tìm thấy danh sách ghế'], 400);
                 }
-
+                // Minh Hải Check 1 user chỉ được 10 ghế
+                $checkTotalSeatUser = count(array_keys(array_column($seat_structures, 'user_id'), $showtimeRequest->user_id));
+                
+                if ($checkTotalSeatUser >= 10) {
+                    return response()->json(['error' => 'Bạn chỉ có thể chọn tối đa 10 ghế !!!'], 409);
+                }
                 // Kiểm tra trạng thái ghế trước khi cập nhật
                 foreach ($seat_structures as &$seat_structure) {
                     if ($seat_structure['id'] == $showtimeRequest->seat_id) {
@@ -195,4 +181,5 @@ class ShowtimeController extends Controller
             ], 500);
         }
     }
+    public function resetSeat(string $slug, string $user_id) {}
 }
