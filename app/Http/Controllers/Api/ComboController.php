@@ -27,24 +27,37 @@ class ComboController extends Controller
         try {
             $foods = Food::query()->select('id', 'name', 'type')->get();
 
-            // Tổng số bản ghi (không lọc)
+            // Tổng số bản ghi không lọc
             $totalRecords = Combo::count();
-    
-            // Lấy danh sách combo kèm theo danh sách food trong combo
-            // $comboFood = Combo::with('comboFood')->get();
 
-            // Tạo query gốc
-            $query = Combo::with('comboFood');
+            // Query danh sách combo kèm theo món ăn
+            $query = Combo::with(['comboFood.food']);
 
-            // Lọc theo tên 
+            // Lọc theo ID
             if ($request->filled('id')) {
                 $query->where('id', 'LIKE', '%' . $request->id . '%');
             }
 
-            // Tìm kiếm từ DataTables (nếu có)
-            if ($request->has('search') && !empty($request->search['value'])) {
-                $searchValue = $request->search['value'];
-                $query->where('name', 'LIKE', "%{$searchValue}%");
+
+            // Lọc theo khoảng giá
+            if ($request->filled('price_min')) {
+                $query->where('price_sale', '>=', $request->price_min);
+            }
+            if ($request->filled('price_max')) {
+                $query->where('price_sale', '<=', $request->price_max);
+            }
+
+            // Lọc theo món ăn (ID)
+            if ($request->filled('food_id')) {
+                $query->whereHas('comboFood', function ($q) use ($request) {
+                    $q->whereIn('food_id', $request->food_id);
+                });
+            }
+
+            if ($request->filled('food_name')) {
+                $query->whereHas('comboFood.food', function ($q) use ($request) {
+                    $q->where('name', 'LIKE', '%' . $request->food_name . '%');
+                });
             }
 
             // Số bản ghi sau khi lọc
@@ -55,10 +68,18 @@ class ComboController extends Controller
             $start = $request->input('start', 0);
             $combos = $query->skip($start)->take($length)->get();
 
+            // Chuyển đổi dữ liệu
+            $combos->transform(function ($combo) {
+                $combo->info = $combo->comboFood->map(function ($item) {
+                    return "Món: {$item->food->name} (SL: {$item->quantity})";
+                })->implode('<br>');
+                return $combo;
+            });
+
             return response()->json([
                 "draw" => intval($request->draw),
-                "recordsTotal" => $totalRecords,     // Tổng số bản ghi trước lọc
-                "recordsFiltered" => $filteredRecords,  // Số bản ghi sau khi lọc
+                "recordsTotal" => $totalRecords,
+                "recordsFiltered" => $filteredRecords,
                 "data" => $combos,
                 "food" => $foods
             ]);
@@ -66,6 +87,9 @@ class ComboController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+
+
+
     public function show(string $id)
     {
         try {
@@ -119,6 +143,22 @@ class ComboController extends Controller
         }
     }
 
+    public function updateStatus(Request $request)
+{
+    $request->validate([
+        'id' => 'required|integer|exists:combos,id',
+        'is_active' => 'required|boolean',
+    ]);
+
+    $combo = Combo::findOrFail($request->id);
+    $combo->is_active = $request->is_active;
+    $combo->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => 'Trạng thái đã được cập nhật thành công.'
+    ]);
+}
 
     public function delete(string $id)
     {

@@ -15,7 +15,6 @@ use App\Http\Controllers\Admin\BranchController;
 
 use App\Http\Controllers\Admin\CinemaController;
 
-use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\ShowtimeController;
 
@@ -24,7 +23,7 @@ use App\Http\Controllers\Admin\TyperoomController;
 use App\Http\Controllers\Admin\TypeSeatController;
 
 use App\Http\Controllers\Admin\DashBoardController;
-
+use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\SeatTemplateControler;
 use App\Http\Controllers\Admin\UserVoucherController;
 use App\Http\Controllers\Admin\SiteSettingController;
@@ -91,6 +90,7 @@ Route::group([
     // Hiển thị chi tiết  phải khai báo cuối cùng trong route
     Route::get('{combo}', [ComboController::class, 'show'])->name('show');
 });
+
 
 
 Route::resource('branches', BranchController::class);
@@ -170,7 +170,6 @@ Route::group([
 
 Route::resource("roles", RoleController::class );
 
-Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
 
 
 Route::resource('vouchers', VoucherController::class);
@@ -228,9 +227,12 @@ Route::post('days/update/{id}', [DayController::class, 'update'])->name('days.up
 
 Route::group([
     'prefix' => 'settings',  // Tiền tố URL cho tất cả route
-    'as' => 'settings.',    
+    'as' => 'settings.',
 ],function (){
 Route::get('/',[SiteSettingController::class,'index'])->name('index');
 Route::put('/update/{id}',[SiteSettingController::class,'update'])->name('update');
 Route::post('/reset',[SiteSettingController::class,'resetToDefault'])->name('reset');
 });
+
+
+Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
