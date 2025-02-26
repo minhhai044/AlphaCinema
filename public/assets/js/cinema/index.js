@@ -3,6 +3,7 @@ const { z } = Zod;
 $(document).ready(function () {
   const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
   const prefix = "create";
+  const prifixUpdate = "update";
 
   const schema = z.object({
     branch_id: z.string().nonempty("Vui lòng chọn chi nhánh"),
@@ -12,11 +13,20 @@ $(document).ready(function () {
   });
 
   /**
-   * Mở modal
+   * Mở modal create
    */
   $("#openCreateCinemaModal").on("click", function () {
     resetErros(prefix);
     resetData(prefix);
+    modal.show();
+  });
+  /**
+   * Mở modal update
+   */
+  $("#openUpdateCinemaModal").on("click", function () {
+    const modal = new bootstrap.Modal($("#updateCinemaModal")[0]);
+    // resetErros(prefix);
+    // resetData(prefix);
     modal.show();
   });
   /**
