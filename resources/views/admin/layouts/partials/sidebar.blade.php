@@ -151,10 +151,22 @@
                 </ul>
             </li>
             <li>
-                <a href="{{ route('admin.settings.index') }}">
+                <a href="javascript: void(0);" class="has-arrow">
                     <i data-feather="grid"></i>
-                    <span data-key="t-site-setting">Cấu hình cài đặt </span>
+                    <span data-key="t-service-systems">Cấu hình</span>
                 </a>
+                <ul class="sub-menu" aria-expanded="false">
+                    <li>
+                        <a href="{{ route('admin.settings.index') }}">
+                            <span data-key="t-cinemas">Cấu hình cài đặt</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.slideshows.index') }}">
+                            <span data-key="t-cinemas">SlideShow</span>
+                        </a>
+                    </li>
+                </ul>
             </li>
 
         </ul>
