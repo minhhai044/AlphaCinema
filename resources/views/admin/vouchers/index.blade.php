@@ -168,10 +168,10 @@
                                                     </td>
                                                     <td>
                                                         <div style="margin-bottom: 5px;">
-                                                            <strong>Từ:</strong> {{ $voucher->start_date_time }}
+                                                            <strong>Từ:</strong> {{ \Carbon\Carbon::parse($voucher->start_date_time)->format('H:i, d/m/Y') }}
                                                         </div>
                                                         <div>
-                                                            <strong>Đến:</strong> {{ $voucher->end_date_time }}
+                                                            <strong>Đến:</strong> {{ \Carbon\Carbon::parse($voucher->end_date_time)->format('H:i, d/m/Y') }}
                                                         </div>
                                                     </td>
 

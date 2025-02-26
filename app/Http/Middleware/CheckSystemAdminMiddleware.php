@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
-class checkAdminMiddleware
+class CheckSystemAdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -16,10 +16,11 @@ class checkAdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if(Auth::check() && Auth::user()->isAdmin()){
+        $user = Auth::user();
+
+        if ($user && $user->name = "System Admin") {
             return $next($request);
         }
-
-        abort(403);
+        abort(403, 'Bạn không có quyền truy cập!');
     }
 }

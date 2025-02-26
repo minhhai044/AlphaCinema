@@ -36,7 +36,7 @@ class DatabaseSeeder2 extends Seeder
      */
     public function run(): void
     {
-        //==========4 bản ghi chi nhánh===============
+        // //==========4 bản ghi chi nhánh===============
         // $branches = [
         //     'Hà nội',
         //     'Hồ Chí Minh',

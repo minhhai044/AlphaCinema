@@ -14,10 +14,10 @@ return new class extends Migration
         Schema::create('ranks', function (Blueprint $table) {
             $table->id();
             $table->string('name')->unique()->comment('Tên mức rank');
-            $table->decimal('total_spent', 15, 0)->comment('Tổng số tiền đã tiêu');
-            $table->decimal('ticket_percentage', 5, 0)->comment('Phần trăm giảm giá vé');
-            $table->decimal('food_percentage', 5, 0)->comment('Phần trăm giảm giá đồ ăn');
-            $table->boolean('is_default')->default(0)->comment('Mức rank mặc định'); // ?
+            $table->unsignedBigInteger('total_spent')->unique()->comment('Tổng số tiền đã tiêu');
+            $table->unsignedInteger('ticket_percentage')->comment('Phần trăm giảm giá vé');
+            $table->unsignedInteger('combo_percentage')->comment('Phần trăm giảm giá đồ ăn');
+            $table->boolean('is_default')->default(false)->comment('Mức rank mặc định'); // ?
             $table->timestamps();
         });
     }
@@ -25,7 +25,7 @@ return new class extends Migration
     /**
      * Reverse the migrations.
      */
-    
+
     public function down(): void
     {
         Schema::dropIfExists('ranks');

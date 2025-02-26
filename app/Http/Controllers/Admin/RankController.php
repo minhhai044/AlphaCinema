@@ -9,6 +9,7 @@ use App\Http\Requests\RankRequest;
 use App\Models\Rank;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -47,8 +48,12 @@ class RankController extends Controller
                 Toastr::success('', 'Thêm thành công');
                 return redirect()->route('admin.ranks.index');
             }
+
+            dd(1);
         } catch (\Throwable $th) {
             //throw $th;
+            Log::error($th->getMessage());
+            Toastr::success('', 'Thêm không thành công');
         }
     }
 
@@ -84,13 +89,17 @@ class RankController extends Controller
 
                 $rank->update($data);
             });
-
-            // Toastr::success('', 'Cập nhật thành công');
-            // return redirect()->route('admin.ranks.index');
-
-            return $this->successResponse($request->all(), 'Cập nhật thành công');
+            Toastr::success('', 'Cập nhật thành công');
+            return $this->successResponse([
+                'rank' => $rank,
+                'res' => $request->all()
+            ], 'Cập nhật thành công');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
+            return $this->errorResponse(
+                'Thêm không thành công',
+                Response::HTTP_BAD_REQUEST
+            );
         }
     }
 

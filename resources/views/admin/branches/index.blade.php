@@ -198,8 +198,12 @@
                                                             {{ $branch->is_active ? 'Active' : 'No Active' }}
                                                         </div>
                                                     </td>
-                                                    <td>{{ $branch->created_at }}</td>
-                                                    <td>{{ $branch->updated_at }}</td>
+                                                    <td>
+                                                        {{ $branch->created_at->format('d/m/Y') }}<br>{{ $branch->created_at->format('H:i:s') }}
+                                                    </td>
+                                                    <td>
+                                                        {{ $branch->updated_at->format('d/m/Y') }}<br>{{ $branch->updated_at->format('H:i:s') }}
+                                                    </td>
 
                                                     <td>
                                                         <div class="dropdown">

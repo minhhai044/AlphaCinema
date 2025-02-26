@@ -68,7 +68,6 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
 
-
                                     <label for="formatted_discount" class="form-label">
                                         <span class="required">*</span> Giảm giá (VNĐ)
                                     </label>
@@ -84,7 +83,6 @@
                                             {{ $errors->first('discount') }}
                                         @endif
                                     </div>
-
                                 </div>
                             </div>
 
@@ -138,7 +136,6 @@
                                 </div>
                             </div>
 
-
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="limit_by_user" class="form-label">
@@ -149,17 +146,12 @@
                                         value="{{ old('limit_by_user', 1) }}" placeholder="Nhập giới hạn sử dụng">
                                     <div
                                         class="{{ $errors->has('limit_by_user') ? 'invalid-feedback' : 'valid-feedback' }}">
-
                                         @if ($errors->has('limit_by_user'))
                                             {{ $errors->first('limit_by_user') }}
                                         @endif
                                     </div>
                                 </div>
                             </div>
-
-                        </div>
-
-
 
 
                             <div class="col-lg-12">
@@ -232,7 +224,6 @@
             </div>
         </div>
     </form>
-
 
 
     <script>
