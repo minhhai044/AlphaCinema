@@ -37,9 +37,9 @@ class VoucherController extends Controller
 
             $voucher = $userVoucher->voucher;
             $startDateTime = Carbon::parse($voucher->start_date_time);
-            $endDateTime = Carbon::parse($voucher->end_date_time);
+            $endDateTime   = Carbon::parse($voucher->end_date_time);
 
-            // Kiểm tra trạng thái hoạt động (is_active) của voucher
+            // Kiểm tra trạng thái hoạt động của voucher
             if (!$voucher->is_active) {
                 $status = 'inactive';
                 $message = 'Voucher của bạn đã ngừng hoạt động.';
@@ -49,6 +49,10 @@ class VoucherController extends Controller
                     $status = 'upcoming';
                     $message = 'Voucher của bạn sẽ có hiệu lực từ ' . $startDateTime->toDateTimeString() . '.';
                 } elseif ($now->gt($endDateTime)) {
+                    // Nếu ngày kết thúc nhỏ hơn thời gian hiện tại thì cập nhật is_active bằng 0
+                    if ($voucher->is_active) {
+                        $voucher->update(['is_active' => 0]);
+                    }
                     $status = 'expired';
                     $message = 'Voucher của bạn đã hết hạn vào ' . $endDateTime->toDateTimeString() . '.';
                 } else {
@@ -59,15 +63,15 @@ class VoucherController extends Controller
 
             $voucherData[] = [
                 'user_voucher_id' => $userVoucher->id,
-                'voucher_id' => $voucher->id,
-                'code' => $voucher->code,
-                'title' => $voucher->title,
-                'description' => $voucher->description,
+                'voucher_id'      => $voucher->id,
+                'code'            => $voucher->code,
+                'title'           => $voucher->title,
+                'description'     => $voucher->description,
                 'start_date_time' => $voucher->start_date_time,
-                'end_date_time' => $voucher->end_date_time,
-                'status' => $status,
-                'message' => $message,
-                'usage_count' => $userVoucher->usage_count,
+                'end_date_time'   => $voucher->end_date_time,
+                'status'          => $status,
+                'message'         => $message,
+                'usage_count'     => $userVoucher->usage_count,
             ];
         }
 
