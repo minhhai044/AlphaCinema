@@ -15,7 +15,7 @@ class SlideShowController extends Controller
      */
     public function index()
     {
-        $slideshows = Slideshow::latest('id')->get()->flatMap(function ($slide) {
+        $slideshows = Slideshow::query()->where('is_active', 1)->latest('id')->get()->flatMap(function ($slide) {
             $thumbnails = json_decode($slide->img_thumbnail, true) ?? [];
 
             return array_map(function ($path) {

@@ -50,7 +50,7 @@ class SlideShowController extends Controller
         try {
             DB::beginTransaction();
 
-            $data['is_active'] = 1;
+            $data['is_active'] = 0;
 
             // Xử lý ảnh
             if ($SlideShowRequest->hasFile('img_thumbnail')) {
@@ -68,7 +68,7 @@ class SlideShowController extends Controller
             // Commit transaction nếu thành công
             DB::commit();
 
-            Toastr::success('Thêm mới thành công', 'AlphaCinema thông báo');
+            Toastr::success('Thêm mới thành công');
             return redirect()->route('admin.slideshows.index');
         } catch (\Throwable $th) {
             DB::rollBack();
@@ -82,7 +82,8 @@ class SlideShowController extends Controller
 
             Log::error(__CLASS__ . __FUNCTION__, [$th->getMessage()]);
 
-            return back()->with('error', 'Thêm mới không thành công !!!');
+            Toastr::error('', 'Thêm mới không thành công');
+            return back();
         }
     }
 
