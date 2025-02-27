@@ -10,7 +10,7 @@ Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
 Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
 Route::post('{id}/changeSeatStatus', [ShowtimeController::class, 'changeSeatStatus']);
 Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
-Route::put('{slug}/resetSeat/{user_id}', [ShowtimeController::class, 'resetSeat']);
+Route::put('{id}/resetSuccessSeat', [ShowtimeController::class, 'resetSuccessSeat']);
 // new
 
 Route::post('/login', [AuthController::class, 'login']);
