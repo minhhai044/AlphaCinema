@@ -36,7 +36,7 @@ class SlideShowRequest extends FormRequest
     {
         return [
             'img_thumbnail' => 'required|array|max:10', // Tối đa 5 ảnh
-            'img_thumbnail.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048', // Kiểm tra từng file ảnh
+            'img_thumbnail.*' => 'required|image|mimes:jpeg,png,jpg,gif,svg,webp', // Kiểm tra từng file ảnh
             'description' => 'nullable|string|max:255', // Mô tả không bắt buộc, tối đa 255 ký tự
         ];
     }
@@ -45,7 +45,7 @@ class SlideShowRequest extends FormRequest
     {
         return [
             'img_thumbnail' => 'nullable|array|max:10', // Tối đa 5 ảnh
-            'img_thumbnail.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:2048',
+            'img_thumbnail.*' => 'image|mimes:jpeg,png,jpg,gif,svg,webp',
             'existing_images' => 'nullable|array',
             'description' => 'nullable|string|max:1000',
         ];

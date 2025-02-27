@@ -16,19 +16,19 @@ class SlideShowController extends Controller
     /**
      * Display a listing of the resource.
      */
-    const PATH_VIEW = 'admin.slideshows.';
-    const PATH_UPLOAD = 'slideshows';
+    private const PATH_VIEW = 'admin.slideshows.';
+    private const PATH_UPLOAD = 'slideshows';
 
     public function index()
     {
         $slideshows = Slideshow::latest()->get();
-    
+
         // Chuyển img_thumbnail từ JSON về mảng
         foreach ($slideshows as $slideshow) {
             $slideshow->img_thumbnail = json_decode($slideshow->img_thumbnail, true);
         }
-            return view(self::PATH_VIEW . __FUNCTION__, compact('slideshows'));
-        }
+        return view(self::PATH_VIEW . __FUNCTION__, compact('slideshows'));
+    }
 
     /**
      * Show the form for creating a new resource.
@@ -43,36 +43,49 @@ class SlideShowController extends Controller
      */
     public function store(SlideShowRequest $SlideShowRequest)
     {
+        $data = $SlideShowRequest->validated();
+
+        $imagePaths = [];
+
         try {
-            // dd($SlideShowRequest->all());
-            DB::transaction(function () use ($SlideShowRequest) {
-                $data = $SlideShowRequest->validated();
+            DB::beginTransaction();
 
-                $data['is_active'] = 0;
+            $data['is_active'] = 1;
 
-                $imagePaths = [];
-                if ($SlideShowRequest->hasFile('img_thumbnail')) {
-                    foreach ($SlideShowRequest->file('img_thumbnail') as $file) {
-                        $path = $file->store(self::PATH_UPLOAD);
-                        $imagePaths[] = $path;
-                    }
+            // Xử lý ảnh
+            if ($SlideShowRequest->hasFile('img_thumbnail')) {
+                foreach ($SlideShowRequest->file('img_thumbnail') as $file) {
+                    $path = $file->store(self::PATH_UPLOAD);
+                    $imagePaths[] = $path;
                 }
+            }
 
-                $data['img_thumbnail'] = json_encode($imagePaths);
-                // var_dump($data);
-                Slideshow::create($data);
-            });
+            $data['img_thumbnail'] = json_encode($imagePaths);
 
-            Toastr::success('Thêm mới thành công', 'AlphaCinema thông báo');
+            // Thêm vào database
+            Slideshow::create($data);
 
-            return redirect()
-                ->route('admin.slideshows.index')
-                ;
+            // Commit transaction nếu thành công
+            DB::commit();
+
+            Toastr::success('Thêm mới thành công', 'AlphaCinema thông báo');
+            return redirect()->route('admin.slideshows.index');
         } catch (\Throwable $th) {
+            DB::rollBack();
+
+            // Nếu lỗi, xóa ảnh đã lưu trong storage
+            foreach ($imagePaths as $path) {
+                if (Storage::exists($path)) {
+                    Storage::delete($path);
+                }
+            }
+
             Log::error(__CLASS__ . __FUNCTION__, [$th->getMessage()]);
-            return back()->with('error', 'Thêm mới không thành công !!!');
+
+            return back()->with('error', 'Thêm mới không thành công !!!');
         }
     }
+
 
     /**
      * Show the form for editing the specified resource.
@@ -81,49 +94,49 @@ class SlideShowController extends Controller
     {
         $slide = Slideshow::findOrFail($id);
         $slide->img_thumbnail = json_decode($slide->img_thumbnail, true) ?? []; // Giải mã JSON
-    
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('slide'));
     }
     /**
      * Update the specified resource in storage.
      */
     public function update(SlideShowRequest $request, string $id)
-{
-    try {
-        $slide = Slideshow::findOrFail($id);
-        $data = $request->all();
+    {
+        try {
+            $slide = Slideshow::findOrFail($id);
+            $data = $request->all();
 
-        $data['is_active'] = $request->has('is_active') ? 1 : 0;
-        $existingImages = $request->input('existing_images', []);
-        $updatedImages = $existingImages;
+            $data['is_active'] = $request->has('is_active') ? 1 : 0;
+            $existingImages = $request->input('existing_images', []);
+            $updatedImages = $existingImages;
 
-        if ($request->hasFile('img_thumbnail')) {
-            foreach ($request->file('img_thumbnail') as $key => $file) {
-                if (isset($existingImages[$key])) {
-                    $oldPath = $existingImages[$key];
-                    if (Storage::exists($oldPath)) {
-                        Storage::delete($oldPath);
+            if ($request->hasFile('img_thumbnail')) {
+                foreach ($request->file('img_thumbnail') as $key => $file) {
+                    if (isset($existingImages[$key])) {
+                        $oldPath = $existingImages[$key];
+                        if (Storage::exists($oldPath)) {
+                            Storage::delete($oldPath);
+                        }
                     }
+                    $updatedImages[$key] = $file->store('uploads/slides');
                 }
-                $updatedImages[$key] = $file->store('uploads/slides');
             }
+
+            $slide->update([
+                'img_thumbnail' => json_encode(array_values($updatedImages)), // Lưu dưới dạng JSON
+                'description' => $data['description'],
+                'is_active' => $data['is_active'],
+            ]);
+
+            Toastr::success('null', 'Cập nhật thành công');
+            return redirect()
+                ->route('admin.slideshows.index');
+        } catch (\Throwable $th) {
+            return back()->with('error', $th->getMessage());
         }
-
-        $slide->update([
-            'img_thumbnail' => json_encode(array_values($updatedImages)), // Lưu dưới dạng JSON
-            'description' => $data['description'],
-            'is_active' => $data['is_active'],
-        ]);
-
-        Toastr::success('null', 'Cập nhật thành công');
-        return redirect()
-        ->route('admin.slideshows.index');
-    } catch (\Throwable $th) {
-        return back()->with('error', $th->getMessage());
     }
-}
 
-    
+
 
 
 
