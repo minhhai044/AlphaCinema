@@ -153,7 +153,7 @@
                     <p><strong>Thể loại:</strong> ${genreHtml || 'Chưa rõ'}</p>
                     <p><strong>Ngày khởi chiếu:</strong> ${row.release_date || 'Chưa có'}</p>
                     <p><strong>Ngày kết thúc:</strong> ${row.end_date || 'Chưa có'}</p>
-                    <p><strong>Phân loại:</strong> T13</p>
+                    <p><strong>Danh mục:</strong>  ${row.category || 'Chưa rõ'}</p>
                     <p><strong>Phiên bản:</strong> ${versionHtml || 'Chưa cập nhật'}</p>
                     <p><strong>Code Youtube:</strong>
                         <input type="text" value="${row.trailer_url || 'Không có'}" readonly
