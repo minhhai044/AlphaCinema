@@ -31,7 +31,10 @@ document.addEventListener("DOMContentLoaded", function () {
     event.preventDefault();
     const formData = $("#updateRankForm").serializeArray();
 
-    handleUpdate(`${APP_URL}/ranks/${$("#updateRankId").val()}`, formData);
+    handleUpdate(
+      `${APP_URL}/admin/ranks/${$("#updateRankId").val()}`,
+      formData
+    );
   });
 });
 

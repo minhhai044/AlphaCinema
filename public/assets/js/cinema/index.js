@@ -34,7 +34,7 @@ $(document).ready(function () {
     }
 
     console.log(formData);
-    createCinema(`${APP_URL}/cinemas`, formData);
+    createCinema(`${APP_URL}/admin/cinemas`, formData);
   });
   /**
    * Hiển thị lỗi khi có data thay đổi
@@ -83,7 +83,7 @@ $(document).ready(function () {
       return;
     }
 
-    updateCinema(`${APP_URL}/cinemas/${updatedId}`, formData);
+    updateCinema(`${APP_URL}/admin/cinemas/${updatedId}`, formData);
   });
   /**
    * Hiển thị lỗi khi có data thay đổi
