@@ -36,21 +36,25 @@ class VoucherController extends Controller
             }
 
             $voucher = $userVoucher->voucher;
-
-            // Chuyển đổi thời gian voucher sang đối tượng Carbon để so sánh
             $startDateTime = Carbon::parse($voucher->start_date_time);
             $endDateTime = Carbon::parse($voucher->end_date_time);
 
-            // So sánh thời gian hiện tại với voucher
-            if ($now->lt($startDateTime)) {
-                $status = 'upcoming';
-                $message = 'Voucher của bạn sẽ có hiệu lực từ ' . $startDateTime->toDateTimeString() . '.';
-            } elseif ($now->gt($endDateTime)) {
-                $status = 'expired';
-                $message = 'Voucher của bạn đã hết hạn vào ' . $endDateTime->toDateTimeString() . '.';
+            // Kiểm tra trạng thái hoạt động (is_active) của voucher
+            if (!$voucher->is_active) {
+                $status = 'inactive';
+                $message = 'Voucher của bạn đã ngừng hoạt động.';
             } else {
-                $status = 'active';
-                $message = 'Voucher của bạn có hiệu lực đến ' . $endDateTime->toDateTimeString() . '.';
+                // So sánh thời gian hiện tại với voucher
+                if ($now->lt($startDateTime)) {
+                    $status = 'upcoming';
+                    $message = 'Voucher của bạn sẽ có hiệu lực từ ' . $startDateTime->toDateTimeString() . '.';
+                } elseif ($now->gt($endDateTime)) {
+                    $status = 'expired';
+                    $message = 'Voucher của bạn đã hết hạn vào ' . $endDateTime->toDateTimeString() . '.';
+                } else {
+                    $status = 'active';
+                    $message = 'Voucher của bạn có hiệu lực đến ' . $endDateTime->toDateTimeString() . '.';
+                }
             }
 
             $voucherData[] = [
