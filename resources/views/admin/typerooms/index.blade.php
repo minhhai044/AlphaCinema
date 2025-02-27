@@ -73,10 +73,14 @@
                         </div>
                         <div class="col-sm-auto">
                             <div class="mb-4">
-                                {{-- <a href="{{ route('admin.typerooms.create') }}" class="btn btn-light waves-effect waves-light">
-                                <i class="bx bx-plus me-1"></i>
-                                Thêm loại phòng 
-                            </a> --}}
+                                <a class="btn btn-light waves-effect waves-light">
+                                    <i class="mdi mdi-arrow-down"></i>
+                                    Xuất file 
+                                </a>
+                            </div>
+                        </div>
+                        <div class="col-sm-auto">
+                            <div class="mb-4">
                                 <a data-bs-toggle="modal" class="add_type_room btn btn-light waves-effect waves-light"
                                     data-bs-target="#addModal">
                                     <i class="mdi mdi-plus"></i>
@@ -84,9 +88,10 @@
                                 </a>
                             </div>
                         </div>
+                        
                     </div>
 
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-sm-12 col-md-6">
                             <div class="al-table-length">
                                 <label>
@@ -111,7 +116,7 @@
                                 </label>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="row">
                         <div class="col-sm-12">

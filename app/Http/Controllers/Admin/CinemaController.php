@@ -89,8 +89,8 @@ class CinemaController extends Controller
     {
         try {
             $this->cinemaService->updateSevice($cinema, $request->validated());
-
-            return back();
+            Toastr::success('', 'Sửa rạp chiếu thành công');
+            return $this->successResponse([], 'Sửa rạp chiếu thành công');
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
         }
@@ -101,9 +101,12 @@ class CinemaController extends Controller
     public function destroy(Cinema $cinema)
     {
         try {
-            $cinema->delete();
+            /** 
+             * Nếu rạp chiếu đã có phòng không cho xóa
+             */
+            // $cinema->delete();
 
-            Alert::success('Xóa rạp chếu phim thành công', 'Alpha Cinema Thông Báo');
+            Alert::info('Đang chờ nâng cấp', 'Alpha Cinema Thông Báo');
 
             return redirect()->back();
         } catch (\Throwable $th) {

@@ -1,27 +1,28 @@
 const { z } = Zod;
 
 $(document).ready(function () {
-  const url = "https://alphacinema.me/admin";
+  const url = "http://alphacinema.test/admin";
   const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
-  const prefix = "create";
 
+  const prefix = "create";
+  const prefixUpdate = "update";
   const schema = z.object({
     branch_id: z.string().nonempty("Vui lòng chọn chi nhánh"),
     name: z.string().min(1, "Vui lòng điền tên").max(255, "Tối đa 255 kí tự"),
     address: z.string().min(1, "Vui lòng điền địa chỉ"),
     description: z.string().max(255, "Tối đa 255 kí tự").optional(),
   });
-
   /**
-   * Mở modal
+   * Mở modal create
    */
   $("#openCreateCinemaModal").on("click", function () {
     resetErros(prefix);
     resetData(prefix);
+    const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
     modal.show();
   });
   /**
-   * Xử lý khi click button trong modal
+   * Xử lý khi click button trong modal create
    */
   $("#createCinemaBtn").on("click", () => {
     const formData = getFormData("#createCinemaForm");
@@ -33,7 +34,7 @@ $(document).ready(function () {
     }
 
     console.log(formData);
-    createCinema(`${url}/cinemas`, formData);
+    createCinema(`${APP_URL}/admin/cinemas`, formData);
   });
   /**
    * Hiển thị lỗi khi có data thay đổi
@@ -48,10 +49,59 @@ $(document).ready(function () {
       handleValidateField(prefix, schema, field, value);
     }
   );
+  /**
+   * Mở modal update
+   */
+  $(".openUpdateCinemaModal").on("click", function () {
+    const modal = new bootstrap.Modal($("#updateCinemaModal")[0]);
+
+    const cinemaId = $(this).data("edit-id");
+    const cinemaBranchId = $(this).data("branch-id");
+    const cinemaName = $(this).data("name");
+    const cinemaAddress = $(this).data("address");
+    const cinemaDescription = $(this).data("description");
+
+    $("#updatedId").val(cinemaId);
+    $("#updateName").val(cinemaName);
+    $("#updateBranch").val(cinemaBranchId);
+    $("#updateAddress").val(cinemaAddress);
+    $("#updateDescription").val(cinemaDescription);
+
+    resetErros(prefixUpdate);
+    modal.show();
+  });
+  /**
+   * Xử lý button modal update
+   */
+  $("#updateCinemaBtn").on("click", () => {
+    const formData = getFormData("#updateCinemaForm");
+    const updatedId = $("#updatedId").val();
+    const validation = schema.safeParse(formData);
+
+    if (!validation.success) {
+      handleValidateErrors(prefixUpdate, validation.error);
+      return;
+    }
+
+    updateCinema(`${APP_URL}/admin/cinemas/${updatedId}`, formData);
+  });
+  /**
+   * Hiển thị lỗi khi có data thay đổi
+   */
+  $("#updateCinemaForm").on(
+    "input change",
+    "input, textarea, select",
+    function () {
+      const field = $(this).attr("name");
+      const value = $(this).val();
+
+      handleValidateField(prefixUpdate, schema, field, value);
+    }
+  );
 });
 
 /**
- * Call api tạo chi nhánh
+ * Call api tạo rạp chiếu
  *
  * @param {*} url
  * @param {*} data
@@ -66,7 +116,8 @@ const createCinema = async (url, data) => {
     processData: true,
     success: function (res) {
       console.log(res);
-      $("#createCinemaModal").modal("hide");
+      const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
+      modal.hide();
       location.reload();
     },
     error: function (err) {
@@ -78,9 +129,30 @@ const createCinema = async (url, data) => {
     },
   });
 };
-
 /**
- * Xóa tất cả lỗi
+ * Call api sửa rạp chiếu
+ */
+const updateCinema = async (url, data) => {
+  return await $.ajax({
+    url: url,
+    type: "POST",
+    data: data,
+    processData: true,
+    success: function (res) {
+      console.log(res);
+      const modal = new bootstrap.Modal($("#updateCinemaModal")[0]);
+      modal.hide();
+      location.reload();
+    },
+    error: function (err) {
+      showErrors(err.responseJSON.errors, "update");
+    },
+  });
+};
+/**
+ * Xóa tất cả lỗi hiện có
+ *
+ * @param {string} prefix - Tiền tố id của input và tag in ra lỗi
  */
 const resetErros = (prefix) => {
   $(`#${prefix}BranchError`).text("");
@@ -93,14 +165,17 @@ const resetErros = (prefix) => {
   $(`#${prefix}Address`).removeClass("is-invalid");
   $(`#${prefix}Description`).removeClass("is-invalid");
 };
-
+/**
+ * Xóa tất cả hiện có ở modal
+ *
+ * @param {string} prefix - Tiền tố id của input trong modal
+ */
 const resetData = (prefix) => {
   $(`#${prefix}Branch`).val("");
   $(`#${prefix}Name`).val("");
   $(`#${prefix}Address`).val("");
   $(`#${prefix}Description`).val("");
 };
-
 /**
  * Hiển thị lỗi
  */

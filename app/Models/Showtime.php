@@ -31,34 +31,44 @@ class Showtime extends Model
     ];
     public static function generateCustomRandomString()
     {
-        $part1 = bin2hex(random_bytes(18)); // Tạo 36 ký tự hex (18 byte)
-        $part2 = bin2hex(random_bytes(18)); // Tạo 36 ký tự hex (18 byte)
+        $characters = 'abcdefghjklmnpqrstuvwxyz';
+        $charLength = strlen($characters);
 
-        // Chia nhỏ chuỗi theo định dạng yêu cầu
-        $formattedPart1 = substr($part1, 0, 8) . '-' . substr($part1, 8, 4) . '-' . substr($part1, 12, 4) . '-' . substr($part1, 16, 4) . '-' . substr($part1, 20);
-        $formattedPart2 = substr($part2, 0, 8) . '-' . substr($part2, 8, 4) . '-' . substr($part2, 12, 4) . '-' . substr($part2, 16, 4) . '-' . substr($part2, 20);
+        $code = '';
+        for ($i = 0; $i < 13; $i++) {
+            $code .= $characters[rand(0, $charLength - 1)];
+        }
 
-        return $formattedPart1 . '-' . $formattedPart2;
+        $formattedCode = substr($code, 0, 3) . '-' .
+            substr($code, 3, 4) . '-' .
+            substr($code, 7, 3) . '-' .
+            substr($code, 10, 3);
+
+        return $formattedCode;
     }
     public const SPECIALSHOWTIMES = [
         ['id' => 1, 'name' => 'Suất thường'],
         ['id' => 2, 'name' => 'Suất đặc biệt'],
     ];
-    public function room(){
+    public function room()
+    {
         return $this->belongsTo(Room::class);
     }
-    public function cinema(){
+    public function cinema()
+    {
         return $this->belongsTo(Cinema::class);
     }
-    public function movie(){
+    public function movie()
+    {
         return $this->belongsTo(Movie::class);
     }
 
-    public function day(){
+    public function day()
+    {
         return $this->belongsTo(Day::class);
     }
-    public function branch(){
+    public function branch()
+    {
         return $this->belongsTo(Branch::class);
     }
-    
 }

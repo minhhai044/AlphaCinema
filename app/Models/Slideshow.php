@@ -8,4 +8,9 @@ use Illuminate\Database\Eloquent\Model;
 class Slideshow extends Model
 {
     use HasFactory;
+    protected $fillable = [
+        'img_thumbnail',
+        'description',
+        'is_active',
+    ];
 }

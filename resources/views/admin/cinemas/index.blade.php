@@ -2,6 +2,10 @@
 @section('title', 'Quản lý rạp')
 
 @section('content')
+{{-- <a href="{{ route('export', ['table' => 'cinemas']) }}" class="btn btn-success">
+    Xuất Excel
+</a> --}}
+
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
@@ -34,14 +38,14 @@
                             <div class="mb-4">
                                 <a id="openCreateCinemaModal" class="btn btn-light waves-effect waves-light">
                                     <i class="bx bx-plus me-1"></i>
-                                    Add Cinema
+                                    Thêm Mới
                                 </a>
                             </div>
                             <div class="mb-4">
                                 <a href="{{ route('admin.export', 'cinemas') }}"
                                     class="btn btn-warning waves-effect waves-light">
                                     <i class="bx bx-download me-1"></i>
-                                    Export Excel
+                                    Xuất Excel
                                 </a>
                             </div>
                         </div>
@@ -123,9 +127,12 @@
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-end" style="">
                                                         <li>
-                                                            <a href="{{ route('admin.cinemas.edit', $cinema) }}"
-                                                                class="dropdown-item edit-list"
-                                                                data-edit-id="{{ $cinema->id }}">
+                                                            <a class="dropdown-item edit-list cursor-pointer openUpdateCinemaModal"
+                                                                data-edit-id="{{ $cinema->id }}"
+                                                                data-branch-id="{{ $cinema->branch_id }}"
+                                                                data-name="{{ $cinema->name }}"
+                                                                data-address="{{ $cinema->address }}"
+                                                                data-description="{{ $cinema->description }}">
                                                                 <i
                                                                     class="mdi mdi-pencil font-size-16 text-success me-1"></i>
                                                                 Edit
@@ -231,6 +238,80 @@
                 <div class="modal-footer">
                     <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
                     <button type="button" class="btn btn-primary" id="createCinemaBtn">Thêm</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="updateCinemaModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="updateCinemaModalLabel">
+                        Chỉnh sửa rạp chiếu
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="updateCinemaForm" method="POST">
+                        @csrf
+                        @method('PUT')
+                        <div class="row">
+                            <input type="hidden" id="updatedId">
+
+                            <div class="col-md-6 mb-3">
+                                <label for="updateName" class="form-label">
+                                    <span class="text-danger">*</span>
+                                    Tên rạp chiếu:
+                                </label>
+                                <input type="text" class="form-control update-name" id="updateName" name="name"
+                                    required placeholder="Nhập tên cấp bậc">
+                                <small class="fst-italic text-danger mt-3 name-error" id="updateNameError"></small>
+                            </div>
+
+                            <div class="col-md-6 mb-3">
+                                <label for="cinema-branch" class="form-label">
+                                    <span class="text-danger">*</span>
+                                    Chi nhánh
+                                </label>
+                                <select id="updateBranch" class="form-control update-branch_id"
+                                    placeholder="Chọn chi nhánh" name="branch_id">
+                                    <option selected value="" class="text-secondary">Select branch</option>
+                                    @foreach ($branchs as $branch)
+                                        <option value="{{ $branch->id }}">
+                                            {{ $branch->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                                <small class="fst-italic text-danger mt-3 branch_id-error" id="updateBranchError"></small>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="updateAddress" class="form-label">
+                                    <span class="text-danger">*</span>
+                                    Địa chỉ
+                                </label>
+                                <input class="form-control update-address" type="text" name="address"
+                                    id="updateAddress" placeholder="Địa chỉ rạp chiếu">
+                                <small class="fst-italic text-danger mt-3 address-error" id="updateAddressError"></small>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="updateDescription" class="form-label">
+                                    Mô tả
+                                </label>
+                                <textarea id="updateDescription" class="form-control update-description" name="description" rows="6"
+                                    placeholder="Mô tả"></textarea>
+                                <small class="fst-italic text-danger mt-3 description-error"
+                                    id="updateDescriptionError"></small>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-light" data-bs-dismiss="modal">Đóng</button>
+                    <button type="button" class="btn btn-primary" id="updateCinemaBtn">Sửa</button>
                 </div>
             </div>
         </div>

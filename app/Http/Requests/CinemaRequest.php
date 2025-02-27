@@ -49,7 +49,7 @@ class CinemaRequest extends FormRequest
     {
         return [
             'branch_id'             => 'required',
-            'name'                  => ['required', Rule::unique('cinemas')->ignore($this->cinema->id)],
+            'name'                  => ['required', Rule::unique('cinemas')->ignore($this->route('cinema'))],
             'slug'                  => 'nullable',
             'address'               => 'required',
             'description'           => 'nullable',
