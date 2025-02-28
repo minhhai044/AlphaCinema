@@ -1,6 +1,5 @@
 <?php
 
-use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
@@ -11,11 +10,6 @@ use Illuminate\Support\Facades\Route;
 
 
 
-// new
-
-// Route::post('/login', [AuthController::class, 'login']);
-// Route::post('/register', [AuthController::class, 'register']);
-
 Route::post('signin', [AuthController::class, 'signIn']);
 Route::post('signup', [AuthController::class, 'signUp']);
 Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
@@ -25,6 +19,7 @@ Route::get('{movie}/listShowtimes', [ShowtimeController::class, 'listShowtimes']
 Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
 
 Route::get('/slideshows', [SlideShowController::class, 'index']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -37,6 +32,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
     
     Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
+
+    Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
 });
 
 

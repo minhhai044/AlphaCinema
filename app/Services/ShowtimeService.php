@@ -83,6 +83,7 @@ class ShowtimeService
                 'price_special' => !empty($data['price_special']) ? str_replace('.', '', $data['price_special']) : 0,
                 'start_time' => $start_time,
                 'end_time'   => $data['end_time'][$key] ?? null,
+                'slug'       => Showtime::generateCustomRandomString()
             ]);
             Showtime::query()->create($showtimeData);
         }
