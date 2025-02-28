@@ -21,10 +21,7 @@ use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\MovieController;
 
 
-
-
 use App\Http\Controllers\Admin\ExportController;
-
 use App\Http\Controllers\Admin\ShowtimeController;
 
 
@@ -32,13 +29,15 @@ use App\Http\Controllers\Admin\TyperoomController;
 use App\Http\Controllers\Admin\TypeSeatController;
 
 
-
 use App\Http\Controllers\Admin\SeatTemplateControler;
 
 use App\Http\Controllers\Admin\SiteSettingController;
+
 use App\Http\Controllers\Admin\StatisticalController;
 
 
+
+use App\Http\Controllers\Admin\SlideShowController;
 
 /*
 |--------------------------------------------------------------------------
@@ -56,6 +55,7 @@ Route::get('/', [DashBoardController::class, 'index'])->name('index');
 Route::resource('cinemas', CinemaController::class);
 Route::resource('ranks', RankController::class);
 
+Route::resource('slideshows', SlideShowController::class);
 // Route Food
 // Đảm bảo rằng route được khai báo trong nhóm `foods` nếu muốn đặt tên cho route đúng cách.
 Route::group([
@@ -182,7 +182,6 @@ Route::group([
 
 Route::resource("roles", RoleController::class );
 
-Route::get('/export/{table}', [ExportController::class, 'index'])->name('export');
 
 
 Route::resource('vouchers', VoucherController::class);
@@ -248,7 +247,10 @@ Route::post('/reset',[SiteSettingController::class,'resetToDefault'])->name('res
 });
 
 
+
 Route::get('/statistical/cinemaRevenue', [StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
 // Route::get('/admin/statistical/cinemaRevenue', [App\Http\Controllers\Admin\StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
 
 
+
+Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
