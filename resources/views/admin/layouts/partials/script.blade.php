@@ -36,3 +36,7 @@
 
 {{-- zod schema --}}
 <script src="https://cdn.jsdelivr.net/npm/zod@3.24.2/lib/index.umd.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+

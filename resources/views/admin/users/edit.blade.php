@@ -219,12 +219,12 @@
                                 <select class="form-control" name="role_id[]" id="choices-multiple-remove-button"
                                     multiple="multiple">
                                     @foreach ($roles as $role)
-                                        @if ($role->name != 'System Admin')
+                                        {{-- @if ($role->name != 'System Admin') --}}
                                             <option value="{{ $role->id }}"
                                                 {{ $user->roles->contains($role) ? 'selected' : '' }}>
                                                 {{ $role->name }}
                                             </option>
-                                        @endif
+                                        {{-- @endif --}}
                                     @endforeach
                                 </select>
 

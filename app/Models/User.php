@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
 
+
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
@@ -66,7 +67,19 @@ class User extends Authenticatable
         return $this->type_user === self::TYPE_ADMIN;
     }
 
-    public function cinema(){
+    public function cinema()
+    {
         return $this->belongsTo(Cinema::class);
+    }
+
+    public function pointHistories()
+    {
+        return $this->hasMany(Point_history::class);
+    }
+
+
+    public function rank()
+    {
+        return $this->belongsTo(Rank::class, 'total_amount', 'total_spent');
     }
 }

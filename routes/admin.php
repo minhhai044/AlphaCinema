@@ -28,6 +28,9 @@ use App\Http\Controllers\Admin\DashBoardController;
 use App\Http\Controllers\Admin\SeatTemplateControler;
 use App\Http\Controllers\Admin\UserVoucherController;
 use App\Http\Controllers\Admin\SiteSettingController;
+use App\Http\Controllers\Admin\StatisticalController;
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -235,3 +238,9 @@ Route::get('/',[SiteSettingController::class,'index'])->name('index');
 Route::put('/update/{id}',[SiteSettingController::class,'update'])->name('update');
 Route::post('/reset',[SiteSettingController::class,'resetToDefault'])->name('reset');
 });
+
+
+Route::get('/statistical/cinemaRevenue', [StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
+// Route::get('/admin/statistical/cinemaRevenue', [App\Http\Controllers\Admin\StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
+
+

@@ -14,6 +14,8 @@ use App\Http\Controllers\Api\FoodController;
 use App\Http\Controllers\API\SiteSettingController;
 use App\Http\Controllers\Api\UpdateActiveController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\PointHistoryController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -39,11 +41,11 @@ Route::prefix('movies')->group(function () {
     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
 });
 
-// Route::prefix('users')->group(function () {
-//     Route::get('/', [UserController::class, 'index'])->name('api.users.index');
-//     Route::post('signin', [AuthController::class, 'signIn'])->name('api.users.signin');
-//     Route::post('signup', [AuthController::class, 'signUp'])->name('api.users.signup');
-// });
+Route::prefix('users')->group(function () {
+    Route::get('/', [UserController::class, 'index'])->name('api.users.index');
+    Route::post('signin', [AuthController::class, 'signIn'])->name('api.users.signin');
+    Route::post('signup', [AuthController::class, 'signUp'])->name('api.users.signup');
+});
 
 Route::prefix('foods')->group(function () {
     Route::get('/', [FoodController::class, 'index'])->name('api.foods.index');
@@ -59,3 +61,8 @@ Route::post('food/change-active',       [UpdateActiveController::class, 'food'])
 Route::post('combos/change-active',     [UpdateActiveController::class, 'combo'])->name('combos.change-active');
 
 Route::get('/settings',[SiteSettingController::class,'index']);
+
+Route::prefix('point_histories')->group(function () {
+    Route::get('/', [PointHistoryController::class, 'index']); 
+    Route::get('{id}', [PointHistoryController::class, 'show']); 
+});
