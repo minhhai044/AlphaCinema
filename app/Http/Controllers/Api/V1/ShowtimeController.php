@@ -11,6 +11,7 @@ use App\Services\ShowtimeService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -61,7 +62,12 @@ class ShowtimeController extends Controller
 
     public function movieShowTimes(string $slug)
     {
-        $movie = Movie::with('showtime','room')->where('slug', $slug)->first();
+        $movie = Movie::with([
+            'showtime' => function ($query) {
+                $query->where('date', '>=', Carbon::now());
+            },
+            'room'
+        ])->where('slug', $slug)->first();
 
         $data = [];
 
