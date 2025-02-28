@@ -61,7 +61,7 @@ class ShowtimeController extends Controller
 
     public function movieShowTimes(string $slug)
     {
-        $movie = Movie::with('showtime')->where('slug', $slug)->first();
+        $movie = Movie::with('showtime','room')->where('slug', $slug)->first();
 
         $data = [];
 
@@ -72,6 +72,7 @@ class ShowtimeController extends Controller
                 'id' => $showtime['id'],
                 'start_time' => $showtime['start_time'],
                 'slug' => $showtime['slug'],
+                'name_room' => $showtime['room']['name']
             ];
         }
 
