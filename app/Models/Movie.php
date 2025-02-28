@@ -44,4 +44,7 @@ class Movie extends Model
     {
         return $this->hasMany(Showtime::class);
     }
+    public function room(){
+        return $this->belongsTo(Room::class);
+    }
 }
