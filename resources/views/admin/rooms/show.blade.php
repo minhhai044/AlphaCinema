@@ -105,7 +105,6 @@
 
         <!-- Bản đồ ghế -->
         <div class="col-12">
-        <h4 class="mb-sm-0 font-size-18">Mẫu ghế</h4>
 
             <div class="text-center">
                 <div class="screen w-full mx-auto mb-4 p-2 bg-dark text-white">Màn Hình Chiếu</div>

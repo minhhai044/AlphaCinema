@@ -171,9 +171,9 @@
                         </div>
                         <!-- Nút thêm xuất chiếu -->
                         <div class="col-lg-12">
-                            <button type="button" id="addTime" class="btn btn-primary float-end ms-3">Thêm thời
+                            <button type="button" id="addTime" class="btn btn-primary btn-sm float-end ms-3">Thêm thời
                                 gian</button>
-                            <button type="button" id="autoGenerate" class="btn btn-success float-end">Tự động</button>
+                            <button type="button" id="autoGenerate" class="btn btn-success btn-sm float-end">Tự động</button>
                         </div>
                         <!-- Danh sách xuất chiếu -->
                         <div class="col-lg-12" id="listTime">
@@ -183,8 +183,8 @@
                 </div>
 
                 <div class="m-3">
-                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary">Thêm</button>
-                    <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger">Quay lại</button></a>
+                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary btn-sm">Thêm</button>
+                    <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger btn-sm">Quay lại</button></a>
                 </div>
             </div>
         </div>
@@ -193,7 +193,7 @@
         <div class="col-lg-3">
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body">
-                    <h4 class="mb-3 text-center text-warning">Suất chiếu hiện có trong ngày</h4>
+                    <h4 class="mb-3 text-center text-warning">Suất chiếu trong ngày</h4>
 
                     <div class="list-group" id="listShowtime">
 
@@ -317,7 +317,7 @@
                                                                                                                     </div>
                                                                                                                 </div>
                                                                                                                 <div class="col-lg-2 ps-5 d-flex align-items-center">
-                                                                                                                    <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${id}">
+                                                                                                                    <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeItem" data-id="${id}">
                                                                                                                         <i class="bi bi-trash"></i>
                                                                                                                     </button>
                                                                                                                 </div>
