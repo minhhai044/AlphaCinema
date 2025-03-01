@@ -23,6 +23,7 @@ class Ticket extends Model
         'ticket_seats',
         'ticket_combos',
         'total_price',
+        'expiry',
         'status',
     ];
 

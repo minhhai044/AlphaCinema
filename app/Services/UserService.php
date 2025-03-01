@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 
 class UserService
 {
@@ -91,6 +92,39 @@ class UserService
                 'status' => 'error',
                 'message' => 'Đã xảy ra lỗi, vui lòng thử lại'
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public  function updateInfo($data, $user)
+    {
+        try {
+
+            // $data['type_user'] = $data['type_user'] ?? 0;
+
+            // $data['password'] = empty($data['password']) ? $user->password : $data['password'];
+
+            if (!empty($data['avatar']) && Storage::exists($user['avatar'])) {
+                Storage::delete($user['avatar']);
+            }
+            if (!empty($data['avatar'])) {
+                $data['avatar'] = Storage::put('avatar', $data['avatar']);
+            }
+
+            $user->update($data);
+
+            return $user;
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+        }
+    }
+
+    public  function changePassword($data, $user)
+    {
+        try {
+            $user->update($data);
+            return $user;
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
         }
     }
 }

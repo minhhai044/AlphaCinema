@@ -38,6 +38,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
     Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
