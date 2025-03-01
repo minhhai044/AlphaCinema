@@ -14,7 +14,7 @@ Route::post('signin', [AuthController::class, 'signIn']);
 Route::post('signup', [AuthController::class, 'signUp']);
 Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
 Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
-Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
+Route::get('{branch}/listMovies/{cinema}', [ShowtimeController::class, 'listMovies']);
 Route::get('{movie}/listShowtimes', [ShowtimeController::class, 'listShowtimes']);
 Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
 

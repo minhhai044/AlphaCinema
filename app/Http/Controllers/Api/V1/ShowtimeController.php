@@ -50,9 +50,17 @@ class ShowtimeController extends Controller
             );
         }
     }
-    public function listMovies()
+    public function listMovies(string $branch, string $cinema)
     {
-        $movies = Movie::query()->latest('id')->get();
+        $movies = Movie::whereHas('showtime', function ($query) use ($branch, $cinema) {
+            $query->where('date', '>=', Carbon::now()->toDateString());
+            $query->where('branch_id', $branch);
+            $query->where('cinema_id', $cinema);
+        })
+            ->with('showtime')
+            ->latest('id')
+            ->get();
+
         return $this->successResponse(
             $movies,
             'Thao tác thành công'
