@@ -31,7 +31,7 @@ class UserController extends Controller
             $totalRecords = User::count();
 
             // Tạo query gốc
-            $query = User::query();
+            $query = User::query()->latest();
             $roles = Role::all();
 
             // Lọc theo giới tính (gender)

@@ -28,7 +28,7 @@ class MovieController extends Controller
             $totalRecords = Movie::count();
 
             // Tạo query gốc
-            $query = Movie::query();
+            $query = Movie::query()->latest();
 
             // Lọc theo tên phim
             if ($request->filled('id')) {

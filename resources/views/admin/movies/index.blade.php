@@ -147,13 +147,13 @@
                 </span>`).join(' ');
 
                             return `
-                <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                <div>
                     <h3 style="margin: 0; color: #007bff;">${data}</h3>
                     <p><strong>Đạo diễn:</strong> ${row.director || 'Đang cập nhật'}</p>
                     <p><strong>Thể loại:</strong> ${genreHtml || 'Chưa rõ'}</p>
                     <p><strong>Ngày khởi chiếu:</strong> ${row.release_date || 'Chưa có'}</p>
                     <p><strong>Ngày kết thúc:</strong> ${row.end_date || 'Chưa có'}</p>
-                    <p><strong>Phân loại:</strong> T13</p>
+                    <p><strong>Danh mục:</strong>  ${row.category || 'Chưa rõ'}</p>
                     <p><strong>Phiên bản:</strong> ${versionHtml || 'Chưa cập nhật'}</p>
                     <p><strong>Code Youtube:</strong>
                         <input type="text" value="${row.trailer_url || 'Không có'}" readonly

@@ -31,7 +31,9 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label for="name" class="form-label">Tên phim</label>
+                                            <label for="name" class="form-label">Tên phim
+                                                <span class="required" style="color: red" style="color: red">*</span>
+                                            </label>
                                             <input type="text" name="name" id="name"
                                                 class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
                                                 value="{{ old('name') }}" placeholder="Nhập tên phim">
@@ -43,18 +45,21 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Slug</label>
-                                            <input type="text" id="slug" name="slug"
-                                                class="form-control {{ $errors->has('slug') ? 'is-invalid' : (old('slug') ? 'is-valid' : '') }}"
-                                                value="{{ old('slug') }}" readonly>
-                                            <div class="{{ $errors->has('slug') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('slug'))
-                                                    {{ $errors->first('slug') }}
-                                                @endif
-                                            </div>
+                                            <la class="form-label">slug
+                                                <span class="required" style="color: red">*</span> </label>
+                                                <input type="text" id="slug" name="slug"
+                                                    class="form-control {{ $errors->has('slug') ? 'is-invalid' : (old('slug') ? 'is-valid' : '') }}"
+                                                    value="{{ old('slug') }}" readonly>
+                                                <div
+                                                    class="{{ $errors->has('slug') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                    @if ($errors->has('slug'))
+                                                        {{ $errors->first('slug') }}
+                                                    @endif
+                                                </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Danh mục phim</label>
+                                            <label class="form-label">Danh mục phim
+                                                <span class="required" style="color: red">*</span> </label>
                                             <input type="text" name="category"
                                                 class="form-control {{ $errors->has('category') ? 'is-invalid' : (old('category') ? 'is-valid' : '') }}"
                                                 value="{{ old('category') }}">
@@ -66,7 +71,8 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Ảnh </label>
+                                            <label class="form-label">Ảnh
+                                                <span class="required" style="color: red">*</span> </label>
                                             <input type="file" name="img_thumbnail"
                                                 class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}"
                                                 value="{{ old('img_thumbnail') }}">
@@ -77,20 +83,53 @@
                                                 @endif
                                             </div>
                                         </div>
+                                        {{-- <div class="mb-3">
+                                                <label class="form-label">Thể loại
+                                                    <span class="required" style="color: red">*</span>  phim</label>
+                                                <input type="checkbox" name="movie_genres[]" value="Action"> Hành động
+                                                <input type="checkbox" name="movie_genres[]" value="Horror"> Kinh dị
+                                                <input type="checkbox" name="movie_genres[]" value="Comedy"> Hài hước
+                                                <div
+                                                    class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                    @if ($errors->has('movie_genres'))
+                                                        {{ $errors->first('movie_genres') }}
+                                                    @endif
+                                                </div>
+                                            </div> --}}
+
                                         <div class="mb-3">
-                                            <label class="form-label">Thể loại phim</label>
-                                            <input type="checkbox" name="movie_genres[]" value="Action"> Action
-                                            <input type="checkbox" name="movie_genres[]" value="Horror"> Horror
-                                            <input type="checkbox" name="movie_genres[]" value="Comedy"> Comedy
+                                            <label class="form-label">Thể loại phim
+                                                <span class="required" style="color: red">*</span> </label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                        value="Action" id="genre_action"
+                                                        {{ in_array('Action', old('movie_genres', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="genre_action">Hành động</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                        value="Horror" id="genre_horror"
+                                                        {{ in_array('Horror', old('movie_genres', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="genre_horror">Kinh dị</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
+                                                        value="Comedy" id="genre_comedy"
+                                                        {{ in_array('Comedy', old('movie_genres', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="genre_comedy">Hài hước</label>
+                                                </div>
+                                            </div>
                                             <div
-                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('movie_genres'))
                                                     {{ $errors->first('movie_genres') }}
                                                 @endif
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Mô tả </label>
+                                            <label class="form-label">Mô tả
+                                                <span class="required" style="color: red">*</span> </label>
                                             <textarea name="description"
                                                 class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}"
                                                 value="{{ old('description') }}"></textarea>
@@ -105,7 +144,8 @@
 
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Tác giả</label>
+                                            <label class="form-label">Tác giả
+                                                <span class="required" style="color: red">*</span> </label>
                                             <input type="text" name="director"
                                                 class="form-control {{ $errors->has('director') ? 'is-invalid' : (old('director') ? 'is-valid' : '') }}"
                                                 value="{{ old('director') }}">
@@ -116,9 +156,10 @@
                                                 @endif
                                             </div>
                                         </div>
-                                       
+
                                         <div class="mb-3">
-                                            <label class="form-label">URL</label>
+                                            <label class="form-label">URL
+                                                <span class="required" style="color: red">*</span> </label>
                                             <input type="text" name="trailer_url"
                                                 class="form-control {{ $errors->has('trailer_url') ? 'is-invalid' : (old('trailer_url') ? 'is-valid' : '') }}"
                                                 value="{{ old('trailer_url') }}">
@@ -130,7 +171,8 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">Thời lượng phim</label>
+                                            <label class="form-label">Thời lượng phim
+                                                <span class="required" style="color: red">*</span></label>
                                             <input type="number" name="duration" min="1" step="1"
                                                 class="form-control {{ $errors->has('duration') ? 'is-invalid' : (old('duration') ? 'is-valid' : '') }}"
                                                 value="{{ old('duration') }}" placeholder="Nhập số phút">
@@ -142,7 +184,9 @@
                                             </div>
                                         </div>
                                         <div class="mb-4">
-                                            <label>Ngày trình chiếu</label>
+                                            <label>Ngày trình chiếu
+                                                <span class="required" style="color: red" style="color: red">*</span>
+                                            </label>
                                             <div
                                                 class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('release_date'))
@@ -171,20 +215,52 @@
                                             </div>
                                         </div>
 
+                                        {{-- <div class="mb-3">
+                                                <label class="form-label">Phiên bả
+                                                    <span class="required" style="color: red">*</span> n phim</label>
+                                                <input type="checkbox" name="movie_versions[]" value="2D"> 2D
+                                                <input type="checkbox" name="movie_versions[]" value="3D"> 3D
+                                                <input type="checkbox" name="movie_versions[]" value="4D"> 4D
+                                                <div
+                                                    class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                    @if ($errors->has('movie_versions'))
+                                                        {{ $errors->first('movie_versions') }}
+                                                    @endif
+                                                </div>
+                                            </div> --}}
                                         <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim</label>
-                                            <input type="checkbox" name="movie_versions[]" value="2D"> 2D
-                                            <input type="checkbox" name="movie_versions[]" value="3D"> 3D
-                                            <input type="checkbox" name="movie_versions[]" value="4D"> 4D
+                                            <label class="form-label">Phiên bản phim
+                                                <span class="required" style="color: red">*</span> </label>
+                                            <div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="movie_versions[]" value="2D" id="version_2d"
+                                                        {{ in_array('2D', old('movie_versions', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="version_2d">2D</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="movie_versions[]" value="3D" id="version_3d"
+                                                        {{ in_array('3D', old('movie_versions', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="version_3d">3D</label>
+                                                </div>
+                                                <div class="form-check form-check-inline">
+                                                    <input class="form-check-input" type="checkbox"
+                                                        name="movie_versions[]" value="4D" id="version_4d"
+                                                        {{ in_array('4D', old('movie_versions', [])) ? 'checked' : '' }}>
+                                                    <label class="form-check-label" for="version_4d">4D</label>
+                                                </div>
+                                            </div>
                                             <div
-                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('movie_versions'))
                                                     {{ $errors->first('movie_versions') }}
                                                 @endif
                                             </div>
                                         </div>
                                         <div class="mb-3" id="surcharge_container" style="display: none;">
-                                            <label class="form-label">Phụ phí</label>
+                                            <label class="form-label">Phụ phí
+                                                <span class="required" style="color: red">*</span> </label>
                                             <input type="number" name="surcharge"
                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
                                                 value="{{ old('surcharge') }}">
@@ -198,7 +274,9 @@
 
 
                                         <div class="mb-3">
-                                            <label class="form-label">Đánh giá</label>
+                                            <label class="form-label">Đánh giá
+                                                <span class="required" style="color: red">*</span>
+                                            </label>
                                             <input type="number" name="rating"
                                                 class="form-control {{ $errors->has('rating') ? 'is-invalid' : (old('rating') ? 'is-valid' : '') }}"
                                                 value="{{ old('rating') }}">
@@ -299,29 +377,29 @@
                 });
             });
 
-            document.addEventListener('DOMContentLoaded', function () {
-                    var publishCheckbox = document.getElementById('square-switch_special');
-                    var surchargeContainer = document.getElementById('surcharge_container');
-                    // Lấy thẻ input trong container "Phụ phí"
-                    var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
+            document.addEventListener('DOMContentLoaded', function() {
+                var publishCheckbox = document.getElementById('square-switch_special');
+                var surchargeContainer = document.getElementById('surcharge_container');
+                // Lấy thẻ input trong container "Phụ phí"
+                var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
 
-                    function toggleSurchargeInput() {
-                        console.log('toggleSurchargeInput triggered, publishCheckbox.checked:', publishCheckbox.checked);
-                        if (publishCheckbox.checked) {
-                            surchargeContainer.style.display = 'block';
-                            surchargeInput.disabled = false; // Cho phép nhập liệu, gửi dữ liệu lên server
-                        } else {
-                            surchargeContainer.style.display = 'none';
-                            surchargeInput.disabled = true; // Vô hiệu hóa input, không gửi dữ liệu
-                        }
+                function toggleSurchargeInput() {
+                    console.log('toggleSurchargeInput triggered, publishCheckbox.checked:', publishCheckbox.checked);
+                    if (publishCheckbox.checked) {
+                        surchargeContainer.style.display = 'block';
+                        surchargeInput.disabled = false; // Cho phép nhập liệu, gửi dữ liệu lên server
+                    } else {
+                        surchargeContainer.style.display = 'none';
+                        surchargeInput.disabled = true; // Vô hiệu hóa input, không gửi dữ liệu
                     }
+                }
 
-                    // Gọi khi tải trang để đảm bảo trạng thái ban đầu đúng
-                    toggleSurchargeInput();
+                // Gọi khi tải trang để đảm bảo trạng thái ban đầu đúng
+                toggleSurchargeInput();
 
-                    // Lắng nghe sự kiện thay đổi của checkbox (dùng "change" để đảm bảo trạng thái cập nhật)
-                    publishCheckbox.addEventListener('change', toggleSurchargeInput);
-                });
+                // Lắng nghe sự kiện thay đổi của checkbox (dùng "change" để đảm bảo trạng thái cập nhật)
+                publishCheckbox.addEventListener('change', toggleSurchargeInput);
+            });
 
             function generateUUID() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
