@@ -2,7 +2,7 @@
 
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
-
+use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\FoodController;
 use App\Http\Controllers\Api\V1\ComboFoodController;
 
@@ -34,12 +34,17 @@ Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail'
 
 Route::get('/slideshows', [SlideShowController::class, 'index']);
 
+Route::prefix('branchs')->group(function () {
+    Route::get('/', [BranchController::class, 'index']);
+});
+
+
 // Route::post('ticket', [TicketController::class, 'createTicket']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     Route::post('tickets', [TicketController::class, 'createTicket']);
-   
+
     Route::post('/logout', [AuthController::class, 'logout']);
 
     Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
@@ -55,4 +60,3 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/foods', [FoodController::class, 'index']);
 Route::get('list_combo', [ComboFoodController::class, 'list_combo']);
-
