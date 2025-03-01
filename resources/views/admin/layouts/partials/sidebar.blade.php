@@ -24,7 +24,7 @@
                 </a>
             </li>
 
-            
+
             <li>
                 <a href="javascript: void(0);" class="has-arrow">
                     <i data-feather="grid"></i>
@@ -125,8 +125,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href=" {{ route('admin.tickets.index') }}">
+                            <span>Quản lý hóa đơn</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.days.index') }}">
-
                             <span data-key="t-movies">Quản lý ngày</span>
                         </a>
                     </li>

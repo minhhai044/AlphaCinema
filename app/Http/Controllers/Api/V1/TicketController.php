@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\TicketRequest;
 use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -20,11 +21,11 @@ class TicketController extends Controller
         $this->ticketService = $ticketService;
     }
 
-    public function createTicket(Request $request): JsonResponse
+    public function createTicket(TicketRequest $ticketRequest): JsonResponse
     {
         try {
-            $data = $request->all();
-
+            $data = $ticketRequest->validated();
+// dd($data);
             // Gọi đúng phương thức của TicketService
             $ticket = $this->ticketService->create($data);
 

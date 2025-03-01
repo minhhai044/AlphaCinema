@@ -15,9 +15,10 @@ Route::prefix('users')->group(function () {
     Route::post('signup', [AuthController::class, 'signUp'])->name('api.users.signup');
 });
 
-Route::post('ticket', [TicketController::class, 'createTicket']);
+// Route::post('ticket', [TicketController::class, 'createTicket']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::post('tickets', [TicketController::class, 'createTicket']);
     Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
     Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
     Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
@@ -30,18 +31,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 
-    Route::get('{id}/showtime',             [ShowtimeController::class, 'getByDate']);
-
     Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
 
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
-
-    Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
 
     Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
 });
 Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTimes']);
 
+Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
+Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
+Route::get('{id}/showtime',             [ShowtimeController::class, 'getByDate']);
 
 // Route::get('{id}/showtime',             [ShowtimeController::class, 'getByDate']);
 // Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);

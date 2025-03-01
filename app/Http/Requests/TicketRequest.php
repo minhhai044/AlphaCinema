@@ -39,7 +39,7 @@ class TicketRequest extends FormRequest
             'point_discount'    => 'nullable|numeric|min:0',
             'payment_name'      => 'nullable|string|max:50',
             'ticket_seats'      => 'nullable|array',
-            'ticket_seats.*'    => 'string|max:10',
+            'ticket_combos'     => 'nullable|array',
             'total_price'       => 'nullable|numeric',
             'status'            => 'nullable|in:pending,paid,canceled',
         ];
@@ -75,8 +75,6 @@ class TicketRequest extends FormRequest
             'payment_name.max'       => 'Tên phương thức thanh toán không được vượt quá 50 ký tự.',
 
             'ticket_seats.array'     => 'Danh sách ghế phải là một mảng.',
-            'ticket_seats.*.string'  => 'Mỗi ghế phải là một chuỗi ký tự.',
-            'ticket_seats.*.max'     => 'Mỗi mã ghế không được vượt quá 10 ký tự.',
 
             'total_price.numeric'    => 'Tổng giá phải là một số hợp lệ.',
 

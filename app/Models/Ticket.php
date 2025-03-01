@@ -21,12 +21,14 @@ class Ticket extends Model
         'point_discount',
         'payment_name',
         'ticket_seats',
+        'ticket_combos',
         'total_price',
         'status',
     ];
 
     protected $casts = [
         'ticket_seats' => 'array', // Chuyển đổi từ JSON sang array PHP
+        'ticket_combos' => 'array', // Chuyển đổi từ JSON sang array PHP
         'total_price' => 'decimal:2',
         // 'status' => 'integer',
     ];

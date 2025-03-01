@@ -40,7 +40,6 @@ Route::prefix('movies')->group(function () {
 });
 
 
-
 Route::prefix('foods')->group(function () {
     Route::get('/', [FoodController::class, 'index'])->name('api.foods.index');
 });

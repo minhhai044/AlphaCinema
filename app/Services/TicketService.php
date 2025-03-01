@@ -19,7 +19,6 @@ class TicketService
     public function create(array $data)
     {
         try {
-
             return DB::transaction(function () use ($data) {
                 return $this->ticket->create($data);
             });
@@ -30,3 +29,4 @@ class TicketService
         }
     }
 }
+
