@@ -162,7 +162,7 @@ class ShowtimeController extends Controller
                 // Minh Hải Check 1 user chỉ được 10 ghế
                 $checkTotalSeatUser = count(array_keys(array_column($seat_structures, 'user_id'), $showtimeRequest->user_id));
 
-                if ($checkTotalSeatUser >= 10) {
+                if ($checkTotalSeatUser >= 10 && $showtimeRequest->status === 'hold') {
                     return response()->json(['error' => 'Bạn chỉ có thể chọn tối đa 10 ghế !!!'], 409);
                 }
                 // Kiểm tra trạng thái ghế trước khi cập nhật
@@ -179,6 +179,13 @@ class ShowtimeController extends Controller
                         break;
                     }
                 }
+
+
+                // return response()->json([
+                //     'data' => $showtimeRequest->all(),
+                //     'message' => 'Thao tác thành công',
+                //     'data' => $seat_structures,
+                // ], 200);
 
                 // Lưu lại vào database
                 $showtime->update([
