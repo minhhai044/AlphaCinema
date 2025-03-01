@@ -133,6 +133,7 @@ class ShowtimeController extends Controller
             return $this->successResponse(
                 [
                     'seatMap' => $result,
+                    'seatMapRegular' => $seatMap,
                     'showTime' => $showtime
                 ],
                 'Thao tác thành công'
