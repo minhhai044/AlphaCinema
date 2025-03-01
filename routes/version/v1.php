@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\ComboFoodController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
@@ -36,6 +37,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
 });
 
+Route::get('list_combo', [ComboFoodController::class, 'list_combo']);
 
 // Route::get('{id}/showtime',             [ShowtimeController::class, 'getByDate']);
 // Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
