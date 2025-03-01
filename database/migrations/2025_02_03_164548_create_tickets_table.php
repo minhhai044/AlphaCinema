@@ -31,7 +31,8 @@ return new class extends Migration
             $table->json('ticket_seats')->nullable();
             $table->json('ticket_combos')->nullable();
             $table->decimal('total_price')->nullable();
-            $table->enum('status', ['pending', 'paid', 'canceled'])->default('pending')->comment('Đang xử lý, Đã duyệt, Hủy bỏ');
+            $table->datetime('expiry')->nullable();
+            $table->enum('status', ['pending', 'confirmed'])->default('pending')->comment('Đang xử lý, Đã xác nhận');
             $table->timestamps();
         });
     }

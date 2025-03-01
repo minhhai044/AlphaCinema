@@ -61,6 +61,22 @@
         </div>
     </div>
 
+    <div class="table-responsive mt-3">
+        <table id="ticketTable" class="table  w-100 text-center">
+            <thead>
+                <tr class="text-center">
+                    <th>Mã vé</th>
+                    <th>Thông tin người dùng</th>
+                    <th></th>
+                    <th>Email</th>
+                    <th>Giới tính</th>
+                    <th>Loại</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+
 </div>
 
     @php
@@ -117,7 +133,6 @@
             } else {
                 $(this).prop('checked', !is_active);
             }
-
         });
     </script> --}}
 @endsection

@@ -35,8 +35,6 @@ use App\Http\Controllers\Api\PointHistoryController;
 // Route::post('/users',[AuthController::class,'signUp']);
 // Route::get('/users',[AuthController::class,'signIn']);
 
-
-
 Route::prefix('movies')->group(function () {
     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
 });

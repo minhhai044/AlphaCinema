@@ -46,7 +46,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('tickets', [TicketController::class, 'createTicket']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
-
+    Route::post('/update-profile', [AuthController::class, 'updateProfile']);
+    Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
 
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
