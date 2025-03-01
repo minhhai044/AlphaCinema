@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
+use App\Http\Controllers\Api\V1\FoodController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
@@ -13,15 +14,25 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('users')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('api.users.index');
-    Route::post('signin', [AuthController::class, 'signIn'])->name('api.users.signin');
-    Route::post('signup', [AuthController::class, 'signUp'])->name('api.users.signup');
+    // Route::post('signin', [AuthController::class, 'signIn'])->name('api.users.signin');
+    // Route::post('signup', [AuthController::class, 'signUp'])->name('api.users.signup');
 });
 
 // Route::post('signin', [AuthController::class, 'signIn']);
 // Route::post('signup', [AuthController::class, 'signUp']);
+// Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
+// Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
+// // Route::get('{branch}/listMovies/{cinema}', [ShowtimeController::class, 'listMovies']);
+// Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
+// Route::get('{movie}/listShowtimes', [ShowtimeController::class, 'listShowtimes']);
+// Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
+
+
+Route::post('signin', [AuthController::class, 'signIn']);
+Route::post('signup', [AuthController::class, 'signUp']);
 Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
 Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
-Route::get('{branch}/listMovies/{cinema}', [ShowtimeController::class, 'listMovies']);
+Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
 Route::get('{movie}/listShowtimes', [ShowtimeController::class, 'listShowtimes']);
 Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
 
@@ -31,15 +42,31 @@ Route::get('/slideshows', [SlideShowController::class, 'index']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('tickets', [TicketController::class, 'createTicket']);
-    Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
-    Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
-    Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
-    Route::get('{movie}/listShowtimes', [ShowtimeController::class, 'listShowtimes']);
-    Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
+    // Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
+    // Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
+    // Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
+    // Route::get('{movie}/listShowtimes', [ShowtimeController::class, 'listShowtimes']);
+    // Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
+
+    // Route::post('/logout', [AuthController::class, 'logout']);
+    // Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
+    // Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
+    // Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
+    // Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
+
+
 
     Route::post('/logout', [AuthController::class, 'logout']);
+
     Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
+
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
+
+    Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
+
     Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
+
     Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
 });
+
+Route::get('/foods', [FoodController::class, 'index']);
