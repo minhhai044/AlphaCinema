@@ -14,15 +14,15 @@
                     <span class="text-info">{{ $movie->name }}</span>
                 </h4>
                 <p class="text-muted fs-6">
-                    <i class="bi bi-calendar-event"></i> Ngày tạo: 
+                    <i class="bi bi-calendar-event"></i> Ngày tạo:
                     <span class="text-warning fw-semibold">
                         {{ \Carbon\Carbon::parse($movie->created_at)->format('d/m/Y') }}
                     </span>
-                    | <i class="bi bi-calendar-check"></i> Ngày phát hành: 
+                    | <i class="bi bi-calendar-check"></i> Ngày phát hành:
                     <span class="text-success fw-semibold">
                         {{ \Carbon\Carbon::parse($movie->release_date)->format('d/m/Y') }}
                     </span>
-                    | <i class="bi bi-calendar-x"></i> Ngày kết thúc: 
+                    | <i class="bi bi-calendar-x"></i> Ngày kết thúc:
                     <span class="text-danger fw-semibold">
                         {{ \Carbon\Carbon::parse($movie->end_date)->format('d/m/Y') }}
                     </span>
@@ -276,7 +276,7 @@
                         dataShowtimeCheck = [];
                         $('#listShowtime').append(`
                                                                                                     <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                                                        Hiện tại chưa có suất chiếu nào 
+                                                                                                        Hiện tại chưa có suất chiếu nào
                                                                                                     </div>
                                                                                                 `);
                     }
@@ -290,7 +290,7 @@
             $('#listShowtime').empty();
             $('#listShowtime').append(`
                                                                                                     <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                                                        Hiện tại chưa có suất chiếu nào 
+                                                                                                        Hiện tại chưa có suất chiếu nào
                                                                                                     </div>
                                                                                                 `);
         }
@@ -453,7 +453,7 @@
         })
         // room_id
         $('#room_id').change(function () {
-            // Khi room thay đổi thì set seat_structure 
+            // Khi room thay đổi thì set seat_structure
             let id = $(this).val();
             let dataDate = $('#date').val();
 
@@ -488,7 +488,7 @@
             }
         });
 
-        // Xóa time 
+        // Xóa time
         $('#listTime').on('click', '.removeItem', function () {
             const id = $(this).data('id');
             let count = $('input[name="start_time[]"]').length;
@@ -523,7 +523,7 @@
                 $('input[name="start_time[]"]').prop('disabled', true);
                 return;
             }
-            // Thêm . khi nhập số 
+            // Thêm . khi nhập số
             $('#price_special').on('input', function (e) {
                 e.preventDefault();
                 let valueDiscount = $(this).val().replace(/\D/g, '');
@@ -601,11 +601,11 @@
             $('#surchargeDay').val(surchargeDay);
 
         })
-        // Khi start_time thay đổi 
+        // Khi start_time thay đổi
         $('#listTime').on('change', 'input[name="start_time[]"]', function () {
             const currentId = $(this).data('id'); // id của div đó
             const currentStart = $(this).val(); // Thời gian của start_time
-            const durationMovie = +$('#duration').val(); // thời lượng phim 
+            const durationMovie = +$('#duration').val(); // thời lượng phim
 
             if (!currentStart) return;
             const currentStartMinutes = convertTimeToMinutes(currentStart);

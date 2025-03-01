@@ -1,8 +1,5 @@
 <?php
-
-
 use App\Http\Controllers\Admin\RoleController;
-
 
 use App\Http\Controllers\Admin\CinemaController;
 use App\Http\Controllers\Admin\BranchController;
@@ -20,22 +17,18 @@ use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\MovieController;
 
-
 use App\Http\Controllers\Admin\ExportController;
 use App\Http\Controllers\Admin\ShowtimeController;
-
 
 use App\Http\Controllers\Admin\TyperoomController;
 use App\Http\Controllers\Admin\TypeSeatController;
 
-
 use App\Http\Controllers\Admin\SeatTemplateControler;
 
 use App\Http\Controllers\Admin\SiteSettingController;
+use App\Http\Controllers\Admin\TicketController;
 
 use App\Http\Controllers\Admin\StatisticalController;
-
-
 
 use App\Http\Controllers\Admin\SlideShowController;
 
@@ -103,14 +96,21 @@ Route::group([
     Route::get('{combo}', [ComboController::class, 'show'])->name('show');
 });
 
-
-
 Route::resource('branches', BranchController::class);
 Route::get('/admin/branches', [BranchController::class, 'index'])->name('admin.branches.index');
 
 Route::resource('vouchers', VoucherController::class);
 
 Route::resource('user-vouchers', UserVoucherController::class);
+
+Route::group([
+    'prefix' => 'tickets',  // Tiền tố URL cho tất cả route
+    'as' => 'tickets.',     // Nhóm tên route (vd: foods.index, foods.store)
+], function () {
+    // Danh sách
+    Route::get('/', [TicketController::class, 'index'])->name('index');
+
+});
 
 // Route::resource('typerooms', TyperoomController::class);
 Route::group([
