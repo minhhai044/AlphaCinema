@@ -147,7 +147,7 @@
                 </span>`).join(' ');
 
                             return `
-                <div style="border: 1px solid #ddd; padding: 10px; border-radius: 5px;">
+                <div>
                     <h3 style="margin: 0; color: #007bff;">${data}</h3>
                     <p><strong>Đạo diễn:</strong> ${row.director || 'Đang cập nhật'}</p>
                     <p><strong>Thể loại:</strong> ${genreHtml || 'Chưa rõ'}</p>
