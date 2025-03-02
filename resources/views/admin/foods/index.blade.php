@@ -251,7 +251,13 @@
                     {
                         data: 'img_thumbnail',
                         render: function(data) {
+<<<<<<< HEAD
                             return data ? `<img src="/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` : 'Không có ảnh';
+=======
+                            return data ?
+                                `<img src="/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` :
+                                'Không có ảnh';
+>>>>>>> sondvph45612
                         },
                         orderable: false,
                         searchable: false
@@ -296,6 +302,9 @@
                                         </li>
                                         <li>
                                             <form action="foods/${data}/destroy" method="POST" id="delete-food-${data}">
+=======
+                                            <form action="/admin/foods/${data}/destroy" method="POST" id="delete-food-${data}">
+>>>>>>> sondvph45612
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="dropdown-item remove-list" onclick="handleDelete(${data})">
@@ -455,6 +464,9 @@
 
                 $.ajax({
                     url: `foods/${foodId}`,
+=======
+                    url: `/admin/foods/${foodId}`,
+>>>>>>> sondvph45612
                     method: "POST",
                     data: formData,
                     processData: false,
