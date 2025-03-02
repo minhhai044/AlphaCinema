@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\Admin\MovieController;
+use App\Http\Controllers\Admin\TicketController as AdminTicketController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BranchController;
@@ -19,9 +21,7 @@ Route::prefix('users')->group(function () {
     Route::get('/', [UserController::class, 'index'])->name('api.users.index');
 });
 
-
 // Route::get('{branch}/listMovies/{cinema}', [ShowtimeController::class, 'listMovies']);
-
 
 
 Route::post('signin', [AuthController::class, 'signIn']);
@@ -38,8 +38,9 @@ Route::prefix('branchs')->group(function () {
     Route::get('/', [BranchController::class, 'index']);
 });
 
-
 // Route::post('ticket', [TicketController::class, 'createTicket']);
+Route::get('/get-cinemas', [TicketController::class, 'getCinemas']);
+Route::get('/get-movies', [TicketController::class, 'getMovies']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -51,11 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
 
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
-
     Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
-
     Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
-
     Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
 });
 

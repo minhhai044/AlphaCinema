@@ -85,13 +85,15 @@
                         <div class="row">
                             <input type="checkbox" hidden name="is_active" value="1" checked>
                             <div class="col-md-6 mb-3">
-                                <label for="createName" class="form-label"><span class="text-danger">*</span> Tên món ăn:</label>
+                                <label for="createName" class="form-label"><span class="text-danger">*</span> Tên món
+                                    ăn:</label>
                                 <input type="text" class="form-control" id="createName" name="name" required
                                     placeholder="Nhập tên món ăn">
                                 <span class="text-danger mt-3" id="createNameError"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="createType" class="form-label"><span class="text-danger">*</span> Loại đồ ăn:</label>
+                                <label for="createType" class="form-label"><span class="text-danger">*</span> Loại đồ
+                                    ăn:</label>
                                 <select name="type" id="createType" class="form-select" required>
                                     <option disabled selected>Chọn loại đồ ăn</option>
                                     <option value="Đồ ăn">Đồ ăn</option>
@@ -101,20 +103,24 @@
                                 <span class="text-danger mt-3" id="createTypeError"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="createPrice" class="form-label"><span class="text-danger">*</span> Giá tiền:</label>
+                                <label for="createPrice" class="form-label"><span class="text-danger">*</span> Giá
+                                    tiền:</label>
                                 <input type="tel" class="form-control" id="createPrice" name="price" required
                                     placeholder="Nhập giá tiền">
                                 <span class="text-danger mt-3" id="createPriceError"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="createImgThumbnail" class="form-label"><span class="text-danger">*</span> Hình ảnh:</label>
-                                <input type="file" name="img_thumbnail" id="createImgThumbnail" class="form-control" required>
+                                <label for="createImgThumbnail" class="form-label"><span class="text-danger">*</span> Hình
+                                    ảnh:</label>
+                                <input type="file" name="img_thumbnail" id="createImgThumbnail" class="form-control"
+                                    required>
                                 <span class="text-danger mt-3" id="createImgThumbnailError"></span>
                             </div>
                             <div class="col-md-12 mb-3">
-                                <label for="createDescription" class="form-label"><span class="text-danger">*</span> Mô tả:</label>
-                                <textarea id="createDescription" class="form-control" name="description" rows="6"
-                                    placeholder="Nhập mô tả" required></textarea>
+                                <label for="createDescription" class="form-label"><span class="text-danger">*</span> Mô
+                                    tả:</label>
+                                <textarea id="createDescription" class="form-control" name="description" rows="6" placeholder="Nhập mô tả"
+                                    required></textarea>
                                 <span class="text-danger mt-3" id="createDescriptionError"></span>
                             </div>
                         </div>
@@ -129,7 +135,8 @@
     </div>
 
     <!-- Modal cập nhật -->
-    <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel" aria-hidden="true">
+    <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -144,13 +151,15 @@
                         <div class="row">
                             <input type="checkbox" hidden name="is_active" value="1" checked>
                             <div class="col-md-6 mb-3">
-                                <label for="updateName" class="form-label"><span class="text-danger">*</span> Tên món ăn:</label>
+                                <label for="updateName" class="form-label"><span class="text-danger">*</span> Tên món
+                                    ăn:</label>
                                 <input type="text" class="form-control" id="updateName" name="name" required
                                     placeholder="Nhập tên món ăn">
                                 <span class="text-danger mt-3" id="updateNameError"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="updateType" class="form-label"><span class="text-danger">*</span> Loại đồ ăn:</label>
+                                <label for="updateType" class="form-label"><span class="text-danger">*</span> Loại đồ
+                                    ăn:</label>
                                 <select name="type" id="updateType" class="form-select" required>
                                     <option disabled selected>Chọn loại đồ ăn</option>
                                     <option value="Đồ ăn">Đồ ăn</option>
@@ -160,22 +169,25 @@
                                 <span class="text-danger mt-3" id="updateTypeError"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="updatePrice" class="form-label"><span class="text-danger">*</span> Giá tiền:</label>
+                                <label for="updatePrice" class="form-label"><span class="text-danger">*</span> Giá
+                                    tiền:</label>
                                 <input type="tel" class="form-control" id="updatePrice" name="price" required
                                     placeholder="Nhập giá tiền">
                                 <span class="text-danger mt-3" id="updatePriceError"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="updateImgThumbnail" class="form-label"><span class="text-danger">*</span> Hình ảnh:</label>
+                                <label for="updateImgThumbnail" class="form-label"><span class="text-danger">*</span>
+                                    Hình ảnh:</label>
                                 <input type="file" name="img_thumbnail" id="updateImgThumbnail" class="form-control">
                                 <img id="previewImgThumbnail" src="" alt="Ảnh xem trước" class="mt-2"
                                     style="max-width: 150px; display: none;">
                                 <span class="text-danger mt-3" id="updateImgThumbnailError"></span>
                             </div>
                             <div class="col-md-12 mb-3">
-                                <label for="updateDescription" class="form-label"><span class="text-danger">*</span> Mô tả:</label>
-                                <textarea id="updateDescription" class="form-control" name="description" rows="6"
-                                    placeholder="Nhập mô tả" required></textarea>
+                                <label for="updateDescription" class="form-label"><span class="text-danger">*</span> Mô
+                                    tả:</label>
+                                <textarea id="updateDescription" class="form-control" name="description" rows="6" placeholder="Nhập mô tả"
+                                    required></textarea>
                                 <span class="text-danger mt-3" id="updateDescriptionError"></span>
                             </div>
                         </div>
@@ -218,8 +230,7 @@
                         console.error("Lỗi API:", xhr.responseText);
                     }
                 },
-                columns: [
-                    {
+                columns: [{
                         data: 'id',
                         name: 'id',
                         render: function(data) {
@@ -229,16 +240,29 @@
                                     </div>`;
                         }
                     },
-                    { data: 'name', name: 'name' },
-                    { data: 'type', name: 'type' },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'type',
+                        name: 'type'
+                    },
                     {
                         data: 'img_thumbnail',
                         render: function(data) {
+<<<<<<< HEAD
                             return data ? `<img src="/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` : 'Không có ảnh';
+=======
+                            return data ?
+                                `<img src="/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` :
+                                'Không có ảnh';
+>>>>>>> sondvph45612
                         },
                         orderable: false,
                         searchable: false
                     },
+
                     {
                         data: 'price',
                         render: function(data) {
@@ -277,7 +301,11 @@
                                             </a>
                                         </li>
                                         <li>
+<<<<<<< HEAD
                                             <form action="foods/${data}/destroy" method="POST" id="delete-food-${data}">
+=======
+                                            <form action="/admin/foods/${data}/destroy" method="POST" id="delete-food-${data}">
+>>>>>>> sondvph45612
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="dropdown-item remove-list" onclick="handleDelete(${data})">
@@ -372,7 +400,13 @@
                 } else {
                     $('#previewImgThumbnail').hide();
                 }
+                $("#updateNameError").text("");
+                $("#updateTypeError").text("");
+                $("#updatePriceError").text("");
+                $("#updateImgThumbnailError").text("");
+
                 $('#updateFoodModal').modal('show');
+
             });
 
             // Xử lý xóa
@@ -416,7 +450,8 @@
                     error: function(xhr) {
                         let errors = xhr.responseJSON.errors;
                         for (let field in errors) {
-                            $(`#create${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errors[field][0]);
+                            $(`#create${field.charAt(0).toUpperCase() + field.slice(1)}Error`)
+                                .text(errors[field][0]);
                         }
                     }
                 });
@@ -429,7 +464,11 @@
                 console.log(formData);
 
                 $.ajax({
+<<<<<<< HEAD
                     url: `foods/${foodId}`,
+=======
+                    url: `/admin/foods/${foodId}`,
+>>>>>>> sondvph45612
                     method: "POST",
                     data: formData,
                     processData: false,
@@ -442,11 +481,18 @@
                         }
                     },
                     error: function(xhr) {
+                        console.log("Lỗi từ server:", xhr);
+
                         let errors = xhr.responseJSON.errors;
                         for (let field in errors) {
-                            $(`#update${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errors[field][0]);
+                            let errorMessage = errors[field]; // Lấy thông báo lỗi đầu tiên
+                            // Hiển thị lỗi tại phần tử tương ứng
+                            $(`#update${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errorMessage);
+
+                            console.log(`Lỗi ở trường ${field}: ${errorMessage}`);
                         }
                     }
+
                 });
             });
 
