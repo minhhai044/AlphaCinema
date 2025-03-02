@@ -191,12 +191,16 @@
 
     @php
         $appUrl = env('APP_URL');
+        
+        // dd($appUrl);
     @endphp
 @endsection
 
 @section('script')
     <script>
         var appURL = @json($appUrl);
+        // console.log(appURL);
+        
     </script>
 
     <script>
@@ -230,7 +234,7 @@
                     {
                         data: 'img_thumbnail',
                         render: function(data) {
-                            return data ? `<img src="${appURL}/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` : 'Không có ảnh';
+                            return data ? `<img src="/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` : 'Không có ảnh';
                         },
                         orderable: false,
                         searchable: false
@@ -273,7 +277,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <form action="${appURL}/admin/foods/${data}/destroy" method="POST" id="delete-food-${data}">
+                                            <form action="foods/${data}/destroy" method="POST" id="delete-food-${data}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="dropdown-item remove-list" onclick="handleDelete(${data})">
@@ -364,7 +368,7 @@
                 $('#updateDescription').val($(this).data('food-description'));
                 let imgThumbnail = $(this).data('food-img_thumbnail');
                 if (imgThumbnail) {
-                    $('#previewImgThumbnail').attr('src', `${appURL}/storage/${imgThumbnail}`).show();
+                    $('#previewImgThumbnail').attr('src', `/storage/${imgThumbnail}`).show();
                 } else {
                     $('#previewImgThumbnail').hide();
                 }
@@ -425,7 +429,7 @@
                 console.log(formData);
 
                 $.ajax({
-                    url: `${appURL}/admin/foods/${foodId}`,
+                    url: `foods/${foodId}`,
                     method: "POST",
                     data: formData,
                     processData: false,
@@ -445,6 +449,8 @@
                     }
                 });
             });
+
+
         });
     </script>
 @endsection
