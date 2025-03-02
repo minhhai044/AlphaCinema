@@ -119,8 +119,10 @@
                             <div class="col-md-12 mb-3">
                                 <label for="createDescription" class="form-label"><span class="text-danger">*</span> Mô
                                     tả:</label>
+
                                 <textarea id="createDescription" class="form-control" name="description" rows="6"
                                     placeholder="Nhập mô tả" required></textarea>
+
                                 <span class="text-danger mt-3" id="createDescriptionError"></span>
                             </div>
                         </div>
@@ -135,7 +137,8 @@
     </div>
 
     <!-- Modal cập nhật -->
-    <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel" aria-hidden="true">
+    <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -175,8 +178,10 @@
                                 <span class="text-danger mt-3" id="updatePriceError"></span>
                             </div>
                             <div class="col-md-6 mb-3">
+
                                 <label for="updateImgThumbnail" class="form-label"><span class="text-danger">*</span> Hình
                                     ảnh:</label>
+
                                 <input type="file" name="img_thumbnail" id="updateImgThumbnail" class="form-control">
                                 <img id="previewImgThumbnail" src="" alt="Ảnh xem trước" class="mt-2"
                                     style="max-width: 150px; display: none;">
@@ -185,8 +190,10 @@
                             <div class="col-md-12 mb-3">
                                 <label for="updateDescription" class="form-label"><span class="text-danger">*</span> Mô
                                     tả:</label>
+
                                 <textarea id="updateDescription" class="form-control" name="description" rows="6"
                                     placeholder="Nhập mô tả" required></textarea>
+
                                 <span class="text-danger mt-3" id="updateDescriptionError"></span>
                             </div>
                         </div>
@@ -229,8 +236,7 @@
                         console.error("Lỗi API:", xhr.responseText);
                     }
                 },
-                columns: [
-                    {
+                columns: [{
                         data: 'id',
                         name: 'id',
                         render: function (data) {
@@ -240,16 +246,25 @@
                                             </div>`;
                         }
                     },
-                    { data: 'name', name: 'name' },
-                    { data: 'type', name: 'type' },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'type',
+                        name: 'type'
+                    },
                     {
                         data: 'img_thumbnail',
                         render: function (data) {
+
                             return data ? `<img src="/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` : 'Không có ảnh';
+
                         },
                         orderable: false,
                         searchable: false
                     },
+
                     {
                         data: 'price',
                         render: function (data) {
@@ -283,6 +298,7 @@
                                         <i class="fas fa-edit"></i>
                                     </a>
 
+
                                     <!-- Nút Xóa -->
                                     <form method="POST" action="foods/${data}/destroy" class="d-inline-block" id="delete-food-${data}">
                                         @csrf
@@ -292,6 +308,30 @@
                                             <i class="bi bi-trash"></i>
                                         </button>
                                     </form>
+
+                                    <ul class="dropdown-menu dropdown-menu-end">
+                                        <li>
+                                            <a class="dropdown-item edit-list cursor-pointer openUpdateFoodModal"
+                                                data-food-id="${data}"
+                                                data-food-name="${row.name}"
+                                                data-food-type="${row.type}"
+                                                data-food-price="${row.price}"
+                                                data-food-img_thumbnail="${row.img_thumbnail}"
+                                                data-food-description="${row.description}">
+                                                <i class="mdi mdi-pencil font-size-16 text-warning me-1"></i> Cập nhật
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <form action="foods/${data}/destroy" method="POST" id="delete-food-${data}">
+
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="dropdown-item remove-list" onclick="handleDelete(${data})">
+                                                    <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i> Xóa
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
                                 </div>`;
                         },
                         orderable: false,
@@ -378,7 +418,13 @@
                 } else {
                     $('#previewImgThumbnail').hide();
                 }
+                $("#updateNameError").text("");
+                $("#updateTypeError").text("");
+                $("#updatePriceError").text("");
+                $("#updateImgThumbnailError").text("");
+
                 $('#updateFoodModal').modal('show');
+
             });
 
             // Xử lý xóa
@@ -422,7 +468,8 @@
                     error: function (xhr) {
                         let errors = xhr.responseJSON.errors;
                         for (let field in errors) {
-                            $(`#create${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errors[field][0]);
+                            $(`#create${field.charAt(0).toUpperCase() + field.slice(1)}Error`)
+                                .text(errors[field][0]);
                         }
                     }
                 });
@@ -436,6 +483,7 @@
 
                 $.ajax({
                     url: `foods/${foodId}`,
+
                     method: "POST",
                     data: formData,
                     processData: false,
@@ -448,11 +496,17 @@
                         }
                     },
                     error: function (xhr) {
+
                         let errors = xhr.responseJSON.errors;
                         for (let field in errors) {
-                            $(`#update${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errors[field][0]);
+                            let errorMessage = errors[field]; // Lấy thông báo lỗi đầu tiên
+                            // Hiển thị lỗi tại phần tử tương ứng
+                            $(`#update${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errorMessage);
+
+                            console.log(`Lỗi ở trường ${field}: ${errorMessage}`);
                         }
                     }
+
                 });
             });
 
