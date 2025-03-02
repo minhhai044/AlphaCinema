@@ -173,7 +173,7 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <form action="/admin/combos/${data}" method="POST" class="d-inline">
+                                                                <form action="/admin/combos/${data}/destroy" method="POST" class="d-inline">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     <button type="submit" class="dropdown-item text-danger"

@@ -38,7 +38,11 @@ document.addEventListener("DOMContentLoaded", function () {
         resetErrors("create");
         new bootstrap.Modal($("#createFoodModal")[0]).show();
     });
-
+     // Xử lý tạo món ăn
+    $("#createFoodBtn").on("click", function (event) {
+        event.preventDefault();
+        sendRequest(`${APP_URL}/admin/foods`, "POST", new FormData($("#createFoodForm")[0]), "create");
+    });
     // Mở modal cập nhật món ăn
     $(".openUpdateFoodModal").on("click", function () {
         const modal = $("#updateFoodModal");
@@ -100,11 +104,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     };
 
-    // Xử lý tạo món ăn
-    $("#createFoodBtn").on("click", function (event) {
-        event.preventDefault();
-        sendRequest(`${APP_URL}/admin/foods`, "POST", new FormData($("#createFoodForm")[0]), "create");
-    });
+   
 
     // Xử lý cập nhật món ăn
     $("#updateFoodBtn").on("click", function (event) {
