@@ -2,7 +2,7 @@
 @section('content')
     <h5 class="fw-bold">Quản lý suất chiếu</h5>
 <div class="rounded">
-    <form action="{{ route('admin.showtimes.index') }}" method="get" class="p-4 shadow-sm">
+    <form action="{{ route('admin.showtimes.index') }}" method="get" class="p-4 shadow-sm search-form">
         <div class="row g-3 align-items-end">
             <div class="col-lg-3">
                 <label for="branch_id" class="form-label fw-bold">Chi nhánh</label>
@@ -32,8 +32,13 @@
     </form>
 
     <div class="m-3 d-flex justify-content-end">
-        <button class="btn btn-primary py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#movieModal">
+        <button class="btn btn-primary py-2 fw-semibold me-2" data-bs-toggle="modal" data-bs-target="#movieModal">
             <i class="bi bi-plus-lg"></i> Thêm suất chiếu
+        </button>
+        <button  class="btn btn-warning waves-effect waves-light exportButton" disabled>
+            <a href="{{ route('admin.export', 'showtimes') }}">
+                <i class="bx bx-download me-1"></i>
+            Xuất Excel</a>
         </button>
     </div>
     <div class="modal fade" id="movieModal" tabindex="-1">
@@ -197,5 +202,21 @@
             }
 
         });
+       
+        document.addEventListener("DOMContentLoaded", function () {
+        const exportButton = document.querySelector('.exportButton');
+        const table = document.querySelector("table tbody"); // Lấy tbody của bảng hiển thị dữ liệu
+        const firstRow = table?.querySelector("tr:first-child td")?.textContent?.trim(); // Lấy nội dung hàng đầu tiên
+
+        // Kiểm tra nếu có dữ liệu thực sự trong bảng (không phải dòng thông báo) và có tham số tìm kiếm trên URL
+        if (exportButton && table && !firstRow.includes("Không có dữ liệu") && window.location.search) {
+            exportButton.removeAttribute('disabled'); // Bật nút Xuất file
+        } else {
+            exportButton.setAttribute('disabled', 'true'); // Vô hiệu hóa nếu không có dữ liệu thực tế
+        }
+});
+
+
+        
     </script>
 @endsection

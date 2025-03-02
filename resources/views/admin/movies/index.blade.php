@@ -26,9 +26,14 @@
                         <!-- Cột bên phải: Thêm mới và Bộ lọc -->
                         <div class="col-md-6 text-end">
                             <a href="{{ route('admin.movies.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
-                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                            <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#searchForm">
                                 <i class="fas fa-filter"></i> Bộ lọc
+                            </button>
+                            <button  class="btn btn-warning waves-effect waves-light">
+                                <a href="{{ route('admin.export', 'movies') }}">
+                                <i class="bx bx-download me-1"></i>
+                                Xuất Excel</a>
                             </button>
                         </div>
                     </div>
@@ -105,7 +110,7 @@
         type="text/css" /> --}}
 
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             // Khởi tạo DataTable
             var table = $('#movieTable').DataTable({
                 processing: true,
@@ -116,24 +121,27 @@
                 ajax: {
                     url: "{{ route('api.movies.index') }}",
                     type: "GET",
-                    data: function (d) {
+                    data: function(d) {
                         // Lấy dữ liệu từ form filter
                         d.id = $('input[name="id"]').val();
                         d.movie_versions = $('select[name="movie_versions"]').val();
                         d.movie_genres = $('select[name="movie_genres"]').val();
                     },
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         console.error("Lỗi API:", xhr.responseText);
                     }
                 },
-                columns: [
-                    { data: 'id', name: 'id' },
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
                     {
                         data: 'name',
                         name: 'name',
-                        render: function (data, type, row) {
+                        render: function(data, type, row) {
                             // Xử lý danh sách phiên bản phim (movie_versions)
-                            let versions = Array.isArray(row.movie_versions) ? row.movie_versions : [];
+                            let versions = Array.isArray(row.movie_versions) ? row.movie_versions :
+                                [];
                             let versionHtml = versions.map(version =>
                                 `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
                     ${version}
@@ -166,7 +174,7 @@
 
                     {
                         data: 'img_thumbnail',
-                        render: function (data) {
+                        render: function(data) {
                             return `<img src="/storage/${data}"
                                                      style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
                         }
@@ -174,24 +182,27 @@
 
                     {
                         data: 'is_active',
-                        render: function (data) {
-                            return data
-                                ? '<span class="badge bg-success">Active</span>'
-                                : '<span class="badge bg-danger">Inactive</span>';
+                        render: function(data) {
+                            return data ?
+                                '<span class="badge bg-success">Active</span>' :
+                                '<span class="badge bg-danger">Inactive</span>';
                         }
                     },
                     {
                         data: 'is_hot',
-                        render: function (data) {
-                            return data
-                                ? '<span class="badge bg-success">Hot</span>'
-                                : '<span class="badge bg-danger">No Hot</span>';
+                        render: function(data) {
+                            return data ?
+                                '<span class="badge bg-success">Hot</span>' :
+                                '<span class="badge bg-danger">No Hot</span>';
                         }
                     },
-                    { data: 'duration', name: 'duration' },
+                    {
+                        data: 'duration',
+                        name: 'duration'
+                    },
                     {
                         data: 'id',
-                        render: function (data) {
+                        render: function(data) {
                             return `
                                             <div class="dropdown text-center">
                                                 <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
@@ -226,7 +237,7 @@
                         searchable: false
                     }
                 ],
-                pageLength: 5,      // Số bản ghi hiển thị mặc định
+                pageLength: 5, // Số bản ghi hiển thị mặc định
                 lengthChange: false, // Tắt dropdown mặc định của DataTable
                 language: {
                     search: "Tìm kiếm:",
@@ -242,20 +253,20 @@
             });
 
             // Thay đổi số dòng hiển thị theo dropdown tùy chỉnh
-            $('#pageLength').on('change', function () {
+            $('#pageLength').on('change', function() {
                 table.page.len($(this).val()).draw();
             });
 
             // Lọc dữ liệu
-            $('#filterForm').on('submit', function (e) {
+            $('#filterForm').on('submit', function(e) {
                 e.preventDefault();
                 table.ajax.reload();
             });
 
             // Reset lọc
-            $('#resetFilter').on('click', function () {
+            $('#resetFilter').on('click', function() {
                 // Thêm một chút độ trễ để form reset xong
-                setTimeout(function () {
+                setTimeout(function() {
                     table.ajax.reload();
                 }, 50);
             });

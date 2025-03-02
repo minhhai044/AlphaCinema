@@ -3,17 +3,23 @@
 namespace App\Exports;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithColumnWidths;
 use Maatwebsite\Excel\Concerns\WithCustomValueBinder;
 use Maatwebsite\Excel\Concerns\WithDrawings;
 use Maatwebsite\Excel\Concerns\WithHeadings;
-use PhpOffice\PhpSpreadsheet\Cell\Cell;
+use Maatwebsite\Excel\Concerns\WithMapping;
 use PhpOffice\PhpSpreadsheet\Cell\DataType;
 use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
+use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use Maatwebsite\Excel\Concerns\RegistersEventListeners;
+use Maatwebsite\Excel\Events\AfterSheet;
+use Maatwebsite\Excel\Concerns\WithEvents;
+use PhpOffice\PhpSpreadsheet\Cell\Cell;
 
-class DynamicExport implements FromCollection, WithHeadings, WithColumnWidths, WithCustomValueBinder
+
+class DynamicExport implements FromCollection, WithHeadings, WithColumnWidths, WithDrawings,WithMapping,WithEvents,WithCustomValueBinder
 {
     /**
      * 
@@ -61,11 +67,9 @@ class DynamicExport implements FromCollection, WithHeadings, WithColumnWidths, W
                 $query->addSelect("{$this->model->getTable()}.$column");
             }
         }
-
-        // Sắp xếp theo id giảm dần
-        $query->orderByDesc("{$this->model->getTable()}.id");
-
-        return $query->get();
+        
+        return  $query->get();
+        
     }
 
     public function headings(): array
@@ -73,133 +77,59 @@ class DynamicExport implements FromCollection, WithHeadings, WithColumnWidths, W
         return $this->headings;
     }
 
-    // public function drawings()
-    // {
-    //     $drawings = [];
-
-    //     // Lấy dữ liệu từ model
-    //     $data = $this->model::select($this->columns)->get();
-
-    //     foreach ($data as $index => $row) {
-    //         foreach ($this->imageColumns as $imageColumn) {
-    //             if (!empty($row->$imageColumn)) {
-    //                 $drawing = new Drawing();
-    //                 $drawing->setName('Image');
-    //                 $drawing->setDescription('Image from column ' . $imageColumn);
-    //                 $drawing->setPath(Storage::url($row->$imageColumn)); // Đường dẫn đến ảnh
-    //                 $drawing->setHeight(50); // Chiều cao ảnh
-    //                 $drawing->setWidth(50);  // Chiều rộng ảnh
-
-    //                 // Xác định vị trí ô để chèn ảnh
-    //                 $columnIndex = array_search($imageColumn, $this->columns) + 1; // Tìm vị trí cột
-    //                 $columnLetter = chr(64 + $columnIndex); // Chuyển số cột thành chữ (A, B, C...)
-    //                 $rowNumber = $index + 2; // Hàng bắt đầu từ 2 (hàng đầu tiên là tiêu đề)
-
-    //                 $drawing->setCoordinates("{$columnLetter}{$rowNumber}");
-
-    //                 $drawings[] = $drawing;
-    //             }
-    //         }
-    //     }
-
-    //     return $drawings;
-    // }
-
-
-    // public function drawings()
-    // {
-    //     $drawings = [];
-
-    //     // Lấy dữ liệu từ model
-    //     // $data = $this->model::select($this->columns)->get();
-    //     $data = $this->collection();
-
-    //     foreach ($data as $index => $row) {
-    //         foreach ($this->imageColumns as $imageColumn) {
-    //             if (!empty($row->$imageColumn)) {
-    //                 $drawing = new Drawing();
-    //                 $drawing->setName('Image');
-    //                 $drawing->setDescription('Image from column ' . $imageColumn);
-
-    //                 // Lấy đường dẫn thực của file
-    //                 // $imagePath = storage_path('app/public/' . $row->$imageColumn);
-    //                 $imagePath = Storage::url($row->$imageColumn);
-
-    //                 // Kiểm tra file tồn tại
-    //                 if (file_exists($imagePath)) {
-    //                     $drawing->setPath($imagePath);
-
-    //                     // Thiết lập kích thước ảnh
-    //                     $drawing->setHeight(80);
-    //                     $drawing->setWidth(80);
-
-    //                     // Thiết lập vị trí ảnh
-    //                     $columnIndex = array_search($imageColumn, $this->columns);
-    //                     $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex + 1);
-    //                     $rowNumber = $index + 2;
-
-    //                     $drawing->setCoordinates($columnLetter . $rowNumber);
-
-    //                     // Thiết lập căn chỉnh
-    //                     $drawing->setOffsetX(5); // Căn lề trái 5px
-    //                     $drawing->setOffsetY(5); // Căn lề trên 5px
-
-    //                     // Thiết lập rotation (0 = không xoay)
-    //                     $drawing->setRotation(0);
-
-    //                     $drawings[] = $drawing;
-    //                 }
-    //             }
-    //         }
-    //     }
-
-    //     return $drawings;
-    // }
-
-    public function drawings()
+    public function map($row): array
     {
-        $drawings = [];
+        $data = [];
+        foreach ($this->columns as $column) {
+            if (in_array($column, $this->imageColumns)) {
+                // Thay thế đường dẫn ảnh bằng chuỗi rỗng để không hiển thị trong ô Excel
+                $data[] = '';
+            } else {
+                $data[] = data_get($row, $column);
+            }
+        }
+        return $data;
+    }
 
-        // Lấy dữ liệu từ collection()
-        $data = $this->collection();
 
-        foreach ($data as $index => $row) {
-            foreach ($this->imageColumns as $imageColumn) {
-                if (!empty($row->$imageColumn)) {
-                    $drawing = new Drawing();
-                    $drawing->setName('Image');
-                    $drawing->setDescription('Image from column ' . $imageColumn);
+  
+public function drawings()
+{
+    $drawings = [];
+    $rows = $this->collection(); // Lấy dữ liệu từ collection()
 
-                    // Lấy đường dẫn tuyệt đối của file ảnh
-                    $imagePath = storage_path('app/public/' . $row->$imageColumn);
-
-                    // Kiểm tra file tồn tại
-                    if (file_exists($imagePath)) {
-                        $drawing->setPath($imagePath); // Đường dẫn tuyệt đối
-                        $drawing->setHeight(80); // Chiều cao ảnh
-                        $drawing->setWidth(80);  // Chiều rộng ảnh
-
-                        // Thiết lập vị trí ảnh
-                        $columnIndex = array_search($imageColumn, $this->columns);
-                        $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex + 1);
-                        $rowNumber = $index + 2; // Hàng bắt đầu từ 2 (hàng đầu tiên là tiêu đề)
-                        $drawing->setCoordinates($columnLetter . $rowNumber);
-
-                        // Thiết lập căn chỉnh
-                        $drawing->setOffsetX(5); // Căn lề trái 5px
-                        $drawing->setOffsetY(5); // Căn lề trên 5px
-
-                        // Thiết lập rotation (0 = không xoay)
-                        $drawing->setRotation(0);
-
-                        $drawings[] = $drawing;
-                    }
+    foreach ($rows as $index => $row) {
+        foreach ($this->imageColumns as $imageColumn) {
+            if (!empty($row->$imageColumn)) {
+                $drawing = new Drawing();
+                $drawing->setName('Image');
+                $drawing->setDescription('Product Image');
+                // Đường dẫn ảnh
+                $imagePath = storage_path("app/public/" . $row->$imageColumn);
+                if (file_exists($imagePath)) {
+                    $drawing->setPath($imagePath);
+                    // Kích thước ảnh (tùy chỉnh)
+                    $drawing->setHeight(80);
+                    $drawing->setResizeProportional(true);
+                    // Xác định vị trí ảnh trong ô
+                    $columnIndex = array_search($imageColumn, $this->columns) + 1;
+                    $columnLetter = \PhpOffice\PhpSpreadsheet\Cell\Coordinate::stringFromColumnIndex($columnIndex);
+                    $rowNumber = $index + 2; // Dữ liệu bắt đầu từ dòng 2 (dòng 1 là tiêu đề)
+                    $drawing->setCoordinates($columnLetter . $rowNumber);
+                    // Căn chỉnh ảnh nằm chính giữa ô
+                    $drawing->setOffsetX(10);
+                    $drawing->setOffsetY(5);
+                    // Gán ảnh vào sheet (Bắt buộc)
+                    $drawings[] = $drawing;
+                } else {
+                    Log::error("Ảnh không tồn tại: " . $imagePath);
                 }
             }
         }
-
-        return $drawings;
     }
+
+    return $drawings;
+}
 
     public function columnWidths(): array
     {
@@ -212,12 +142,52 @@ class DynamicExport implements FromCollection, WithHeadings, WithColumnWidths, W
         return $widths;
     }
 
+    use RegistersEventListeners;
+
+    public function registerEvents(): array
+    {
+        return [
+            AfterSheet::class => function (AfterSheet $event) {
+                $sheet = $event->sheet->getDelegate();
+                $rows = $this->collection(); // Lấy dữ liệu từ collection()
+
+                foreach ($rows as $index => $row) {
+                    $rowNumber = $index + 2; // Dòng dữ liệu bắt đầu từ 2
+
+                    // Kiểm tra xem hàng này có ảnh không
+                    $hasImage = false;
+                    foreach ($this->imageColumns as $imageColumn) {
+                        if (!empty($row->$imageColumn)) {
+                            $hasImage = true;
+                            break;
+                        }
+                    }
+
+                    // Nếu có ảnh -> đặt chiều cao lớn hơn
+                    if ($hasImage) {
+                        $sheet->getRowDimension($rowNumber)->setRowHeight(90 );
+                    } else {
+                        $sheet->getRowDimension($rowNumber)->setRowHeight(25); // Chiều cao mặc định
+                    }
+                }
+            },
+        ];
+    }
+
+
+    
     public function bindValue(Cell $cell, $value)
     {
-        // Thiết lập wrap text (xuống dòng tự động) cho tất cả các ô
+        // Nếu giá trị là một mảng, chuyển thành chuỗi
+        if (is_array($value)) {
+            $value = implode(", ", $value); // Chuyển mảng thành chuỗi, ngăn cách bởi dấu phẩy
+        }
+
+        // Thiết lập wrap text (xuống dòng tự động)
         $cell->setValueExplicit($value, DataType::TYPE_STRING);
         $cell->getStyle()->getAlignment()->setWrapText(true);
 
         return true;
     }
+
 }

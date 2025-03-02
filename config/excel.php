@@ -1,7 +1,10 @@
 <?php
 
 use App\Models\Cinema;
+use App\Models\Combo;
 use App\Models\Food;
+use App\Models\Movie;
+use App\Models\Showtime;
 use App\Models\User;
 use Maatwebsite\Excel\Excel;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
@@ -25,16 +28,135 @@ return [
         'custom_tables' => [
             'cinemas' => [
                 'model' => Cinema::class,
-                'columns' => ['id', 'branch.name as branch_name', 'name', 'slug', 'address', 'description', 'is_active', 'created_at', 'updated_at'],
-                'headings' => ['ID', 'Branch', 'Name', 'Slug', 'Address', 'Description', 'Active', 'Create_AT', 'Update_AT'],
+                'columns' => [
+                    'id',
+                    'branch.name as branch_name',
+                    'name',
+                    'slug',
+                    'address',
+                    'description',
+                    'is_active',
+                    'created_at',
+                    'updated_at'
+                ],
+                'headings' => [
+                    'ID',
+                    'Tên chi nhánh ',
+                    'Tên rạp ',
+                    'Địa chỉ ',
+                    'Địa chỉchỉ',
+                    'Mô tả ',
+                    'Hành động ',
+                    'Ngày Tạo ',
+                    'Ngày cập nhật '
+                ],
                 'relations' => ['branch']
             ],
-            'foods' => [
+            'food' => [
                 'model' => Food::class,
-                'columns' => ['id', 'name', 'img_thumbnail', 'price', 'description', 'is_active', 'created_at', 'updated_at', 'deleted_at'],
-                'headings' => ['ID', 'Name', 'Image', 'Price', 'Description', 'Active', 'Create_AT', 'Update_AT', 'Deleted_AT'],
+                'columns' => ['id', 'name', 'img_thumbnail', 'price', 'description', 'is_active', 'created_at', 'updated_at'],
+                'headings' => ['ID', 'Name', 'Image', 'Price', 'Description', 'Active', 'Create_AT', 'Update_AT'],
                 'image_columns' => ['img_thumbnail']
             ],
+            'movies' => [
+                'model' => Movie::class,
+                'columns' => [
+                    'id',
+                    'name',
+                    'slug',
+                    'category',
+                    'description',
+                    'img_thumbnail',
+                    'director',
+                    'duration',
+                    'rating',
+                    'release_date',
+                    'end_date',
+                    'trailer_url',
+                    'surcharge',
+                    'movie_versions',
+                    'movie_genres',
+                    'is_active',
+                    'is_hot',
+                    'is_special',
+                    'is_publish',
+                    'created_at',
+                    'updated_at'
+                ],
+                'headings' => [
+                    'ID',
+                    'Tên Phim ',
+                    'Địa chỉ ',
+                    'category',
+                    'img_thumbnail',
+                    'description',
+                    'director',
+                    'duration',
+                    'rating',
+                    'release_date',
+                    'end_date',
+                    'trailer_url',
+                    'surcharge',
+                    'movie_versions',
+                    'movie_genres',
+                    'is_active',
+                    'is_hot',
+                    'is_special',
+                    'is_publish',
+                    'created_at',
+                    'updated_at'
+                ],
+                'image_columns' => ['img_thumbnail']
+            ],
+            'combos' => [
+                'model' => Combo::class,
+                'columns' => [
+                    'id',
+                    'name',
+                    'img_thumbnail',
+                    'price',
+                    'price_sale',
+                    'description',
+                    'is_active',
+                    'created_at',
+                    'updated_at'
+                ],
+                'headings' => [
+                    'id',
+                    'name',
+                    'img_thumbnail',
+                    'price',
+                    'price_sale',
+                    'description',
+                    'is_active',
+                    'created_at',
+                    'updated_at'
+                ],
+                'image_columns' => ['img_thumbnail']
+            ],
+            'showtimes'       => [
+                'model'         => Showtime::class,
+                'columns'       => [
+                    'branch_id',
+                    'movie_id',
+                    'day_id',
+                    'cinema_id',
+                    'room_id',
+                    'seat_structure',
+                    'slug',
+                    'date',
+                    'price_special',
+                    'description_special',
+                    'status_special',
+                    'start_time',
+                    'end_time',
+                    'is_active'
+                ],
+                'headings'      => ['Tên chi nhánh','tên phim','ngày chiếu','Rạp chiếu','phòng chiếu','ghế','slug','giá dặc biệt','mô tả',
+            'status','thời gian bắt đầu','thời gian kết thúc','mhanhf động'],
+                'relations'      => [''],
+                'image_columns' => ['']
+            ]
         ],
 
         /*

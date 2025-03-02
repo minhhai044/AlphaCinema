@@ -327,7 +327,56 @@
                 </div>
             </div>
         </div>
+{{-- Tin Tức  --}}
+<div class="row">
+    <div class="col-lg-9">
+        <div class="card">
+            <div class="card-header align-items-center d-flex">
+                <h4 class="card-title mb-0 flex-grow-1">Tin tức </h4>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <textarea id="news" class="form-control editor" rows="5" name="news"
+                        placeholder="Nhập nội dung Tin tức ">{{ old('news', $settings->news) }}</textarea>
+                </div>
+                @error('news')
+                    <span class="text-danger">{{ $message }}</span>
+                @enderror
+            </div>
+        </div>
+    </div>
+    {{-- Ảnh tin tức   --}}
+    <div class="col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="news_img" class="form-label">Ảnh Tin Tức </label>
+                    <input type="file" name="news_img" class="form-control"><br>
+                    <div class="text-center">
+                        @if ($settings->news_img)
+                            {{-- Kiểm tra xem có phải là ảnh mặc định hay không --}}
+                            @if (Str::startsWith($settings->news_img, 'theme/client/images/'))
+                                <img src="{{ asset($settings->news_img) }}" class="rounded-2"
+                                    alt="Website Logo" style="max-width: 200px;">
+                            @else
+                                <img src="{{ Storage::url($settings->news_img) }}"
+                                    class="rounded-2" alt="news_img" style="max-width: 200px;">
+                            @endif
+                        @else
+                            {{-- Hiển thị ảnh mặc định nếu không có ảnh nào --}}
+                            <img src="{{ asset('theme/client/images/logo.png') }}" class="rounded-2"
+                                alt="news_img" style="max-width: 200px;">
+                        @endif
+                    </div>
 
+                    @error('news_img')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
     </form>
 
     <!-- Modal xác nhận -->

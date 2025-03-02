@@ -45,10 +45,14 @@
                         <!-- Cột bên phải: Thêm mới và Bộ lọc -->
                         <div class="col-md-6 text-end">
                             <a href="{{ route('admin.combos.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
-                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                            <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#searchForm">
                                 <i class="fas fa-filter"></i> Bộ lọc
                             </button>
+                            <a href="{{ route('admin.export', 'combos') }}" class="btn btn-warning waves-effect waves-light">
+                                <i class="bx bx-download me-1"></i>
+                                Xuất Excel
+                            </a>
                         </div>
                     </div>
 
