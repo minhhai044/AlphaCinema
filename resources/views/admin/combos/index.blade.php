@@ -151,6 +151,8 @@
                     {
                         data: 'is_active',
                         render: function (data, type, row) {
+                            console.log(row);
+
                             var checked = data ? 'checked' : '';
                             return `
                                 <input type="checkbox" id="is_active${row.id}" data-publish="${row.is_publish}" switch="success" ${checked} class="toggle-active" data-id="${row.id}" />
@@ -173,7 +175,7 @@
                                                                 </a>
                                                             </li>
                                                             <li>
-                                                                <form action="/admin/combos/${data}" method="POST" class="d-inline">
+                                                                <form action="/admin/combos/${data}/destroy" method="POST" class="d-inline">
                                                                     @csrf
                                                                     @method('DELETE')
                                                                     <button type="submit" class="dropdown-item text-danger"

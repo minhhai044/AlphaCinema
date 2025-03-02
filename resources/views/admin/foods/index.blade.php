@@ -273,7 +273,7 @@
                                             </a>
                                         </li>
                                         <li>
-                                            <form action="${appURL}/admin/foods/${data}" method="POST" id="delete-food-${data}">
+                                            <form action="${appURL}/admin/foods/${data}/destroy" method="POST" id="delete-food-${data}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="dropdown-item remove-list" onclick="handleDelete(${data})">
@@ -395,7 +395,7 @@
 
             // Submit form tạo mới
             $('#createFoodBtn').click(function() {
-                let formData = new FormData($('#createFoodForm')[0]);
+                let formData = new FormData($("#createFoodForm")[0]);
                 $.ajax({
                     url: "{{ route('admin.foods.store') }}",
                     method: "POST",
@@ -403,7 +403,7 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        if (response.success) {
+                        if (response.status === true) {
                             Swal.fire('Thành công!', 'Đồ ăn đã được thêm mới.', 'success');
                             $('#createFoodModal').modal('hide');
                             table.ajax.reload();
@@ -422,6 +422,8 @@
             $('#updateFoodBtn').click(function() {
                 let formData = new FormData($('#updateFoodForm')[0]);
                 let foodId = $('#updateFoodId').val();
+                console.log(formData);
+
                 $.ajax({
                     url: `${appURL}/admin/foods/${foodId}`,
                     method: "POST",
@@ -429,7 +431,7 @@
                     processData: false,
                     contentType: false,
                     success: function(response) {
-                        if (response.success) {
+                        if (response.status === true) {
                             Swal.fire('Thành công!', 'Đồ ăn đã được cập nhật.', 'success');
                             $('#updateFoodModal').modal('hide');
                             table.ajax.reload();
