@@ -56,7 +56,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
 
-    Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
+    Route::post('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
 });
 
 Route::get('/foods', [FoodController::class, 'index']);
