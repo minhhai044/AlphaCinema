@@ -47,7 +47,6 @@ class ShowtimeService
         }
         // dd($listShowtimes);
 
-
         $movies = Movie::query()->where('is_active',1)->get();
 
         return [$branchs, $branchsRelation, $listShowtimes,$movies ];
