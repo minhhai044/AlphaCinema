@@ -1,6 +1,8 @@
 @extends('admin.layouts.master')
 @section('title', 'Quản lý đồ ăn')
-
+@section('style')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+@endsection
 @section('content')
     <!-- Start page title -->
     <div class="row">
@@ -205,6 +207,7 @@
         $appUrl = env('APP_URL');
 
         // dd($appUrl);
+
     @endphp
 @endsection
 
@@ -212,7 +215,6 @@
     <script>
         var appURL = @json($appUrl);
         // console.log(appURL);
-
     </script>
 
     <script>
@@ -251,13 +253,9 @@
                     {
                         data: 'img_thumbnail',
                         render: function(data) {
-<<<<<<< HEAD
-                            return data ? `<img src="/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` : 'Không có ảnh';
-=======
                             return data ?
                                 `<img src="/storage/${data}" class="img-thumbnail" style="max-width: 100px; height: auto;">` :
                                 'Không có ảnh';
->>>>>>> sondvph45612
                         },
                         orderable: false,
                         searchable: false
@@ -302,9 +300,6 @@
                                         </li>
                                         <li>
                                             <form action="foods/${data}/destroy" method="POST" id="delete-food-${data}">
-=======
-                                            <form action="/admin/foods/${data}/destroy" method="POST" id="delete-food-${data}">
->>>>>>> sondvph45612
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="dropdown-item remove-list" onclick="handleDelete(${data})">
@@ -464,9 +459,6 @@
 
                 $.ajax({
                     url: `foods/${foodId}`,
-=======
-                    url: `/admin/foods/${foodId}`,
->>>>>>> sondvph45612
                     method: "POST",
                     data: formData,
                     processData: false,
@@ -485,7 +477,8 @@
                         for (let field in errors) {
                             let errorMessage = errors[field]; // Lấy thông báo lỗi đầu tiên
                             // Hiển thị lỗi tại phần tử tương ứng
-                            $(`#update${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errorMessage);
+                            $(`#update${field.charAt(0).toUpperCase() + field.slice(1)}Error`)
+                                .text(errorMessage);
 
                             console.log(`Lỗi ở trường ${field}: ${errorMessage}`);
                         }
