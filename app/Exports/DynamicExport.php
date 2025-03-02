@@ -40,38 +40,43 @@ class DynamicExport implements FromCollection, WithHeadings, WithColumnWidths, W
         $this->relations = $relations;
     }
 
-    public function collection()
-    {
-        // Khởi tạo query builder
-        $query = $this->model->query();
+   public function collection()
+{
+    $query = $this->model->query();
+    $joins = []; // Mảng để lưu các bảng đã JOIN
 
-        // Xử lý các trường có relationship
-        foreach ($this->columns as $column) {
-            if (strpos($column, '.') !== false) {
-                // Tách tên bảng và cột từ chuỗi "branch.name"
-                [$relation, $relatedColumn] = explode('.', $column);
+    foreach ($this->columns as $column) {
+        if (strpos($column, '.') !== false) {
+            [$relation, $relatedColumn] = explode('.', $column);
 
-                // Lấy model liên quan từ relationship
+            // Nếu bảng chưa JOIN, thêm vào
+            if (!isset($joins[$relation])) {
                 $relatedModel = $this->model->$relation()->getRelated();
                 $relatedTable = $relatedModel->getTable(); // Lấy tên bảng từ model liên quan
 
-                // Thêm join để lấy dữ liệu từ bảng liên quan
+                // Dùng alias để tránh trùng lặp
+                $alias = $relation . '_table';
                 $query->leftJoin(
-                    $relatedTable,
-                    "{$relatedTable}.id",
+                    "{$relatedTable} AS {$alias}",
+                    "{$alias}.id",
                     '=',
                     "{$this->model->getTable()}.{$relation}_id"
-                )->addSelect("{$relatedTable}.{$relatedColumn} as {$relation}_{$relatedColumn}");
-            } else {
-                // Thêm cột bình thường
-                $query->addSelect("{$this->model->getTable()}.$column");
+                );
+
+                $joins[$relation] = $alias;
             }
+
+            // Thêm cột từ bảng liên quan
+            $alias = $joins[$relation];
+            $query->addSelect("{$alias}.{$relatedColumn} as {$relation}_{$relatedColumn}");
+        } else {
+            // Thêm cột từ bảng chính
+            $query->addSelect("{$this->model->getTable()}.$column");
         }
-        
-        return  $query->get();
-        
     }
 
+    return $query->get();
+}
     public function headings(): array
     {
         return $this->headings;
@@ -79,15 +84,26 @@ class DynamicExport implements FromCollection, WithHeadings, WithColumnWidths, W
 
     public function map($row): array
     {
+        // $data = [];
+        // foreach ($this->columns as $column) {
+        //     if (in_array($column, $this->imageColumns)) {
+        //         // Thay thế đường dẫn ảnh bằng chuỗi rỗng để không hiển thị trong ô Excel
+        //         $data[] = '';
+        //     } else {
+        //         $data[] = data_get($row, $column);
+        //     }
+        // }
+       
         $data = [];
         foreach ($this->columns as $column) {
+            $columnKey = str_replace('.', '_', $column);
+    
             if (in_array($column, $this->imageColumns)) {
-                // Thay thế đường dẫn ảnh bằng chuỗi rỗng để không hiển thị trong ô Excel
-                $data[] = '';
+                $data[] = ''; // Bỏ qua ảnh
             } else {
-                $data[] = data_get($row, $column);
+                $data[] = data_get($row, $columnKey, ''); // Nếu không tìm thấy, trả về chuỗi rỗng
             }
-        }
+        } 
         return $data;
     }
 
@@ -97,13 +113,13 @@ public function drawings()
 {
     $drawings = [];
     $rows = $this->collection(); // Lấy dữ liệu từ collection()
-
+// dd($rows);
     foreach ($rows as $index => $row) {
         foreach ($this->imageColumns as $imageColumn) {
             if (!empty($row->$imageColumn)) {
                 $drawing = new Drawing();
                 $drawing->setName('Image');
-                $drawing->setDescription('Product Image');
+                $drawing->setDescription('Image');
                 // Đường dẫn ảnh
                 $imagePath = storage_path("app/public/" . $row->$imageColumn);
                 if (file_exists($imagePath)) {

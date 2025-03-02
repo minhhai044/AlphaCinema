@@ -137,25 +137,26 @@ return [
             'showtimes'       => [
                 'model'         => Showtime::class,
                 'columns'       => [
-                    'branch_id',
-                    'movie_id',
-                    'day_id',
-                    'cinema_id',
-                    'room_id',
-                    'seat_structure',
-                    'slug',
-                    'date',
-                    'price_special',
-                    'description_special',
-                    'status_special',
-                    'start_time',
-                    'end_time',
-                    'is_active'
+                    'branch.name',  // Hiển thị tên chi nhánh thay vì ID
+                    'movie.name',
+                    'movie.img_thumbnail', 
+                    'day.name',     // Hiển thị ngày chiếu thay vì day_id
+                    'cinema.name',  // Hiển thị tên rạp thay vì cinema_id
+                    'room.name',    // Hiển thị tên phòng thay vì room_id
+                    
                 ],
-                'headings'      => ['Tên chi nhánh','tên phim','ngày chiếu','Rạp chiếu','phòng chiếu','ghế','slug','giá dặc biệt','mô tả',
-            'status','thời gian bắt đầu','thời gian kết thúc','mhanhf động'],
-                'relations'      => [''],
-                'image_columns' => ['']
+                'headings'      => [
+                    'Tên chi nhánh',
+                    'Tên phim',
+                    'Ảnh phim ',
+                    'Thể loại phim ',
+                    'Loại ngày ',
+                    'Tên rạp ',
+                    'Tên phòng ',
+                    
+                ],
+                'relations'      => ['branch', 'movie', 'day', 'cinema', 'room'], // Định nghĩa quan hệ
+                'image_columns' => ['movie.img_thumbnail']
             ]
         ],
 
