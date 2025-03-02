@@ -49,13 +49,14 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
-    Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
+
 
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
-    Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
-    Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
+
     Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
 });
-
+Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
+Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
 Route::get('/foods', [FoodController::class, 'index']);
 Route::get('list_combo', [ComboFoodController::class, 'list_combo']);
+Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
