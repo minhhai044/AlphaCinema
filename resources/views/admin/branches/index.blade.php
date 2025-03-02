@@ -206,41 +206,23 @@
                                                     </td>
 
                                                     <td>
-                                                        <div class="dropdown">
-                                                            <a href="#" class="dropdown-toggle card-drop"
-                                                                data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                                                            </a>
-                                                            <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                                {{-- Button edit --}}
-                                                                <li>
-                                                                    <button type="button" data-bs-toggle="modal"
-                                                                        class="edit_type_room dropdown-item editBranch"
-                                                                        data-bs-target="#exampleModal" data-id={{ $branch->id }}
-                                                                        data-name="{{ $branch->name }}"
-                                                                        data-active="{{ $branch->is_active }}">
-                                                                        <i
-                                                                            class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                                        Edit
-                                                                    </button>
-                                                                </li>
-                                                                {{-- xoas --}}
-                                                                <li>
-                                                                    <form method="POST"
-                                                                        action="{{ route('admin.branches.destroy', $branch) }}"
-                                                                        class="d-inline-block">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="dropdown-item edit-list"
-                                                                            onclick="return confirm('Bạn có muốn xóa không')">
-                                                                            <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                            Xóa
-                                                                        </button>
-                                                                    </form>
-                                                                </li>
-                                                            </ul>
-                                                        </div>
+                                                        <button type="button" title="Chỉnh sửa" class="btn btn-warning btn-sm editBranch"
+                                                            data-bs-toggle="modal" data-bs-target="#editBranchModal"
+                                                            data-id="{{ $branch->id }}" data-name="{{ $branch->name }}"
+                                                            data-active="{{ $branch->is_active }}">
+                                                            <i class="fas fa-edit"></i>
+                                                        </button>
+                                                    
+                                                        <form method="POST" action="{{ route('admin.branches.destroy', $branch) }}" class="d-inline-block">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                                onclick="return confirm('Bạn có muốn xóa không')">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
                                                     </td>
+                                                    
                                                 </tr>
                                             @endforeach
                                         </tbody>

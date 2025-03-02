@@ -154,32 +154,18 @@
                                         <td>{{ $User_voucher->voucher->title }}</td>
                                         <td>{{ $User_voucher->usage_count }}</td>
                                         <td>
-                                            <div class="dropdown">
-                                                <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                                    <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                                                </a>
-                                                <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                    <li>
-                                                        <a href="{{ route('admin.user-vouchers.edit', $User_voucher) }}" class="dropdown-item edit-list" data-edit-id="{{ $User_voucher->id }}">
-                                                            <i class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                            Edit
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <form method="POST"
-                                                            action="{{ route('admin.user-vouchers.destroy', $User_voucher) }}"
-                                                            class="d-inline-block">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="dropdown-item edit-list"
-                                                                onclick="return confirm('Bạn có muốn xóa không')">
-                                                                <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                Xóa
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                            </div>
+                                            <a href="{{ route('admin.user-vouchers.edit', $User_voucher) }}" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> 
+                                            </a>
+                                            <form action="{{ route('admin.user-vouchers.destroy', $User_voucher) }}" method="POST"
+                                                class="d-inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="btn btn-danger btn-sm">
+                                                    <i class="bi bi-trash"></i> 
+                                                </button>
+                                            </form>
+                                        </td>
                                         
                                     </tr>
                                 @endforeach

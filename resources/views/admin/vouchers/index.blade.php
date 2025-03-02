@@ -193,42 +193,28 @@
 
 
                                                     <td>
-                                                        <div class="dropdown">
-                                                            <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                                                                <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                                                            </a>
-                                                            <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                                <li>
-                                                                    <a href="{{ route('admin.vouchers.edit', $voucher) }}" class="dropdown-item edit-list" data-edit-id="{{ $voucher->id }}">
-                                                                        <i class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                                        Edit
-                                                                    </a>
-                                                                </li>
-                                                                <li>
-                                                                    <form method="POST"
-                                                                        action="{{ route('admin.vouchers.destroy', $voucher) }}"
-                                                                        class="d-inline-block">
-                                                                        @csrf
-                                                                        @method('DELETE')
-                                                                        <button type="submit" class="dropdown-item edit-list"
-                                                                            onclick="return confirm('Bạn có muốn xóa không')">
-                                                                            <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                            Xóa
-                                                                        </button>
-                                                                    </form>
-                                                                </li>
-                                                                <li>
-                                                                    {{-- <button @method('DELETE') href="{{ route('admin.vouchers.show', $voucher) }}" class="dropdown-item edit-list" data-edit-id="{{ $voucher->id }}">
-                                                                        <i class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
-                                                                        Show
-                                                                    </button> --}}
-                                                                    {{-- <button class="dropdown-item remove-list" data-remove-id="{{ $cinema->id }}">
-                                                                        <i class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                        Delete
-                                                                    </button> --}}
-                                                                </li>
-                                                            </ul>
-                                                        </div>
+                                                        <a href="{{ route('admin.vouchers.show', $voucher) }}">
+                                                            <button title="xem" class="btn btn-success btn-sm "
+                                                                type="button"><i class="bi bi-eye"></i></button>
+                                                        </a>
+
+                                                        <a href="{{ route('admin.vouchers.edit', $voucher) }}">
+                                                            <button title="xem" class="btn btn-warning btn-sm "
+                                                                type="button"><i class="fas fa-edit"></i></button>
+                                                        </a>
+
+                                                        <form method="POST"
+                                                            action="{{ route('admin.vouchers.destroy', $voucher) }}"
+                                                            class="d-inline-block">
+                                                            @csrf
+                                                            @method('DELETE')
+                                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                                onclick="return confirm('Bạn có muốn xóa không')">
+                                                                <i class="bi bi-trash"></i>
+                                                            </button>
+                                                        </form>
+
+                                                        
                                                     </td>
                                                 </tr>
                                             @endforeach
@@ -276,36 +262,6 @@
             </div>
         </div>
     </div>
-    <!-- Modal chỉnh sửa -->
-    <div class="modal fade" id="editBranchModal" tabindex="-1" aria-labelledby="editBranchModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered"> <!-- Thêm modal-dialog-centered -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editBranchModalLabel">Cập nhật chi nhánh</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="editBranchForm" method="POST">
-                    @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-                        <div class="mb-3">
-                            <label for="branchName" class="form-label">Tên chi nhánh</label>
-                            <input type="text" class="form-control" id="branchName" name="name"
-                                placeholder="Nhập tên chi nhánh" required>
-                        </div>
-                        <div class="form-check form-switch">
-                            <input class="form-check-input" type="checkbox" id="branchActive" name="is_active">
-                            <label class="form-check-label" for="branchActive">Hoạt động</label>
-                        </div>
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">Cập nhật</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    </div>
 
 @endsection
 
@@ -332,45 +288,6 @@
                 });
             });
         }
-
-        // Tìm kiếm ngay khi nhập
-        // if (searchInput) {
-        //     searchInput.addEventListener('input', function() {
-        //         const keyword = searchInput.value
-        //     .toLowerCase(); // Lấy từ khóa tìm kiếm và chuyển về chữ thường
-
-        //         rows.forEach(row => {
-        //             const branchName = row.querySelector('.branch-name').textContent
-        //                 .toLowerCase(); // Lấy tên chi nhánh
-
-        //             // So sánh từ khóa với tên chi nhánh
-        //             if (branchName.includes(keyword)) {
-        //                 row.style.display = ''; // Hiện hàng nếu khớp
-        //             } else {
-        //                 row.style.display = 'none'; // Ẩn hàng nếu không khớp
-        //             }
-        //         });
-        //     });
-        // }
-
-        // Modal sửa chi nhánh
-        document.querySelectorAll('.editBranch').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const name = this.dataset.name;
-                const isActive = this.dataset.active == 1;
-
-                // Cập nhật form trong modal
-                const form = document.getElementById('editBranchForm');
-                form.action = `/admin/branches/${id}`;
-                document.getElementById('branchName').value = name;
-                document.getElementById('branchActive').checked = isActive;
-
-                // Hiển thị modal
-                const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
-                modal.show();
-            });
-        });
 
     });
 </script>
