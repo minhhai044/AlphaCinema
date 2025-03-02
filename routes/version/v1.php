@@ -40,7 +40,7 @@ Route::prefix('branchs')->group(function () {
 
 // Route::post('ticket', [TicketController::class, 'createTicket']);
 Route::get('/get-cinemas', [TicketController::class, 'getCinemas']);
-Route::get('/get-movies', [TicketController::class, 'getMovies']);
+// Route::get('/get-movies', [TicketController::class, 'getMovies']);
 
 Route::middleware('auth:sanctum')->group(function () {
 

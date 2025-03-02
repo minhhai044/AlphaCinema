@@ -1,4 +1,18 @@
 @extends('admin.layouts.master')
+
+@section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css')}}" type="text/css" />
+
+    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+@endsection
 @section('content')
     <h5 class="fw-bold">Quản lý hóa đơn</h5>
     <div class="rounded">
@@ -38,7 +52,8 @@
                     <select name="movie_id" class="form-select" required id="movie_id">
                         <option value="" disabled selected>Chọn phim</option>
                         @foreach ($movies as $movie)
-                            <option value="{{ $movie['id'] }}" {{ request('movie_id') == $movie['id'] ? 'selected' : '' }}>
+                            <option value="{{ $movie['id'] }}"
+                                {{ request('movie_id') == $movie['id'] ? 'selected' : '' }}>
                                 {{ $movie['name'] }}
                             </option>
                         @endforeach
@@ -75,20 +90,83 @@
         </div>
 
         <div class="table-responsive mt-3">
-            <table id="ticketTable" class="table  w-100 text-center">
+            <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
                 <thead>
                     <tr class="text-center">
                         <th>Mã vé</th>
                         <th>Thông tin người dùng</th>
-                        <th></th>
-                        <th>Email</th>
+                        <th>Thong tin vé</th>
+                        <th>Chức năng</th>
                         <th>Giới tính</th>
-                        <th>Loại</th>
-                        <th>Hành động</th>
+                        <th>Giới tính</th>
+
+
+                        {{-- <th>Name</th>
+                        <th>Position</th>
+                        <th>Office</th>
+                        <th>Age</th>
+                        <th>Start date</th>
+                        <th>Salary</th> --}}
                     </tr>
                 </thead>
+                <tbody>
+                    <tr>
+                        <td>Tiger Nixon</td>
+                        <td>System Architect</td>
+                        <td>Edinburgh</td>
+                        <td>61</td>
+                        <td>2011/04/25</td>
+                        <td>$320,800</td>
+                    </tr>
+
+                    <tr>
+                        <td>Donna Snider</td>
+                        <td>Customer Support</td>
+                        <td>New York</td>
+                        <td>27</td>
+                        <td>2011/01/25</td>
+                        <td>$112,000</td>
+                    </tr>
+                </tbody>
             </table>
         </div>
+
+        {{-- <table id="datatable" class="table table-bordered dt-responsive  nowrap w-100">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Office</th>
+                    <th>Age</th>
+                    <th>Start date</th>
+                    <th>Salary</th>
+                </tr>
+            </thead>
+
+
+
+
+
+            <tbody>
+                <tr>
+                    <td>Tiger Nixon</td>
+                    <td>System Architect</td>
+                    <td>Edinburgh</td>
+                    <td>61</td>
+                    <td>2011/04/25</td>
+                    <td>$320,800</td>
+                </tr>
+
+                <tr>
+                    <td>Donna Snider</td>
+                    <td>Customer Support</td>
+                    <td>New York</td>
+                    <td>27</td>
+                    <td>2011/01/25</td>
+                    <td>$112,000</td>
+                </tr>
+            </tbody>
+        </table> --}}
 
     </div>
 
@@ -98,16 +176,30 @@
 @endsection
 
 @section('script')
-    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
-    <script src="https://cdn.datatables.net/1.11.5/js/dataTables.bootstrap5.min.js"></script>
-    <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/dataTables.buttons.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.print.min.js"></script>
-    <script src="https://cdn.datatables.net/buttons/2.2.2/js/buttons.html5.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
-    
+    <!-- Required datatable js -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <!-- Buttons examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+    </script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+    </script>
+
+    <!-- Datatable init js -->
+    <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
+
+    <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
+
     <script>
         $(document).ready(function() {
             // Khi người dùng thay đổi chi nhánh
