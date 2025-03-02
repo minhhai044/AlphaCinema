@@ -31,7 +31,7 @@ class ComboController extends Controller
             $totalRecords = Combo::count();
 
             // Query danh sách combo kèm theo món ăn
-            $query = Combo::with(['comboFood.food']);
+            $query = Combo::with(['comboFood.food'])->latest();
 
             // Lọc theo ID
             if ($request->filled('id')) {
