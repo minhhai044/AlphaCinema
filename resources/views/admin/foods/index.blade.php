@@ -1,6 +1,8 @@
 @extends('admin.layouts.master')
 @section('title', 'Quản lý đồ ăn')
-
+@section('style')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+@endsection
 @section('content')
     <!-- Start page title -->
     <div class="row">

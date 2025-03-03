@@ -11,6 +11,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Support\Str;
+
+
 
 class TicketController extends Controller
 {
@@ -27,7 +30,7 @@ class TicketController extends Controller
     {
         try {
             $data = $ticketRequest->validated();
-            // dd($data);
+            $data['code'] = strtoupper(Str::random(8));
             // Gọi đúng phương thức của TicketService
             $ticket = $this->ticketService->create($data);
 
@@ -56,15 +59,15 @@ class TicketController extends Controller
         return response()->json(['cinemas' => $cinemas]);
     }
 
-    // Lấy danh sách phim theo rạp phim
-    public function getMovies(Request $request)
-    {
-        $cinemaId = $request->cinema_id;
+    // // Lấy danh sách phim theo rạp phim
+    // public function getMovies(Request $request)
+    // {
+    //     $cinemaId = $request->cinema_id;
 
-        // Lọc các phim theo rạp phim
-        $movies = Movie::where('cinema_id', $cinemaId)->get();
+    //     // Lọc các phim theo rạp phim
+    //     $movies = Movie::where('cinema_id', $cinemaId)->get();
 
-        return response()->json(['movies' => $movies]);
-    }
+    //     return response()->json(['movies' => $movies]);
+    // }
 
 }
