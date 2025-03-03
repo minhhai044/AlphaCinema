@@ -98,123 +98,124 @@
 @endsection
 
 @section('script')
-    <script>
-        $(document).ready(function() {
-            var table = $('#userTable').DataTable({
-                processing: true,
-                serverSide: true,
-                responsive: true,
-                autoWidth: false,
-                order: [],
-                ajax: {
-                    url: "{{ route('api.users.index') }}",
-                    type: "GET",
-                    data: function(d) {
-                        d.id = $('input[name="id"]').val();
-                        d.gender = $('select[name="gender"]').val();
-                        d.type_user = $('select[name="type_user"]').val();
-                    },
-                    error: function(xhr, status, error) {
-                        console.error("Lỗi API:", xhr.responseText);
-                    }
-                },
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'name',
-                        name: 'name'
-                    },
-                    {
-                        data: 'avatar',
-                        render: function(data) {
-                            const avatarUrl = data ? '/storage/' + data :
-                                "https://graph.facebook.com/4/picture?type=small";
-                            return `<img src="${avatarUrl}"
-                                                 style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
-                        }
-                    },
-                    {
-                        data: 'email',
-                        name: 'email'
-                    },
-                    {
-                        data: 'gender',
-                        name: 'gender',
-                        render: function(data) {
-                            if (data === 0) return '<span class="badge bg-primary">Nam</span>';
-                            if (data === 1) return '<span class="badge bg-danger">Nữ</span>';
-                            return '<span class="badge bg-secondary">Khác</span>';
-                        }
-                    },
-                    {
-                        data: 'roles',
-                        name: 'roles',
-                        render: function(data) {
-                            if (!data || data.length === 0) {
-                                return '<span class="badge bg-secondary">Không có vai trò</span>';
-                            }
-                            return data.map(role =>
-                                `<span class="badge bg-primary me-1">${role.name}</span>`).join(
-                                ' ');
-                        }
-                    },
-                    {
-                        data: 'id',
-                        render: function(data) {
-                            return `
-                                <div class="dropdown text-center">
-                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">...
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="/admin/users/${data}" class="dropdown-item text-info"><i class="fas fa-eye"></i> Xem</a></li>
-                                        <li><a href="/admin/users/${data}/edit" class="dropdown-item text-warning"><i class="fas fa-edit"></i> Sửa</a></li>
-                                        <li>
-                                            <form action="/admin/users/${data}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                                    <i class="fas fa-trash-alt"></i> Xóa
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>`;
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
+        <script>
+            $(document).ready(function() {
+                var table = $('#userTable').DataTable({
+                    processing: true,
+                    serverSide: true,
+                    responsive: true,
+                    autoWidth: false,
+                    order: [],
+                    ajax: {
+                        url: "{{ route('api.users.index') }}",
+                        type: "GET",
+                        data: function(d) {
+                            d.id = $('input[name="id"]').val();
+                            d.gender = $('select[name="gender"]').val();
+                            d.type_user = $('select[name="type_user"]').val();
                         },
-                        orderable: false,
-                        searchable: false
-                    }
-                ],
-                pageLength: 5,
-                lengthChange: false,
-                language: {
-                    search: "Tìm kiếm:",
-                    paginate: {
-                        next: ">",
-                        previous: "<"
+                        error: function(xhr, status, error) {
+                            console.error("Lỗi API:", xhr.responseText);
+                        }
                     },
-                    lengthMenu: "Hiển thị _MENU_ mục",
-                    info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
-                    emptyTable: "Không có dữ liệu để hiển thị",
-                    zeroRecords: "Không tìm thấy kết quả phù hợp"
-                }
-            });
+                    columns: [{
+                            data: 'id',
+                            name: 'id'
+                        },
+                        {
+                            data: 'name',
+                            name: 'name'
+                        },
+                        {
+                            data: 'avatar',
+                            render: function(data) {
+                                const avatarUrl = data ? '/storage/' + data :
+                                    "https://graph.facebook.com/4/picture?type=small";
+                                return `<img src="${avatarUrl}"
+                                                     style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
+                            }
+                        },
+                        {
+                            data: 'email',
+                            name: 'email'
+                        },
+                        {
+                            data: 'gender',
+                            name: 'gender',
+                            render: function(data) {
+                                if (data === 0) return '<span class="badge bg-primary">Nam</span>';
+                                if (data === 1) return '<span class="badge bg-danger">Nữ</span>';
+                                return '<span class="badge bg-secondary">Khác</span>';
+                            }
+                        },
+                        {
+                            data: 'roles',
+                            name: 'roles',
+                            render: function(data) {
+                                if (!data || data.length === 0) {
+                                    return '<span class="badge bg-secondary">Không có vai trò</span>';
+                                }
+                                return data.map(role =>
+                                    `<span class="badge bg-primary me-1">${role.name}</span>`).join(
+                                    ' ');
+                            }
+                        },
+                        {
+                            data: 'id',
+                            render: function(data) {
+                                return `
+                                    <div class="dropdown text-center">
+                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">...
+                                        </button>
+                                        <ul class="dropdown-menu">
+                                            <li><a href="/admin/users/${data}" class="dropdown-item text-info"><i class="fas fa-eye"></i> Xem</a></li>
+                                            <li><a href="/admin/users/${data}/edit" class="dropdown-item text-warning"><i class="fas fa-edit"></i> Sửa</a></li>
+                                            <li>
+                                                <form action="/admin/users/${data}" method="POST" class="d-inline">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                                                        <i class="fas fa-trash-alt"></i> Xóa
+                                                    </button>
+                                                </form>
+                                            </li>
+                                        </ul>
+                                    </div>`;
+                            },
+                            orderable: false,
+                            searchable: false
+                        }
+                    ],
+                    pageLength: 5,
+                    lengthChange: false,
+                    language: {
+                        search: "Tìm kiếm:",
+                        paginate: {
+                            next: ">",
+                            previous: "<"
+                        },
+                        lengthMenu: "Hiển thị _MENU_ mục",
+                        info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
+                        emptyTable: "Không có dữ liệu để hiển thị",
+                        zeroRecords: "Không tìm thấy kết quả phù hợp"
+                    }
+                });
 
-            $('#pageLength').on('change', function() {
-                table.page.len($(this).val()).draw();
-            });
+                $('#pageLength').on('change', function() {
+                    table.page.len($(this).val()).draw();
+                });
 
-            $('#filterForm').on('submit', function(e) {
-                e.preventDefault();
-                table.ajax.reload();
-            });
-
-            $('#resetFilter').on('click', function() {
-                setTimeout(function() {
+                $('#filterForm').on('submit', function(e) {
+                    e.preventDefault();
                     table.ajax.reload();
-                }, 50);
+                });
+
+                $('#resetFilter').on('click', function() {
+                    setTimeout(function() {
+                        table.ajax.reload();
+                    }, 50);
+                });
             });
-        });
-    </script>
+        </script>
 @endsection
