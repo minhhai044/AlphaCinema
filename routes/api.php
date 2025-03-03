@@ -74,3 +74,7 @@ Route::prefix('point_histories')->group(function () {
     Route::get('{id}', [PointHistoryController::class, 'show']);
 });
 Route::middleware('auth:api')->get('/vouchers', [VoucherController::class, 'index']);
+
+Route::get('/get-cinemas', [CinemaController::class, 'getCinemasByBranch'])->name('api.get-cinemas');
+Route::get('/get-movies', [CinemaController::class, 'getMoviesByCinema'])->name('api.get-movies');
+

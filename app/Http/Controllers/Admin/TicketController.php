@@ -19,10 +19,8 @@ class TicketController extends Controller
 
     public function index(Request $request)
     {
-        // Sử dụng TicketService để lấy dữ liệu
         [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
 
-        // Lấy danh sách cinema từ $branchesRelation (nếu cần)
         $cinemas = [];
         if (!empty($branchesRelation)) {
             foreach ($branchesRelation as $branchCinemas) {

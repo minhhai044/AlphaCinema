@@ -24,7 +24,7 @@ class TicketSeeder extends Seeder
         $movieIds = Movie::pluck('id')->toArray();
         $showtimeIds = Showtime::pluck('id')->toArray();
 
-        for ($i = 0; $i < 5; $i++) {
+        for ($i = 0; $i < 20; $i++) {
             $totalPrice = $faker->numberBetween(50000, 200000); // Giá vé ngẫu nhiên
             $voucherDiscount = $faker->boolean(30) ? $faker->numberBetween(10000, 50000) : 0; // 30% cơ hội có giảm giá voucher
             $pointUse = $faker->boolean(20) ? $faker->numberBetween(100, 500) : 0; // 20% cơ hội dùng điểm
