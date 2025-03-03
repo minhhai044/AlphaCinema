@@ -41,40 +41,39 @@
 
                             <div class="col-md-4 mb-3">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label"><span class="text-danger">*</span>Tên
-                                        Combo</label>
-                                    <input type="text" name="name" id="name"
-                                        class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
-                                        data-="" value="{{ old('name') }}" placeholder="Nhập tên món ăn">
-
-                                    <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                        @if ($errors->has('name'))
+                                    <label for="name" class="form-label">
+                                        <span class="text-danger">*</span> Tên Combo
+                                    </label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                        value="{{ old('name') }}" placeholder="Nhập tên món ăn">
+                            
+                                    @if ($errors->has('name'))
+                                        <div class="text-danger">
                                             {{ $errors->first('name') }}
-                                        @endif
-                                    </div>
+                                        </div>
+                                    @endif
                                 </div>
                             </div>
 
                             <div class="col-md-4 mb-3">
                                 <label for="price" class="form-label ">Giá gốc (VNĐ)</label>
-                                <input type="number" class="form-control bg-light" id="price" name="price" readonly>
+                                <input type="text" class="form-control bg-light" id="price" name="price" readonly>
+                                <input type="hidden" id="price_hidden" name="price_hidden"> 
                             </div>
 
 
                             <div class="col-md-4 mb-3">
-                                <div class="mb-3">
-                                    <label for="price_sale" class="form-label"><span class="text-danger">*</span>Giá
-                                        bán (VNĐ)</label>
-                                    <input type="text"
-                                        class="form-control {{ $errors->has('price_sale') ? 'is-invalid' : (old('price_sale') ? 'is-valid' : '') }}"
-                                        name="price_sale" id="price_sale" placeholder="Nhập giá tiền"
-                                        value="{{ old('price_sale') }}">
-                                    <div class="{{ $errors->has('price_sale') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                        @if ($errors->has('price_sale'))
-                                            {{ $errors->first('price_sale') }}
-                                        @endif
+                                <label for="price_sale" class="form-label">
+                                    <span class="text-danger">*</span> Giá bán (VNĐ)
+                                </label>
+                                <input type="text" name="price_sale" id="price_sale" class="form-control"
+                                    value="{{ old('price_sale') }}" placeholder="Nhập giá tiền">
+                        
+                                @if ($errors->has('price_sale'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('price_sale') }}
                                     </div>
-                                </div>
+                                @endif
                             </div>
                         </div>
 
@@ -83,14 +82,15 @@
                                 <span class="required">*</span> Mô tả
                             </label>
                             <textarea
-                                class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}"
+                                class="form-control"
                                 name="description" rows="6" placeholder="Nhập mô tả">{{ old('description') }}</textarea>
 
-                            <div class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
+                            
                                 @if ($errors->has('description'))
-                                    {{ $errors->first('description') }}
+                                    <div class="text-danger">
+                                        {{ $errors->first('description') }}
+                                    </div>
                                 @endif
-                            </div>
                         </div>
                     </div>
 
@@ -194,6 +194,28 @@
             // Danh sách giá món ăn (Thay thế bằng dữ liệu thực tế)
             const foodPrices = @json($foodPrice->pluck('price', 'id'));
 
+            // Hàm tính tổng giá tiền dựa trên số lượng và giá của món ăn
+            function updateTotalPrice() {
+                let totalPrice = 0;
+                $('.food-item').each(function() {
+                    const foodId = $(this).find('.food-select').val();
+                    const quantity = parseInt($(this).find('.food-quantity').val()) || 0;
+
+                    if (foodId && quantity > 0) {
+                        totalPrice += (foodPrices[foodId] || 0) * quantity;
+                    }
+                });
+                 // Định dạng số có dấu "," ngăn cách
+                    let formattedPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    // console.log(totalPrice);
+                    // console.log(formattedPrice);
+                // Cập nhật giá trị tổng (hiển thị có dấu ,)
+                $('#price').val(formattedPrice);
+                $('#price_hidden').val(totalPrice); // Lưu số không có dấu ,
+
+            }
+
+
             // Hàm thêm món ăn vào danh sách
             function addFoodItem() {
                 if (foodCount >= maxFoodItems) {
@@ -271,20 +293,7 @@
                 });
             }
 
-            // Hàm tính tổng giá tiền dựa trên số lượng và giá của món ăn
-            function updateTotalPrice() {
-                let totalPrice = 0;
-                $('.food-item').each(function() {
-                    const foodId = $(this).find('.food-select').val();
-                    const quantity = parseInt($(this).find('.food-quantity').val()) || 0;
-
-                    if (foodId && quantity > 0) {
-                        totalPrice += (foodPrices[foodId] || 0) * quantity;
-                    }
-                });
-                $('#price').val(totalPrice);
-            }
-
+           
             // Cập nhật sự kiện click khi nhấn nút tăng/giảm số lượng
             function updateEventHandlers() {
                 // Xử lý tăng số lượng
@@ -373,14 +382,7 @@
             function validateInput(selector, condition, errorMessage) {
                 let input = $(selector);
                 let value = input.val().trim();
-
-                if (condition(value)) {
-                    input.removeClass("is-invalid").addClass("is-valid");
-                    input.next(".invalid-feedback").hide();
-                } else {
-                    input.removeClass("is-valid").addClass("is-invalid");
-                    input.next(".invalid-feedback").text(errorMessage).show();
-                }
+                
             }
 
             // Validate tên combo
