@@ -71,4 +71,10 @@ class Showtime extends Model
     {
         return $this->belongsTo(Branch::class);
     }
+   
+
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }
