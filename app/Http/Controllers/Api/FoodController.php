@@ -28,7 +28,7 @@ class FoodController extends Controller
             $totalRecords = Food::count();
 
             // Tạo query gốc
-            $query = Food::query()->latest();
+            $query = Food::query()->withCount('combos')->latest();
 
             // Lọc theo tên phim
             if ($request->filled('id')) {
