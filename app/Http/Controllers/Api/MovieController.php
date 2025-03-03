@@ -75,6 +75,12 @@ class MovieController extends Controller
             return response()->json(['error' => $e->getMessage()], 500);
         }
     }
+    public function getMoviesByCinema(Request $request)
+    {
+        $cinemaId = $request->input('cinema_id');
+        $movies = Movie::where('is_active', 1)->get(['id', 'name']);
+        return response()->json(['movies' => $movies]);
+    }
 
     public function show(string $id)
     {

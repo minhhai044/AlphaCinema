@@ -20,41 +20,34 @@ class TicketService
 
     public function getService($request)
     {
-
         $date = $request->query('date', '');
         $branch_id = $request->query('branch_id', '');
         $cinema_id = $request->query('cinema_id', '');
         $movie_id = $request->query("movie_id", "");
         $status = $request->query("status", "");
 
-        if (empty($date) || empty($branch_id) || empty($cinema_id) || empty($status)) {
-            $tickets = collect();
+        // Lấy tất cả tickets nếu không có filter, nếu có filter thì lọc theo điều kiện
+        if (empty($date) && empty($branch_id) && empty($cinema_id) && empty($movie_id) && empty($status)) {
+            $tickets = Ticket::with('movie', 'branch', 'cinema', 'user')->get();
         } else {
-            $tickets = Ticket::with('movie', 'branch', 'cinema')
-                ->where('date', $date)
-                ->where('branch_id', $branch_id)
-                ->where('movie_id', $movie_id)
-                ->where('cinema_id', $cinema_id)
-                ->where("status", $status)
+            $tickets = Ticket::with('movie', 'branch', 'cinema', 'user')
+                ->when($date, fn($query) => $query->where('date', $date))
+                ->when($branch_id, fn($query) => $query->where('branch_id', $branch_id))
+                ->when($cinema_id, fn($query) => $query->where('cinema_id', $cinema_id))
+                ->when($movie_id, fn($query) => $query->where('movie_id', $movie_id))
+                ->when($status, fn($query) => $query->where('status', $status))
                 ->get();
         }
 
-        // $listTickets = $tickets->groupBy('movie_id')->map(function ($showtimes) {
-        //     return [
-        //         'movie' => $showtimes->first()->movie, // Lấy thông tin phim từ showtime đầu tiên
-        //         'showtimes' => $showtimes->toArray(), // Danh sách suất chiếu của phim đó
-        //     ];
-        // });
-
-        $branchs = Branch::with('cinemas.rooms')->where('is_active', 1)->get();
-        $branchsRelation = [];
-        foreach ($branchs as $branch) {
-            $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
+        $branches = Branch::with('cinemas.rooms')->where('is_active', 1)->get();
+        $branchesRelation = [];
+        foreach ($branches as $branch) {
+            $branchesRelation[$branch->id] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
         }
 
         $movies = Movie::query()->where('is_active', 1)->get();
 
-        return [$branchs, $branchsRelation, $movies];
+        return [$tickets, $branches, $branchesRelation, $movies];
     }
 
     public function create(array $data)
@@ -64,8 +57,7 @@ class TicketService
                 return $this->ticket->create($data);
             });
         } catch (Exception $e) {
-            // Ghi log lỗi nếu có vấn đề xảy ra
-            Log::error("lÕI KHI Tạo MỚI: " . $e->getMessage());
+            Log::error("LỖI KHI TẠO MỚI: " . $e->getMessage());
             return false;
         }
     }

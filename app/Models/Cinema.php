@@ -29,4 +29,10 @@ class Cinema extends Model
     public function user(){
         return $this->hasOne(User::class);
     }
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
+
+   
 }

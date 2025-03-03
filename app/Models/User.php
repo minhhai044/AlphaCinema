@@ -82,4 +82,8 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Rank::class, 'total_amount', 'total_spent');
     }
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }
