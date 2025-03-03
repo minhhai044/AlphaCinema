@@ -1,5 +1,6 @@
 @extends('admin.layouts.master')
 @section('style')
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <style>
         .table {
             vertical-align: middle !important;
@@ -164,27 +165,27 @@
                         data: 'id',
                         render: function(data) {
                             return `
-                                <div class="dropdown text-center">
-                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">...
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        <li><a href="/admin/users/${data}" class="dropdown-item text-info"><i class="fas fa-eye"></i> Xem</a></li>
-                                        <li><a href="/admin/users/${data}/edit" class="dropdown-item text-warning"><i class="fas fa-edit"></i> Sửa</a></li>
-                                        <li>
-                                            <form action="/admin/users/${data}" method="POST" class="d-inline">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                                    <i class="fas fa-trash-alt"></i> Xóa
-                                                </button>
-                                            </form>
-                                        </li>
-                                    </ul>
-                                </div>`;
+                                <div class="d-flex justify-content-center  gap-1">
+                                    <a href="/admin/users/${data}" class="text-info">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    <a href="/admin/users/${data}/edit" class="text-warning">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="/admin/users/${data}" method="POST" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?')" style="display:inline;">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="border-0 bg-transparent text-danger">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </form>
+                                </div>
+                            `;
                         },
                         orderable: false,
                         searchable: false
                     }
+
                 ],
                 pageLength: 5,
                 lengthChange: false,
