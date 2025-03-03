@@ -176,10 +176,7 @@
                                                     </td>
 
                                                     <td>
-
                                                         {{ number_format($voucher->discount) }} VNĐ
-
-
                                                     </td>
                                                     <td>
                                                         {{ $voucher->quantity }}
@@ -193,6 +190,7 @@
                                                             {{ $voucher->is_active ? 'Active' : 'No Active' }}
                                                         </div>
                                                     </td>
+
 
                                                     <td>
                                                         <div class="dropdown">
@@ -317,6 +315,7 @@
         const searchInput = document.getElementById('searchInput');
         const rows = document.querySelectorAll('#customerList-table tbody tr');
 
+
         if (searchInput) {
             searchInput.addEventListener('input', function() {
                 const keyword = searchInput.value.toLowerCase();
@@ -333,5 +332,45 @@
                 });
             });
         }
+
+        // Tìm kiếm ngay khi nhập
+        // if (searchInput) {
+        //     searchInput.addEventListener('input', function() {
+        //         const keyword = searchInput.value
+        //     .toLowerCase(); // Lấy từ khóa tìm kiếm và chuyển về chữ thường
+
+        //         rows.forEach(row => {
+        //             const branchName = row.querySelector('.branch-name').textContent
+        //                 .toLowerCase(); // Lấy tên chi nhánh
+
+        //             // So sánh từ khóa với tên chi nhánh
+        //             if (branchName.includes(keyword)) {
+        //                 row.style.display = ''; // Hiện hàng nếu khớp
+        //             } else {
+        //                 row.style.display = 'none'; // Ẩn hàng nếu không khớp
+        //             }
+        //         });
+        //     });
+        // }
+
+        // Modal sửa chi nhánh
+        document.querySelectorAll('.editBranch').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const name = this.dataset.name;
+                const isActive = this.dataset.active == 1;
+
+                // Cập nhật form trong modal
+                const form = document.getElementById('editBranchForm');
+                form.action = `/admin/branches/${id}`;
+                document.getElementById('branchName').value = name;
+                document.getElementById('branchActive').checked = isActive;
+
+                // Hiển thị modal
+                const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
+                modal.show();
+            });
+        });
+
     });
 </script>

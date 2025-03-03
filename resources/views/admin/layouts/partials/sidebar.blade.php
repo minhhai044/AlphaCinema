@@ -23,8 +23,22 @@
                     <span data-key="t-dashboard">Trang chủ</span>
                 </a>
             </li>
+            <li>
+                <a href="javascript: void(0);" class="has-arrow">
+                    <i data-feather="grid"></i>
+                    <span data-key="t-service-systems">Thống kê</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
+                    <li>
+                        <a href="{{ route('admin.statistical.cinemaRevenue') }}">
 
-            
+                            <span data-key="t-vouchers">Thống kê phim</span>
+                        </a>
+                    </li>
+                </ul>
+
+            </li>
+
             <li>
                 <a href="javascript: void(0);" class="has-arrow">
                     <i data-feather="grid"></i>
@@ -56,7 +70,8 @@
                     <li>
                         <a href="{{ route('admin.ranks.index') }}">
                             <span data-key="t-ranks">Quản lý hạn mức</span>
-
+                        </a>
+                    </li>
 
 
                         </a>
@@ -125,8 +140,12 @@
                         </a>
                     </li>
                     <li>
+                        <a href=" {{ route('admin.tickets.index') }}">
+                            <span>Quản lý hóa đơn</span>
+                        </a>
+                    </li>
+                    <li>
                         <a href="{{ route('admin.days.index') }}">
-
                             <span data-key="t-movies">Quản lý ngày</span>
                         </a>
                     </li>

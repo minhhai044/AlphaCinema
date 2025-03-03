@@ -14,15 +14,15 @@
                     <span class="text-info">{{ $movie->name }}</span>
                 </h4>
                 <p class="text-muted fs-6">
-                    <i class="bi bi-calendar-event"></i> Ngày tạo: 
+                    <i class="bi bi-calendar-event"></i> Ngày tạo:
                     <span class="text-warning fw-semibold">
                         {{ \Carbon\Carbon::parse($movie->created_at)->format('d/m/Y') }}
                     </span>
-                    | <i class="bi bi-calendar-check"></i> Ngày phát hành: 
+                    | <i class="bi bi-calendar-check"></i> Ngày phát hành:
                     <span class="text-success fw-semibold">
                         {{ \Carbon\Carbon::parse($movie->release_date)->format('d/m/Y') }}
                     </span>
-                    | <i class="bi bi-calendar-x"></i> Ngày kết thúc: 
+                    | <i class="bi bi-calendar-x"></i> Ngày kết thúc:
                     <span class="text-danger fw-semibold">
                         {{ \Carbon\Carbon::parse($movie->end_date)->format('d/m/Y') }}
                     </span>
@@ -171,9 +171,9 @@
                         </div>
                         <!-- Nút thêm xuất chiếu -->
                         <div class="col-lg-12">
-                            <button type="button" id="addTime" class="btn btn-primary float-end ms-3">Thêm thời
+                            <button type="button" id="addTime" class="btn btn-primary btn-sm float-end ms-3">Thêm thời
                                 gian</button>
-                            <button type="button" id="autoGenerate" class="btn btn-success float-end">Tự động</button>
+                            <button type="button" id="autoGenerate" class="btn btn-success btn-sm float-end">Tự động</button>
                         </div>
                         <!-- Danh sách xuất chiếu -->
                         <div class="col-lg-12" id="listTime">
@@ -183,8 +183,8 @@
                 </div>
 
                 <div class="m-3">
-                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary">Thêm</button>
-                    <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger">Quay lại</button></a>
+                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary btn-sm">Thêm</button>
+                    <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger btn-sm">Quay lại</button></a>
                 </div>
             </div>
         </div>
@@ -193,7 +193,7 @@
         <div class="col-lg-3">
             <div class="card shadow-sm border-0 rounded-3">
                 <div class="card-body">
-                    <h4 class="mb-3 text-center text-warning">Suất chiếu hiện có trong ngày</h4>
+                    <h4 class="mb-3 text-center text-warning">Suất chiếu trong ngày</h4>
 
                     <div class="list-group" id="listShowtime">
 
@@ -276,7 +276,7 @@
                         dataShowtimeCheck = [];
                         $('#listShowtime').append(`
                                                                                                     <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                                                        Hiện tại chưa có suất chiếu nào 
+                                                                                                        Hiện tại chưa có suất chiếu nào
                                                                                                     </div>
                                                                                                 `);
                     }
@@ -290,7 +290,7 @@
             $('#listShowtime').empty();
             $('#listShowtime').append(`
                                                                                                     <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                                                        Hiện tại chưa có suất chiếu nào 
+                                                                                                        Hiện tại chưa có suất chiếu nào
                                                                                                     </div>
                                                                                                 `);
         }
@@ -317,7 +317,7 @@
                                                                                                                     </div>
                                                                                                                 </div>
                                                                                                                 <div class="col-lg-2 ps-5 d-flex align-items-center">
-                                                                                                                    <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${id}">
+                                                                                                                    <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeItem" data-id="${id}">
                                                                                                                         <i class="bi bi-trash"></i>
                                                                                                                     </button>
                                                                                                                 </div>
@@ -453,7 +453,7 @@
         })
         // room_id
         $('#room_id').change(function () {
-            // Khi room thay đổi thì set seat_structure 
+            // Khi room thay đổi thì set seat_structure
             let id = $(this).val();
             let dataDate = $('#date').val();
 
@@ -488,7 +488,7 @@
             }
         });
 
-        // Xóa time 
+        // Xóa time
         $('#listTime').on('click', '.removeItem', function () {
             const id = $(this).data('id');
             let count = $('input[name="start_time[]"]').length;
@@ -523,7 +523,7 @@
                 $('input[name="start_time[]"]').prop('disabled', true);
                 return;
             }
-            // Thêm . khi nhập số 
+            // Thêm . khi nhập số
             $('#price_special').on('input', function (e) {
                 e.preventDefault();
                 let valueDiscount = $(this).val().replace(/\D/g, '');
@@ -601,11 +601,11 @@
             $('#surchargeDay').val(surchargeDay);
 
         })
-        // Khi start_time thay đổi 
+        // Khi start_time thay đổi
         $('#listTime').on('change', 'input[name="start_time[]"]', function () {
             const currentId = $(this).data('id'); // id của div đó
             const currentStart = $(this).val(); // Thời gian của start_time
-            const durationMovie = +$('#duration').val(); // thời lượng phim 
+            const durationMovie = +$('#duration').val(); // thời lượng phim
 
             if (!currentStart) return;
             const currentStartMinutes = convertTimeToMinutes(currentStart);

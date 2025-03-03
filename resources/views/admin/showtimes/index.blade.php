@@ -1,11 +1,25 @@
 @extends('admin.layouts.master')
 @section('content')
-    <h5 class="fw-bold">Quản lý suất chiếu</h5>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Quản lý suất chiếu</h4>
+
+                <div class="page-title-right">
+
+                    <button class="btn btn-primary btn-sm float-end mb-2 me-3" data-bs-toggle="modal" data-bs-target="#movieModal">
+                        <i class="bi bi-plus-lg"></i> Thêm suất chiếu
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 <div class="rounded">
-    <form action="{{ route('admin.showtimes.index') }}" method="get" class="p-4 shadow-sm">
+    <form action="{{ route('admin.showtimes.index') }}" method="get" class="pb-2 shadow-sm">
         <div class="row g-3 align-items-end">
             <div class="col-lg-3">
-                <label for="branch_id" class="form-label fw-bold">Chi nhánh</label>
                 <select name="branch_id" class="form-select" required id="branch_id">
                     <option value="" disabled selected>Chọn chi nhánh</option>
                     @foreach ($branchs as $branch)
@@ -16,26 +30,19 @@
                 </select>
             </div>
             <div class="col-lg-3">
-                <label for="cinema_id" class="form-label fw-bold">Rạp phim</label>
                 <select name="cinema_id" class="form-select" required id="cinema_id">
                     <option value="" disabled selected>Chọn rạp</option>
                 </select>
             </div>
             <div class="col-lg-3">
-                <label for="date" class="form-label fw-bold">Ngày</label>
                 <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}" required>
             </div>
             <div class="col-lg-3 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-50">Tìm kiếm</button>
+                <button type="submit" class="btn btn-info "><i class=" bx bx-search-alt-2"></i></button>
             </div>
         </div>
     </form>
 
-    <div class="m-3 d-flex justify-content-end">
-        <button class="btn btn-primary py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#movieModal">
-            <i class="bi bi-plus-lg"></i> Thêm suất chiếu
-        </button>
-    </div>
     <div class="modal fade" id="movieModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">

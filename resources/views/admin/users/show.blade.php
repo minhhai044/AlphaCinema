@@ -152,6 +152,72 @@
                                     @enderror
                                 </div>
                             </div>
+
+                            <div class="col-lg-12">
+                                @if ($user->type_user == 0)
+                                    <!-- Chỉ hiển thị khi type_user là 0 (người dùng là Member) -->
+                                    <h5 class="mt-4">Lịch sử điểm của người dùng</h5>
+                                    @if ($pointHistories->isEmpty())
+                                        <p>Không có lịch sử điểm.</p>
+                                    @else
+                                        <table class="table table-striped table-bordered text-center">
+                                            <thead>
+                                                <tr>
+                                                    <th>Loại điểm</th>
+                                                    <th>Số điểm</th>
+                                                    <th>Mô tả</th>
+                                                    <th>Ngày hết hạn</th>
+                                                    <th>Trạng thái xử lý</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach ($pointHistories as $history)
+                                                    <tr>
+                                                        <td>{{ $history->type }}</td>
+                                                        <td>{{ number_format($history->point) }}</td>
+                                                        <td>{{ $history->description }}</td>
+                                                        <td>{{ $history->expiry_date ? \Carbon\Carbon::parse($history->expiry_date)->format('d/m/Y') : 'Không có' }}</td>
+
+                                                        </td>
+                                                        <td>
+                                                            <span class="badge rounded-pill {{ $history->processed ? 'bg-success' : 'bg-warning' }}">
+                                                                {{ $history->processed ? 'Đã xử lý' : 'Chưa xử lý' }}
+                                                            </span>
+                                                        </td>
+                                                        
+                                                    </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    @endif
+
+                                    <!-- Hiển thị thông tin Rank của người dùng -->
+                                    <h5 class="mt-4">Thông tin Rank của người dùng</h5>
+                                    @if ($userRank)
+                                        <div class="mb-3  gap-2">
+                                            <label for="account-description" class="form-label">
+                                                Rank:
+                                            </label>
+                                            <span
+                                                class="badge rounded-pill {{ $userRank ? 'bg-primary' : 'bg-secondary' }}">
+                                                {{ $userRank ? $userRank->name : 'Không có rank' }}
+                                            </span>
+                                        </div>
+                                        <p><strong>Tổng tiền đã tiêu: </strong>{{ number_format($user->total_amount) }}</p>
+                                        <p><strong>Tổng tiền yêu cầu đạt được rank:
+                                            </strong>{{ number_format($userRank->total_spent) }}</p>
+                                    @else
+                                        <p>Không có rank phù hợp với số tiền đã tiêu của người dùng.</p>
+                                    @endif
+                                @else
+                                    <!-- Nếu không phải người dùng (Admin), không hiển thị lịch sử điểm và rank -->
+                                    <p>Lịch sử điểm và Rank chỉ hiển thị cho người dùng.</p>
+                                @endif
+                            </div>
+
+
+
+
                         </div>
                     </div>
 

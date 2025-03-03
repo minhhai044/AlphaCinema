@@ -65,7 +65,6 @@ class VoucherController extends Controller
 
 
 
-
     public function show(Voucher $voucher)
     {
         return view(self::PATH_VIEW . __FUNCTION__, compact('voucher'));
@@ -91,7 +90,7 @@ class VoucherController extends Controller
         try {
             // Lấy dữ liệu từ request
             $data = $request->all();
-    
+  
             // Loại bỏ dấu phẩy trước khi lưu vào database
             $data['discount'] = (int) str_replace(',', '', $request->input('discount'));
     
@@ -105,14 +104,14 @@ class VoucherController extends Controller
     }
     
 
-
     public function destroy(Voucher $voucher)
     {
         // dd ($typeRoomRequest);
         try {
+
             $voucher->delete(); 
 
-
+          
             return back()
                 ->with('success', 'Xóa thành công');
         } catch (\Throwable $th) {

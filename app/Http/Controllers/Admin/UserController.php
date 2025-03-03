@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
 use App\Models\Cinema;
 use App\Models\User;
+use App\Models\Rank;
 use App\Repositories\Modules\UserRepository;
 use App\Services\UserService;
 use Illuminate\Http\Request;
@@ -59,12 +60,26 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Thêm người dùng thành công!');
     }
 
+
     public function show($id)
     {
-        $user =  $this->userRepository->findByIdUserRepository($id);
+        $user = $this->userRepository->findByIdUserRepository($id);
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('user'));
+        if ($user->type_user == 0) {
+            $userRank = Rank::where('total_spent', '<=', $user->total_amount)
+                ->orderByDesc('total_spent') 
+                ->first();
+
+            $pointHistories = $user->pointHistories()->get();
+        } else {
+            $userRank = null;
+            $pointHistories = [];
+        }
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('user', 'pointHistories', 'userRank'));
     }
+
+
 
     public function edit($id)
     {
@@ -89,7 +104,7 @@ class UserController extends Controller
 
         if ($userRequest->has('role_id')) {
             $result->roles()->sync($userRequest->role_id);
-        }else{
+        } else {
             $result->roles()->detach();
         }
 

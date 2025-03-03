@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Filters\Filter;
+use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\UserRequest;
@@ -10,10 +12,14 @@ use App\Models\User;
 use App\Services\UserService;
 use App\Traits\ApiRequestJsonTrait;
 use App\Traits\ApiResponseTrait;
+use Exception;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class AuthController extends Controller
 {
@@ -45,9 +51,10 @@ class AuthController extends Controller
 
             // Kiểm tra mật khẩu (So sánh password hash)
             if (!Hash::check($data['password'], $user->password)) {
-
                 return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
             }
+
+            $user->tokens()->delete();
 
             // Tạo token xác thực
             $token = $user->createToken('UserToken')->plainTextToken;
@@ -57,7 +64,8 @@ class AuthController extends Controller
 
             return $this->successResponse([
                 'user' => $user,
-                'token' => $token
+                'token' => $token,
+                'cookie' => $cookie
             ], 'Đăng nhập thành công', Response::HTTP_OK);
         } catch (\Throwable $th) {
             // Ghi log chi tiết lỗi
@@ -99,8 +107,86 @@ class AuthController extends Controller
 
     public function logout(Request $request)
     {
-        $request->user()->currentAccessToken()->delete();
+        // Kiểm tra nếu người dùng đã xác thực
+        if ($request->user()) {
+            // Xóa token truy cập hiện tại
+            $request->user()->currentAccessToken()->delete();
 
-        return $this->successResponse(null, 'Đăng xuất thành công');
+            return response()->json([
+                'success' => true,
+                'message' => 'Đăng xuất thành công'
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Người dùng chưa đăng nhập'
+        ], 401);
+    }
+
+    public function updateProfile(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            // Validate request data
+            $data = $request->validate([
+                'name'    => 'nullable|string|max:255',
+                'phone'   => 'nullable|string|max:15|regex:/^[0-9]+$/',
+                'gender'  => 'nullable|in:0,1',
+                'address' => 'nullable|string|max:255',
+                'avatar'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            ]);
+
+            // Update user info
+            $user = $this->userService->updateInfo($data, $user);
+
+            // Return success response
+            return $this->successResponse([
+                'message' => "Update thành công",
+                'data' => $user
+            ]);
+        } catch (Exception $e) {
+            // Handle any exceptions
+            Log($e->getMessage());
+            return $this->errorResponse([
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
+                'error'   => $e->getTraceAsString()
+            ]);
+        }
+    }
+
+    public function changePassword(ChangePasswordRequest $changePasswordRequest)
+    {
+        try {
+            $user = Auth::user();  // Get the current authenticated user
+
+            // Get validated data from the request
+            $data = $changePasswordRequest->validated();
+
+            // Check if the old password matches the current password
+            if (!Hash::check($data['password_old'], $user->password)) {
+                return $this->errorResponse([
+                    'message' => 'Mật khẩu cũ không chính xác.'
+                ]);
+            }
+
+            // Remove the 'password_old' field from the data array
+            unset($data['password_old']);
+
+            // Proceed with updating the password
+            $user = $this->userService->changePassword($data, $user);
+
+            return $this->successResponse([
+                'message' => "Cập nhật mật khẩu thành công",
+                'data' => $user
+            ]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return $this->errorResponse([
+                'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
+                'error'   => $e->getTraceAsString()
+            ]);
+        }
     }
 }

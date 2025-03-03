@@ -23,14 +23,17 @@ return new class extends Migration
             $table->foreignIdFor(Room::class)->constrained();
             $table->foreignIdFor(Movie::class)->constrained();
             $table->foreignIdFor(Showtime::class)->constrained();
+            $table->string('code')->unique();
             $table->string('voucher_code')->nullable();
             $table->decimal('voucher_discount', 10, 0)->default(0);
             $table->decimal('point_use', 10, 0)->default(0);
-            $table->decimal('point_discount',10,0)->default(0);
+            $table->decimal('point_discount', 10, 0)->default(0);
             $table->string('payment_name')->nullable();
             $table->json('ticket_seats')->nullable();
+            $table->json('ticket_combos')->nullable();
             $table->decimal('total_price')->nullable();
-            $table->boolean('status')->default(0)->comment('0 : Chưa suất vé, 1 : Đã suất vé');
+            $table->datetime('expiry')->nullable();
+            $table->enum('status', ['pending', 'confirmed'])->default('pending')->comment('Đang xử lý, Đã xác nhận');
             $table->timestamps();
         });
     }

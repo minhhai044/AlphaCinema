@@ -12,16 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Schema::create('point_histories', function (Blueprint $table) {
-        //     $table->id();
-        //     $table->foreignIdFor(User::class)->constrained();
-        //     $table->bigInteger('point')->comment('Số điểm');
-        //     $table->string('type')->comment('Loại điểm');
-        //     $table->text('description')->comment('Mô tả');
-        //     $table->date('expiry_date')->nullable()->comment('Ngày hết hạn');
-        //     $table->boolean('processed')->default(0)->comment('Đã xử lý');
-        //     $table->timestamps();
-        // });
+        Schema::create('point_histories', function (Blueprint $table) {
+            $table->id();
+            $table->foreignIdFor(User::class)->constrained();
+            $table->bigInteger('point')->comment('Số điểm');
+            $table->string('type')->comment('Loại điểm');
+            $table->text('description')->comment('Mô tả');
+            $table->date('expiry_date')->nullable()->comment('Ngày hết hạn');
+            $table->boolean('processed')->default(0)->comment('Đã xử lý');
+            $table->timestamps();
+        });
     }
 
     /**

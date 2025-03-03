@@ -61,7 +61,7 @@ class UserRequest extends FormRequest
             'password'  => 'nullable|string|min:8|confirmed',  // Mật khẩu có thể không thay đổi
             'address'   => 'required|string|max:255',
             'gender'    => 'boolean',
-            'birthday'  => 'nullable|date',
+            'birthday'      => 'nullable|date',
             'total_amount' => 'nullable|numeric',  // Kiểm tra dữ liệu số cho 'total_amount'
             'type_user' => 'boolean',
             'cinema_id' => 'nullable|exists:cinemas,id',
@@ -75,9 +75,6 @@ class UserRequest extends FormRequest
             'password' => 'required|string|min:8',
         ];
     }
-
-
-
 
     public function messages()
     {

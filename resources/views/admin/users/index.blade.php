@@ -83,8 +83,8 @@
                                     <th>ID</th>
                                     <th>Tên</th>
                                     <th>Ảnh</th>
-                                    <th>Email</th>
-                                    <th>Giới tính</th>
+                                    <th>Thông tin vé</th>
+                                    <th>Chức năng</th>
                                     <th>Loại</th>
                                     <th>Hành động</th>
                                 </tr>
