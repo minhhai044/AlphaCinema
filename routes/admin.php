@@ -1,4 +1,5 @@
 <?php
+
 use App\Http\Controllers\Admin\RoleController;
 
 use App\Http\Controllers\Admin\CinemaController;
@@ -31,6 +32,8 @@ use App\Http\Controllers\Admin\TicketController;
 use App\Http\Controllers\Admin\StatisticalController;
 
 use App\Http\Controllers\Admin\SlideShowController;
+
+use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
 
 /*
 |--------------------------------------------------------------------------
@@ -109,7 +112,6 @@ Route::group([
 ], function () {
     // Danh sách
     Route::get('/', [TicketController::class, 'index'])->name('index');
-
 });
 
 // Route::resource('typerooms', TyperoomController::class);
@@ -117,10 +119,10 @@ Route::group([
     'prefix' => 'typerooms',  // Tiền tố URL cho tất cả route
     'as' => 'typerooms.',     // Nhóm tên route (vd: foods.index, foods.store);
 ], function () {
-    Route::get('/',[TyperoomController::class,'index'])->name('index');
-    Route::post('/',[TyperoomController::class,'store'])->name('store');
-    Route::put('{type_room}/update',[TyperoomController::class,'update'])->name('update');
-    Route::delete('{type_room}/destroy',[TyperoomController::class,'destroy'])->name('destroy');
+    Route::get('/', [TyperoomController::class, 'index'])->name('index');
+    Route::post('/', [TyperoomController::class, 'store'])->name('store');
+    Route::put('{type_room}/update', [TyperoomController::class, 'update'])->name('update');
+    Route::delete('{type_room}/destroy', [TyperoomController::class, 'destroy'])->name('destroy');
 });
 // Route::resource('users', [])
 Route::prefix('seat-templates')->group(function () {
@@ -136,7 +138,6 @@ Route::prefix('rooms')->as('rooms.')->group(function () {
     Route::post('/', [RoomController::class, 'store'])->name('store');
     Route::get('{id}/show', [RoomController::class, 'show'])->name('show');
     Route::put('{id}/update', [RoomController::class, 'update'])->name('update');
-
 });
 
 Route::prefix('showtimes')->as('showtimes.')->group(function () {
@@ -180,7 +181,7 @@ Route::group([
 });
 
 
-Route::resource("roles", RoleController::class );
+Route::resource("roles", RoleController::class);
 
 
 
@@ -196,7 +197,6 @@ Route::prefix('seat-templates')->group(function () {
 
 Route::prefix('rooms')->as('rooms.')->group(function () {
     Route::get('/', [RoomController::class, 'index'])->name('index');
-
 });
 
 
@@ -240,10 +240,10 @@ Route::post('days/update/{id}', [DayController::class, 'update'])->name('days.up
 Route::group([
     'prefix' => 'settings',  // Tiền tố URL cho tất cả route
     'as' => 'settings.',
-],function (){
-Route::get('/',[SiteSettingController::class,'index'])->name('index');
-Route::put('/update/{id}',[SiteSettingController::class,'update'])->name('update');
-Route::post('/reset',[SiteSettingController::class,'resetToDefault'])->name('reset');
+], function () {
+    Route::get('/', [SiteSettingController::class, 'index'])->name('index');
+    Route::put('/update/{id}', [SiteSettingController::class, 'update'])->name('update');
+    Route::post('/reset', [SiteSettingController::class, 'resetToDefault'])->name('reset');
 });
 
 
