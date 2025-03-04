@@ -265,9 +265,9 @@ class ShowtimeController extends Controller
 
             Log::info('Pushing event to queue');
 
-            event(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id), ['queue' => 'high']);
+            // event(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id), ['queue' => 'high']);
 
-            // broadcast(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id));
+            broadcast(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id))->toOthers();
 
             Log::info('After Broadcast: ' . (microtime(true) - $start) . ' seconds');
 

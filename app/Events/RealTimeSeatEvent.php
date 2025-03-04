@@ -10,7 +10,7 @@ use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Log;
 
-class RealTimeSeatEvent implements ShouldBroadcast
+class RealTimeSeatEvent implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
@@ -50,7 +50,7 @@ class RealTimeSeatEvent implements ShouldBroadcast
                 'user_id' => $this->user_id,
             ];
 
-        Log::info('Time to prepare Pusher data: ' . (microtime(true) - $start) . ' seconds');
+        Log::info('Time to prepare data: ' . (microtime(true) - $start) . ' seconds');
         return $data;
     }
 }
