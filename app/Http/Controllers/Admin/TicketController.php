@@ -31,4 +31,10 @@ class TicketController extends Controller
         // Truyền tất cả các biến vào view
         return view(self::PATH_VIEW . __FUNCTION__, compact('tickets', 'branches', 'cinemas', 'movies'));
     }
+    public function show($ticket)
+    {
+        $ticketData = $this->ticketService->getTicketDetail($ticket);
+
+        return view('admin.tickets.detail', compact('ticketData'));
+    }
 }
