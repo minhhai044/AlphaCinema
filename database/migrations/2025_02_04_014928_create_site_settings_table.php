@@ -31,7 +31,11 @@ return new class extends Migration
             $table->mediumText('terms_of_service')->nullable()->comment('Điều khoản dịch vụ');
             $table->string('introduction_image')->nullable()->comment('Hình ảnh giới thiệu');
             $table->mediumText('introduction')->nullable()->comment('Giới thiệu');
+            $table->string('news_img')->nullable()->comment('Hình ảnh tin tức ');
+            $table->mediumText('news')->nullable()->comment('Tin tức');
             $table->string('copyright')->nullable()->comment('Bản quyền');
+            $table->string('background_image')->nullable()->comment('Hình ảnh nền');
+
             $table->timestamps();
         });
     }

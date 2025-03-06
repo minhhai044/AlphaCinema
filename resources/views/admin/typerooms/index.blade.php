@@ -72,12 +72,12 @@
                             </div>
                         </div>
                         <div class="col-sm-auto">
-                            <div class="mb-4">
+                            {{-- <div class="mb-4">
                                 <a class="btn btn-light waves-effect waves-light">
                                     <i class="mdi mdi-arrow-down"></i>
                                     Xuất file 
                                 </a>
-                            </div>
+                            </div> --}}
                         </div>
                         <div class="col-sm-auto">
                             <div class="mb-4">

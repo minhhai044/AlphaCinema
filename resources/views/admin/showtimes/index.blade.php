@@ -17,7 +17,7 @@
         </div>
     </div>
 <div class="rounded">
-    <form action="{{ route('admin.showtimes.index') }}" method="get" class="pb-2 shadow-sm">
+    <form action="{{ route('admin.showtimes.index') }}" method="get" class="p-4 shadow-sm">
         <div class="row g-3 align-items-end">
             <div class="col-lg-3">
                 <select name="branch_id" class="form-select" required id="branch_id">
@@ -43,6 +43,11 @@
         </div>
     </form>
 
+    <div class="m-3 d-flex justify-content-end">
+        <button class="btn btn-primary py-2 fw-semibold" data-bs-toggle="modal" data-bs-target="#movieModal">
+            <i class="bi bi-plus-lg"></i> Thêm suất chiếu
+        </button>
+    </div>
     <div class="modal fade" id="movieModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -204,5 +209,21 @@
             }
 
         });
+       
+        document.addEventListener("DOMContentLoaded", function () {
+        const exportButton = document.querySelector('.exportButton');
+        const table = document.querySelector("table tbody"); // Lấy tbody của bảng hiển thị dữ liệu
+        const firstRow = table?.querySelector("tr:first-child td")?.textContent?.trim(); // Lấy nội dung hàng đầu tiên
+
+        // Kiểm tra nếu có dữ liệu thực sự trong bảng (không phải dòng thông báo) và có tham số tìm kiếm trên URL
+        if (exportButton && table && !firstRow.includes("Không có dữ liệu") && window.location.search) {
+            exportButton.removeAttribute('disabled'); // Bật nút Xuất file
+        } else {
+            exportButton.setAttribute('disabled', 'true'); // Vô hiệu hóa nếu không có dữ liệu thực tế
+        }
+});
+
+
+        
     </script>
 @endsection

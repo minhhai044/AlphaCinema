@@ -33,6 +33,16 @@
                                 <i class="bx bx-plus me-1"></i> Thêm mới đồ ăn
                             </a>
                         </div>
+                        <div class="col-sm-auto">
+                           <div class="mb-4">
+                                <a href="{{ route('admin.export', 'food') }}"
+                                    class="btn btn-warning waves-effect waves-light">
+                                    <i class="bx bx-download me-1"></i>
+                                    Xuất Excel
+                                </a>
+                            </div>
+                        </div>
+                        
                     </div>
 
                     <!-- Bộ lọc số lượng hiển thị và tìm kiếm -->
