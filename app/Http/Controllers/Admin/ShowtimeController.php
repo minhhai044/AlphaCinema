@@ -75,7 +75,12 @@ class ShowtimeController extends Controller
 
         if (!empty($data)) {
             $movie = Movie::query()->findOrFail($data['movie_id']);
-            $showtime = json_decode($data['showtime'], true);
+            $showtimes = json_decode($data['showtime'], true);
+            foreach ($showtimes ??= [] as $value) {
+                if ($value['room_id'] == $showtimes[0]['room_id']) {
+                    array_push($showtime,$value);
+                }
+            }
             $date = explode(', ', $data['date']);
 
 
