@@ -24,12 +24,12 @@ class ShowtimeService
         if (empty($date) || empty($branch_id) || empty($cinema_id)) {
             $showtimes = collect(); 
         } else {
-            $showtimes = Showtime::with('movie', 'room')
+            $showtimes = Showtime::with('movie', 'room.type_room','branch','cinema')
                 ->where('date', $date)
                 ->where('branch_id', $branch_id)
                 ->where('cinema_id', $cinema_id)
                 ->get();
-        }
+        }     
 
 
 

@@ -255,30 +255,30 @@
                         showtimes.forEach((item) => {
                             dataShowtimeCheck.push(item);
                             $('#listShowtime').append(`
-                                                                                                        <div class="list-group-item d-flex align-items-center justify-content-between py-3">
-                                                                                                            <div>
-                                                                                                                <strong class="text-dark">${item.start_time}</strong> - <strong class="text-dark">${item.end_time}</strong><br>
-                                                                                                                <small>
-                                                                                                                    <form action="{{route('admin.showtimes.delete') }}" method="POST">
-                                                                                                                        @csrf
-                                                                                                                        <input type="hidden" name="showtime_id" value="${item.id}">
-                                                                                                                        <button type="submit" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-sm text-danger fw-bold">Xóa</button>
-                                                                                                                    </form>
-                                                                                                                </small>
-                                                                                                            </div>
-                                                                                                            <div class="d-flex align-items-center">
-                                                                                                                <span class="badge bg-success px-3 py-2">${item.room.type_room.name}</span>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    `);
+                                <div class="list-group-item d-flex align-items-center justify-content-between py-3">
+                                    <div>
+                                        <strong class="text-dark">${item.start_time}</strong> - <strong class="text-dark">${item.end_time}</strong><br>
+                                        <small>
+                                            <form action="{{route('admin.showtimes.delete') }}" method="POST">
+                                                @csrf
+                                                <input type="hidden" name="showtime_id" value="${item.id}">
+                                                <button type="submit" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-sm text-danger fw-bold">Xóa</button>
+                                            </form>
+                                        </small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge bg-success px-3 py-2">${item.room.type_room.name}</span>
+                                    </div>
+                                </div>
+                            `);
                         });
                     } else {
                         dataShowtimeCheck = [];
                         $('#listShowtime').append(`
-                                                                                                    <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                                                        Hiện tại chưa có suất chiếu nào 
-                                                                                                    </div>
-                                                                                                `);
+                            <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
+                                Hiện tại chưa có suất chiếu nào 
+                            </div>
+                        `);
                     }
 
                 }
@@ -289,40 +289,40 @@
             dataShowtimeCheck = [];
             $('#listShowtime').empty();
             $('#listShowtime').append(`
-                                                                                                    <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
-                                                                                                        Hiện tại chưa có suất chiếu nào 
-                                                                                                    </div>
-                                                                                                `);
+                <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
+                    Hiện tại chưa có suất chiếu nào 
+                </div>
+            `);
         }
 
 
         function addTimeRow() {
             const id = idRowCounter++;
             const html = `
-                                                                                                            <div class="row align-items-center" id="row_${id}">
-                                                                                                                <div class="col-lg-5">
-                                                                                                                    <div class="mb-3">
-                                                                                                                        <label for="start_time_${id}" class="form-label">
-                                                                                                                            Thời gian bắt đầu <span class="text-danger">*</span>
-                                                                                                                        </label>
-                                                                                                                        <input type="time" required class="form-control" name="start_time[]" data-id="${id}" id="start_time_${id}" aria-label="Chọn thời gian">
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                                <div class="col-lg-5">
-                                                                                                                    <div class="mb-3">
-                                                                                                                        <label for="end_time_${id}" class="form-label">
-                                                                                                                            Thời gian kết thúc <span class="text-danger">*</span>
-                                                                                                                        </label>
-                                                                                                                        <input type="time" required class="form-control" name="end_time[]" id="end_time_${id}" readonly>
-                                                                                                                    </div>
-                                                                                                                </div>
-                                                                                                                <div class="col-lg-2 ps-5 d-flex align-items-center">
-                                                                                                                    <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeItem" data-id="${id}">
-                                                                                                                        <i class="bi bi-trash"></i>
-                                                                                                                    </button>
-                                                                                                                </div>
-                                                                                                            </div>
-                                                                                                        `;
+                <div class="row align-items-center" id="row_${id}">
+                    <div class="col-lg-5">
+                        <div class="mb-3">
+                            <label for="start_time_${id}" class="form-label">
+                                Thời gian bắt đầu <span class="text-danger">*</span>
+                            </label>
+                            <input type="time" required class="form-control" name="start_time[]" data-id="${id}" id="start_time_${id}" aria-label="Chọn thời gian">
+                        </div>
+                    </div>
+                    <div class="col-lg-5">
+                        <div class="mb-3">
+                            <label for="end_time_${id}" class="form-label">
+                                Thời gian kết thúc <span class="text-danger">*</span>
+                            </label>
+                            <input type="time" required class="form-control" name="end_time[]" id="end_time_${id}" readonly>
+                        </div>
+                    </div>
+                    <div class="col-lg-2 ps-5 d-flex align-items-center">
+                        <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeItem" data-id="${id}">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
             $('#listTime').append(html);
         }
 

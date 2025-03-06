@@ -144,6 +144,9 @@ Route::prefix('showtimes')->as('showtimes.')->group(function () {
     Route::get('{id}/create', [ShowtimeController::class, 'create'])->name('create');
     Route::post('/store', [ShowtimeController::class, 'store'])->name('store');
     Route::post('/delete', [ShowtimeController::class, 'delete'])->name('delete');
+    Route::post('/copys', [ShowtimeController::class, 'copys'])->name('copys');
+    Route::get('/copys', [ShowtimeController::class, 'getCopys'])->name('getCopys');
+    Route::post('/storeCopies', [ShowtimeController::class, 'storeCopies'])->name('storeCopies');
 });
 
 
