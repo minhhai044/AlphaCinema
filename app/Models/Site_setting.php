@@ -30,6 +30,7 @@ class Site_setting extends Model
         'introduction',
         'news',
         'news_img',
+        'background_image',
         'copyright',
     ];
 
@@ -178,6 +179,7 @@ class Site_setting extends Model
     <p>Để không bỏ lỡ những bộ phim hấp dẫn nhất, hãy truy cập website chính thức của ALphaCinema để xem lịch chiếu và đặt vé ngay hôm nay!</p>
 </section>
 ',
+'background_image'=>'theme/client/images/bg.png',
             'copyright' => ' Bản quyền thuộc về  ',
         ];
     }

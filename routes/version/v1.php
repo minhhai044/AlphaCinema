@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\SiteSettingController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\RoomController;
@@ -38,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTimes']);
 
+Route::get('/settings',[SiteSettingController::class,'index']);
 
 // Route::get('{id}/showtime',             [ShowtimeController::class, 'getByDate']);
 // Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);

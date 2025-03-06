@@ -376,6 +376,37 @@
             </div>
         </div>
     </div>
+
+    <div class="col-lg-3">
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="background_image" class="form-label">Ảnh Nền </label>
+                    <input type="file" name="background_image" class="form-control"><br>
+                    <div class="text-center">
+                        @if ($settings->background_image)
+                            {{-- Kiểm tra xem có phải là ảnh mặc định hay không --}}
+                            @if (Str::startsWith($settings->background_image, 'theme/client/images/'))
+                                <img src="{{ asset($settings->background_image) }}" class="rounded-2"
+                                    alt="Website Logo" style="max-width: 200px;">
+                            @else
+                                <img src="{{ Storage::url($settings->background_image) }}"
+                                    class="rounded-2" alt="background_image" style="max-width: 200px;">
+                            @endif
+                        @else
+                            {{-- Hiển thị ảnh mặc định nếu không có ảnh nào --}}
+                            <img src="{{ asset('theme/client/images/bg.png') }}" class="rounded-2"
+                                alt="background_image" style="max-width: 200px;">
+                        @endif
+                    </div>
+
+                    @error('background_image')
+                        <span class="text-danger">{{ $message }}</span>
+                    @enderror
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
     </form>
 
