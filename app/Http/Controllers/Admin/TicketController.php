@@ -35,6 +35,6 @@ class TicketController extends Controller
     {
         $ticketData = $this->ticketService->getTicketDetail($ticket);
 
-        return view('admin.tickets.detail', compact('ticketData'));
+        return view(self::PATH_VIEW . 'detail', compact('ticketData'));
     }
 }
