@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\ComboFoodController;
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
@@ -49,3 +50,7 @@ Route::get('list_combo', [ComboFoodController::class, 'list_combo']);
 // Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
 
 // Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
+
+
+Route::post('/payment',[PaymentController::class,'payment']);
+Route::get('/checkout',[PaymentController::class,'checkout']);
