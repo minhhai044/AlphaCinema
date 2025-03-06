@@ -115,8 +115,8 @@ class ShowtimeController extends Controller
                 ->where('slug', $slug)
                 ->first();
 
-            // $seatMap = json_decode($showtime['seat_structure'], true);
-            $seatMap = $showtime['seat_structure'];
+            $seatMap = json_decode($showtime['seat_structure'], true);
+            // $seatMap = $showtime['seat_structure'];
 
 
             $result = [];
@@ -219,99 +219,23 @@ class ShowtimeController extends Controller
      * Code queue redis
      */
 
-    public function changeSeatStatus(ShowtimeRequest $showtimeRequest, string $id)
-    {
-        try {
-            $start = microtime(true);
-            Log::info('Start API');
-
-            $showtime = Showtime::query()->where('id', $id)->firstOrFail();
-            Log::info('After Query: ' . (microtime(true) - $start) . ' seconds');
-
-            $seat_structures = $showtime->seat_structure;
-            Log::info('After Get Seats: ' . (microtime(true) - $start) . ' seconds');
-
-            if (empty($seat_structures)) {
-                return response()->json(['error' => 'Không tìm thấy danh sách ghế'], 400);
-            }
-
-            $checkTotalSeatUser = count(array_keys(array_column($seat_structures, 'user_id'), $showtimeRequest->user_id));
-
-            if ($checkTotalSeatUser >= 10 && $showtimeRequest->status === 'hold') {
-                return response()->json(['error' => 'Bạn chỉ có thể chọn tối đa 10 ghế !!!'], 409);
-            }
-            Log::info('After Seat Count: ' . (microtime(true) - $start) . ' seconds');
-
-            foreach ($seat_structures as &$seat_structure) {
-                if ($seat_structure['id'] == $showtimeRequest->seat_id) {
-                    // Nếu ghế đã được đặt hoặc giữ chỗ, từ chối cập nhật
-                    if ($seat_structure['status'] !== 'available' && $seat_structure['status'] !== 'hold') {
-                        return response()->json(['error' => 'Ghế này đã được đặt hoặc không khả dụng'], 409);
-                    }
-
-                    // Cập nhật trạng thái ghế
-                    $seat_structure['user_id'] = $showtimeRequest->user_id;
-                    $seat_structure['status'] = $showtimeRequest->status;
-                    break;
-                }
-            }
-
-            Log::info('After Update: ' . (microtime(true) - $start) . ' seconds');
-
-
-            $showtime->update([
-                'seat_structure' => $seat_structures,
-            ]);
-
-            Log::info('Pushing event to queue');
-
-            // event(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id), ['queue' => 'high']);
-
-            broadcast(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id))->toOthers();
-
-            Log::info('After Broadcast: ' . (microtime(true) - $start) . ' seconds');
-
-            return response()->json([
-                'message' => 'Thao tác thành công',
-                'data' => $seat_structures,
-            ], 200);
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-            return response()->json([
-                'error' => 'Thao tác không thành công',
-                'message' => $th->getMessage()
-            ], 500);
-        }
-    }
-
-    /**** */
-
     // public function changeSeatStatus(ShowtimeRequest $showtimeRequest, string $id)
     // {
     //     try {
-    //         $start = microtime(true);
-    //         Log::info('Start API');
-
-    //         // Khóa bản ghi showtime để tránh race condition
     //         $showtime = Showtime::query()->where('id', $id)->firstOrFail();
-    //         Log::info('After Query: ' . (microtime(true) - $start) . ' seconds');
 
-    //         // $seat_structures = json_decode($showtime->seat_structure, true);
     //         $seat_structures = $showtime->seat_structure;
-    //         Log::info('After Get Seats: ' . (microtime(true) - $start) . ' seconds');
 
     //         if (empty($seat_structures)) {
     //             return response()->json(['error' => 'Không tìm thấy danh sách ghế'], 400);
     //         }
-    //         // Minh Hải Check 1 user chỉ được 10 ghế
+
     //         $checkTotalSeatUser = count(array_keys(array_column($seat_structures, 'user_id'), $showtimeRequest->user_id));
 
     //         if ($checkTotalSeatUser >= 10 && $showtimeRequest->status === 'hold') {
     //             return response()->json(['error' => 'Bạn chỉ có thể chọn tối đa 10 ghế !!!'], 409);
     //         }
-    //         Log::info('After Seat Count: ' . (microtime(true) - $start) . ' seconds');
 
-    //         // Kiểm tra trạng thái ghế trước khi cập nhật
     //         foreach ($seat_structures as &$seat_structure) {
     //             if ($seat_structure['id'] == $showtimeRequest->seat_id) {
     //                 // Nếu ghế đã được đặt hoặc giữ chỗ, từ chối cập nhật
@@ -326,36 +250,11 @@ class ShowtimeController extends Controller
     //             }
     //         }
 
-    //         Log::info('After Update: ' . (microtime(true) - $start) . ' seconds');
-
     //         $showtime->update([
     //             'seat_structure' => $seat_structures,
     //         ]);
 
-    //         $broadcastStart = microtime(true);
-
-    //         // $pusher = new Pusher(
-    //         //     env('PUSHER_APP_KEY'),
-    //         //     env('PUSHER_APP_SECRET'),
-    //         //     env('PUSHER_APP_ID'),
-    //         //     options: ['cluster' => 'ap1', 'useTLS' => true]
-    //         // );
-
-    //         // $pusher->trigger('showtime', 'RealTimeSeatEvent', [
-    //         //     'seat_id' => $showtimeRequest->seat_id,
-    //         //     'status' => $showtimeRequest->status,
-    //         //     'user_id' => $showtimeRequest->user_id,
-    //         // ]);
-
-    //         $seatId = $showtimeRequest->seat_id;
-    //         $status = $showtimeRequest->status;
-    //         $userId = $showtimeRequest->user_id;
-
-    //         broadcast(new RealTimeSeatEvent($seatId, $status, $userId))->toOthers();
-
-    //         Log::info('Laravel to Pusher time: ' . (microtime(true) - $broadcastStart) . ' seconds');
-
-    //         Log::info('After Broadcast: ' . (microtime(true) - $start) . ' seconds');
+    //         broadcast(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id))->toOthers();
 
     //         return response()->json([
     //             'message' => 'Thao tác thành công',
@@ -371,6 +270,56 @@ class ShowtimeController extends Controller
     // }
 
 
+    public function changeSeatStatus(ShowtimeRequest $showtimeRequest, string $id)
+    {
+        try {
+            $showtime = Showtime::query()->where('id', $id)->firstOrFail();
+            $seat_structures = json_decode($showtime->seat_structure, true);
+
+            if (empty($seat_structures)) {
+                return response()->json(['error' => 'Không tìm thấy danh sách ghế'], 400);
+            }
+
+            $checkTotalSeatUser = count(array_keys(array_column($seat_structures, 'user_id'), $showtimeRequest->user_id));
+
+            if ($checkTotalSeatUser >= 10 && $showtimeRequest->status === 'hold') {
+                return response()->json(['error' => 'Bạn chỉ có thể chọn tối đa 10 ghế !!!'], 409);
+            }
+
+            foreach ($seat_structures as &$seat_structure) {
+                if ($seat_structure['id'] == $showtimeRequest->seat_id) {
+                    // Nếu ghế đã được đặt hoặc giữ chỗ, từ chối cập nhật
+                    if ($seat_structure['status'] !== 'available' && $seat_structure['status'] !== 'hold') {
+                        return response()->json(['error' => 'Ghế này đã được đặt hoặc không khả dụng'], 409);
+                    }
+
+                    // Cập nhật trạng thái ghế
+                    $seat_structure['user_id'] = $showtimeRequest->user_id;
+                    $seat_structure['status'] = $showtimeRequest->status;
+                    break;
+                }
+            }
+
+            $showtime->update([
+                'seat_structure' => json_encode($seat_structures),
+            ]);
+
+            broadcast(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id))->toOthers();
+
+            return response()->json([
+                'message' => 'Thao tác thành công',
+                'data' => $seat_structures,
+            ], 200);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return response()->json([
+                'error' => 'Thao tác không thành công',
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    /**** */
 
     public function resetSuccessSeat(Request $request, string $id)
     {
