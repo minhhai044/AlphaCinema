@@ -105,7 +105,7 @@
                             <td>{{ implode(', ', $showtimes['movie']->movie_genres) }}</td>
                             <td>{{ $showtimes['movie']->duration }} phút</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="collapse"
+                                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapse-{{ $movieId }}" aria-expanded="false"
                                     aria-controls="collapse-{{ $movieId }}">
                                     <i class="mdi mdi-plus-circle-outline"></i>

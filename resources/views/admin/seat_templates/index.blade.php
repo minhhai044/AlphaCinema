@@ -147,7 +147,7 @@
                                 data-regular="{{ $data->row_regular }}" data-vip="{{ $data->row_vip }}"
                                 data-double="{{ $data->row_double }}" data-description="{{ $data->description }}"
                                 data-publish="{{ $data->is_publish }}" data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
-                               <button class="btn btn-warning btn-sm"> <i class="mdi mdi-playlist-edit"></i></button>
+                               <button class="btn btn-warning btn-sm"> <i class="bx bx-edit"></i></button>
                             </a>
 
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Showtime;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 
@@ -36,6 +37,7 @@ class PaymentController extends Controller
 
     public function payment(Request $request)
     {
+        // Lưu data tikit bằng redis
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
         $partnerCode = 'MOMOBKUN20180529';
@@ -43,7 +45,7 @@ class PaymentController extends Controller
         $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
         $orderInfo = "Thanh toán qua MoMo";
         $amount = $request->amount;
-        $orderId = time() . ""; //
+        $orderId = Showtime::generateCustomRandomString(); //
         $redirectUrl = env('APP_URL') . '/api/v1/checkout';
         $ipnUrl = "https://hehe.test/check-out";
         $extraData = "";
@@ -87,16 +89,13 @@ class PaymentController extends Controller
     public function checkout(Request $request)
     {
         $resultCode = $request->query('resultCode');
-
+        $frontendUrl =  env('APP_URL');
 
         if ($resultCode == 0) {
             $message = 'Thanh toán thành công!';
-        } else {
-            $message = 'Thanh toán thất bại!';
+            // Sử lí lưu ticket
+            return redirect($frontendUrl);
         }
-
-        $frontendUrl =  env('APP_URL');
-        // $redirectUrl = $frontendUrl . '?status=' . ($resultCode == 0 ? 'success' : 'failed') . '&message=' . urlencode($message);
 
         return redirect($frontendUrl);
     }
