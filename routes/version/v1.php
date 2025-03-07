@@ -5,7 +5,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\FoodController;
 use App\Http\Controllers\Api\V1\ComboFoodController;
-
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
@@ -38,9 +38,6 @@ Route::prefix('branchs')->group(function () {
     Route::get('/', [BranchController::class, 'index']);
 });
 
-
-// Route::post('ticket', [TicketController::class, 'createTicket']);
-
 Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('tickets', [TicketController::class, 'createTicket']);
@@ -61,3 +58,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
 Route::get('/foods', [FoodController::class, 'index']);
 Route::get('list_combo', [ComboFoodController::class, 'list_combo']);
+
+
+Route::post('/payment', [PaymentController::class, 'payment']);
+Route::get('/checkout', [PaymentController::class, 'checkout']);
