@@ -794,7 +794,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-2 ps-5 d-flex align-items-center">
-                                    <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${idRowCounter}">
+                                    <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeItem" data-id="${idRowCounter}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>

@@ -118,7 +118,7 @@ class PaymentController extends Controller
         if ($resultCode == 0) {
 
             // Sử lí lưu ticket
-            // 
+            // Chuyển trạng thái ghế
             //
             // XÓA REDIS 
             Redis::del("order:$orderId");
