@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\FoodController;
 use App\Http\Controllers\Api\V1\ComboFoodController;
 
+use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
@@ -75,3 +76,7 @@ Route::get('/settings',[SiteSettingController::class,'index']);
 // Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
 
 // Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
+
+
+Route::post('/payment',[PaymentController::class,'payment']);
+Route::get('/checkout',[PaymentController::class,'checkout']);

@@ -1,6 +1,6 @@
 @extends('admin.layouts.master')
 @section('content')
-  
+
 
     <div class="row">
         <div class="col-12">
@@ -10,7 +10,8 @@
                 <div class="page-title-right">
 
 
-                    <button type="button" class="btn btn-primary btn-sm float-end mb-2 me-3" data-bs-toggle="modal" data-bs-target="#exampleModal">
+                    <button type="button" class="btn btn-primary btn-sm float-end mb-2 me-3" data-bs-toggle="modal"
+                        data-bs-target="#exampleModal">
                         Tạo phòng chiếu
                     </button>
                 </div>
@@ -151,31 +152,21 @@
                             <label for="is_active{{$room->id}}"></label>
                         </td>
                         <td>
-                            <div class="dropdown">
-                                <span data-bs-toggle="dropdown" aria-expanded="false" class="cursor-pointer">
-                                    <i class=" bx bx-dots-vertical-rounded"></i>
-                                </span>
-                                <ul class="dropdown-menu">
-                                    <li> <a class="dropdown-item" href="{{ route('admin.rooms.show', $room) }}"><i
-                                                class="mdi mdi-plus-circle-outline"></i> Xem</a></li>
-                                    <li>
-                                        <a class="dropdown-item edit-room" href="#" data-id="{{ $room->id }}"
-                                            data-name="{{ $room->name }}" data-branch="{{ $room->branch_id }}"
-                                            data-cinema="{{ $room->cinema_id }}" data-typeroom="{{ $room->type_room_id }}"
-                                            data-seattemplate="{{ $room->seat_template_id }}"
-                                            data-description="{{ $room->description }}" data-publish="{{ $room->is_publish }}"
-                                            data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
-                                            <i class="mdi mdi-playlist-edit"></i> Sửa
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
+                            <button class="btn btn-success btn-sm"><a class="dropdown-item" href="{{ route('admin.rooms.show', $room) }}"><i
+                                class="bx bx-show"></i></a></button>
+                            <button class="btn btn-primary btn-sm"><a class="dropdown-item edit-room" href="#" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
+                                data-branch="{{ $room->branch_id }}" data-cinema="{{ $room->cinema_id }}"
+                                data-typeroom="{{ $room->type_room_id }}" data-seattemplate="{{ $room->seat_template_id }}"
+                                data-description="{{ $room->description }}" data-publish="{{ $room->is_publish }}"
+                                data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
+                                <i class=" bx bx-edit"></i>
+                            </a></button>
                         </td>
                     </tr>
                 @endforeach
             @endif
         </tbody>
-       
+
     </table>
     {{$rooms->links()}}
     <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
