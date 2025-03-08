@@ -8,6 +8,7 @@ use App\Models\Cinema;
 use App\Services\CinemaService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Response;
+use Illuminate\Http\Request;
 
 class CinemaController extends Controller
 {
@@ -36,6 +37,12 @@ class CinemaController extends Controller
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
         }
+    }
+    public function getCinemasByBranch(Request $request)
+    {
+        $branchId = $request->input('branch_id');
+        $cinemas = Cinema::where('branch_id', $branchId)->where('is_active', 1)->get(['id', 'name']);
+        return response()->json(['cinemas' => $cinemas]);
     }
     public function show(string $id)
     {

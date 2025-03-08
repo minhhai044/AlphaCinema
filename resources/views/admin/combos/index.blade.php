@@ -45,10 +45,14 @@
                         <!-- Cột bên phải: Thêm mới và Bộ lọc -->
                         <div class="col-md-6 text-end">
                             <a href="{{ route('admin.combos.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
-                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                            <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#searchForm">
                                 <i class="fas fa-filter"></i> Bộ lọc
                             </button>
+                            <a href="{{ route('admin.export', 'combos') }}" class="btn btn-warning waves-effect waves-light">
+                                <i class="bx bx-download me-1"></i>
+                                Xuất Excel
+                            </a>
                         </div>
                     </div>
 
@@ -107,13 +111,17 @@
         </div>
     </div>
 @endsection
-
+@php
+    $appUrl = env('APP_URL');
+@endphp
 @section('script')
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
     <script>
+        var appURL = @json($appUrl);
+        var table;
         $(document).ready(function () {
-            var table = $('#comboTable').DataTable({
+            table = $('#comboTable').DataTable({
                 processing: false,
                 serverSide: true,
                 responsive: true,
@@ -146,47 +154,55 @@
                             return data ? data : "Không có thông tin";
                         }
                     },
-                    { data: 'price_sale', name: 'price_sale' },
+                    {
+                        data: 'price_sale',
+                        name: 'price_sale',
+                        render: function (data, type, row) {
+                            let priceToShow = row.price_sale > 0 ? row.price_sale : row.price;
+                            return `<strong class="text-red-500">${new Intl.NumberFormat('en-US').format(priceToShow)} VNĐ</strong>`;
+                        }
+                    },
                     { data: 'description', name: 'description' },
                     {
                         data: 'is_active',
                         render: function (data, type, row) {
-                            var checked = data ? 'checked' : '';
-                            return `
-                                <input type="checkbox" id="is_active${row.id}" data-publish="${row.is_publish}" switch="success" ${checked} class="toggle-active" data-id="${row.id}" />
-                                <label for="is_active${row.id}"></label>
-                            `;
-                        }
+                            return `<div class="form-check form-switch form-switch-success">
+                                        <input class="form-check-input switch-is-active changeActive" 
+                                            type="checkbox"
+                                            onclick="return confirm('Bạn có chắc muốn thay đổi?')"
+                                            data-combo-id="${row.id}" 
+                                            ${data ? 'checked' : ''}>
+                                     </div>`;
+                        },
+                        orderable: false
                     },
                     {
                         data: 'id',
-                        render: function (data) {
+                        render: function (data, type, row) {
+                            let deleteButton = "";
+
+                            // Kiểm tra nếu combo chưa active (is_active == 0) thì cho phép xóa
+                            if (row.is_active == 0) {
+                                deleteButton = `
+                                          <form method="POST" action="combos/${data}/destroy" class="d-inline-block" id="delete-combo-${data}">
+                                              @csrf
+                                              @method('DELETE')
+                                                  <button type="button" class="btn btn-danger btn-sm" onclick="handleDelete(${data})">
+                                                  <i class="bi bi-trash"></i>
+                                              </button>
+                                          </form> `;
+                            }
+
                             return `
-                                                    <div class="dropdown text-center">
-                                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                            ...
-                                                        </button>
-                                                        <ul class="dropdown-menu">
-                                                            <li>
-                                                                <a href="/admin/combos/${data}/edit" class="dropdown-item text-warning">
-                                                                    <i class="fas fa-edit"></i> Sửa
-                                                                </a>
-                                                            </li>
-                                                            <li>
-                                                                <form action="/admin/combos/${data}" method="POST" class="d-inline">
-                                                                    @csrf
-                                                                    @method('DELETE')
-                                                                    <button type="submit" class="dropdown-item text-danger"
-                                                                        onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                                                        <i class="fas fa-trash-alt"></i> Xóa
-                                                                    </button>
-                                                                </form>
-                                                            </li>
-                                                        </ul>
-                                                    </div>
-                                                `;
-                        }
-                    }
+                                        <div class="d-flex align-items-center gap-2">
+                                            <a href="/admin/combos/${data}/edit" class="btn btn-warning btn-sm">
+                                                <i class="fas fa-edit"></i> Sửa
+                                             </a>
+                                            ${deleteButton}
+                                        </div>`;
+                        },
+                        orderable: false
+                    },
                 ],
                 pageLength: 5,
                 lengthChange: false,
@@ -218,7 +234,7 @@
 
 
 
-        fetch('http://alphacinema.test/api/combos')
+        fetch(`/api/combos`)
             .then(response => response.json())
             .then(data => {
                 // Lấy mảng món ăn từ key "food"
@@ -241,32 +257,95 @@
             .catch(error => console.error('Lỗi load dữ liệu món ăn:', error));
 
 
-            $(document).on('change', '.toggle-active', function () {
-                    var checkbox = $(this);
-                    var comboId = checkbox.data('id');
-                    var isActive = checkbox.is(':checked') ? 1 : 0;
+        // Xử lý xóa
+        window.handleDelete = function (comboId) {
+            Swal.fire({
+                title: 'Bạn có chắc chắn?',
+                text: "Hành động này không thể hoàn tác!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Xóa',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    $(`#delete-combo-${comboId}`).submit();
+                }
+            });
+        };
 
-                    $.ajax({
-                        url: "{{ route('admin.combos.updateStatus') }}",
-                        type: "POST",
-                        data: {
-                            id: comboId,
-                            is_active: isActive,
-                            _token: "{{ csrf_token() }}"
-                        },
-                        success: function (response) {
-                            if (response.success) {
-                                // Có thể hiển thị thông báo thành công ở đây
-                                console.log(response.message);
-                            }
-                        },
-                        error: function () {
-                            alert('Cập nhật trạng thái thất bại!');
-                            // Nếu cập nhật thất bại, revert lại trạng thái checkbox
-                            checkbox.prop('checked', !isActive);
+        // sự kiện change-active
+        $(document).on("change", ".changeActive", function () {
+            let comboId = $(this).data("combo-id"); // Lấy ID của combo
+            let is_active = $(this).is(":checked") ? 1 : 0;
+
+            // Gửi yêu cầu AJAX để thay đổi trạng thái
+            $.ajax({
+                url: "{{ route('combos.change-active') }}", // API cập nhật trạng thái combo
+                method: "POST",
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    id: comboId,
+                    is_active: is_active
+                },
+                success: function (response) {
+                    if (response.success) {
+                        // Hiển thị thông báo thành công
+                        Swal.fire({
+                            icon: "success",
+                            title: "Thành công!",
+                            text: "Trạng thái hoạt động đã được cập nhật.",
+                            timer: 3000,
+                            timerProgressBar: true,
+                        });
+
+                        // Cập nhật lại bảng DataTable để thay đổi trạng thái nút "Xóa"
+                        let row = table.row($(`[data-combo-id="${comboId}"]`).closest("tr"));
+                        let rowData = row.data();
+                        rowData.is_active = is_active; // Cập nhật giá trị mới
+                        row.data(rowData).draw(false); // Vẽ lại hàng mà không cần load lại toàn bộ
+
+                        // Cập nhật lại nút Xóa (chỉ hiển thị nếu is_active == 0)
+                        let deleteButton = is_active == 0
+                            ? `<form method="POST" action="foods/${comboId}/destroy" class="d-inline-block" id="delete-food-${comboId}">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="button" class="btn btn-danger btn-sm" onclick="handleDelete(${comboId})">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>`
+                            : "";
+
+                        // Cập nhật lại nội dung cột hành động
+                        let actionCell = row.node().querySelector(".d-flex");
+                        if (actionCell) {
+                            actionCell.innerHTML = `
+                                                <a href="/admin/combos/${comboId}/edit" class="btn btn-warning btn-sm">
+                                                    <i class="fas fa-edit"></i> Sửa
+                                                </a>
+                                                ${deleteButton}`;
                         }
+                    } else {
+                        // Nếu có lỗi, hiển thị thông báo và hoàn nguyên checkbox
+                        Swal.fire({
+                            icon: "error",
+                            title: "Lỗi!",
+                            text: response.message || "Có lỗi xảy ra.",
+                        });
+                        $(`[data-combo-id="${comboId}"]`).prop("checked", !is_active);
+                    }
+                },
+                error: function () {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Lỗi!",
+                        text: "Có lỗi xảy ra khi cập nhật trạng thái.",
                     });
-                });
+                    $(`[data-combo-id="${comboId}"]`).prop("checked", !is_active);
+                }
+            });
+
+            console.log("Đã thay đổi trạng thái active của combo");
+        });
 
     </script>
 @endsection

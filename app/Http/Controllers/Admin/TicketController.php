@@ -12,11 +12,23 @@ class TicketController extends Controller
 
     private $ticketService;
 
-    public function __construct(TicketService $ticketService) {
+    public function __construct(TicketService $ticketService)
+    {
         $this->ticketService = $ticketService;
     }
 
-    public function index(){
-        return view(self::PATH_VIEW .__FUNCTION__);
+    public function index(Request $request)
+    {
+        [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
+
+        $cinemas = [];
+        if (!empty($branchesRelation)) {
+            foreach ($branchesRelation as $branchCinemas) {
+                $cinemas = array_merge($cinemas, array_values($branchCinemas));
+            }
+        }
+
+        // Truyền tất cả các biến vào view
+        return view(self::PATH_VIEW . __FUNCTION__, compact('tickets', 'branches', 'cinemas', 'movies'));
     }
 }

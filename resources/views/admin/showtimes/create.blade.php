@@ -172,11 +172,10 @@
                             </div>
                             <!-- Nút thêm xuất chiếu -->
                             <div class="col-lg-12">
-                                <button type="button" id="addTime" class="btn btn-primary btn-sm float-end ms-3">Thêm
-                                    thời
-                                    gian</button>
-                                <button type="button" id="autoGenerate" class="btn btn-success btn-sm float-end">Tự
-                                    động</button>
+                                <button type="button" id="addTime" class="btn btn-primary btn-sm float-end ms-3"><i
+                                        class=" bx bx-plus"></i></button>
+                                <button type="button" id="autoGenerate" class="btn btn-success btn-sm float-end"><i
+                                        class="bx bxs-copy"></i></button>
                             </div>
                             <!-- Danh sách xuất chiếu -->
                             <div class="col-lg-12" id="listTime">
@@ -187,9 +186,8 @@
 
                     <div class="m-3">
                         <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')"
-                            class="btn btn-primary btn-sm">Thêm</button>
-                        <a href="{{ route('admin.showtimes.index') }}"><button type="button"
-                                class="btn btn-danger btn-sm">Quay lại</button></a>
+                            class="btn btn-primary">Thêm mới</button>
+                        {{-- <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger btn-sm">Quay lại</button></a> --}}
                     </div>
                 </div>
             </div>
@@ -279,6 +277,7 @@
                     } else {
                         dataShowtimeCheck = [];
                         $('#listShowtime').append(`
+
                             <div class="list-group-item d-flex align-items-center text-danger fw-bold justify-content-between py-3">
                                 Hiện tại chưa có suất chiếu nào 
                             </div>
@@ -457,7 +456,7 @@
         })
         // room_id
         $('#room_id').change(function() {
-            // Khi room thay đổi thì set seat_structure 
+            // Khi room thay đổi thì set seat_structure
             let id = $(this).val();
             let dataDate = $('#date').val();
 
@@ -492,7 +491,7 @@
             }
         });
 
-        // Xóa time 
+        // Xóa time
         $('#listTime').on('click', '.removeItem', function() {
             const id = $(this).data('id');
             let count = $('input[name="start_time[]"]').length;
@@ -527,7 +526,7 @@
                 $('input[name="start_time[]"]').prop('disabled', true);
                 return;
             }
-            // Thêm . khi nhập số 
+            // Thêm . khi nhập số
             $('#price_special').on('input', function(e) {
                 e.preventDefault();
                 let valueDiscount = $(this).val().replace(/\D/g, '');
@@ -605,11 +604,11 @@
             $('#surchargeDay').val(surchargeDay);
 
         })
-        // Khi start_time thay đổi 
+        // Khi start_time thay đổi
         $('#listTime').on('change', 'input[name="start_time[]"]', function() {
             const currentId = $(this).data('id'); // id của div đó
             const currentStart = $(this).val(); // Thời gian của start_time
-            const durationMovie = +$('#duration').val(); // thời lượng phim 
+            const durationMovie = +$('#duration').val(); // thời lượng phim
 
             if (!currentStart) return;
             const currentStartMinutes = convertTimeToMinutes(currentStart);
@@ -807,7 +806,7 @@
                                     </div>
                                 </div>
                                 <div class="col-lg-2 ps-5 d-flex align-items-center">
-                                    <button type="button" class="btn btn-danger text-white mt-3 removeItem" data-id="${idRowCounter}">
+                                    <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeItem" data-id="${idRowCounter}">
                                         <i class="bi bi-trash"></i>
                                     </button>
                                 </div>

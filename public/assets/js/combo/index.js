@@ -1,5 +1,5 @@
-// const handleDelete = (id) => {
-//   showAlertConfirm(() => {
-//     $(`#delete-combo-${id}`).submit();
-//   });
-// };
+const handleDelete = (id) => {
+  showAlertConfirm(() => {
+    $(`#delete-combo-${id}`).submit();
+  });
+};

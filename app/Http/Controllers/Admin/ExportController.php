@@ -10,7 +10,7 @@ class ExportController
     public function export($table)
     {
         $config = config("excel.exports.custom_tables.{$table}");
-
+        // dd($config);
         if (!$config) {
             return response()->json(['error' => 'Invalid table'], 404);
         }

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="{{asset('theme/admin/assets/libs/@simonwep/pickr/themes/nano.min.css')}}" />
     <!-- 'nano' theme -->
     <link rel="stylesheet" href="{{asset('theme/admin/assets/libs/flatpickr/flatpickr.min.css')}}">
-
+    
 @endsection
 @section('content')
 
@@ -17,10 +17,36 @@
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">Quản lý suất chiếu</h4>
 
-                <div class="page-title-right">
+                <div class="d-flex align-items-center">
+                    <form action="{{ route('admin.showtimes.index') }}" method="get"
+                        class="d-flex align-items-center me-3 shadow-sm">
+                        <div class="row g-2">
+                            <div class="col-auto">
+                                <select name="branch_id" class="form-select" required id="branch_id">
+                                    <option value="" disabled selected>Chọn chi nhánh</option>
+                                    @foreach ($branchs as $branch)
+                                        <option value="{{ $branch['id'] }}" {{ request('branch_id') == $branch['id'] ? 'selected' : '' }}>
+                                            {{ $branch['name'] }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <select name="cinema_id" class="form-select" required id="cinema_id">
+                                    <option value="" disabled selected>Chọn rạp</option>
+                                </select>
+                            </div>
+                            <div class="col-auto">
+                                <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}"
+                                    required>
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-info"><i class="bx bx-search-alt-2"></i></button>
+                            </div>
+                        </div>
+                    </form>
 
-                    <button class="btn btn-primary btn-sm float-end mb-2 me-3" data-bs-toggle="modal"
-                        data-bs-target="#movieModal">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movieModal">
                         <i class="bi bi-plus-lg"></i> Thêm suất chiếu
                     </button>
                 </div>
@@ -28,48 +54,29 @@
             </div>
         </div>
     </div>
-    <div class="rounded">
-        <form action="{{ route('admin.showtimes.index') }}" method="get" class="pb-2 shadow-sm">
-            <div class="row g-3 align-items-end">
-                <div class="col-lg-3">
-                    <select name="branch_id" class="form-select" required id="branch_id">
-                        <option value="" disabled selected>Chọn chi nhánh</option>
-                        @foreach ($branchs as $branch)
-                            <option value="{{ $branch['id'] }}" {{ request('branch_id') == $branch['id'] ? 'selected' : '' }}>
-                                {{ $branch['name'] }}
-                            </option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-lg-3">
-                    <select name="cinema_id" class="form-select" required id="cinema_id">
-                        <option value="" disabled selected>Chọn rạp</option>
-                    </select>
-                </div>
-                <div class="col-lg-3">
-                    <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}" required>
-                </div>
-                <div class="col-lg-3 d-flex align-items-end">
-                    <button type="submit" class="btn btn-info "><i class=" bx bx-search-alt-2"></i></button>
-                </div>
-            </div>
-        </form>
 
-        <div class="modal fade" id="movieModal" tabindex="-1">
+
+    <div class="rounded">
+        <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
-                    <div class="modal-header bg-primary">
-                        <h5 class="modal-title text-light">Danh sách phim đang hoạt động</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="modal-header bg-primary text-light">
+                        <h5 class="modal-title d-flex text-light align-items-center">
+                            <i class="bi bi-film me-2"></i> Danh sách phim đang hoạt động
+                        </h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <ul class="list-group">
-                            @foreach ($movies as $movie)
-                                <a href="{{ route('admin.showtimes.create', $movie->id) }}">
-                                    <li class="list-group-item movie-item fw-semibold"><i class="bi bi-film me-3"></i>
-                                        {{$movie->name}}</li>
-                                </a>
-                            @endforeach
+                        <!-- Ô tìm kiếm -->
+                        <div class="mb-3">
+                            <input type="text" id="searchMovie" class="form-control" placeholder="Nhập tên phim...">
+                        </div>
+        
+                        <!-- Danh sách phim -->
+                        <ul class="list-group overflow-auto" style="height: 200px;" id="movieList">
+                            {{-- @foreach ($movies as $movie)
+                               
+                            @endforeach --}}
                         </ul>
                     </div>
                 </div>
@@ -105,10 +112,10 @@
                             <td>{{ implode(', ', $showtimes['movie']->movie_genres) }}</td>
                             <td>{{ $showtimes['movie']->duration }} phút</td>
                             <td>
-                                <button class="btn btn-warning btn-sm" type="button" data-bs-toggle="collapse"
+                                <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapse-{{ $movieId }}" aria-expanded="false"
                                     aria-controls="collapse-{{ $movieId }}">
-                                    <i class="mdi mdi-plus-circle-outline"></i>
+                                    <i class="bx bx-show"></i>
                                 </button>
                                 <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#movieModalXXX{{ $movieId }}"><i class="bx bxs-copy"></i></button>
@@ -264,5 +271,29 @@
             }
 
         });
+        let movies = @json($movies);
+
+        function renderMovies(filteredMovies) {
+            $('#movieList').empty(); // Xóa danh sách cũ
+            filteredMovies.forEach(item => {
+                $('#movieList').append(`
+                    <a href="/admin/showtimes/${item.id}/create" class="text-decoration-none">
+                        <li class="list-group-item movie-item fw-semibold d-flex align-items-center border-0 rounded-3 mb-2 p-3 shadow-sm" style="transition: all 0.3s; cursor: pointer;">
+                            <i class="bi bi-film me-3 text-primary"></i>
+                            <span class="flex-grow-1 movie-name">${item.name}</span>
+                        </li>
+                    </a>
+                `);
+            });
+        }
+        renderMovies(movies);
+
+        $('#searchMovie').keyup(function () {
+            let searchText = $(this).val().toLowerCase();
+            let filteredMovies = movies.filter(movie => movie.name.toLowerCase().includes(searchText));
+
+            renderMovies(filteredMovies);
+        });
     </script>
+   
 @endsection

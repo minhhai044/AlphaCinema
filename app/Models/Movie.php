@@ -47,4 +47,8 @@ class Movie extends Model
     public function room(){
         return $this->belongsTo(Room::class);
     }
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

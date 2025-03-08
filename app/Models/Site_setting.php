@@ -28,6 +28,9 @@ class Site_setting extends Model
         'terms_of_service',
         'introduction_image',
         'introduction',
+        'news',
+        'news_img',
+        'background_image',
         'copyright',
     ];
 
@@ -147,6 +150,36 @@ class Site_setting extends Model
             <p>Email: support@alphacinema.vn</p>
             <p>Hotline: 1900 1234</p>
             <p>Đặt vé ngay</p>',
+            // Ảnh Tin túc 
+            'news_img' => 'theme/client/images/logo.png',
+            // Giới thiệu 
+            'news' => '
+            <section>
+    <h2>1. Bom tấn tháng 3: "Siêu Anh Hùng Trỗi Dậy" sẵn sàng khuấy đảo phòng vé</h2>
+    <p>Bộ phim hành động được mong chờ nhất tháng 3, "Siêu Anh Hùng Trỗi Dậy", sẽ chính thức ra rạp vào ngày 10/3. Với dàn diễn viên đình đám và kỹ xảo mãn nhãn, bộ phim hứa hẹn sẽ mang đến những trải nghiệm điện ảnh tuyệt vời.</p>
+</section>
+
+<section>
+    <h2>2. Khuyến mãi cực sốc: Mua 2 vé tặng 1 bắp rang</h2>
+    <p>Từ ngày 5/3 đến 15/3, khi mua 2 vé xem phim bất kỳ tại ALphaCinema, bạn sẽ nhận ngay một phần bắp rang miễn phí. Đừng bỏ lỡ cơ hội thưởng thức phim hay kèm theo món ăn vặt hấp dẫn!</p>
+</section>
+
+<section>
+    <h2>3. ALphaCinema khai trương rạp mới tại TP. HCM</h2>
+    <p>ALphaCinema chính thức mở thêm chi nhánh mới tại Quận 7, TP. HCM vào ngày 20/3. Với hệ thống âm thanh Dolby Atmos và màn hình IMAX hiện đại, đây chắc chắn là điểm đến lý tưởng cho các tín đồ điện ảnh.</p>
+</section>
+
+<section>
+    <h2>4. Review hot: "Hành trình về nhà" Bộ phim cảm động lấy nước mắt khán giả</h2>
+    <p>Bộ phim "Hành trình về nhà" đã chính thức ra mắt và nhanh chóng gây sốt nhờ nội dung ý nghĩa cùng diễn xuất ấn tượng. Bộ phim hiện đang nhận được số điểm rất cao trên các trang đánh giá phim uy tín.</p>
+</section>
+
+<section>
+    <h2>5. Lịch chiếu và đặt vé nhanh chóng</h2>
+    <p>Để không bỏ lỡ những bộ phim hấp dẫn nhất, hãy truy cập website chính thức của ALphaCinema để xem lịch chiếu và đặt vé ngay hôm nay!</p>
+</section>
+',
+'background_image'=>'theme/client/images/bg.png',
             'copyright' => ' Bản quyền thuộc về  ',
         ];
     }

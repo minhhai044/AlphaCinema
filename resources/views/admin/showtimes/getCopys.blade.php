@@ -140,7 +140,7 @@
 
 
         <div class="col-lg-3">
-            <div class="card shadow-lg border-0 rounded-3 ">
+            <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-body p-4">
                     <h4 class="mb-3 text-center text-warning fw-bold">
                         <i class="fas fa-info-circle me-2"></i> Thông tin chi tiết
@@ -149,13 +149,13 @@
                     @if (!empty($showtime))
                         <div class="p-3 rounded bg-white shadow-sm border">
                             <p class="mb-3"><i class="fas fa-map-marker-alt text-danger me-2"></i>
-                                <strong>Chi nhánh:</strong> {{$showtime[0]['branch']['name']}}
+                                <strong>Chi nhánh :</strong> {{$showtime[0]['branch']['name']}}
                             </p>
                             <p class="mb-3"><i class="fas fa-film text-primary me-2"></i>
-                                <strong>Rạp:</strong> {{$showtime[0]['cinema']['name']}}
+                                <strong>Rạp :</strong> {{$showtime[0]['cinema']['name']}}
                             </p>
                             <p class="mb-3"><i class="fas fa-chair text-success me-2"></i>
-                                <strong>Phòng:</strong> {{$showtime[0]['room']['name']}}
+                                <strong>Phòng :</strong> {{$showtime[0]['room']['name']}}
                             </p>
                         </div>
                     @else

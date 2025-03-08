@@ -28,23 +28,54 @@ class Ticket extends Model
     ];
 
     protected $casts = [
-        'ticket_seats' => 'array', // Chuyển đổi từ JSON sang array PHP
-        'ticket_combos' => 'array', // Chuyển đổi từ JSON sang array PHP
+        'ticket_seats' => 'array',
+        'ticket_combos' => 'array',
         'total_price' => 'decimal:2',
-        // 'status' => 'integer',
+        'expiry' => 'datetime',
+        'status' => 'string',
     ];
 
-    public function user(){
+    /**
+     * Mối quan hệ với User
+     */
+    public function user()
+    {
         return $this->belongsTo(User::class);
     }
-    public function cinemas(){
+
+    /**
+     * Mối quan hệ với Cinema
+     */
+    public function cinema()
+    {
         return $this->belongsTo(Cinema::class);
     }
 
-    public function room(){
+    /**
+     * Mối quan hệ với Room
+     */
+    public function room()
+    {
         return $this->belongsTo(Room::class);
     }
-    public function showtime(){
+
+    /**
+     * Mối quan hệ với Movie (giả sử bạn có model Movie)
+     */
+    public function movie()
+    {
+        return $this->belongsTo(Movie::class);
+    }
+
+    /**
+     * Mối quan hệ với Showtime
+     */
+    public function showtime()
+    {
         return $this->belongsTo(Showtime::class);
+    }
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class);
     }
 }

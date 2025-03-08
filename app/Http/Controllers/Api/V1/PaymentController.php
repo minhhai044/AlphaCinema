@@ -3,14 +3,25 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Api\PaymentRequest;
 use App\Models\Showtime;
+use App\Models\Ticket;
+use App\Models\User;
+use App\Services\ShowtimeService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redis;
 
 class PaymentController extends Controller
 {
     use ApiResponseTrait;
-
+    private $showtimeService;
+    public function __construct(ShowtimeService $showtimeService)
+    {
+        $this->showtimeService = $showtimeService;
+    }
     public function execPostRequest($url, $data)
     {
         $ch = curl_init($url);
@@ -34,15 +45,36 @@ class PaymentController extends Controller
         return $result;
     }
 
+    public static function generateOrderId()
+    {
+        $timestamp = substr(time(), -6);
+        $randomNumber = mt_rand(100000, 999999);
+
+        return $timestamp . $randomNumber;
+    }
 
     public function payment(Request $request)
     {
-        // lưu data vào session
-        session(['data_order' => $request->all()]);
-        return $this->handleMomo($request->all());
+
+
+        if (!$request->data) {
+            return response()->json([
+                'messenger' => 'Không có dữ liệu !!!'
+            ], Response::HTTP_BAD_REQUEST);
+        }
+        $data = json_decode($request->data, true);
+        $paymentResult = $this->processPayment($data);
+
+        if (!isset($paymentResult['payUrl'])) {
+            return response()->json(['message' => 'Lỗi khi tạo đơn hàng MoMo'], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return response()->json([
+            'url' => $paymentResult['payUrl']
+        ]);
     }
 
-    private function handleMomo($data)
+    private function processPayment($dataRequest)
     {
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
@@ -50,8 +82,7 @@ class PaymentController extends Controller
         $accessKey = 'klm05TvNBzhg7h7j';
         $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
         $orderInfo = "Thanh toán qua MoMo";
-        $amount = $data['total_price'] ?? 0;
-        $orderId = Showtime::generateOrderId(); //
+        $orderId = self::generateOrderId();
         $redirectUrl = env('APP_URL') . '/api/v1/checkout';
         $ipnUrl = "https://hehe.test/check-out";
         $extraData = "";
@@ -59,15 +90,15 @@ class PaymentController extends Controller
         $requestId = time() . "";
         $requestType = "payWithATM";
 
-        $rawHash = "accessKey=" . $accessKey . "&amount=" . $amount . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
+        $rawHash = "accessKey=" . $accessKey . "&amount=" .  $dataRequest['ticket']['total_price'] . "&extraData=" . $extraData . "&ipnUrl=" . $ipnUrl . "&orderId=" . $orderId . "&orderInfo=" . $orderInfo . "&partnerCode=" . $partnerCode . "&redirectUrl=" . $redirectUrl . "&requestId=" . $requestId . "&requestType=" . $requestType;
         $signature = hash_hmac("sha256", $rawHash, $secretKey);
 
-        $data = array(
+        $data = [
             'partnerCode' => $partnerCode,
             'partnerName' => "Test",
             "storeId" => "MomoTestStore",
             'requestId' => $requestId,
-            'amount' => $amount,
+            'amount' => $dataRequest['ticket']['total_price'],
             'orderId' => $orderId,
             'orderInfo' => $orderInfo,
             'redirectUrl' => $redirectUrl,
@@ -76,38 +107,62 @@ class PaymentController extends Controller
             'extraData' => $extraData,
             'requestType' => $requestType,
             'signature' => $signature
-        );
+        ];
 
         $result = $this->execPostRequest($endpoint, json_encode($data));
 
-        $jsonResult = json_decode($result, true);  // decode json
+        $jsonResult = json_decode($result, true);
 
-        return response()->json([
-            'url' => $jsonResult['payUrl']
-        ]);
+        if (!isset($jsonResult['payUrl'])) {
+            return null;
+        }
+
+        Redis::setex("order:$orderId", 900, json_encode([
+            'order_id' => $orderId,
+            'data' => $dataRequest,
+        ]));
+
+        return $jsonResult;
     }
 
     public function checkout(Request $request)
     {
         $resultCode = $request->query('resultCode');
-        $frontendUrl =  'http://localhost:3000';
+        $orderId = $request->query('orderId');
+        $frontendUrl = env('APP_URL');
 
+        if (!$orderId) {
+            return redirect($frontendUrl); //Không tìm thấy orderId
+        }
+        $orderData = Redis::get("order:$orderId");
 
-        $dataOrder = session('data_order');
-
-
-        if ($resultCode != 0) {
-            // return redirect($frontendUrl);
-            dd($dataOrder);
+        if (!$orderData) {
+            return redirect($frontendUrl); //Không tìm thấy orderData
         }
 
-        /**
-         * 1. Logic ticket
-         * 2. Logic  chuyển ghế sold
-         * 3. Cập nhật total_amount trong user 
-         * 4. return redirect($frontendUrl);
-         */
+        $orderData = json_decode($orderData, true);
 
-        dd($dataOrder);
+        if ($resultCode == 0) {
+
+            DB::transaction(function () use ($orderData) {
+                Ticket::create($orderData['data']['ticket']);
+
+                $dataResetSuccess = [
+                    'seat_id' => $orderData['data']['seat_id'],
+                    'status' => 'sold',
+                    'user_id' => $orderData['data']['ticket']['user_id']
+                ];
+                $this->showtimeService->resetSuccessService($dataResetSuccess, $orderData['data']['ticket']['showtime_id']);
+
+                User::where('id', $orderData['data']['ticket']['user_id'])->increment('total_amount', $orderData['data']['ticket']['total_price']);
+            });
+
+            Redis::del("order:$orderId");
+
+            return redirect($frontendUrl)
+                ->withCookie(cookie('order_id', $orderId, 10)); // Thành công thì xóa redis
+        }
+        Redis::del("order:$orderId");
+        return redirect($frontendUrl); // Thất bại
     }
 }

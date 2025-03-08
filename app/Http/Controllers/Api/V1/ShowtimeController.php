@@ -331,57 +331,7 @@ class ShowtimeController extends Controller
         ]);
 
         try {
-            $showtime = Showtime::query()->where('id', $id)->lockForUpdate()->firstOrFail();
-
-            $seat_structures = json_decode($showtime->seat_structure, true);
-            $seatIds = $validatedData['seat_id'];
-            $status = $validatedData['status'];
-
-
-            // return $this->successResponse(
-            //     [
-            //         'seat_id' => $seatIds,
-            //         'showtime' => $showtime,
-            //         'status' => $status,
-            //         'idShowtime' => $id
-            //     ],
-            //     'Thao tác thành công!'
-            // );
-
-
-            // Cập nhật trạng thái ghế
-            // $updated_seats = array_map(function ($seat) use ($validatedData) {
-            //     if ($seat['user_id'] == $validatedData['user_id'] && $seat['status'] !== "sold") {
-            //         if (!empty($validatedData['status'])) {
-            //             // sold
-            //             // $seat['status'] = $validatedData['status'];
-            //             $seat['status'] = 'sold';
-            //         } else {
-            //             $seat['user_id'] = null;
-            //             $seat['status'] = "available";
-            //         }
-            //     }
-            //     return $seat;
-            // }, $seat_structures);
-
-
-            /** code new */
-            $updated_seats = array_map(function ($seat) use ($validatedData, $seatIds) {
-                if (isset($seat['id']) && in_array($seat['id'], $seatIds)) {
-                    $seat['status'] = $validatedData['status'] ?? $seat['status'];
-                    $seat['user_id'] = $validatedData['user_id'] ?? $seat['user_id'];
-
-                    broadcast(new RealTimeSeatEvent($seat['id'], $seat['status'], $seat['user_id']))->toOthers();
-                }
-                return $seat;
-            }, $seat_structures);
-
-
-
-            $showtime->update([
-                'seat_structure' => json_encode($updated_seats),
-            ]);
-
+            $showtime = $this->showtimeService->resetSuccessService($validatedData, $id);
             return $this->successResponse(
                 $showtime,
                 'Thao tác thành công!'

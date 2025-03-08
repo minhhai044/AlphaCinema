@@ -25,10 +25,8 @@ class ShowtimeController extends Controller
     }
     public function index(Request $request)
     {
-
-
-        [$branchs, $branchsRelation, $listShowtimes, $movies] = $this->showtimeService->getService($request);
-        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs', 'branchsRelation', 'listShowtimes', 'movies'));
+        [$branchs,$branchsRelation ,$listShowtimes,$movies] = $this->showtimeService->getService($request);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs','branchsRelation','listShowtimes','movies'));
     }
     public function create(string $id)
     {
