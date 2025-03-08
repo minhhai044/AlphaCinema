@@ -40,6 +40,7 @@ class TicketRequest extends FormRequest
             'payment_name'      => 'nullable|string|max:50',
             'ticket_seats'      => 'nullable|array',
             'ticket_combos'     => 'nullable|array',
+            'ticket_foods'     => 'nullable|array',
             'total_price'       => 'nullable|numeric',
             'expiry'            => 'nullable|date',
             'status'            => 'nullable|in:pending,confirmed',

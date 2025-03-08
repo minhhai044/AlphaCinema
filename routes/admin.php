@@ -109,7 +109,11 @@ Route::group([
     'as' => 'tickets.',
 ], function () {
     Route::get('/', [TicketController::class, 'index'])->name('index');
+
     Route::get('/{id}', [TicketController::class, 'show'])->name('show'); // Add this
+
+    Route::get('/test', [TicketController::class, 'print']);
+
 });
 // Route::resource('typerooms', TyperoomController::class);
 Route::group([

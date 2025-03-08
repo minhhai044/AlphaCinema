@@ -193,4 +193,8 @@ class TicketService
             ];
         }, $ticketCombos), fn($item) => $item !== null); // Lọc bỏ các giá trị null
     }
+
+    // public function getTicketID($id){
+    //     return $this->ticket->findOrFail($id);
+    // }
 }

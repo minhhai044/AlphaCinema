@@ -23,6 +23,7 @@ class TicketSeeder extends Seeder
         $roomIds = Room::pluck('id')->toArray();
         $movieIds = Movie::pluck('id')->toArray();
         $showtimeIds = Showtime::pluck('id')->toArray();
+        // $barcode = DNS1D::getBarcodeHTML($oneTicket->code, 'C128', 1.5, 50);
 
         for ($i = 0; $i < 20; $i++) {
             $totalPrice = $faker->numberBetween(50000, 200000); // Giá vé ngẫu nhiên
