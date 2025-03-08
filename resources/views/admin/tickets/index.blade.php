@@ -158,28 +158,27 @@
                                         </td>
                                         <td>
                                             <div class="btn-group">
-                                                <a href="{{ route('admin.tickets.show', $ticket['id']) }}" class="btn btn-sm btn-success"><i
-                                                        class="fas fa-eye"></i></a>
-                                            </div>
-                                            <button class="btn btn-sm btn-success printTicket" data-id="{{ $ticket->id }}"><i
-                                                    class="fas fa-print"></i>Vé</button>
-                                            <button class="btn btn-sm btn-success printCombo" data-id="{{ $ticket->id }}"><i
-                                                    class="fas fa-print"></i>Combo</button>
-                                        </td>
-                                    </tr>
+                                                <a href="{{ route('admin.tickets.show', $ticket['id']) }}"
+                                                    class="btn btn-sm btn-success"><i
+                                                                                                                                                                                                    class="fas fa-eye"></i></a>
+                                                                                                                                                                                        </div>
+                                                                                                                                                                                        <button class="btn btn-sm btn-success printTicket" data-id="{{ $ticket->id }}"><i class="fas fa-print"></i>Vé</button>
+                                                                                                                                                                                        <button class="btn btn-sm btn-success printCombo" data-id="{{ $ticket->id }}"><i class="fas fa-print"></i>Combo</button>
+                                                                                                                                                                                    </td>
+                                                                                                                                                                                </tr>
                     @empty
                         <tr>
                             <td colspan="5" class="text-center">Không có vé nào.</td>
                         </tr>
                     @endforelse
-                </tbody>
-            </table>
-        </div>
-    </div>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
 
-    @php
-        $appUrl = env('APP_URL');
-    @endphp
+                        @php
+                            $appUrl = env('APP_URL');
+                        @endphp
 @endsection
 
 @section('script')

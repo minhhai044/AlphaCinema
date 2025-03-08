@@ -1,5 +1,87 @@
 @extends('admin.layouts.master')
+@section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+    <style>
+        .dataTables_wrapper .dataTables_paginate .paginate_button {
+            background-color: #ffffff !important;
+            color: #495057 !important;
+            border: 1px solid #e0e0e0 !important;
+            border-radius: 4px !important;
+            margin: 0 2px;
+            padding: 4px 8px !important;
+            /* Giảm padding */
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+        }
 
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: #2563eb !important;
+            /* Màu xanh dương đậm hơn */
+            color: #ffffff !important;
+            border-color: #2563eb !important;
+            box-shadow: 0 2px 6px rgba(89, 137, 240, 0.2);
+            transform: translateY(-1px);
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+            background-color: #6ff3d4 !important;
+            /* Màu xanh đậm cho active */
+            color: #ffffff !important;
+            border-color: #fbfbfb !important;
+            box-shadow: 0 2px 6px rgba(30, 64, 175, 0.2);
+            transform: translateY(-1px);
+            font-weight: 600;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+            color: #ced4da !important;
+            background-color: #f1f3f5 !important;
+            border-color: #e9ecef !important;
+            box-shadow: none !important;
+            cursor: not-allowed;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.next {
+            background-color: #f1f3f5 !important;
+            color: #495057 !important;
+            border-radius: 4px !important;
+            padding: 4px 10px !important;
+            /* Giảm padding cho trước/sau */
+            text-transform: uppercase;
+            font-weight: 500;
+        }
+
+        .dataTables_wrapper .dataTables_paginate .paginate_button.previous:hover,
+        .dataTables_wrapper .dataTables_paginate .paginate_button.next:hover {
+            background-color: #ffffff !important;
+            color: #ffffff !important;
+            border-color: #e7e7e7 !important;
+            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
+        }
+
+        td img {
+            max-width: 100px;
+            height: auto;
+        }
+
+        #pageLength {
+            font-size: 14px;
+            padding: 5px 10px;
+            width: 100px;
+        }
+    </style>
+@endsection
 @section('content')
     <div class="row">
         <div class="col-12">
@@ -270,7 +352,7 @@
     </script>
 @endsection
 
-<style>
+{{-- <style>
     .dataTables_wrapper .dataTables_paginate .paginate_button {
         background-color: #fff !important;
         color: #000 !important;
@@ -315,4 +397,4 @@
         border: 1px solid #ccc;
         transition: background-color 0.3s, color 0.3s;
     }
-</style>
+</style> --}}
