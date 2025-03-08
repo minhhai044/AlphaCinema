@@ -105,13 +105,12 @@ Route::resource('vouchers', VoucherController::class);
 Route::resource('user-vouchers', UserVoucherController::class);
 
 Route::group([
-    'prefix' => 'tickets',  // Tiền tố URL cho tất cả route
-    'as' => 'tickets.',     // Nhóm tên route (vd: foods.index, foods.store)
+    'prefix' => 'tickets',
+    'as' => 'tickets.',
 ], function () {
-    // Danh sách
     Route::get('/', [TicketController::class, 'index'])->name('index');
+    Route::get('/{id}', [TicketController::class, 'show'])->name('show'); // Add this
 });
-
 // Route::resource('typerooms', TyperoomController::class);
 Route::group([
     'prefix' => 'typerooms',  // Tiền tố URL cho tất cả route
@@ -255,3 +254,5 @@ Route::get('/statistical/cinemaRevenue', [StatisticalController::class, 'cinemaR
 
 
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
+
+Route::get('/admin/tickets/{ticket}/detail', [TicketController::class, 'show'])->name('admin.tickets.show');
