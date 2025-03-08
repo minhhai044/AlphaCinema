@@ -23,6 +23,7 @@ class Ticket extends Model
         'payment_name',
         'ticket_seats',
         'ticket_combos',
+        'ticket_foods',
         'total_price',
         'expiry',
         'status',
@@ -31,6 +32,7 @@ class Ticket extends Model
     protected $casts = [
         'ticket_seats' => 'array',
         'ticket_combos' => 'array',
+        'ticket_foods' => 'array',
         'total_price' => 'decimal:2',
         'expiry' => 'datetime',
         'status' => 'string',

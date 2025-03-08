@@ -61,4 +61,8 @@ class TicketService
             return false;
         }
     }
+
+    public function getTicketID($id){
+        return $this->ticket->findOrFail($id);
+    }
 }

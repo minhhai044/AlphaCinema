@@ -110,6 +110,7 @@ Route::group([
 ], function () {
     // Danh sách
     Route::get('/', [TicketController::class, 'index'])->name('index');
+    Route::get('/test', [TicketController::class, 'print']);
 });
 
 // Route::resource('typerooms', TyperoomController::class);
