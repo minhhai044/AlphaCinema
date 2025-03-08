@@ -57,12 +57,24 @@ class PaymentController extends Controller
     {
 
 
-        if (!$request->data) {
-            return response()->json([
-                'messenger' => 'Không có dữ liệu !!!'
-            ], Response::HTTP_BAD_REQUEST);
-        }
-        $data = json_decode($request->data, true);
+        // if (!$request->ticket || !$request->seat_id) {
+        //     return response()->json([
+        //         'messenger' => 'Không có dữ liệu !!!'
+        //     ], Response::HTTP_BAD_REQUEST);
+        // }
+
+
+        // return response()->json([
+        //     'ticket' => $request->ticket['cinema_id'],
+        //     'seat_id' => $request->seat_id,
+        // ]);
+
+        $data = [
+            'ticket' => $request->ticket,
+            'seat_id' => $request->seat_id,
+        ];
+
+        // $data = json_decode($request->data, true);
         $paymentResult = $this->processPayment($data);
 
         if (!isset($paymentResult['payUrl'])) {
@@ -76,6 +88,11 @@ class PaymentController extends Controller
 
     private function processPayment($dataRequest)
     {
+
+        // return response()->json([
+        //     $dataRequest
+        // ]);
+
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
         $partnerCode = 'MOMOBKUN20180529';
@@ -129,7 +146,7 @@ class PaymentController extends Controller
     {
         $resultCode = $request->query('resultCode');
         $orderId = $request->query('orderId');
-        $frontendUrl = env('APP_URL');
+        $frontendUrl = "http://localhost:3000";
 
         if (!$orderId) {
             return redirect($frontendUrl); //Không tìm thấy orderId
@@ -142,7 +159,7 @@ class PaymentController extends Controller
 
         $orderData = json_decode($orderData, true);
 
-        if ($resultCode == 0) {
+        if (!$resultCode == 0) {
 
             DB::transaction(function () use ($orderData) {
                 Ticket::create($orderData['data']['ticket']);
