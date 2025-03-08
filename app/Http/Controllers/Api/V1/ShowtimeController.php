@@ -204,33 +204,13 @@ class ShowtimeController extends Controller
     {
         // Validate đầu vào ngay từ đầu
         $validatedData = $request->validate([
-            'user_id' => 'required|integer',
-            'status' => 'nullable|string'
+            'user_id' => 'nullable',
+            'status' => 'nullable|string',
+            'seat_id' => 'required|array'
         ]);
 
         try {
-            $showtime = Showtime::query()->where('id', $id)->lockForUpdate()->firstOrFail();
-
-            $seat_structures = json_decode($showtime->seat_structure, true);
-
-            // Cập nhật trạng thái ghế
-            $updated_seats = array_map(function ($seat) use ($validatedData) {
-                if ($seat['user_id'] == $validatedData['user_id'] && $seat['status'] !== "sold") {
-                    if (!empty($validatedData['status'])) {
-                        // sold
-                        $seat['status'] = $validatedData['status'];
-                    } else {
-                        $seat['user_id'] = null;
-                        $seat['status'] = "available";
-                    }
-                }
-                return $seat;
-            }, $seat_structures);
-
-            $showtime->update([
-                'seat_structure' => json_encode($updated_seats),
-            ]);
-
+            $showtime = $this->showtimeService->resetSuccessService($validatedData, $id);
             return $this->successResponse(
                 $showtime,
                 'Thao tác thành công!'
