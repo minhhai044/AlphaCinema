@@ -14,10 +14,12 @@ use Illuminate\Support\Facades\Log;
 class TicketService
 {
     protected $ticketRepository;
+    protected $ticket;
 
-    public function __construct(TicketRepository $ticketRepository)
+    public function __construct(TicketRepository $ticketRepository, Ticket $ticket)
     {
         $this->ticketRepository = $ticketRepository;
+        $this->ticket = $ticket;
     }
 
     public function getService($request)
@@ -194,7 +196,7 @@ class TicketService
         }, $ticketCombos), fn($item) => $item !== null); // Lọc bỏ các giá trị null
     }
 
-    // public function getTicketID($id){
-    //     return $this->ticket->findOrFail($id);
-    // }
+    public function getTicketID($id){
+        return $this->ticket->findOrFail($id);
+    }
 }
