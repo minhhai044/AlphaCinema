@@ -36,7 +36,7 @@ class TicketController extends Controller
 
             // Gọi đúng phương thức của TicketService
             $ticket = $this->ticketService->create($data);
-            $barcode = DNS1D::getBarcodeHTML($data['code'], 'C128', 1.5, 50);
+            // $barcode = DNS1D::getBarcodeHTML($data['code'], 'C128', 1.5, 50);
 
             if (!$ticket) {
                 return $this->errorResponse('Không thể tạo ticket', 500);
@@ -45,7 +45,7 @@ class TicketController extends Controller
             return $this->successResponse([
                 'message' => 'Tạo ticket thành công',
                 'data' => $ticket,
-                'barcode' => $barcode,
+                // 'barcode' => $barcode,
             ], 201);
         } catch (\Exception $e) {
             Log::error("Lỗi khi tạo ticket: " . $e->getMessage());

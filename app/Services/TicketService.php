@@ -196,6 +196,18 @@ class TicketService
         }, $ticketCombos), fn($item) => $item !== null); // Lọc bỏ các giá trị null
     }
 
+    public function create(array $data)
+    {
+        try {
+            return DB::transaction(function () use ($data) {
+                return $this->ticket->create($data);
+            });
+        } catch (Exception $e) {
+            Log::error("LỖI KHI TẠO MỚI: " . $e->getMessage());
+            return false;
+        }
+    }
+
     public function getTicketID($id){
         return $this->ticket->findOrFail($id);
     }
