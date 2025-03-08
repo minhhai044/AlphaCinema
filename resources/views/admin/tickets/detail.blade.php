@@ -1,18 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('style')
-    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <style>
-        .ticket-card {
-            max-width: 1200px;
-            margin: 20px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            border: 1px solid #eee;
-        }
-
         /* Movie Table */
         .movie-table {
             width: 100%;
@@ -145,34 +134,33 @@
             font-weight: bold;
         }
 
-        @media (max-width: 768px) {
+        .movie-header {
+            display: flex;
+            flex-direction: column;
+            /* Sắp xếp theo cột: ảnh trên, tên dưới */
+            align-items: center;
+            /* Căn giữa nội dung */
+            gap: 10px;
+            /* Khoảng cách giữa ảnh và tên */
+            margin-bottom: 10px;
+        }
 
-            .movie-table th,
-            .movie-table td,
-            .combo-table th,
-            .combo-table td {
-                display: block;
-                width: 100%;
-                text-align: left;
-            }
+        .movie-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #007bff;
+            /* Đảm bảo màu xanh áp dụng */
+            margin: 0;
+            text-align: center;
+            /* Căn giữa tên */
+        }
 
-            .movie-table thead,
-            .combo-table thead {
-                display: none;
-            }
-
-            .movie-table td,
-            .combo-table td {
-                border-bottom: none;
-                padding: 5px 10px;
-            }
-
-            .movie-table tr,
-            .combo-table tr {
-                border-bottom: 1px solid #eee;
-                margin-bottom: 10px;
-                display: block;
-            }
+        .movie-thumbnail {
+            width: 30%;
+            height: 30%;
+            object-fit: cover;
+            border-radius: 4px;
+            box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
         }
     </style>
 @endsection
@@ -197,10 +185,11 @@
                             <img src="{{ $ticketData['movie']['thumbnail'] ?? 'https://via.placeholder.com/60' }}"
                                 alt="Movie Thumbnail" class="movie-thumbnail">
                             <div class="movie-info-text">
-                                <h5 class="movie-title">{{ $ticketData['movie']['name'] }}</h5>
+                                <h5 class="movie-title" style="color: #007bff;">
+                                    {{ $ticketData['movie']['name'] ?? 'Mufasa: Vua Sư Tử' }}
+                                </h5>
                             </div>
                         </div>
-
                     </td>
                     <!-- Suất chiếu -->
                     <td>
@@ -217,11 +206,21 @@
                     </td>
                     <!-- Ghế ngồi -->
                     <td>
-                        <p>{{ $ticketData['seats'] ?? 'E2' }}</p>
+                        <div class="ticket-section">
+                            @if (is_array($ticketData['seats']) && !empty($ticketData['seats']['details']))
+                                <ul>
+                                    @foreach ($ticketData['seats']['details'] as $seat)
+                                        <li>{{ $seat['name'] }} - {{ $seat['price'] }}</li>
+                                    @endforeach
+                                </ul>
+                            @else
+                                <p>{{ $ticketData['seats']['names'] }}</p>
+                            @endif
+                        </div>
                     </td>
                     <!-- Tổng tiền ghế -->
                     <td>
-                        <p class="price">{{ $ticketData['ticket_price'] ?? '112.000' }} VND</p>
+                        <p class="price">{{ $ticketData['ticket_price'] }} </p>
                     </td>
                 </tr>
             </tbody>
@@ -277,7 +276,7 @@
             <div class="payment-info-text">
                 <p><strong>Thời gian thanh toán:</strong> {{ $ticketData['payment_time'] }}</p>
                 <p><strong>Phương thức thanh toán:</strong> {{ $ticketData['payment_name']  }}</p>
-                <p><strong>Tổng tiền:</strong> <span class="price">{{ $ticketData['total_amount'] }} VND</span>
+                <p><strong>Tổng tiền:</strong> <span class="price">{{ $ticketData['total_amount'] }} </span>
                 </p>
             </div>
         </div>

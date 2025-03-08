@@ -55,9 +55,22 @@ class TicketService
 
         return [$tickets, $branches, $branchesRelation, $movies];
     }
+
     public function getTicketDetail($id)
     {
         $ticketDetail = $this->ticketRepository->findTicket($id);
+
+        // Xử lý danh sách ghế
+        $seatData = $this->getSeatList($ticketDetail->ticket_seats);
+
+        // Tính tổng tiền ghế từ ticket_seats
+        $totalSeatPrice = $seatData['total_price'] ?? 0;
+
+        // Xử lý danh sách combo
+        $combos = $this->getComboList($ticketDetail->ticket_combos);
+        $totalComboPrice = array_reduce($combos, function ($carry, $combo) {
+            return $carry + (isset($combo['total_price']) ? str_replace([' VND', ','], '', $combo['total_price']) : 0);
+        }, 0);
 
         return [
             'id' => $ticketDetail->id,
@@ -65,17 +78,26 @@ class TicketService
             'movie' => [
                 'name' => $ticketDetail->movie->name ?? 'N/A',
                 'thumbnail' => $ticketDetail->movie->img_thumbnail ? asset('storage/' . $ticketDetail->movie->img_thumbnail) : asset('path/to/default/image.jpg'),
+                'age_rating' => $ticketDetail->movie->age_rating ?? 'P',
+                'duration' => $ticketDetail->movie->duration ?? '160 phút',
             ],
             'cinema' => [
                 'name' => $ticketDetail->cinema->name ?? 'N/A',
                 'room' => $ticketDetail->room->name ?? 'N/A',
+            ],
+            'branch' => [
+                'name' => $ticketDetail->branch->name ?? 'N/A',
             ],
             'showtime' => [
                 'start_time' => $ticketDetail->showtime->start_time ? Carbon::parse($ticketDetail->showtime->start_time)->format('H:i') : 'N/A',
                 'end_time' => $ticketDetail->showtime->end_time ? Carbon::parse($ticketDetail->showtime->end_time)->format('H:i') : 'N/A',
                 'date' => $ticketDetail->showtime->date ? Carbon::parse($ticketDetail->showtime->date)->format('d/m/Y') : 'N/A',
             ],
-            'total_price' => $ticketDetail->total_price ? number_format($ticketDetail->total_price, 0, ',', '.') . ' VND' : 'N/A',
+            'seats' => $seatData,
+            'ticket_price' => $totalSeatPrice ? number_format($totalSeatPrice, 0, ',', '.') . ' VND' : '0 VND',
+            'combos' => $combos,
+            'total_combo_price' => $totalComboPrice ? number_format($totalComboPrice, 0, ',', '.') . ' VND' : '0 VND',
+            'total_amount' => $ticketDetail->total_price ? number_format($ticketDetail->total_price, 0, ',', '.') . ' VND' : 'N/A',
             'status' => $ticketDetail->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận',
             'user' => [
                 'name' => $ticketDetail->user->name ?? 'N/A',
@@ -86,44 +108,52 @@ class TicketService
             'payment_name' => $ticketDetail->payment_name ?? 'N/A',
             'payment_time' => $ticketDetail->created_at ? Carbon::parse($ticketDetail->created_at)->format('H:i - d/m/Y') : 'N/A',
             'customer_name' => $ticketDetail->user->name ?? 'N/A',
-            'total_amount' => $ticketDetail->total_price ? number_format($ticketDetail->total_price, 0, ',', '.') . ' VND' : 'N/A',
             'voucher_code' => $ticketDetail->voucher_code ?? 'N/A',
             'voucher_discount' => $ticketDetail->voucher_discount ? number_format($ticketDetail->voucher_discount, 0, ',', '.') . ' VND' : 'N/A',
             'point_use' => $ticketDetail->point_use ? number_format($ticketDetail->point_use, 0, ',', '.') : 'N/A',
             'point_discount' => $ticketDetail->point_discount ? number_format($ticketDetail->point_discount, 0, ',', '.') . ' VND' : 'N/A',
             'expiry' => $ticketDetail->expiry ? Carbon::parse($ticketDetail->expiry)->format('d/m/Y H:i') : 'N/A',
-            'seats' => $this->getSeatList($ticketDetail->ticket_seats),
-            'combos' => $this->getComboList($ticketDetail->ticket_combos),
-
         ];
     }
-
     private function getSeatList($ticketSeats)
     {
-        // Kiểm tra nếu ticketSeats rỗng hoặc không phải mảng
+        $result = [
+            'names' => 'N/A',
+            'details' => [],
+            'total_price' => 0,
+        ];
+
         if (empty($ticketSeats) || !is_array($ticketSeats)) {
-            return 'N/A';
+            return $result;
         }
 
-        // Nếu ticket_seats nằm trong key "seats" (tùy cách dữ liệu được lưu)
         $seats = isset($ticketSeats['seats']) && is_array($ticketSeats['seats'])
             ? $ticketSeats['seats']
             : $ticketSeats;
 
-        // Kiểm tra xem mảng có dữ liệu hợp lệ không
         if (empty($seats)) {
-            return 'N/A';
+            return $result;
         }
 
-        // Lấy danh sách tên ghế
-        $seatNames = array_map(function ($seat) {
-            // Đảm bảo seat là mảng và có key 'name'
-            return is_array($seat) && isset($seat['name']) ? $seat['name'] : 'N/A';
+        $seatDetails = array_map(function ($seat) {
+            return [
+                'name' => $seat['name'] ?? 'N/A',
+                'price' => $seat['price'] ? number_format($seat['price'], 0, ',', '.') . ' VND' : '0 VND',
+            ];
         }, $seats);
 
-        // Nối các tên ghế bằng dấu phẩy
-        return implode(', ', $seatNames) ?: 'N/A';
+        $seatNames = array_column($seatDetails, 'name');
+        $totalPrice = array_reduce($seatDetails, function ($carry, $seat) {
+            return $carry + str_replace([' VND', ','], '', $seat['price']);
+        }, 0);
+
+        return [
+            'names' => implode(', ', $seatNames) ?: 'N/A',
+            'details' => $seatDetails,
+            'total_price' => $totalPrice,
+        ];
     }
+
     private function getComboList($ticketCombos)
     {
         // Nếu dữ liệu không phải mảng hoặc rỗng, trả về mảng rỗng
@@ -163,61 +193,3 @@ class TicketService
         }, $ticketCombos), fn($item) => $item !== null); // Lọc bỏ các giá trị null
     }
 }
-
-
-// [
-//     {
-//         "id": 1,
-//         "name": "Combooooo",
-//         "foods": [
-//             {
-//                 "id": 1,
-//                 "name": "Trần Minh Hải",
-//                 "type": "Đồ ăn",
-//                 "price": "12345",
-//                 "quantity": 1,
-//                 "is_active": 1,
-//                 "created_at": "2025-03-01T02:36:50.000000Z",
-//                 "updated_at": "2025-03-01T02:36:50.000000Z",
-//                 "description": "aa",
-//                 "img_thumbnail": "foodImages/gGLNgJcakpDNDRzgtMlS83gdcTKbDMgBxWfPE3Mj.png"
-//             },
-//             {
-//                 "id": 3,
-//                 "name": "Phân tích thống kê website",
-//                 "type": "Đồ uống",
-//                 "price": "12345",
-//                 "quantity": 1,
-//                 "is_active": 1,
-//                 "created_at": "2025-03-01T02:37:05.000000Z",
-//                 "updated_at": "2025-03-01T02:37:05.000000Z",
-//                 "description": "a",
-//                 "img_thumbnail": "foodImages/WnEzhUjXtZVTNK0Qwg67D5ueVBadQ5gUp6Th9Xnd.png"
-//             }
-//         ],
-//         "price": "24690",
-//         "quantity": 2,
-//         "is_active": 1,
-//         "created_at": "2025-03-01T02:37:54.000000Z",
-//         "price_sale": "10000",
-//         "updated_at": "2025-03-01T02:37:54.000000Z",
-//         "description": "aaaaaaaaa",
-//         "img_thumbnail": "comboImages/NYaC6YDrGg3BYg5fIkwWdBBUYsibmJ7ZNNeuSVvZ.jpg"
-//     },
-//     {
-//
-//         "foods": [
-//             {
-//                 "id": 1,
-//                 "name": "Trần Minh Hải",
-//                 "type": "Đồ ăn",
-//                 "price": "12345",
-//                 "quantity": 1,
-//                 "is_active": 1,
-//                 "created_at": "2025-03-01T02:36:50.000000Z",
-//                 "updated_at": "2025-03-01T02:36:50.000000Z",
-//                 "description": "aa",
-//                 "img_thumbnail": "foodImages/gGLNgJcakpDNDRzgtMlS83gdcTKbDMgBxWfPE3Mj.png"
-//             },
-//            
-// ]
