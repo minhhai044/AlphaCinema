@@ -171,7 +171,8 @@ class TicketService
             $comboName = $combo['name'] ?? 'N/A';
             $quantity = $combo['quantity'] ?? 1;
             $price = isset($combo['price_sale']) ? $combo['price_sale'] : ($combo['price'] ?? 0);
-            $totalPrice = number_format($price * $quantity, 0, ',', '.') . ' VND';
+            // $totalPrice = number_format($price * $quantity, 0, ',', '.') . ' VND';
+            $totalPrice = $price * $quantity;
             $imgThumbnail = $combo['img_thumbnail'] ? asset('storage/' . $combo['img_thumbnail']) : asset('path/to/default_combo.jpg');
 
             // Xử lý danh sách món trong combo
