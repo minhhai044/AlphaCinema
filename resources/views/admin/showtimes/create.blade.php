@@ -171,9 +171,8 @@
                         </div>
                         <!-- Nút thêm xuất chiếu -->
                         <div class="col-lg-12">
-                            <button type="button" id="addTime" class="btn btn-primary btn-sm float-end ms-3">Thêm thời
-                                gian</button>
-                            <button type="button" id="autoGenerate" class="btn btn-success btn-sm float-end">Tự động</button>
+                            <button type="button" id="addTime" class="btn btn-primary btn-sm float-end ms-3"><i class=" bx bx-plus"></i></button>
+                            <button type="button" id="autoGenerate" class="btn btn-success btn-sm float-end"><i class="bx bxs-copy"></i></button>
                         </div>
                         <!-- Danh sách xuất chiếu -->
                         <div class="col-lg-12" id="listTime">
@@ -183,8 +182,8 @@
                 </div>
 
                 <div class="m-3">
-                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary btn-sm">Thêm</button>
-                    <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger btn-sm">Quay lại</button></a>
+                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary">Thêm mới</button>
+                    {{-- <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger btn-sm">Quay lại</button></a> --}}
                 </div>
             </div>
         </div>

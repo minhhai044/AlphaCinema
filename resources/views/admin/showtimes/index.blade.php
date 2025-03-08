@@ -115,7 +115,7 @@
                                 <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#collapse-{{ $movieId }}" aria-expanded="false"
                                     aria-controls="collapse-{{ $movieId }}">
-                                    <i class="mdi mdi-plus-circle-outline"></i>
+                                    <i class="bx bx-show"></i>
                                 </button>
                                 <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                     data-bs-target="#movieModalXXX{{ $movieId }}"><i class="bx bxs-copy"></i></button>
