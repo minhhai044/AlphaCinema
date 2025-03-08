@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\V1;
 
 use App\Http\Controllers\Controller;
+use App\Models\Showtime;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 
@@ -36,14 +37,21 @@ class PaymentController extends Controller
 
     public function payment(Request $request)
     {
+        // lưu data vào session
+        session(['data_order' => $request->all()]);
+        return $this->handleMomo($request->all());
+    }
+
+    private function handleMomo($data)
+    {
         $endpoint = "https://test-payment.momo.vn/v2/gateway/api/create";
 
         $partnerCode = 'MOMOBKUN20180529';
         $accessKey = 'klm05TvNBzhg7h7j';
         $secretKey = 'at67qH6mk8w5Y1nAyMoYKMWACiEi2bsa';
         $orderInfo = "Thanh toán qua MoMo";
-        $amount = $request->amount;
-        $orderId = time() . ""; //
+        $amount = $data['total_price'] ?? 0;
+        $orderId = Showtime::generateOrderId(); //
         $redirectUrl = env('APP_URL') . '/api/v1/checkout';
         $ipnUrl = "https://hehe.test/check-out";
         $extraData = "";
@@ -71,33 +79,35 @@ class PaymentController extends Controller
         );
 
         $result = $this->execPostRequest($endpoint, json_encode($data));
-        
+
         $jsonResult = json_decode($result, true);  // decode json
 
-        if ($request->amount) {
-            return response()->json([
-                'url' => $jsonResult['payUrl']
-            ]);
-        }
-
         return response()->json([
-            'messenger' => 'Vui lòng nhập giá'
+            'url' => $jsonResult['payUrl']
         ]);
     }
+
     public function checkout(Request $request)
     {
         $resultCode = $request->query('resultCode');
+        $frontendUrl =  'http://localhost:3000';
 
 
-        if ($resultCode == 0) {
-            $message = 'Thanh toán thành công!';
-        } else {
-            $message = 'Thanh toán thất bại!';
+        $dataOrder = session('data_order');
+
+
+        if ($resultCode != 0) {
+            // return redirect($frontendUrl);
+            dd($dataOrder);
         }
 
-        $frontendUrl =  env('APP_URL');
-        // $redirectUrl = $frontendUrl . '?status=' . ($resultCode == 0 ? 'success' : 'failed') . '&message=' . urlencode($message);
+        /**
+         * 1. Logic ticket
+         * 2. Logic  chuyển ghế sold
+         * 3. Cập nhật total_amount trong user 
+         * 4. return redirect($frontendUrl);
+         */
 
-        return redirect($frontendUrl);
+        dd($dataOrder);
     }
 }

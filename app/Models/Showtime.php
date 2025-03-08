@@ -46,6 +46,13 @@ class Showtime extends Model
 
         return $formattedCode;
     }
+    public static function generateOrderId()
+    {
+        $timestamp = substr(time(), -6);
+        $randomNumber = mt_rand(100000, 999999);
+
+        return $timestamp . $randomNumber;
+    }
     public const SPECIALSHOWTIMES = [
         ['id' => 1, 'name' => 'Suất thường'],
         ['id' => 2, 'name' => 'Suất đặc biệt'],
