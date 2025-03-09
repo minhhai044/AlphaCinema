@@ -41,7 +41,7 @@
                                     required>
                             </div>
                             <div class="col-auto">
-                                <button type="submit" class="btn btn-info"><i class="bx bx-search-alt-2"></i></button>
+                                <button type="submit" class="btn btn-primary"><i class="bx bx-search-alt-2"></i></button>
                             </div>
                         </div>
                     </form>
@@ -83,7 +83,7 @@
             </div>
         </div>
         <table class="table table-bordered table-hover dt-responsive nowrap w-100 text-center">
-            <thead class="table-success text-light text-center rounded-top-2">
+            <thead class="table text-light text-center rounded-top-2">
                 <tr>
                     <th class="fw-semibold">STT</th>
                     <th class="fw-semibold">Phim</th>

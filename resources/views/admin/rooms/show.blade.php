@@ -2,12 +2,30 @@
 @section('title', 'Chi tiết phòng')
 
 @section('style')
-    <style>
-        .table-bordered th, .table-bordered td {
-            text-align: center;
-            vertical-align: middle;
-        }
-        .badge-active {
+<style>
+    .screen {
+        text-align: center;
+        font-weight: bold;
+        border-radius: 5px;
+    }
+    .seat-map .seat {
+        margin: 5px;
+        text-align: center;
+        line-height: 40px;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+
+
+
+    .box-item {
+        /* width: 35px;
+        height: 35px; */
+        max-width: 35px;
+        max-height: 35px;
+    }
+    
+    .badge-active {
             background-color: green;
             padding: 5px 10px;
             color: white;
@@ -19,39 +37,9 @@
             color: white;
             border-radius: 5px;
         }
-        .screen {
-            width: 80%;
-            margin: auto;
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            background: gray;
-            color: white;
-            padding: 10px;
-            border-radius: 5px;
-        }
-        .seat-map {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .seat-item {
-            position: relative;
-            text-align: center;
-        }
-        .seat-label, .seat-label-double {
-            font-size: 14px;
-            font-weight: bold;
-            color: #555;
-        }
-        .box-item {
-            padding: 5px;
-            width: 35px;
-            height: 35px;
-            max-width: 35px;
-            max-height: 35px;
-        }
-    </style>
+   
+    
+</style>
 @endsection
 
 @section('content')
@@ -75,7 +63,7 @@
     <div class="row">
 
         <div class="col-12 mb-3">
-            <table class="table table-bordered table-hover">
+            <table class="table table-bordered text-center table-hover">
                 <thead>
                     <tr>
                         <th>Tên phòng</th>
@@ -107,7 +95,9 @@
         <div class="col-12">
 
             <div class="text-center">
-                <div class="screen w-full mx-auto mb-4 p-2 bg-dark text-white">Màn Hình Chiếu</div>
+                <div class="screen ">
+                    <img class="w-100" src="{{asset('images/seat/manhinh.png')}}" alt="">
+                </div>
                 <div class="seat-map" >
                     <table style="width: 60%" class="table-chart-chair table-none align-middle mx-auto text-center mt-3">
                         <tbody>
@@ -121,7 +111,7 @@
                                         @if ($seatType == 3)
                                             <td class="box-item" colspan="2">
                                                 <div class="seat-item">
-                                                    <img src="{{ asset('images/seat/seat-2-booked.png') }}" class='seat' width="77%">
+                                                    <img src="{{ asset('images/seat/seat-2-booked.png') }}" class='seat' width="60%">
                                                     <p class="seat-label-double">{{ chr(65 + $row) . ($col + 1) }} {{ chr(65 + $row) . ($col + 2) }}</p>
                                                 </div>
                                             </td>
@@ -132,11 +122,11 @@
                                                 <div class="seat-item">
                                                     @switch($seatType)
                                                         @case(1)
-                                                            <img src="{{ asset('images/seat/seat-1.png') }}" class='seat' width="77%">
+                                                            <img src="{{ asset('images/seat/seat-1.png') }}" class='seat' width="60%">
                                                             <span class="seat-label">{{ chr(65 + $row) . ($col + 1) }}</span>
                                                         @break
                                                         @case(2)
-                                                            <img src="{{ asset('images/seat/seat-1-free.png') }}" class='seat' width="77%">
+                                                            <img src="{{ asset('images/seat/seat-1-free.png') }}" class='seat' width="60%">
                                                             <span class="seat-label">{{ chr(65 + $row) . ($col + 1) }}</span>
                                                         @break
                                                     @endswitch

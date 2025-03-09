@@ -170,8 +170,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
-        Laravel\Sanctum\SanctumServiceProvider::class,
-        Yajra\DataTables\DataTablesServiceProvider::class,
+        Laravel\Sanctum\SanctumServiceProvider::class
     ])->toArray(),
 
     /*
@@ -187,7 +186,6 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
-        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ])->toArray(),
 
 ];

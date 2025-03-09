@@ -1,4 +1,12 @@
 @extends('admin.layouts.master')
+@section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+@endsection
 @section('content')
 
 
@@ -124,7 +132,7 @@
     </form>
 
 
-    <table class="table table-bordered text-center">
+    <table id="datatable" class="table table-bordered text-center">
         <thead>
             <tr>
                 <th class="fw-semibold">STT</th>
@@ -152,15 +160,16 @@
                             <label for="is_active{{$room->id}}"></label>
                         </td>
                         <td>
-                            <button class="btn btn-success btn-sm"><a class="dropdown-item" href="{{ route('admin.rooms.show', $room) }}"><i
-                                class="bx bx-show"></i></a></button>
-                            <button class="btn btn-primary btn-sm"><a class="dropdown-item edit-room" href="#" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
-                                data-branch="{{ $room->branch_id }}" data-cinema="{{ $room->cinema_id }}"
-                                data-typeroom="{{ $room->type_room_id }}" data-seattemplate="{{ $room->seat_template_id }}"
-                                data-description="{{ $room->description }}" data-publish="{{ $room->is_publish }}"
-                                data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
-                                <i class=" bx bx-edit"></i>
-                            </a></button>
+                            <button class="btn btn-success btn-sm"><a class="dropdown-item"
+                                    href="{{ route('admin.rooms.show', $room) }}"><i class="bx bx-show"></i></a></button>
+                            <button class="btn btn-primary btn-sm"><a class="dropdown-item edit-room" href="#"
+                                    data-id="{{ $room->id }}" data-name="{{ $room->name }}" data-branch="{{ $room->branch_id }}"
+                                    data-cinema="{{ $room->cinema_id }}" data-typeroom="{{ $room->type_room_id }}"
+                                    data-seattemplate="{{ $room->seat_template_id }}" data-description="{{ $room->description }}"
+                                    data-publish="{{ $room->is_publish }}" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModalEdit">
+                                    <i class=" bx bx-edit"></i>
+                                </a></button>
                         </td>
                     </tr>
                 @endforeach
@@ -168,7 +177,7 @@
         </tbody>
 
     </table>
-    {{$rooms->links()}}
+    {{-- {{$rooms->links()}} --}}
     <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
@@ -275,7 +284,24 @@
     @endphp
 @endsection
 @section('script')
+    <!-- Required datatable js -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <!-- Buttons examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
 
+    <!-- Responsive examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+    </script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+    </script>
+
+    <!-- Datatable init js -->
+    <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
     <script>
         $(document).ready(function () {
             @if ($errors->any())
