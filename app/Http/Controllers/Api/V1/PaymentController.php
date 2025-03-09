@@ -20,7 +20,7 @@ class PaymentController extends Controller
 {
     use ApiResponseTrait;
     private $showtimeService;
-    private const PATH_URL = "http://baselaravel.test";
+    private const PATH_URL = "https://alphacinema.me";
     public function __construct(ShowtimeService $showtimeService)
     {
         $this->showtimeService = $showtimeService;
@@ -235,7 +235,12 @@ class PaymentController extends Controller
 
             Redis::del("order:$txnRef");
 
-            return redirect($frontendUrl)->withCookie(cookie('order_id', $txnRef, 10)); // Thành công
+            // return redirect($frontendUrl)->withCookie(cookie('order_id', $txnRef, 10));
+            return redirect($frontendUrl . '/booking-success')->withCookies([
+                cookie('order_id', $txnRef, 10),
+                cookie('status', true),
+                cookie('message', 'Thanh toán thành công'),
+            ]);
         }
 
         $dataResetSuccess = [
@@ -245,7 +250,7 @@ class PaymentController extends Controller
         ];
 
         $this->showtimeService->resetSuccessService($dataResetSuccess, $orderData['data']['ticket']['showtime_id']);
-        
+
         Redis::del("order:$txnRef");
         return redirect($frontendUrl);
     }
