@@ -1,213 +1,58 @@
 @extends('admin.layouts.master')
 
 @section('style')
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     <style>
-        /* General Styles */
-        .ticket-container {
-            display: flex;
-            width: 100%;
-            gap: 20px;
-        }
-
-        /* Sections */
-        .movie-section {
-            flex: 0 0 75%;
-            background: #fff;
-            padding: 15px;
-            border: 1px solid #eee;
-            border-radius: 5px;
-        }
-
-        .info-container {
-            flex: 0 0 25%;
-            display: flex;
-            flex-direction: column;
-            gap: 20px;
-        }
-
-        .ticket-info-section {
-            background: #fff;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        .payment-section {
-            background: #fff;
-            padding: 15px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-        }
-
-        /* Header with Title and Link */
-        .section-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 10px;
-        }
-
-        .section-header h6 {
-            font-size: 16px;
-            font-weight: 600;
-            color: #333;
-            margin: 0;
-        }
-
-        .detail-link {
-            font-size: 14px;
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        .detail-link:hover {
-            text-decoration: underline;
-        }
-
-        /* Table Styles */
-        .movie-table,
-        .combo-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .movie-table th,
-        .combo-table th {
-            background-color: #f8f9fa;
-            font-weight: 600;
-            padding: 10px;
-            text-align: left;
-            font-size: 14px;
-            color: #555;
-            border-bottom: 1px solid #eee;
-        }
-
-        .movie-table td,
-        .combo-table td {
-            padding: 10px;
-            font-size: 14px;
-            color: #555;
-            border-bottom: 1px solid #eee;
-        }
-
-        .combo-table td {
-            text-align: center;
-            border: 1px solid #eee;
-        }
-
-        .combo-table td:first-child {
-            text-align: left;
-            display: flex;
-            align-items: center;
-        }
-
-        /* Movie Header */
-        .movie-header {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .movie-title {
-            font-size: 18px;
-            font-weight: 600;
-            color: #007bff;
-            margin: 0;
-            text-align: center;
-        }
-
+        /* Chỉ giữ các style tùy chỉnh cần thiết */
         .movie-thumbnail {
             width: 30%;
-            height: 30%;
+            height: auto;
             object-fit: cover;
             border-radius: 4px;
             box-shadow: 0 1px 5px rgba(0, 0, 0, 0.1);
         }
 
-        /* Combo Styles */
-        .combo-section {
-            margin-top: 20px;
-        }
-
         .combo-img {
             max-width: 40%;
-            margin-right: 40%;
+            margin-right: 10px;
             vertical-align: middle;
-        }
-
-        /* Text Styles */
-        .movie-info-text p,
-        .movie-table td p,
-        .ticket-info-section p,
-        .payment-info-text p {
-            font-size: 14px;
-            color: #555;
-            margin: 5px 0;
-        }
-
-        .movie-info-text strong,
-        .movie-table td strong,
-        .ticket-info-section strong,
-        .payment-info-text strong {
-            color: #333;
-            font-weight: 600;
         }
 
         .price {
             color: #007bff;
             font-weight: bold;
-            font-size: 14px;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .ticket-container {
-                flex-direction: column;
-            }
-
-            .movie-section,
-            .info-container,
-            .ticket-info-section,
-            .payment-section {
-                flex: 0 0 100%;
-            }
-
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 10px;
-            }
         }
     </style>
 @endsection
 
 @section('content')
-    <div class="ticket-container">
-
+    <div class="container-fluid ticket-container d-flex gap-3">
         <!-- Movie Section (75%) -->
-        <div class="movie-section">
-            <a href="{{ route('admin.tickets.index') }}" class="btn btn-primary mb-3">Quay lại</a>
-            <table class="movie-table">
-                <thead>
+        <div class="movie-section col-md-9 bg-white p-3 border rounded">
+            <a href="{{ route('admin.tickets.index') }}" class="btn btn-primary mb-3">
+                <i class="bi bi-arrow-left me-1"></i> Quay lại
+            </a>
+            <table class="movie-table table table-bordered">
+                <thead class="table-light">
                     <tr>
-                        <th>Phim</th>
-                        <th>Suất chiếu</th>
-                        <th>Ghế ngồi</th>
+                        <th><i class="bi bi-film me-1"></i> Phim</th>
+                        <th><i class="bi bi-clock me-1"></i> Suất chiếu</th>
+                        <th><i class="bi bi-chair me-1"></i> Ghế ngồi</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
                         <td>
-                            <div class="movie-header">
+                            <div class="movie-header text-center">
                                 <img src="{{ $ticketData['movie']['thumbnail'] ?? 'https://via.placeholder.com/60' }}"
                                     alt="Movie Thumbnail" class="movie-thumbnail">
-                                <div class="movie-info-text">
-                                    <h5 class="movie-title">
-                                        {{ $ticketData['movie']['name'] ?? 'Mufasa: Vua Sư Tử' }}
-                                    </h5>
-                                </div>
+                                <h5 class="movie-title mt-2 text-primary">
+                                    {{ $ticketData['movie']['name'] ?? 'Mufasa: Vua Sư Tử' }}
+                                </h5>
                             </div>
                         </td>
                         <td>
@@ -225,7 +70,7 @@
                         <td>
                             <div class="ticket-section">
                                 @if (is_array($ticketData['seats']) && !empty($ticketData['seats']['details']))
-                                    <ul>
+                                    <ul class="list-unstyled">
                                         @foreach ($ticketData['seats']['details'] as $seat)
                                             <li>{{ $seat['name'] }} - {{ $seat['price'] }}</li>
                                         @endforeach
@@ -239,10 +84,10 @@
                 </tbody>
             </table>
 
-            <div class="combo-section">
-                <h6>Combo</h6>
-                <table class="combo-table">
-                    <thead>
+            <div class="combo-section mt-3">
+                <h6><i class="bi bi-basket me-1"></i> Combo</h6>
+                <table class="combo-table table table-bordered">
+                    <thead class="table-light">
                         <tr>
                             <th>Combo</th>
                             <th>Chi tiết</th>
@@ -258,18 +103,18 @@
                                     {{ $combo['name'] }}
                                 </td>
                                 <td>
-                                    <ul style="list-style-type: disc; margin: 0; padding-left: 20px;">
+                                    <ul class="list-unstyled mb-0">
                                         @foreach ($combo['foods'] as $food)
                                             <li>{{ $food }}</li>
                                         @endforeach
                                     </ul>
                                 </td>
-                                <td>{{ $combo['quantity'] }} x {{ $combo['price'] }} VND</td>
-                                <td class="price">{{ $combo['total_price'] }} VND</td>
+                                <td class="text-center">{{ $combo['quantity'] }} x {{ $combo['price'] }}</td>
+                                <td class="price text-center">{{ $combo['total_price'] }}</td>
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="4">Không có combo</td>
+                                <td colspan="4" class="text-center">Không có combo</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -278,16 +123,14 @@
         </div>
 
         <!-- Info Container (25%) -->
-        <div class="info-container">
+        <div class="info-container col-md-3 d-flex flex-column gap-3">
             <!-- Ticket Info Section -->
-            <div class="ticket-info-section">
-                <div class="section-header">
-                    <h6>Thông tin người đặt</h6>
-                    <a href="#" class="detail-link">Xem
-                        chi tiết</a>
+            <div class="ticket-info-section bg-white p-3 border rounded">
+                <div class="section-header d-flex justify-content-between align-items-center mb-2">
+                    <h6><i class="bi bi-person me-1"></i> Thông tin người đặt</h6>
+                    <a href="#" class="detail-link text-primary text-decoration-none">Xem chi tiết</a>
                 </div>
-                    <hr>
-
+                <hr>
                 <div class="info-text">
                     <p><strong>Tên khách hàng:</strong> {{ $ticketData['user']['name'] ?? 'PhungHuy' }}</p>
                     <p><strong>Email:</strong> {{ $ticketData['user']['email'] ?? 'huyphung@gmail.com' }}</p>
@@ -296,8 +139,8 @@
             </div>
 
             <!-- Payment Section -->
-            <div class="payment-section">
-                <h6>Thông tin thanh toán</h6>
+            <div class="payment-section bg-white p-3 border rounded">
+                <h6><i class="bi bi-wallet me-1"></i> Thông tin thanh toán</h6>
                 <hr>
                 <div class="payment-info-text">
                     <p><strong>Thanh toán vào lúc:</strong> {{ $ticketData['payment_time'] ?? '21:31 - 05/03/2025' }}</p>
@@ -308,4 +151,9 @@
             </div>
         </div>
     </div>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
 @endsection

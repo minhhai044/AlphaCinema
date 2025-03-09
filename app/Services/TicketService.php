@@ -28,9 +28,8 @@ class TicketService
         $branch_id = $request->query('branch_id', '');
         $cinema_id = $request->query('cinema_id', '');
         $movie_id = $request->query("movie_id", "");
-        $status = $request->query("status", "");
+        $status = $request->query("status_id", ""); // Sửa từ status thành status_id
 
-        // Lấy tất cả tickets nếu không có filter, nếu có filter thì lọc theo điều kiện
         if (empty($date) && empty($branch_id) && empty($cinema_id) && empty($movie_id) && empty($status)) {
             $tickets = Ticket::with('movie', 'branch', 'cinema', 'user')->get();
         } else {
@@ -40,7 +39,11 @@ class TicketService
                         $q->where('date', $date);
                     });
                 })
-                ->when($branch_id, fn($query) => $query->where('branch_id', $branch_id))
+                ->when($branch_id, function ($query) use ($branch_id) {
+                    $query->whereHas('cinema', function ($q) use ($branch_id) {
+                        $q->where('branch_id', $branch_id);
+                    });
+                })
                 ->when($cinema_id, fn($query) => $query->where('cinema_id', $cinema_id))
                 ->when($movie_id, fn($query) => $query->where('movie_id', $movie_id))
                 ->when($status, fn($query) => $query->where('status', $status))

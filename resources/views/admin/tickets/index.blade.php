@@ -24,62 +24,85 @@
 @section('content')
     <h5 class="fw-bold">Quản lý hóa đơn</h5>
     <div class="rounded">
-        <form action="{{ route('admin.tickets.index') }}" method="get" class="filter-row d-flex align-items-end">
-            <div class="form-group">
-                <label for="branch_id" class="form-label fw-bold">Chi nhánh</label>
-                <select name="branch_id" class="form-select" required id="branch_id">
-                    <option value="" disabled selected>Chọn chi nhánh</option>
-                    @if ($branches && $branches->isNotEmpty())
-                        @foreach ($branches as $branch)
-                            <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
-                                {{ $branch->name }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="cinema_id" class="form-label fw-bold">Rạp</label>
-                <select name="cinema_id" class="form-select" required id="cinema_id">
-                    <option value="" disabled selected>Chọn rạp</option>
-                    @if (!empty($cinemas))
-                        @foreach ($cinemas as $cinemaId => $cinemaName)
-                            <option value="{{ $cinemaId }}" {{ request('cinema_id') == $cinemaId ? 'selected' : '' }}>
-                                {{ $cinemaName }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="date" class="form-label fw-bold">Ngày</label>
-                <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}" required>
-            </div>
-            <div class="form-group">
-                <label for="movie_id" class="form-label fw-bold">Phim</label>
-                <select name="movie_id" class="form-select" required id="movie_id">
-                    <option value="" disabled selected>Chọn phim</option>
-                    @if ($movies && $movies->isNotEmpty())
-                        @foreach ($movies as $movie)
-                            <option value="{{ $movie->id }}" {{ request('movie_id') == $movie->id ? 'selected' : '' }}>
-                                {{ $movie->name }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-            <div class="form-group">
-                <label for="status_id" class="form-label fw-bold">Trạng thái</label>
-                <select name="status_id" class="form-select" required id="status_id">
-                    <option value="" selected>Tất cả</option>
-                    <option value="confirmed" {{ request('status_id') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
-                    <option value="pending" {{ request('status_id') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
-                </select>
-            </div>
-            <div class="form-group mt-4">
-                <button type="submit" class="btn btn-filter">Lọc</button>
-            </div>
-        </form>
+    <form action="{{ route('admin.tickets.index') }}" method="get" class="filter-row d-flex align-items-end gap-3 mb-4">
+        <!-- Chi nhánh -->
+        <div class="form-group col-md-2">
+            <label for="branch_id" class="form-label fw-bold">
+                <i class="bi bi-geo-alt me-1"></i> Chi nhánh
+            </label>
+            <select name="branch_id" class="form-select" id="branch_id" required>
+                <option value="" disabled selected>Chọn chi nhánh</option>
+                @if ($branches && $branches->isNotEmpty())
+                    @foreach ($branches as $branch)
+                        <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
+                            {{ $branch->name }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+
+        <!-- Rạp -->
+        <div class="form-group col-md-2">
+            <label for="cinema_id" class="form-label fw-bold">
+                <i class="bi bi-camera-reels me-1"></i> Rạp
+            </label>
+            <select name="cinema_id" class="form-select" id="cinema_id" required>
+                <option value="" disabled selected>Chọn rạp</option>
+                @if (!empty($cinemas))
+                    @foreach ($cinemas as $cinemaId => $cinemaName)
+                        <option value="{{ $cinemaId }}" {{ request('cinema_id') == $cinemaId ? 'selected' : '' }}>
+                            {{ $cinemaName }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+
+        <!-- Ngày -->
+        <div class="form-group col-md-2">
+            <label for="date" class="form-label fw-bold">
+                <i class="bi bi-calendar me-1"></i> Ngày
+            </label>
+            <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}" required>
+        </div>
+
+        <!-- Phim -->
+        <div class="form-group col-md-2">
+            <label for="movie_id" class="form-label fw-bold">
+                <i class="bi bi-film me-1"></i> Phim
+            </label>
+            <select name="movie_id" class="form-select" id="movie_id" required>
+                <option value="" disabled selected>Chọn phim</option>
+                @if ($movies && $movies->isNotEmpty())
+                    @foreach ($movies as $movie)
+                        <option value="{{ $movie->id }}" {{ request('movie_id') == $movie->id ? 'selected' : '' }}>
+                            {{ $movie->name }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+
+        <!-- Trạng thái -->
+        <div class="form-group col-md-2">
+            <label for="status_id" class="form-label fw-bold">
+                <i class="bi bi-check-circle me-1"></i> Trạng thái
+            </label>
+            <select name="status_id" class="form-select" id="status_id" required>
+                <option value="" selected>Tất cả</option>
+                <option value="confirmed" {{ request('status_id') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
+                <option value="pending" {{ request('status_id') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
+            </select>
+        </div>
+
+        <!-- Nút Lọc -->
+        <div class="form-group col-md-1 d-flex align-items-end">
+            <button type="submit" class="btn btn-primary w-100">
+                <i class="bi bi-funnel me-1"></i> Lọc
+            </button>
+        </div>
+    </form>
 
         <div class="modal fade" id="movieModal" tabindex="-1">
             <div class="modal-dialog">
@@ -131,9 +154,9 @@
                                             {{ $ticket->cinema->name ?? 'N/A' }} <br>
                                             <strong>Ghế:</strong>
                                             @php
-                                                $seats = $ticket->ticket_seats ?? [];
-                                                $seatNames = array_map(fn($seat) => $seat['name'] ?? 'N/A', $seats);
-                                                echo implode(', ', $seatNames) ?: 'N/A';
+    $seats = $ticket->ticket_seats ?? [];
+    $seatNames = array_map(fn($seat) => $seat['name'] ?? 'N/A', $seats);
+    echo implode(', ', $seatNames) ?: 'N/A';
                                             @endphp<br>
                                             <strong>Tổng tiền:</strong> {{ number_format($ticket->total_price, 0, ',', '.') }} VNĐ<br>
                                             <strong>Trạng thái:</strong>
