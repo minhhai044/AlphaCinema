@@ -33,6 +33,8 @@ use App\Http\Controllers\Admin\StatisticalController;
 
 use App\Http\Controllers\Admin\SlideShowController;
 
+use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes

@@ -42,7 +42,7 @@ class TicketRequest extends FormRequest
             'ticket_combos'     => 'nullable|array',
             'ticket_foods'     => 'nullable|array',
             'total_price'       => 'nullable|numeric',
-            'expiry'            => 'nullable|date',
+            'expiry'            => 'nullable',
             'status'            => 'nullable|in:pending,confirmed',
         ];
     }
