@@ -30,7 +30,7 @@ class TicketRepository
     public function findTicket($id)
     {
         return $this->ticket
-            ->with('movie', 'cinema', 'room', 'user', 'showtime')
+            ->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch')
             ->findOrFail($id);
     }
     public function getTickets(array $filters = []): Collection

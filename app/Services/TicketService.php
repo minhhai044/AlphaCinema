@@ -84,11 +84,11 @@ class TicketService
                 'duration' => $ticketDetail->movie->duration ?? '160 phút',
             ],
             'cinema' => [
-                'name' => $ticketDetail->cinema->name ?? 'N/A',
-                'room' => $ticketDetail->room->name ?? 'N/A',
+                'name' => optional($ticketDetail->cinema)->name ?? 'N/A',
+                'room' => optional($ticketDetail->room)->name ?? 'N/A',
             ],
             'branch' => [
-                'name' => $ticketDetail->branch->name ?? 'N/A',
+                'name' => optional($ticketDetail->branch)->name ?? 'N/A',
             ],
             'showtime' => [
                 'start_time' => $ticketDetail->showtime->start_time ? Carbon::parse($ticketDetail->showtime->start_time)->format('H:i') : 'N/A',

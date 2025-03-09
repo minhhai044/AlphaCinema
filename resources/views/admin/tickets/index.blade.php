@@ -128,7 +128,7 @@
                                         <td>
                                             <strong>Phim:</strong> {{ $ticket->movie->name ?? 'N/A' }}<br>
                                             <strong>Nơi chiếu:</strong> {{ $ticket->branch->name ?? 'N/A' }} -
-                                            {{ $ticket->cinema->name ?? 'N/A' }} - P{{ $ticket->cinema->room ?? 'N/A' }}<br>
+                                            {{ $ticket->cinema->name ?? 'N/A' }} <br>
                                             <strong>Ghế:</strong>
                                             @php
                                                 $seats = $ticket->ticket_seats ?? [];

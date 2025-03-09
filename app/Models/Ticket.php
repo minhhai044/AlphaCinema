@@ -33,7 +33,7 @@ class Ticket extends Model
         'ticket_seats' => 'array',
         'ticket_combos' => 'array',
         'ticket_foods' => 'array',
-        'total_price' => 'decimal:2',
+        // 'total_price' => 'decimal:2',
         'expiry' => 'datetime',
         'status' => 'string',
     ];
@@ -79,6 +79,13 @@ class Ticket extends Model
     }
     public function branch()
     {
-        return $this->belongsTo(Branch::class);
+        return $this->hasOneThrough(
+            Branch::class,
+            Cinema::class,
+            'id',
+            'id',
+            'cinema_id',
+            'branch_id'     
+        );
     }
 }
