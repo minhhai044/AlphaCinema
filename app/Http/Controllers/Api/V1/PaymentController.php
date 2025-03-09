@@ -216,6 +216,7 @@ class PaymentController extends Controller
         $orderData = json_decode($orderData, true);
 
         $isSuccess = ($resultCode === "0" || $vnp_TransactionStatus === "00");
+
         if ($isSuccess) {
             DB::transaction(function () use ($orderData) {
                 $data = $orderData['data']['ticket'];
@@ -237,6 +238,14 @@ class PaymentController extends Controller
             return redirect($frontendUrl)->withCookie(cookie('order_id', $txnRef, 10)); // Thành công
         }
 
+        $dataResetSuccess = [
+            'seat_id' => $orderData['data']['seat_id'],
+            'status' => 'available',
+            'user_id' => null
+        ];
+
+        $this->showtimeService->resetSuccessService($dataResetSuccess, $orderData['data']['ticket']['showtime_id']);
+        
         Redis::del("order:$txnRef");
         return redirect($frontendUrl);
     }
