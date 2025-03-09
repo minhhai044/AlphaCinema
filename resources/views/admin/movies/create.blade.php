@@ -1,4 +1,5 @@
 @extends('admin.layouts.master')
+
 @section('content')
     <!-- start page title -->
     <div class="row">
@@ -20,7 +21,6 @@
                                         <li class="breadcrumb-item active">Table Movies</li>
                                     </ol>
                                 </div>
-
                             </div>
                         </div>
                     </div>
@@ -32,12 +32,11 @@
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label for="name" class="form-label">Tên phim
-                                                <span class="required" style="color: red" style="color: red">*</span>
+                                                <span class="required" style="color: red">*</span>
                                             </label>
                                             <input type="text" name="name" id="name"
                                                 class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
                                                 value="{{ old('name') }}" placeholder="Nhập tên phim">
-
                                             <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('name'))
                                                     {{ $errors->first('name') }}
@@ -45,21 +44,20 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <la class="form-label">slug
-                                                <span class="required" style="color: red">*</span> </label>
-                                                <input type="text" id="slug" name="slug"
-                                                    class="form-control {{ $errors->has('slug') ? 'is-invalid' : (old('slug') ? 'is-valid' : '') }}"
-                                                    value="{{ old('slug') }}" readonly>
-                                                <div
-                                                    class="{{ $errors->has('slug') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                    @if ($errors->has('slug'))
-                                                        {{ $errors->first('slug') }}
-                                                    @endif
-                                                </div>
+                                            <label class="form-label">Slug
+                                                <span class="required" style="color: red">*</span></label>
+                                            <input type="text" id="slug" name="slug"
+                                                class="form-control {{ $errors->has('slug') ? 'is-invalid' : (old('slug') ? 'is-valid' : '') }}"
+                                                value="{{ old('slug') }}" readonly>
+                                            <div class="{{ $errors->has('slug') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('slug'))
+                                                    {{ $errors->first('slug') }}
+                                                @endif
+                                            </div>
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Danh mục phim
-                                                <span class="required" style="color: red">*</span> </label>
+                                                <span class="required" style="color: red">*</span></label>
                                             <input type="text" name="category"
                                                 class="form-control {{ $errors->has('category') ? 'is-invalid' : (old('category') ? 'is-valid' : '') }}"
                                                 value="{{ old('category') }}">
@@ -72,7 +70,7 @@
                                         </div>
                                         <div class="mb-3">
                                             <label class="form-label">Ảnh
-                                                <span class="required" style="color: red">*</span> </label>
+                                                <span class="required" style="color: red">*</span></label>
                                             <input type="file" name="img_thumbnail"
                                                 class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}"
                                                 value="{{ old('img_thumbnail') }}">
@@ -83,23 +81,9 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        {{-- <div class="mb-3">
-                                                <label class="form-label">Thể loại
-                                                    <span class="required" style="color: red">*</span>  phim</label>
-                                                <input type="checkbox" name="movie_genres[]" value="Action"> Hành động
-                                                <input type="checkbox" name="movie_genres[]" value="Horror"> Kinh dị
-                                                <input type="checkbox" name="movie_genres[]" value="Comedy"> Hài hước
-                                                <div
-                                                    class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                    @if ($errors->has('movie_genres'))
-                                                        {{ $errors->first('movie_genres') }}
-                                                    @endif
-                                                </div>
-                                            </div> --}}
-
                                         <div class="mb-3">
                                             <label class="form-label">Thể loại phim
-                                                <span class="required" style="color: red">*</span> </label>
+                                                <span class="required" style="color: red">*</span></label>
                                             <div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="checkbox" name="movie_genres[]"
@@ -127,25 +111,13 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Mô tả
-                                                <span class="required" style="color: red">*</span> </label>
-                                            <textarea name="description"
-                                                class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}"
-                                                value="{{ old('description') }}"></textarea>
-                                            <div
-                                                class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('description'))
-                                                    {{ $errors->first('description') }}
-                                                @endif
-                                            </div>
-                                        </div>
+
                                     </div>
 
                                     <div class="col-lg-6">
                                         <div class="mb-3">
                                             <label class="form-label">Tác giả
-                                                <span class="required" style="color: red">*</span> </label>
+                                                <span class="required" style="color: red">*</span></label>
                                             <input type="text" name="director"
                                                 class="form-control {{ $errors->has('director') ? 'is-invalid' : (old('director') ? 'is-valid' : '') }}"
                                                 value="{{ old('director') }}">
@@ -158,8 +130,8 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">URL
-                                                <span class="required" style="color: red">*</span> </label>
+                                            <label class="form-label">URL Youte
+                                                <span class="required" style="color: red">*</span></label>
                                             <input type="text" name="trailer_url"
                                                 class="form-control {{ $errors->has('trailer_url') ? 'is-invalid' : (old('trailer_url') ? 'is-valid' : '') }}"
                                                 value="{{ old('trailer_url') }}">
@@ -176,8 +148,8 @@
                                             <input type="number" name="duration" min="1" step="1"
                                                 class="form-control {{ $errors->has('duration') ? 'is-invalid' : (old('duration') ? 'is-valid' : '') }}"
                                                 value="{{ old('duration') }}" placeholder="Nhập số phút">
-                                            <div class="{{ $errors->has('duration') ? 'invalid-feedback' : 'valid-feedback' }}"
-                                                value="{{ old('duration') }}">
+                                            <div
+                                                class="{{ $errors->has('duration') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('duration'))
                                                     {{ $errors->first('duration') }}
                                                 @endif
@@ -185,8 +157,7 @@
                                         </div>
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu
-                                                <span class="required" style="color: red" style="color: red">*</span>
-                                            </label>
+                                                <span class="required" style="color: red">*</span></label>
                                             <div
                                                 class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('release_date'))
@@ -206,31 +177,17 @@
                                                     class="form-control {{ $errors->has('release_date') ? 'is-invalid' : (old('release_date') ? 'is-valid' : '') }}"
                                                     value="{{ old('release_date') }}" name="release_date"
                                                     placeholder="Start Date" />
-
                                                 <input type="date"
                                                     class="form-control {{ $errors->has('end_date') ? 'is-invalid' : (old('end_date') ? 'is-valid' : '') }}"
                                                     value="{{ old('end_date') }}" name="end_date"
                                                     placeholder="End Date" />
-
                                             </div>
+
                                         </div>
 
-                                        {{-- <div class="mb-3">
-                                                <label class="form-label">Phiên bả
-                                                    <span class="required" style="color: red">*</span> n phim</label>
-                                                <input type="checkbox" name="movie_versions[]" value="2D"> 2D
-                                                <input type="checkbox" name="movie_versions[]" value="3D"> 3D
-                                                <input type="checkbox" name="movie_versions[]" value="4D"> 4D
-                                                <div
-                                                    class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                    @if ($errors->has('movie_versions'))
-                                                        {{ $errors->first('movie_versions') }}
-                                                    @endif
-                                                </div>
-                                            </div> --}}
                                         <div class="mb-3">
                                             <label class="form-label">Phiên bản phim
-                                                <span class="required" style="color: red">*</span> </label>
+                                                <span class="required" style="color: red">*</span></label>
                                             <div>
                                                 <div class="form-check form-check-inline">
                                                     <input class="form-check-input" type="checkbox"
@@ -260,7 +217,7 @@
                                         </div>
                                         <div class="mb-3" id="surcharge_container" style="display: none;">
                                             <label class="form-label">Phụ phí
-                                                <span class="required" style="color: red">*</span> </label>
+                                                <span class="required" style="color: red">*</span></label>
                                             <input type="number" name="surcharge"
                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
                                                 value="{{ old('surcharge') }}">
@@ -272,11 +229,9 @@
                                             </div>
                                         </div>
 
-
                                         <div class="mb-3">
                                             <label class="form-label">Đánh giá
-                                                <span class="required" style="color: red">*</span>
-                                            </label>
+                                                <span class="required" style="color: red">*</span></label>
                                             <input type="number" name="rating"
                                                 class="form-control {{ $errors->has('rating') ? 'is-invalid' : (old('rating') ? 'is-valid' : '') }}"
                                                 value="{{ old('rating') }}">
@@ -289,10 +244,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="mb-12">
+                                    <label class="form-label">Mô tả
+                                        <span class="required" style="color: red">*</span></label>
+                                    <textarea name="description" id="description"
+                                        class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}">{{ old('description') }}</textarea>
+                                    <div
+                                        class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                        @if ($errors->has('description'))
+                                            {{ $errors->first('description') }}
+                                        @endif
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
-
 
                     <!-- Khối 3/12 -->
                     <div class="col-lg-3">
@@ -300,51 +266,47 @@
                             <div class="card-body">
                                 <!-- Active -->
                                 <div class="d-flex align-items-center gap-2 mb-2">
-                                    <div class="square-switch">
-                                        <input type="checkbox" id="square-switch_active" switch="bool"
+                                    <div class="custom-switch">
+                                        <input type="checkbox" id="switch_active" switch="primary"
                                             {{ old('is_active', 1) ? 'checked' : '' }} />
-                                        <label for="square-switch_active" data-on-label="Yes"
-                                            data-off-label="No"></label>
+                                        <label for="switch_active" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
-                                    <span>Active</span>
+                                    <span>Hoạt động</span>
                                 </div>
                                 <input type="hidden" name="is_active" id="is_active"
                                     value="{{ old('is_active', 1) }}">
 
                                 <!-- Hot -->
-
                                 <div class="d-flex align-items-center gap-2 mb-2">
-                                    <div class="square-switch">
-                                        <input type="checkbox" id="square-switch_hot" switch="bool"
+                                    <div class="custom-switch">
+                                        <input type="checkbox" id="switch_hot" switch="primary"
                                             {{ old('is_hot', 1) ? 'checked' : '' }} />
-                                        <label for="square-switch_hot" data-on-label="Yes" data-off-label="No"></label>
+                                        <label for="switch_hot" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
-                                    <span>Hot</span>
+                                    <span>Nổi bật</span>
                                 </div>
                                 <input type="hidden" name="is_hot" id="is_hot" value="{{ old('is_hot', 1) }}">
 
                                 <!-- Special -->
                                 <div class="d-flex align-items-center gap-2 mb-2">
-                                    <div class="square-switch">
-                                        <input type="checkbox" id="square-switch_special" switch="bool"
+                                    <div class="custom-switch">
+                                        <input type="checkbox" id="switch_special" switch="primary"
                                             {{ old('is_special', 1) ? 'checked' : '' }} />
-                                        <label for="square-switch_special" data-on-label="Yes"
-                                            data-off-label="No"></label>
+                                        <label for="switch_special" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
-                                    <span>Special</span>
+                                    <span>Đặc biệt</span>
                                 </div>
                                 <input type="hidden" name="is_special" id="is_special"
                                     value="{{ old('is_special', 1) }}">
 
                                 <!-- Publish -->
-                                <div class="d-flex align-items-center gap-2">
-                                    <div class="square-switch">
-                                        <input type="checkbox" id="square-switch_publish" switch="bool"
+                                <div class="d-flex align-items-center gap-2 mb-2">
+                                    <div class="custom-switch">
+                                        <input type="checkbox" id="switch_publish" switch="primary"
                                             {{ old('is_publish', 1) ? 'checked' : '' }} />
-                                        <label for="square-switch_publish" data-on-label="Yes"
-                                            data-off-label="No"></label>
+                                        <label for="switch_publish" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
-                                    <span>Publish</span>
+                                    <span>Xuất Bản</span>
                                 </div>
                                 <input type="hidden" name="is_publish" id="is_publish"
                                     value="{{ old('is_publish', 1) }}">
@@ -353,80 +315,96 @@
 
                         <div class="d-flex flex-wrap gap-2">
                             <button type="submit" class="btn btn-primary waves-effect waves-light">
-                                Submit
+                                Lưu
                             </button>
                             <button type="reset" class="btn btn-secondary waves-effect">
-                                Cancel
+                                Hủy
                             </button>
                         </div>
                     </div>
                 </div>
-
             </form>
-
         </div>
         <!-- end select2 -->
-        <script>
-            // Cập nhật giá trị của hidden input cho các checkbox
-            document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function(checkbox) {
-                checkbox.addEventListener('change', function() {
-                    var hiddenInput = document.getElementById(this.id.replace('square-switch', 'is'));
-                    if (hiddenInput) {
-                        hiddenInput.value = this.checked ? '1' : '0';
-                    }
-                });
-            });
 
+        <!-- Thêm CKEditor qua CDN và khởi tạo -->
+        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+        <script>
             document.addEventListener('DOMContentLoaded', function() {
-                var publishCheckbox = document.getElementById('square-switch_special');
+                // Khởi tạo CKEditor cho trường description
+                ClassicEditor
+                    .create(document.querySelector('#description'), {
+                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                            'imageUpload', 'undo', 'redo'
+                        ]
+                    })
+                    .then(editor => {
+                        console.log('CKEditor đã được khởi tạo!', editor);
+                    })
+                    .catch(error => {
+                        console.error('Lỗi khi khởi tạo CKEditor:', error);
+                    });
+
+                // Cập nhật giá trị của hidden input cho các switch
+                document.querySelectorAll('.custom-switch input[type="checkbox"]').forEach(function(checkbox) {
+                    checkbox.addEventListener('change', function() {
+                        var hiddenInput = document.getElementById(this.id.replace('switch_', 'is_'));
+                        if (hiddenInput) {
+                            hiddenInput.value = this.checked ? '1' : '0';
+                        }
+                    });
+                });
+
+                // Xử lý toggle cho surcharge dựa trên switch_special
+                var specialCheckbox = document.getElementById('switch_special');
                 var surchargeContainer = document.getElementById('surcharge_container');
-                // Lấy thẻ input trong container "Phụ phí"
                 var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
 
                 function toggleSurchargeInput() {
-                    console.log('toggleSurchargeInput triggered, publishCheckbox.checked:', publishCheckbox.checked);
-                    if (publishCheckbox.checked) {
+                    if (specialCheckbox.checked) {
                         surchargeContainer.style.display = 'block';
-                        surchargeInput.disabled = false; // Cho phép nhập liệu, gửi dữ liệu lên server
+                        surchargeInput.disabled = false; // Cho phép nhập liệu
                     } else {
                         surchargeContainer.style.display = 'none';
-                        surchargeInput.disabled = true; // Vô hiệu hóa input, không gửi dữ liệu
+                        surchargeInput.disabled = true; // Vô hiệu hóa input
                     }
                 }
 
-                // Gọi khi tải trang để đảm bảo trạng thái ban đầu đúng
+                // Gọi khi tải trang để đảm bảo trạng thái ban đầu
                 toggleSurchargeInput();
 
-                // Lắng nghe sự kiện thay đổi của checkbox (dùng "change" để đảm bảo trạng thái cập nhật)
-                publishCheckbox.addEventListener('change', toggleSurchargeInput);
-            });
+                // Lắng nghe sự kiện thay đổi của switch_special
+                specialCheckbox.addEventListener('change', toggleSurchargeInput);
 
-            function generateUUID() {
-                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                    const r = Math.random() * 16 | 0,
-                        v = c === 'x' ? r : (r & 0x3 | 0x8);
-                    return v.toString(16);
-                });
-            }
-
-            function convertToSlug(text) {
-                return text.toLowerCase()
-                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Loại bỏ dấu tiếng Việt
-                    .replace(/[^a-z0-9 -]/g, '') // Xóa ký tự đặc biệt
-                    .replace(/\s+/g, '-') // Thay khoảng trắng bằng -
-                    .replace(/-+/g, '-'); // Xóa dấu gạch ngang dư thừa
-            }
-
-            document.getElementById('name').addEventListener('input', function() {
-                let name = this.value.trim();
-                if (name !== '') {
-                    let slug = convertToSlug(name) + '-' + generateUUID().substring(0, 8); // Chỉ lấy 8 ký tự UUID
-                    document.getElementById('slug').value = slug;
-                } else {
-                    document.getElementById('slug').value = '';
+                // Hàm tạo UUID
+                function generateUUID() {
+                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                        const r = Math.random() * 16 | 0,
+                            v = c === 'x' ? r : (r & 0x3 | 0x8);
+                        return v.toString(16);
+                    });
                 }
+
+                // Hàm chuyển đổi thành slug
+                function convertToSlug(text) {
+                    return text.toLowerCase()
+                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                        .replace(/[^a-z0-9 -]/g, '')
+                        .replace(/\s+/g, '-')
+                        .replace(/-+/g, '-');
+                }
+
+                // Tạo slug tự động từ tên phim
+                document.getElementById('name').addEventListener('input', function() {
+                    let name = this.value.trim();
+                    if (name !== '') {
+                        let slug = convertToSlug(name) + '-' + generateUUID().substring(0, 8);
+                        document.getElementById('slug').value = slug;
+                    } else {
+                        document.getElementById('slug').value = '';
+                    }
+                });
             });
         </script>
-
     </div>
 @endsection

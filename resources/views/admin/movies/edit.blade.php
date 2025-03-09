@@ -1,8 +1,8 @@
 @extends('admin.layouts.master')
+
 @section('content')
     <!-- start page title -->
     <div class="row">
-
         <h1 class="card-title">Sửa phim: {{ $movie->name }}</h1>
         <div class="col-12">
             <form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data">
@@ -55,14 +55,8 @@
                                         </div>
 
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Mô tả</label>
-                                            <textarea name="description" class="form-control">{{ old('description', $movie->description) }}</textarea>
-                                            @error('description')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
                                     </div>
+
 
                                     <div class="col-lg-6">
                                         <div class="mb-3">
@@ -74,7 +68,7 @@
                                             @enderror
                                         </div>
                                         <div class="mb-3">
-                                            <label class="form-label">URL</label>
+                                            <label class="form-label">URL Youtube</label>
                                             <input type="text" name="trailer_url"
                                                 value="{{ old('trailer_url', $movie->trailer_url) }}" class="form-control">
                                             @error('trailer_url')
@@ -90,6 +84,7 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+
                                         @php
                                             $selectedVersions = (array) old(
                                                 'movie_versions',
@@ -124,6 +119,7 @@
                                             @error('movie_genres')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
+
                                         </div>
 
                                         <!-- Phiên bản phim -->
@@ -153,6 +149,7 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
+
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu</label>
                                             <div class="input-group">
@@ -161,7 +158,6 @@
                                                 @error('release_date')
                                                     <div class="text-danger">{{ $message }}</div>
                                                 @enderror
-
                                                 <input type="date" class="form-control" name="end_date"
                                                     value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}">
                                                 @error('end_date')
@@ -169,6 +165,7 @@
                                                 @enderror
                                             </div>
                                         </div>
+
                                         <div class="mb-3" id="surcharge_container" style="display: none;">
                                             <label class="form-label">Phụ phí</label>
                                             <input type="number" name="surcharge"
@@ -178,6 +175,7 @@
                                                 <div class="invalid-feedback">{{ $errors->first('surcharge') }}</div>
                                             @endif
                                         </div>
+
                                         <div class="mb-3">
                                             <label class="form-label">Đánh giá</label>
                                             <input type="number" name="rating" class="form-control"
@@ -188,11 +186,18 @@
                                         </div>
                                     </div>
                                 </div>
+                                 <div class="mb-12">
+                                            <label class="form-label">Mô tả</label>
+                                            <textarea name="description" id="description" class="form-control">{{ old('description', $movie->description) }}</textarea>
+                                            @error('description')
+                                                <div class="text-danger">{{ $message }}</div>
+                                            @enderror
+                                        </div>
                             </div>
+
                         </div>
+
                     </div>
-
-
 
                     <!-- Khối 3/12 -->
                     <div class="col-lg-3">
@@ -200,88 +205,92 @@
                             <div class="card-body">
                                 @php
                                     $statuses = [
-                                        'is_active' => 'Active',
-                                        'is_hot' => 'Hot',
-                                        'is_special' => 'Special',
-                                        'is_publish' => 'Publish',
+                                        'is_active' => 'Hoạt động',
+                                        'is_hot' => 'Nổi bật ',
+                                        'is_special' => 'Đặc biệt',
+                                        'is_publish' => 'Xuất bản',
                                     ];
                                 @endphp
 
                                 @foreach ($statuses as $key => $label)
                                     <div class="d-flex align-items-center gap-2 mb-2">
-                                        <div class="square-switch">
-                                            <input type="checkbox" id="square-switch_{{ $key }}" switch="bool"
-                                                {{ $movie->$key ? 'checked' : '' }} />
-                                            <label for="square-switch_{{ $key }}" data-on-label="Yes"
+                                        <div class="custom-switch">
+                                            <input type="checkbox" id="switch_{{ $key }}" switch="primary"
+                                                {{ old($key, $movie->$key) ? 'checked' : '' }} />
+                                            <label for="switch_{{ $key }}" data-on-label="Yes"
                                                 data-off-label="No"></label>
                                         </div>
                                         <span>{{ $label }}</span>
                                     </div>
                                     <input type="hidden" name="{{ $key }}" id="{{ $key }}"
-                                        value="{{ $movie->$key }}">
+                                        value="{{ old($key, $movie->$key) }}">
                                 @endforeach
+                                <div class="d-flex flex-wrap gap-2">
+                                    <a href=""><button type="submit" class="btn btn-primary waves-effect waves-light">
+                                        Lưu
+                                    </button></a>
+                                    <a href="{{ route('admin.movies.index') }}" class="btn btn-secondary mb-3">Hủy</a>
+                                </div>
                             </div>
                         </div>
-                        <div class="d-flex flex-wrap gap-2">
-                            <a href="">
-                                <button type="submit" class="btn btn-primary waves-effect waves-light">
-                                    Submit
-                                </button>
-                            </a>
-                            <a href="{{ route('admin.movies.index') }}" class="btn btn-secondary mb-3">Quay lại</a>
-                        </div>
                     </div>
-
-                    <script>
-                        document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function(checkbox) {
-                            checkbox.addEventListener("change", function() {
-                                let hiddenInput = document.getElementById(this.id.replace("square-switch_", ""));
-                                hiddenInput.value = this.checked ? 1 : 0;
-                            });
-                        });
-                    </script>
-
-
                 </div>
-
             </form>
         </div>
     </div>
     <!-- end select2 -->
 
-    </div>
-@endsection
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        var specialCheckbox = document.getElementById('square-switch_is_special');
-        var surchargeContainer = document.getElementById('surcharge_container');
-        var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
+    <!-- Thêm CKEditor qua CDN và khởi tạo -->
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Khởi tạo CKEditor cho trường description
+            ClassicEditor
+                .create(document.querySelector('#description'), {
+                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'imageUpload', 'undo', 'redo']
+                })
+                .then(editor => {
+                    console.log('CKEditor đã được khởi tạo!', editor);
+                })
+                .catch(error => {
+                    console.error('Lỗi khi khởi tạo CKEditor:', error);
+                });
 
-        function toggleSurchargeInput() {
-            if (specialCheckbox.checked) {
-                surchargeContainer.style.display = 'block';
-                surchargeInput.disabled = false; // Cho phép nhập liệu
-            } else {
-                surchargeContainer.style.display = 'none';
-                surchargeInput.disabled = true; // Không cho nhập, không gửi dữ liệu
-                surchargeInput.value = ''; // Xóa giá trị khi ẩn để tránh lưu dữ liệu không mong muốn
+            // Cập nhật giá trị của hidden input cho các switch
+            document.querySelectorAll('.custom-switch input[type="checkbox"]').forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    var hiddenInput = document.getElementById(this.id.replace('switch_', ''));
+                    if (hiddenInput) {
+                        hiddenInput.value = this.checked ? '1' : '0';
+                        console.log(`${this.id} changed to ${hiddenInput.value}`);
+                    } else {
+                        console.error(`Hidden input not found for ${this.id}`);
+                    }
+                });
+            });
+
+            // Xử lý toggle cho surcharge dựa trên switch_is_special
+            var specialCheckbox = document.getElementById('switch_is_special');
+            var surchargeContainer = document.getElementById('surcharge_container');
+            var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
+
+            function toggleSurchargeInput() {
+                if (specialCheckbox.checked) {
+                    surchargeContainer.style.display = 'block';
+                    surchargeInput.disabled = false;
+                } else {
+                    surchargeContainer.style.display = 'none';
+                    surchargeInput.disabled = true;
+                    surchargeInput.value = '';
+                }
             }
-        }
 
-        // Kiểm tra trạng thái khi tải trang
-        toggleSurchargeInput();
-
-        // Lắng nghe sự kiện thay đổi của checkbox "Special"
-        specialCheckbox.addEventListener('change', toggleSurchargeInput);
-    });
-
-    // Cập nhật giá trị của hidden input cho các checkbox trạng thái
-    document.querySelectorAll('.square-switch input[type="checkbox"]').forEach(function(checkbox) {
-        checkbox.addEventListener('change', function() {
-            var hiddenInput = document.getElementById(this.id.replace('square-switch_', ''));
-            if (hiddenInput) {
-                hiddenInput.value = this.checked ? '1' : '0';
+            if (specialCheckbox) {
+                toggleSurchargeInput();
+                specialCheckbox.addEventListener('change', toggleSurchargeInput);
+            } else {
+                console.error('Special checkbox not found');
             }
         });
-    });
-</script>
+    </script>
+@endsection

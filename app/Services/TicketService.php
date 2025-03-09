@@ -65,13 +65,10 @@ class TicketService
     {
         $ticketDetail = $this->ticketRepository->findTicket($id);
 
-        // Xử lý danh sách ghế
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);
 
-        // Tính tổng tiền ghế từ ticket_seats
         $totalSeatPrice = $seatData['total_price'] ?? 0;
 
-        // Xử lý danh sách combo
         $combos = $this->getComboList($ticketDetail->ticket_combos);
         $totalComboPrice = array_reduce($combos, function ($carry, $combo) {
             return $carry + (isset($combo['total_price']) ? str_replace([' VND', ','], '', $combo['total_price']) : 0);
@@ -161,26 +158,21 @@ class TicketService
 
     private function getComboList($ticketCombos)
     {
-        // Nếu dữ liệu không phải mảng hoặc rỗng, trả về mảng rỗng
         if (!is_array($ticketCombos) || empty($ticketCombos)) {
             return [];
         }
 
-        // Xử lý danh sách combo
         return array_filter(array_map(function ($combo) {
-            // Kiểm tra combo có phải mảng và có key 'name'
             if (!is_array($combo) || !isset($combo['name'])) {
-                return null; // Trả về null nếu không hợp lệ, sẽ bị lọc bởi array_filter
+                return null;
             }
 
             $comboName = $combo['name'] ?? 'N/A';
             $quantity = $combo['quantity'] ?? 1;
             $price = isset($combo['price_sale']) ? $combo['price_sale'] : ($combo['price'] ?? 0);
-            // $totalPrice = number_format($price * $quantity, 0, ',', '.') . ' VND';
             $totalPrice = $price * $quantity;
             $imgThumbnail = $combo['img_thumbnail'] ? asset('storage/' . $combo['img_thumbnail']) : asset('path/to/default_combo.jpg');
 
-            // Xử lý danh sách món trong combo
             $foods = $combo['foods'] ?? [];
             $foodList = array_map(function ($food) {
                 $foodName = $food['name'] ?? 'N/A';
@@ -196,7 +188,7 @@ class TicketService
                 'price' => number_format($price, 0, ',', '.') . ' VND',
                 'total_price' => $totalPrice,
             ];
-        }, $ticketCombos), fn($item) => $item !== null); // Lọc bỏ các giá trị null
+        }, $ticketCombos), fn($item) => $item !== null); 
     }
 
     public function create(array $data)

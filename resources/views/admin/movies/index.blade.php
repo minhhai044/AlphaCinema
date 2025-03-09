@@ -112,10 +112,10 @@
                                 data-bs-target="#searchForm">
                                 <i class="fas fa-filter"></i> Bộ lọc
                             </button>
-                            <button  class="btn btn-warning waves-effect waves-light">
+                            <button class="btn btn-warning waves-effect waves-light">
                                 <a href="{{ route('admin.export', 'movies') }}">
-                                <i class="bx bx-download me-1"></i>
-                                Xuất Excel</a>
+                                    <i class="bx bx-download me-1"></i>
+                                    Xuất Excel</a>
                             </button>
                         </div>
                     </div>
@@ -188,7 +188,7 @@
 
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
     <script>
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Khởi tạo DataTable
             var table = $('#movieTable').DataTable({
                 processing: true,
@@ -199,121 +199,110 @@
                 ajax: {
                     url: "{{ route('api.movies.index') }}",
                     type: "GET",
-                    data: function(d) {
+                    data: function (d) {
                         // Lấy dữ liệu từ form filter
                         d.id = $('input[name="id"]').val();
                         d.movie_versions = $('select[name="movie_versions"]').val();
                         d.movie_genres = $('select[name="movie_genres"]').val();
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         console.error("Lỗi API:", xhr.responseText);
                     }
                 },
                 columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
-                    {
-                        data: 'name',
-                        name: 'name',
-                        render: function(data, type, row) {
-                            // Xử lý danh sách phiên bản phim (movie_versions)
-                            let versions = Array.isArray(row.movie_versions) ? row.movie_versions :
-                                [];
-                            let versionHtml = versions.map(version =>
-                                `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
-                        ${version}
-                    </span>`).join(' ');
+                    data: 'id',
+                    name: 'id'
+                },
+                {
+                    data: 'name',
+                    name: 'name',
+                    render: function (data, type, row) {
+                        // Xử lý danh sách phiên bản phim (movie_versions)
+                        let versions = Array.isArray(row.movie_versions) ? row.movie_versions :
+                            [];
+                        let versionHtml = versions.map(version =>
+                            `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
+                                ${version}
+                            </span>`).join(' ');
 
-                            // Xử lý danh sách thể loại phim (movie_genres)
-                            let genres = Array.isArray(row.movie_genres) ? row.movie_genres : [];
-                            let genreHtml = genres.map(genre =>
-                                `<span style="background-color: green; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
-                        ${genre}
-                    </span>`).join(' ');
+                        // Xử lý danh sách thể loại phim (movie_genres)
+                        let genres = Array.isArray(row.movie_genres) ? row.movie_genres : [];
+                        let genreHtml = genres.map(genre =>
+                            `<span style="background-color: green; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
+                                ${genre}
+                            </span>`).join(' ');
 
-                            return `
-                    <div>
-                        <h3 style="margin: 0; color: #007bff;">${data}</h3>
-                        <p><strong>Đạo diễn:</strong> ${row.director || 'Đang cập nhật'}</p>
-                        <p><strong>Thể loại:</strong> ${genreHtml || 'Chưa rõ'}</p>
-                        <p><strong>Ngày khởi chiếu:</strong> ${row.release_date || 'Chưa có'}</p>
-                        <p><strong>Ngày kết thúc:</strong> ${row.end_date || 'Chưa có'}</p>
-                        <p><strong>Danh mục:</strong>  ${row.category || 'Chưa rõ'}</p>
-                        <p><strong>Phiên bản:</strong> ${versionHtml || 'Chưa cập nhật'}</p>
-                        <p><strong>Code Youtube:</strong>
-                            <input type="text" value="${row.trailer_url || 'Không có'}" readonly
-                                style="border: 1px solid #ccc; padding: 5px; width: 100%;">
-                        </p>
-                    </div>
-                `;
-                        }
-                    },
-
-                    {
-                        data: 'img_thumbnail',
-                        render: function(data) {
-                            return `<img src="/storage/${data}"
-                                                         style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
-                        }
-                    },
-
-                    {
-                        data: 'is_active',
-                        render: function(data) {
-                            return data ?
-                                '<span class="badge bg-success">Active</span>' :
-                                '<span class="badge bg-danger">Inactive</span>';
-                        }
-                    },
-                    {
-                        data: 'is_hot',
-                        render: function(data) {
-                            return data ?
-                                '<span class="badge bg-success">Hot</span>' :
-                                '<span class="badge bg-danger">No Hot</span>';
-                        }
-                    },
-                    {
-                        data: 'duration',
-                        name: 'duration'
-                    },
-                    {
-                        data: 'id',
-                        render: function(data) {
-                            return `
-                                                <div class="dropdown text-center">
-                                                    <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">
-                                                        ...
-                                                    </button>
-                                                    <ul class="dropdown-menu">
-                                                        <li>
-                                                            <a href="/admin/movies/${data}" class="dropdown-item text-info">
-                                                                <i class="fas fa-eye"></i> Xem
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="/admin/movies/${data}/edit" class="dropdown-item text-warning">
-                                                                <i class="fas fa-edit"></i> Sửa
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <form action="/admin/movies/${data}" method="POST" class="d-inline">
-                                                                @csrf
-                                                                @method('DELETE')
-                                                                <button type="submit" class="dropdown-item text-danger"
-                                                                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                                                    <i class="fas fa-trash-alt"></i> Xóa
-                                                                </button>
-                                                            </form>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            `;
-                        },
-                        orderable: false,
-                        searchable: false
+                        return `
+                            <div>
+                                <h3 style="margin: 0; color: #007bff;">${data}</h3>
+                                <p><strong>Đạo diễn:</strong> ${row.director || 'Đang cập nhật'}</p>
+                                <p><strong>Thể loại:</strong> ${genreHtml || 'Chưa rõ'}</p>
+                                <p><strong>Ngày khởi chiếu:</strong> ${row.release_date || 'Chưa có'}</p>
+                                <p><strong>Ngày kết thúc:</strong> ${row.end_date || 'Chưa có'}</p>
+                                <p><strong>Danh mục:</strong>  ${row.category || 'Chưa rõ'}</p>
+                                <p><strong>Phiên bản:</strong> ${versionHtml || 'Chưa cập nhật'}</p>
+                                <p><strong>Code Youtube:</strong>
+                                    <input type="text" value="${row.trailer_url || 'Không có'}" readonly
+                                        style="border: 1px solid #ccc; padding: 5px; width: 100%;">
+                                </p>
+                            </div>
+                        `;
                     }
+                },
+
+                {
+                    data: 'img_thumbnail',
+                    render: function (data) {
+                        return `<img src="/storage/${data}"
+                                                                 style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
+                    }
+                },
+
+                {
+                    data: 'is_active',
+                    render: function (data) {
+                        return data ?
+                            '<span class="badge bg-success">Active</span>' :
+                            '<span class="badge bg-danger">Inactive</span>';
+                    }
+                },
+                {
+                    data: 'is_hot',
+                    render: function (data) {
+                        return data ?
+                            '<span class="badge bg-success">Hot</span>' :
+                            '<span class="badge bg-danger">No Hot</span>';
+                    }
+                },
+                {
+                    data: 'duration',
+                    name: 'duration'
+                },
+                {
+                    data: 'id',
+                    render: function (data) {
+                        return `
+        <div class="text-center">
+            <a href="/admin/movies/${data}" class="btn btn-success">
+                <i class="fas fa-eye"></i>
+            </a>
+            <a href="/admin/movies/${data}/edit" class="btn btn-warning">
+                <i class="fas fa-edit"></i>
+            </a>
+            <form action="/admin/movies/${data}" method="POST" class="d-inline">
+                @csrf
+                @method('DELETE')
+                <button type="submit" class="btn btn-danger"
+                    onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
+                    <i class="fas fa-trash-alt"></i>
+                </button>
+            </form>
+        </div>
+                                                    `;
+                    },
+                    orderable: false,
+                    searchable: false
+                }
                 ],
                 pageLength: 5, // Số bản ghi hiển thị mặc định
                 lengthChange: false, // Tắt dropdown mặc định của DataTable
@@ -331,70 +320,23 @@
             });
 
             // Thay đổi số dòng hiển thị theo dropdown tùy chỉnh
-            $('#pageLength').on('change', function() {
+            $('#pageLength').on('change', function () {
                 table.page.len($(this).val()).draw();
             });
 
             // Lọc dữ liệu
-            $('#filterForm').on('submit', function(e) {
+            $('#filterForm').on('submit', function (e) {
                 e.preventDefault();
                 table.ajax.reload();
             });
 
             // Reset lọc
-            $('#resetFilter').on('click', function() {
+            $('#resetFilter').on('click', function () {
                 // Thêm một chút độ trễ để form reset xong
-                setTimeout(function() {
+                setTimeout(function () {
                     table.ajax.reload();
                 }, 50);
             });
         });
     </script>
 @endsection
-
-{{-- <style>
-    .dataTables_wrapper .dataTables_paginate .paginate_button {
-        background-color: #fff !important;
-        color: #000 !important;
-        border-radius: 0.25rem !important;
-        margin: 0 2px;
-        padding: 0.5rem 0.75rem;
-        transition: background-color 0.2s, color 0.2s, border-color 0.2s;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-        background-color: #3b82f6;
-        color: #fff !important;
-        border-color: #fff !important;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-        background-color: #2C77F4 !important;
-        color: #fff !important;
-        border-color: #3b82f6 !important;
-    }
-
-    .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-        color: #aaa !important;
-        background-color: #f8f9fa !important;
-        border-color: #ddd !important;
-        pointer-events: none;
-    }
-
-    td img {
-        max-width: 100px;
-        height: auto;
-        display: block;
-        margin: 0 auto;
-    }
-
-    #pageLength {
-        font-size: 14px;
-        padding: 2px 8px;
-        width: 80px;
-        background-color: white;
-        color: black;
-        border: 1px solid #ccc;
-        transition: background-color 0.3s, color 0.3s;
-    }
-</style> --}}
