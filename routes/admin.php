@@ -49,6 +49,7 @@ use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
 Route::get('/', [DashBoardController::class, 'index'])->name('index');
 
 Route::resource('cinemas', CinemaController::class);
+Route::post('/cinemas/{id}/toggle', [CinemaController::class, 'toggleStatus'])->name('cinemas.toggle');
 Route::resource('ranks', RankController::class);
 
 Route::resource('slideshows', SlideShowController::class);
