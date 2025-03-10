@@ -26,6 +26,7 @@ return new class extends Migration
             $table->bigInteger('total_amount')->default(0)->comment('Tổng giao dịch');
             // $table->string('service_id')->nullable(); // ?
             // $table->string('service_name')->nullable(); // ?
+            $table->string('google_id')->nullable();
             $table->boolean('type_user')->default(0)->comment("0 : UserMember , 1 : Admin");
             $table->integer('cinema_id')->nullable(); // ?
             $table->softDeletes();
