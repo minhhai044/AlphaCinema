@@ -56,7 +56,7 @@ class BranchController extends Controller
 
         $branch->update([
             'name' => $data['name'],
-            'is_active' => $request->has('is_active') ? 1 : 0,
+            
         ]);
 
         return redirect()->route('admin.branches.index')->with('success', 'Cập nhật chi nhánh thành công!');
@@ -67,12 +67,21 @@ class BranchController extends Controller
         // dd ($typeRoomRequest);
         try {
             $branch->delete(); // Sử dụng tên biến mới.
-            
+
             return back()
                 ->with('success', 'Xóa thành công');
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
-        //
+        
+    }
+
+    public function toggleStatus($id, Request $request)
+    {
+        $branch = Branch::findOrFail($id);
+        $branch->is_active = $request->has('is_active');
+        $branch->save();
+
+        return back();
     }
 }
