@@ -25,8 +25,8 @@ class ShowtimeController extends Controller
     }
     public function index(Request $request)
     {
-        [$branchs,$branchsRelation ,$listShowtimes,$movies,$listShowtimesByDates] = $this->showtimeService->getService($request);
-        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs','branchsRelation','listShowtimes','movies','listShowtimesByDates'));
+        [$branchs, $branchsRelation, $listShowtimes, $movies, $listShowtimesByDates] = $this->showtimeService->getService($request);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs', 'branchsRelation', 'listShowtimes', 'movies', 'listShowtimesByDates'));
     }
     public function create(string $id)
     {
@@ -75,12 +75,11 @@ class ShowtimeController extends Controller
             $showtimes = json_decode($data['showtime'], true);
             foreach ($showtimes ??= [] as $value) {
                 if ($value['room_id'] == $showtimes[0]['room_id']) {
-                    array_push($showtime,$value);
+                    array_push($showtime, $value);
                 }
             }
             if (empty($data['date'])) {
                 return back()->with('warning', 'Bạn quên chọn ngày kìa !!!');
-
             }
             $date = explode(', ', $data['date']);
 
@@ -113,7 +112,7 @@ class ShowtimeController extends Controller
             return redirect()->route('admin.showtimes.index')->with('warning', 'Đừng có load lại trang đang lưu session mà ???');
         }
 
-        
+
         if (empty($date)) {
             return redirect()->route('admin.showtimes.index')->with('warning', 'Phim không nằm trong thời gian chiếu hoặc đã có suất chiếu tại các ngày đó !!!');
         }
@@ -165,7 +164,8 @@ class ShowtimeController extends Controller
             return redirect()->route('admin.showtimes.index')->with('error', 'Thao tác không thành công !!!');
         }
     }
-    public function createList(string $id){
+    public function createList(string $id)
+    {
         [$branchs, $branchsRelation, $rooms, $movie, $days, $slug, $roomsRelation, $specialshowtimes, $type_seats, $type_rooms] = $this->showtimeService->createService($id);
         return view(self::PATH_VIEW . __FUNCTION__, compact('type_seats', 'branchs', 'branchsRelation', 'rooms', 'movie', 'days', 'slug', 'roomsRelation', 'specialshowtimes', 'type_rooms'));
     }

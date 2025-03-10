@@ -143,9 +143,11 @@
                             @endif
                         </td>
                         <td>
-                            <input type="checkbox" id="is_active{{ $data->id }}" data-publish="{{ $data->is_publish }}"
-                                switch="success" @checked($data->is_active) />
-                            <label for="is_active{{ $data->id }}"></label>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="form-check form-switch form-switch-success">
+                                    <input @checked($data->is_active) data-publish="{{ $data->is_publish }}" class="form-check-input switch-is-active" id="is_active{{ $data->id }}" type="checkbox">
+                                </div>
+                            </div>
                         </td>
                         <td>
                             <a href="{{ route('admin.edit.seat_templates', $data) }}"><button class="btn btn-success btn-sm"><i
