@@ -53,7 +53,15 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
-
+ <div class="mb-3" id="surcharge_container" style="display: none;">
+                                            <label class="form-label">Phụ phí</label>
+                                            <input type="number" name="surcharge"
+                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
+                                                value="{{ old('surcharge', $movie->surcharge ?? '') }}">
+                                            @if ($errors->has('surcharge'))
+                                                <div class="invalid-feedback">{{ $errors->first('surcharge') }}</div>
+                                            @endif
+                                        </div>
 
                                     </div>
 
@@ -94,57 +102,43 @@
                                         @endphp
 
                                         <!-- Thể loại phim -->
+                                        @php
+                                            $selectedVersions = (array) old('movie_versions', $movie->movie_versions ?? []);
+                                            $selectedGenres = (array) old('movie_genres', $movie->movie_genres ?? []);
+                                        @endphp
+
+                                        <!-- Thể loại phim với Select2 -->
                                         <div class="mb-3">
-                                            <label class="form-label">Thể loại phim</label>
-                                            <div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
-                                                        value="Action" id="genre_action"
-                                                        {{ in_array('Action', $selectedGenres) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="genre_action">Hành động</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
-                                                        value="Horror" id="genre_horror"
-                                                        {{ in_array('Horror', $selectedGenres) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="genre_horror">Kinh dị</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox" name="movie_genres[]"
-                                                        value="Comedy" id="genre_comedy"
-                                                        {{ in_array('Comedy', $selectedGenres) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="genre_comedy">Hài hước</label>
-                                                </div>
-                                            </div>
+                                            <label class="form-label">Thể loại phim
+                                                <span class="required" style="color: red">*</span>
+                                            </label>
+                                            <select name="movie_genres[]" id="movie_genres"
+                                                class="form-control select2 {{ $errors->has('movie_genres') ? 'is-invalid' : '' }}"
+                                                multiple>
+                                                <option value="Action" {{ in_array('Action', $selectedGenres) ? 'selected' : '' }}>Hành động</option>
+                                                <option value="Horror" {{ in_array('Horror', $selectedGenres) ? 'selected' : '' }}>Kinh dị</option>
+                                                <option value="Comedy" {{ in_array('Comedy', $selectedGenres) ? 'selected' : '' }}>Hài hước</option>
+                                                <option value="Romance" {{ in_array('Romance', $selectedGenres) ? 'selected' : '' }}>Lãng mạn</option>
+                                                <option value="Drama" {{ in_array('Drama', $selectedGenres) ? 'selected' : '' }}>Chính kịch</option>
+                                            </select>
                                             @error('movie_genres')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
-
                                         </div>
 
-                                        <!-- Phiên bản phim -->
+                                        <!-- Phiên bản phim với Select2 -->
                                         <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim</label>
-                                            <div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        name="movie_versions[]" value="2D" id="version_2d"
-                                                        {{ in_array('2D', $selectedVersions) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="version_2d">2D</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        name="movie_versions[]" value="3D" id="version_3d"
-                                                        {{ in_array('3D', $selectedVersions) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="version_3d">3D</label>
-                                                </div>
-                                                <div class="form-check form-check-inline">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        name="movie_versions[]" value="4D" id="version_4d"
-                                                        {{ in_array('4D', $selectedVersions) ? 'checked' : '' }}>
-                                                    <label class="form-check-label" for="version_4d">4D</label>
-                                                </div>
-                                            </div>
+                                            <label class="form-label">Phiên bản phim
+                                                <span class="required" style="color: red">*</span>
+                                            </label>
+                                            <select name="movie_versions[]" id="movie_versions"
+                                                class="form-control select2 {{ $errors->has('movie_versions') ? 'is-invalid' : '' }}"
+                                                multiple>
+                                                <option value="2D" {{ in_array('2D', $selectedVersions) ? 'selected' : '' }}>2D</option>
+                                                <option value="3D" {{ in_array('3D', $selectedVersions) ? 'selected' : '' }}>3D</option>
+                                                <option value="4D" {{ in_array('4D', $selectedVersions) ? 'selected' : '' }}>4D</option>
+                                                <option value="IMAX" {{ in_array('IMAX', $selectedVersions) ? 'selected' : '' }}>IMAX</option>
+                                            </select>
                                             @error('movie_versions')
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
@@ -166,15 +160,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="mb-3" id="surcharge_container" style="display: none;">
-                                            <label class="form-label">Phụ phí</label>
-                                            <input type="number" name="surcharge"
-                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
-                                                value="{{ old('surcharge', $movie->surcharge ?? '') }}">
-                                            @if ($errors->has('surcharge'))
-                                                <div class="invalid-feedback">{{ $errors->first('surcharge') }}</div>
-                                            @endif
-                                        </div>
+
 
                                         <div class="mb-3">
                                             <label class="form-label">Đánh giá</label>
@@ -242,6 +228,8 @@
 
     <!-- Thêm CKEditor qua CDN và khởi tạo -->
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Khởi tạo CKEditor cho trường description
@@ -268,6 +256,16 @@
                     }
                 });
             });
+            // Khởi tạo Select2 cho trường movie_genres
+                $('#movie_genres').select2({
+                    placeholder: "Chọn thể loại phim",
+                    allowClear: true
+                });
+                $('#movie_versions').select2({
+                    placeholder: "Chọn thể Phiên bản",
+                    allowClear: true
+                });
+
 
             // Xử lý toggle cho surcharge dựa trên switch_is_special
             var specialCheckbox = document.getElementById('switch_is_special');

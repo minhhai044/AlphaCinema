@@ -10,73 +10,66 @@
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <style>
-        .dataTables_wrapper .dataTables_paginate .paginate_button {
-            background-color: #ffffff !important;
-            color: #495057 !important;
-            border: 1px solid #e0e0e0 !important;
-            border-radius: 4px !important;
-            margin: 0 2px;
-            padding: 4px 8px !important;
-            /* Giảm padding */
-            font-size: 13px;
-            font-weight: 500;
-            transition: all 0.2s ease !important;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-        }
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    background-color: #ffffff !important; /* Màu nền trắng */
+    border: 1px solid #e9ecef !important; /* Viền màu xám nhạt */
+    margin: 0 2px;
+    padding: 6px 12px !important; /* Padding để cân đối nút */
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.2s ease !important; /* Hiệu ứng mượt mà */
+}
 
-        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-            background-color: #2563eb !important;
-            /* Màu xanh dương đậm hơn */
-            color: #ffffff !important;
-            border-color: #2563eb !important;
-            box-shadow: 0 2px 6px rgba(89, 137, 240, 0.2);
-            transform: translateY(-1px);
-        }
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #ffffff !important; /* Màu nền trắng khi hover */
+    border-color: #ced4da !important; /* Viền nhạt hơn khi hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng mạnh hơn khi hover */
+    transform: translateY(-1px); /* Nâng nút lên nhẹ khi hover */
+}
 
-        .dataTables_wrapper .dataTables_paginate .paginate_button.current {
-            background-color: #6ff3d4 !important;
-            /* Màu xanh đậm cho active */
-            color: #ffffff !important;
-            border-color: #fbfbfb !important;
-            box-shadow: 0 2px 6px rgba(30, 64, 175, 0.2);
-            transform: translateY(-1px);
-            font-weight: 600;
-        }
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #565ccf !important; /* Màu xanh đậm cho trang active */
+    color: #ffffff !important; /* Chữ trắng */
+    border-color: #565ccf !important;
+    box-shadow: 0 2px 6px rgba(86, 92, 207, 0.2); /* Đổ bóng cho trang active */
+    transform: translateY(-1px);
+    font-weight: 600; /* Chữ đậm hơn */
+}
 
-        .dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
-            color: #ced4da !important;
-            background-color: #f1f3f5 !important;
-            border-color: #e9ecef !important;
-            box-shadow: none !important;
-            cursor: not-allowed;
-        }
 
-        .dataTables_wrapper .dataTables_paginate .paginate_button.previous,
-        .dataTables_wrapper .dataTables_paginate .paginate_button.next {
-            background-color: #f1f3f5 !important;
-            color: #495057 !important;
-            border-radius: 4px !important;
-            padding: 4px 10px !important;
-            /* Giảm padding cho trước/sau */
-            text-transform: uppercase;
-            font-weight: 500;
-        }
+.dataTables_wrapper .dataTables_paginate .paginate_button.disabled {
+    color: #ced4da !important; /* Màu chữ xám nhạt cho nút disabled */
+    background-color: #f8f9fa !important; /* Màu nền xám nhạt */
+    border-color: #e9ecef !important;
+    box-shadow: none !important;
+    cursor: not-allowed; /* Con trỏ cấm khi disabled */
+}
 
-        .dataTables_wrapper .dataTables_paginate .paginate_button.previous:hover,
-        .dataTables_wrapper .dataTables_paginate .paginate_button.next:hover {
-            background-color: #ffffff !important;
-            color: #ffffff !important;
-            border-color: #e7e7e7 !important;
-            box-shadow: 0 2px 6px rgba(37, 99, 235, 0.2);
-        }
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next {
+    background-color: #f8f9fa !important; /* Màu nền xám nhạt cho Previous/Next */
+    border: 1px solid #e9ecef !important;
+    border-radius: 4px !important; /* Bo góc mặc định */
+    padding: 6px 12px !important;
+    text-transform: uppercase; /* Chữ in hoa */
+    font-weight: 500;
+}
 
-        td img {
-            max-width: 100px;
-            height: auto;
-        }
+.dataTables_wrapper .dataTables_paginate .paginate_button.previous:hover,
+.dataTables_wrapper .dataTables_paginate .paginate_button.next:hover {
+    background-color: #ffffff !important; /* Màu nền trắng khi hover */
+    border-color: #ced4da !important;
+    border-radius: 0 !important; /* Bỏ bo góc khi hover */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Đổ bóng khi hover */
+}
+
+td img {
+    max-width: 100px;
+    height: auto;
+}
 
         #pageLength {
-            font-size: 14px;
+            font-size: 24px;
             padding: 5px 10px;
             width: 100px;
         }
@@ -309,8 +302,8 @@
                 language: {
                     search: "Tìm kiếm:",
                     paginate: {
-                        next: ">",
-                        previous: "<"
+                        next: "Next",
+                        previous: "Previous"
                     },
                     lengthMenu: "Hiển thị _MENU_ mục",
                     info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
