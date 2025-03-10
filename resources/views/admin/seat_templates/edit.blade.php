@@ -33,21 +33,12 @@
             max-height: 35px;
         }
         .box-item-show {
-            /* width: 35px;
-            height: 35px; */
-            max-width: 35px;
-            max-height: 35px;
+            width: 50px;
+            height: 50px;
+            max-width: 50px;
+            max-height: 50px;
         }
-        .box-item-pro {
-            width: 40px;
-            height: 40px;
-            max-width: 40px;
-            max-height: 40px;
-        }
-        .info-show {
-            width: 20px;
-            height: 20px;
-        }
+        
         
     </style>
     <h4 class="fw-semibold">Mẫu sơ đồ ghế</h4>

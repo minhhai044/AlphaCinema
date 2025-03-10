@@ -19,10 +19,10 @@
 
 
     .box-item {
-        /* width: 35px;
-        height: 35px; */
-        max-width: 35px;
-        max-height: 35px;
+        width: 50px;
+        height: 50px;
+        max-width: 50px;
+        max-height: 50px;
     }
     
     .badge-active {
