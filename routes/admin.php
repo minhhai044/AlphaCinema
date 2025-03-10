@@ -33,6 +33,8 @@ use App\Http\Controllers\Admin\StatisticalController;
 
 use App\Http\Controllers\Admin\SlideShowController;
 
+use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -99,20 +101,27 @@ Route::group([
 });
 
 Route::resource('branches', BranchController::class);
-Route::get('/admin/branches', [BranchController::class, 'index'])->name('admin.branches.index');
+Route::post('/branches/{id}/toggle', [BranchController::class, 'toggleStatus'])->name('branches.toggle');
+
 
 Route::resource('vouchers', VoucherController::class);
+Route::post('/vouchers/{id}/toggle', [VoucherController::class, 'toggleStatus'])->name('vouchers.toggle');
+
+
 
 Route::resource('user-vouchers', UserVoucherController::class);
 
 Route::group([
-    'prefix' => 'tickets',  // Tiền tố URL cho tất cả route
-    'as' => 'tickets.',     // Nhóm tên route (vd: foods.index, foods.store)
+    'prefix' => 'tickets',
+    'as' => 'tickets.',
 ], function () {
-    // Danh sách
     Route::get('/', [TicketController::class, 'index'])->name('index');
-});
 
+    Route::get('/{id}', [TicketController::class, 'show'])->name('show'); // Add this
+
+    Route::get('/test', [TicketController::class, 'print']);
+
+});
 // Route::resource('typerooms', TyperoomController::class);
 Route::group([
     'prefix' => 'typerooms',  // Tiền tố URL cho tất cả route
@@ -256,3 +265,5 @@ Route::get('/statistical/cinemaRevenue', [StatisticalController::class, 'cinemaR
 
 
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
+
+Route::get('/admin/tickets/{ticket}/detail', [TicketController::class, 'show'])->name('admin.tickets.show');

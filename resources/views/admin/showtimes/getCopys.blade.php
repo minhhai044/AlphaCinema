@@ -140,7 +140,7 @@
 
 
         <div class="col-lg-3">
-            <div class="card shadow-lg border-0 rounded-3 ">
+            <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-body p-4">
                     <h4 class="mb-3 text-center text-warning fw-bold">
                         <i class="fas fa-info-circle me-2"></i> Thông tin chi tiết

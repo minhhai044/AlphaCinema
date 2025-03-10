@@ -15,6 +15,7 @@ class Ticket extends Model
         'room_id',
         'movie_id',
         'showtime_id',
+        'code',
         'voucher_code',
         'voucher_discount',
         'point_use',
@@ -22,6 +23,7 @@ class Ticket extends Model
         'payment_name',
         'ticket_seats',
         'ticket_combos',
+        'ticket_foods',
         'total_price',
         'expiry',
         'status',
@@ -30,8 +32,13 @@ class Ticket extends Model
     protected $casts = [
         'ticket_seats' => 'array',
         'ticket_combos' => 'array',
-        'total_price' => 'decimal:2',
-        'expiry' => 'datetime',
+        'ticket_foods' => 'array',
+        // 'total_price' => 'decimal:2',
+        // 'expiry' => 'datetime',
+
+        // 'total_price' => 'decimal:2',
+        // 'expiry' => 'datetime',
+
         'status' => 'string',
     ];
 
@@ -76,6 +83,13 @@ class Ticket extends Model
     }
     public function branch()
     {
-        return $this->belongsTo(Branch::class);
+        return $this->hasOneThrough(
+            Branch::class,
+            Cinema::class,
+            'id',
+            'id',
+            'cinema_id',
+            'branch_id'     
+        );
     }
 }

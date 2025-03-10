@@ -8,7 +8,7 @@ use Illuminate\Foundation\Http\FormRequest;
 class ShowtimeRequest extends FormRequest
 {
     use ApiResponseTrait;
-     /**
+    /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
@@ -38,7 +38,7 @@ class ShowtimeRequest extends FormRequest
     public function rulesForCreate()
     {
         return [
-            'user_id' => 'required',
+            'user_id' => 'nullable',
             'seat_id' => 'required',
             'status' => 'required',
         ];
@@ -46,16 +46,12 @@ class ShowtimeRequest extends FormRequest
 
     public function rulesForUpdate()
     {
-        return [
-           
-        ];
+        return [];
     }
 
     // messages chung
     public function messages()
     {
-        return [
-           
-        ];
+        return [];
     }
 }
