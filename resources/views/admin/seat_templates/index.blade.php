@@ -13,11 +13,11 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Danh sách mẫu ghế</h4>
+                <h4 class="mb-sm-0 fw-semibold font-size-20">Danh sách mẫu ghế</h4>
 
                 <div class="page-title-right">
 
-                    <button type="button" class="btn btn-primary btn-sm float-end mb-2 me-3" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">
                         Thêm mẫu ghế
                     </button>

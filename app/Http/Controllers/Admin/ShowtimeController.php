@@ -25,8 +25,8 @@ class ShowtimeController extends Controller
     }
     public function index(Request $request)
     {
-        [$branchs,$branchsRelation ,$listShowtimes,$movies] = $this->showtimeService->getService($request);
-        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs','branchsRelation','listShowtimes','movies'));
+        [$branchs,$branchsRelation ,$listShowtimes,$movies,$listShowtimesByDates] = $this->showtimeService->getService($request);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs','branchsRelation','listShowtimes','movies','listShowtimesByDates'));
     }
     public function create(string $id)
     {
@@ -55,7 +55,6 @@ class ShowtimeController extends Controller
     public function copys(Request $request)
     {
         $data = $request->all();
-
         return redirect()->route('admin.showtimes.getCopys')->with([
             'data' => $data
         ]);
@@ -78,6 +77,10 @@ class ShowtimeController extends Controller
                 if ($value['room_id'] == $showtimes[0]['room_id']) {
                     array_push($showtime,$value);
                 }
+            }
+            if (empty($data['date'])) {
+                return back()->with('warning', 'Bạn quên chọn ngày kìa !!!');
+
             }
             $date = explode(', ', $data['date']);
 
@@ -161,5 +164,9 @@ class ShowtimeController extends Controller
             Log::error(__CLASS__ . '@' . __FUNCTION__, [$th->getMessage()]);
             return redirect()->route('admin.showtimes.index')->with('error', 'Thao tác không thành công !!!');
         }
+    }
+    public function createList(string $id){
+        [$branchs, $branchsRelation, $rooms, $movie, $days, $slug, $roomsRelation, $specialshowtimes, $type_seats, $type_rooms] = $this->showtimeService->createService($id);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('type_seats', 'branchs', 'branchsRelation', 'rooms', 'movie', 'days', 'slug', 'roomsRelation', 'specialshowtimes', 'type_rooms'));
     }
 }
