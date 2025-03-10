@@ -4,6 +4,7 @@ namespace App\Events;
 
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -26,10 +27,7 @@ class RealTimeSeatEvent implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        Log::info("{$this->seat_id}, status: {$this->status}");
         return new Channel('showtime');
-
-        // return ['showtime'];
     }
 
     public function broadcastWith()

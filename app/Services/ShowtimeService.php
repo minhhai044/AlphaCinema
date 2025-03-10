@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\RealTimeSeatEvent;
 use App\Models\Branch;
 use App\Models\Cinema;
 use App\Models\Day;
@@ -24,12 +25,12 @@ class ShowtimeService
         if (empty($date) || empty($branch_id) || empty($cinema_id)) {
             $showtimes = collect();
         } else {
-            $showtimes = Showtime::with('movie', 'room.type_room','branch','cinema')
+            $showtimes = Showtime::with('movie', 'room.type_room', 'branch', 'cinema')
                 ->where('date', $date)
                 ->where('branch_id', $branch_id)
                 ->where('cinema_id', $cinema_id)
                 ->get();
-        }     
+        }
 
 
 
@@ -47,9 +48,9 @@ class ShowtimeService
         }
         // dd($listShowtimes);
 
-        $movies = Movie::query()->where('is_active',1)->get();
+        $movies = Movie::query()->where('is_active', 1)->get();
 
-        return [$branchs, $branchsRelation, $listShowtimes,$movies ];
+        return [$branchs, $branchsRelation, $listShowtimes, $movies];
     }
     public function createService(string $id)
     {
@@ -97,5 +98,31 @@ class ShowtimeService
         $showtime = Showtime::query()->findOrFail($id);
         $showtime->delete();
         return true;
+    }
+    public function resetSuccessService(array $data, string $id)
+    {
+        $showtime = Showtime::query()->where('id', $id)->lockForUpdate()->firstOrFail();
+
+        $seat_structures = json_decode($showtime->seat_structure, true);
+        $seatIds = $data['seat_id'];
+
+        /** code new */
+        $updated_seats = array_map(function ($seat) use ($data, $seatIds) {
+            if (isset($seat['id']) && in_array($seat['id'], $seatIds)) {
+                $seat['status'] = $data['status'] ?? $seat['status'];
+                $seat['user_id'] = $data['user_id'] ?? $seat['user_id'];
+
+                broadcast(new RealTimeSeatEvent($seat['id'], $seat['status'], $seat['user_id']))->toOthers();
+            }
+            return $seat;
+        }, $seat_structures);
+
+
+
+        $showtime->update([
+            'seat_structure' => json_encode($updated_seats),
+        ]);
+
+        return $showtime;
     }
 }

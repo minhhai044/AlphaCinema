@@ -8,7 +8,6 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\FoodController;
 use App\Http\Controllers\Api\V1\ComboFoodController;
-
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
@@ -57,16 +56,22 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
 
-    Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
+    // Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
+
+    // Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
+
+    Route::post('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
+    // Route::put('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
 });
 Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
 Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
 Route::get('/foods', [FoodController::class, 'index']);
 Route::get('list_combo', [ComboFoodController::class, 'list_combo']);
+
 Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
 Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTimes']);
 
-Route::get('/settings',[SiteSettingController::class,'index']);
+Route::get('/settings', [SiteSettingController::class, 'index']);
 
 // Route::get('{id}/showtime',             [ShowtimeController::class, 'getByDate']);
 // Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);

@@ -142,7 +142,7 @@ return [
 
     'maintenance' => [
         'driver' => 'file',
-        // 'store' => 'redis',
+        'store' => 'redis',
     ],
 
     /*
@@ -166,12 +166,13 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
         Laravel\Sanctum\SanctumServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -188,6 +189,8 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'Redis' => Illuminate\Support\Facades\Redis::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ])->toArray(),
 
 ];

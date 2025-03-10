@@ -33,6 +33,8 @@ use App\Http\Controllers\Admin\StatisticalController;
 
 use App\Http\Controllers\Admin\SlideShowController;
 
+use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -166,13 +168,13 @@ Route::group([
     Route::post('/', [UserController::class, 'store'])->name('store');
 
     // Hiển thị form chỉnh sửa user
-    Route::get('{users}/edit', [UserController::class, 'edit'])->name('edit');
+    Route::get('edit/{user}', [UserController::class, 'edit'])->name('edit');
 
     // Cập nhật user
-    Route::put('{users}', [UserController::class, 'update'])->name('update');
+    Route::put('{user}', [UserController::class, 'update'])->name('update');
 
     // Xóa mềm user (soft delete)
-    Route::delete('{users}', [UserController::class, 'solfDestroy'])->name('solfDestroy');
+    Route::delete('{user}', [UserController::class, 'softDestroy'])->name('softDestroy');
 
     // Xóa vĩnh viễn user
     // Route::delete('{users}/forceDestroy', [UserController::class, 'forceDestroy'])->name('forceDestroy');
@@ -181,7 +183,7 @@ Route::group([
     // Route::get('{users}/restore', [UserController::class, 'restore'])->name('restore');
 
     // Hiển thị chi tiết user phải khai báo cuối cùng trong route
-    Route::get('{users}', [UserController::class, 'show'])->name('show');
+    Route::get('{user}', [UserController::class, 'show'])->name('show');
 });
 
 
