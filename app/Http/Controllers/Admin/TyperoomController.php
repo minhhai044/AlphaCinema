@@ -21,7 +21,7 @@ class TyperoomController extends Controller
     }
     public function index()
     {
-        $type_rooms = Type_room::with('branch')->orderByDesc('id')->get();
+        $type_rooms = Type_room::query()->latest('id')->get();
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('type_rooms'));
     }
@@ -31,8 +31,7 @@ class TyperoomController extends Controller
      */
     public function create()
     {
-        $branchs = Branch::query()->orderByDesc('id')->get();
-        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs'));
+        return view(self::PATH_VIEW . __FUNCTION__);
     }
     // public function create() {}
 
