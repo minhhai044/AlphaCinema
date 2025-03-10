@@ -69,7 +69,7 @@ td img {
 }
 
         #pageLength {
-            font-size: 24px;
+            font-size: 12px;
             padding: 5px 10px;
             width: 100px;
         }
