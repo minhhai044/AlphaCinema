@@ -47,7 +47,7 @@ class VoucherController extends Controller
     
             $data = $request->all();
             $data['code'] = $code;
-            $data['is_active'] ??= 1;
+            $data['is_active'] = $request->has('is_active') ? 1 : 0;
             $data['limit_by_user'] = $data['limit_by_user'] ?? 1;
             $data['discount'] = $data['discount'] ?? 0;
     
@@ -118,5 +118,15 @@ class VoucherController extends Controller
             return back()->with('error', $th->getMessage());
         }
         //
+    }
+    
+
+    public function toggleStatus($id, Request $request)
+    {
+        $voucher = Voucher::findOrFail($id);
+        $voucher->is_active = $request->has('is_active');
+        $voucher->save();
+
+        return back();
     }
 }

@@ -41,7 +41,7 @@ class UserVoucherRequest extends FormRequest
             'user_ids.*' => 'exists:users,id',
 
             'voucher_id' => 'required|exists:vouchers,id',
-            'usage_count' => 'nullable|integer|min:0',
+            'usage_count' => 'nullable|integer|min:1',
         ];
     }
 
@@ -53,7 +53,7 @@ class UserVoucherRequest extends FormRequest
         return [
             'user_id' => 'required|exists:users,id',
             'voucher_id' => 'required|exists:vouchers,id',
-            'usage_count' => 'nullable|integer|min:0',
+            'usage_count' => 'nullable|integer|min:1',
         ];
     }
 
@@ -74,7 +74,7 @@ class UserVoucherRequest extends FormRequest
             'voucher_id.required' => 'Vui lòng chọn voucher.',
             'voucher_id.exists' => 'Voucher không hợp lệ.',
             'usage_count.integer' => 'Số lần sử dụng phải là số nguyên.',
-            'usage_count.min' => 'Số lần sử dụng phải lớn hơn hoặc bằng 0.',
+            'usage_count.min' => 'Số lần sử dụng phải lớn hơn hoặc bằng 1.',
         ];
     }
 

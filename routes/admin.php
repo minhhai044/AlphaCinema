@@ -100,9 +100,13 @@ Route::group([
 });
 
 Route::resource('branches', BranchController::class);
-Route::get('/admin/branches', [BranchController::class, 'index'])->name('admin.branches.index');
+Route::post('/branches/{id}/toggle', [BranchController::class, 'toggleStatus'])->name('branches.toggle');
+
 
 Route::resource('vouchers', VoucherController::class);
+Route::post('/vouchers/{id}/toggle', [VoucherController::class, 'toggleStatus'])->name('vouchers.toggle');
+
+
 
 Route::resource('user-vouchers', UserVoucherController::class);
 

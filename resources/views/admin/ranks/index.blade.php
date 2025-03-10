@@ -114,14 +114,14 @@
                                             {{ $rank->combo_percentage }}%
                                         </td>
                                         <td>
-                                            {{ $rank->created_at->format('d/m/Y') }}
+                                            {{ $rank->created_at }}
                                             <br>
-                                            {{ $rank->created_at->format('H:i:s') }}
+                                            {{ $rank->created_at }}
                                         </td>
                                         <td>
-                                            {{ $rank->updated_at->format('d/m/Y') }}
+                                            {{ $rank->updated_at }}
                                             <br>
-                                            {{ $rank->updated_at->format('H:i:s') }}
+                                            {{ $rank->updated_at }}
                                         </td>
                                         <td>
                                             <div class="dropdown">
