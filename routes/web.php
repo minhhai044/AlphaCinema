@@ -45,32 +45,13 @@ Route::get('auth/google/callback', function (Request $request) {
 
     $token = $user->createToken('authToken')->plainTextToken;
 
-    // $authData = json_encode([
-    //     'user' => $user->only(['id', 'name', 'email', 'avatar']), // Lọc bớt trường
-    //     'token' => $token,
-    //     'isLogin' => true
-    // ]);
-
-    // return redirect('http://localhost:3000')
-    //     ->withCookie(cookie('auth_google', $authData, 60 * 24, '/', '.alphacinema.me', false, false));
-
     $authData = json_encode([
-        'user' => $user->only(['id', 'name', 'email', 'avatar']), // Lọc bớt trường
+        'user' => $user->only(['id', 'name', 'email', 'avatar']),
         'token' => $token,
         'isLogin' => true
     ]);
 
     $authDataEncoded = base64_encode(json_encode($authData));
-
-    // $encodedData = base64_encode($authData);
-
-    // Log::info('AuthData size: ' . strlen($encodedData) . ' bytes');
-
-    // return redirect('http://localhost:3000')->header('Auth-Info', $encodedData);
-
-    // return redirect('http://localhost:3000')
-    //     ->withCookie(cookie('auth_google', $authData, 60 * 24, '/', 'localhost', false, false));
-
 
     return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
 });
