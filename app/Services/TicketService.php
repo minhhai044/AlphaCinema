@@ -210,5 +210,6 @@ class TicketService
 
     public function getTicketID($id){
         return $this->ticket->findOrFail($id);
+        
     }
 }

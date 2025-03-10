@@ -3,42 +3,25 @@
 @section('title', 'Danh sách vai trò')
 
 @section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+
     <style>
-        .card {
-            box-shadow: 0px 1px 10px 3px #dedede;
+        .table {
+            vertical-align: middle !important;
         }
-
-        .al-table-length label {
-            font-weight: normal;
-            text-align: left;
-            white-space: nowrap;
-        }
-
-        .al-table-length .al-table-select {
-            width: auto;
-            display: inline-block;
-        }
-
-        .al-table-length .al-table-input {
-            margin-left: .5em;
-            display: inline-block;
-            width: auto;
-        }
-
-        .al-table-info {
-            padding-top: .85em;
-        }
-
-        .al-table-paginate {
-            margin: 0;
-            white-space: nowrap;
-            text-align: right;
-        }
-
-        .al-table-paginate .pagination {
-            margin: 2px 0;
-            white-space: nowrap;
-            justify-content: flex-end;
+        table.dataTable thead th,
+        table.dataTable thead td,
+        table.dataTable tfoot th,
+        table.dataTable tfoot td {
+            text-align: center;
         }
     </style>
 @endsection
@@ -69,7 +52,7 @@
                     <div class="row">
                         <div class="col-sm">
                             <div class="mb-4">
-                                <h6 class="mb-sm-0 font-size-16"> List Account</h6>
+                                <h6 class="mb-sm-0 font-size-16"> Danh sách vai trò</h6>
                             </div>
                         </div>
                         <div class="col-sm-auto">
@@ -82,42 +65,16 @@
                         </div>
                     </div>
 
-                    <div class="row">
-                        <div class="col-sm-12 col-md-6">
-                            <div class="al-table-length">
-                                <label>
-                                    Show
-                                    <select name="example_length" aria-controls="example"
-                                        class="form-select form-select-sm al-table-select">
-                                        <option value="10">10</option>
-                                        <option value="25">25</option>
-                                        <option value="50">50</option>
-                                        <option value="100">100</option>
-                                    </select>
-                                    entries
-                                </label>
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-6">
-                            <div class="al-table-length text-end">
-                                <label>
-                                    Search:
-                                    <input type="search" class="form-control form-control-sm al-table-input"
-                                        placeholder="Search đê">
-                                </label>
-                            </div>
-                        </div>
-                    </div>
 
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="table-responsive">
-                                <table class="table align-middle table-nowrap dt-responsive nowrap w-100"
-                                    id="customerList-table">
+                                <table
+                                    class="table align-middle  dt-responsive nowrap w-100 table-bordered w-100 text-center"
+                                    id="datatable">
                                     <thead class="table-light">
                                         <tr>
                                             <th>#</th>
-
                                             <th>Tên</th>
                                             <th>Vai trò</th>
                                             <th>Hành động</th>
@@ -126,115 +83,84 @@
                                     <tbody>
                                         @foreach ($roles as $role)
                                             <td class="sorting_1 dtr-control">
-                                                <div class="d-none">{{ $role->id }}</div>
-                                                <div class="form-check font-size-{{ $role->id }}">
-                                                    <input class="form-check-input" type="checkbox"
-                                                        id="customerlistcheck-{{ $role->id }}">
-                                                    <label class="form-check-label"
-                                                        for="customerlistcheck-{{ $role->id }}"></label>
-                                                </div>
-                                            </td>
-
-                                            <td>
-                                                {{ $role->name }}
-                                            </td>
-                                            <td>
-                                                @if ($role->permissions->isNotEmpty())
-                                                    @foreach ($role->permissions->take(3) as $permission)
-                                                        <span class="badge rounded-pill bg-success"> {{ $permission->name }}
-                                                        </span>
-                                                    @endforeach
-
-                                                    @if ($role->permissions->count() > 3)
-                                                        <span class="badge rounded-pill bg-primary"> +
-                                                            {{ $role->permissions->count() - 3 }} quyền </span>
-                                                    @endif
-                                                @else
-                                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Không có
-                                                        quyền</span>
-                                                @endif
-                                            </td>
-                                            <td>
-                                                <div class="dropdown">
-                                                    <a href="#" class="dropdown-toggle card-drop"
-                                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                                        <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                                                    </a>
-                                                    <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                        <li>
-                                                            <a href="{{ route('admin.roles.edit', $role) }}"
-                                                                class="dropdown-item edit-list"
-                                                                data-edit-id="{{ $role->id }}">
-                                                                <i
-                                                                    class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                                Edit
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <a href="{{ route('admin.roles.show', $role) }}"
-                                                                class="dropdown-item edit-list"
-                                                                data-edit-id="{{ $role->id }}">
-                                                                <i
-                                                                    class="mdi mdi-pencil font-size-16 text-warning me-1"></i>
-                                                                Show
-                                                            </a>
-                                                        </li>
-                                                        <li>
-                                                            <form action="{{ route('admin.roles.destroy', $role) }}"
-                                                                method="POST">
-                                                                @method('DELETE')
-                                                                @csrf
-
-                                                                <button type="submit" class="dropdown-item remove-list"
-                                                                    onclick="return confirm('Bạn có muốn xóa ?')">
-                                                                    <i
-                                                                        class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                    Xóa
-                                                                </button>
-                                                            </form>
-                                                        </li>
-                                                    </ul>
-                                                </div>
-                                            </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
+                                                {{-- <div class="d-none">{{ $role->id }}</div> --}}
+                                                {{-- <div class="form-check font-size-{{ $role->id }}"> --}}
+                                                <input class="form-check-input" type="checkbox"
+                                                    id="customerlistcheck-{{ $role->id }}">
+                                                {{-- <label class="form-check-label"
+                                                        for="customerlistcheck-{{ $role->id }}"></label> --}}
                             </div>
-                        </div>
-                    </div>
+                            </td>
 
-                    <div class="row">
-                        <div class="col-sm-12 col-md-5">
-                            <div class="al-table-info" id="customerList-table_info" role="status" aria-live="polite">
-                                Showing 1 to 10 of 12 entries
-                            </div>
-                        </div>
-                        <div class="col-sm-12 col-md-7">
-                            <div class="al-table-paginate paging_simple_numbers pagination-rounded"
-                                id="customerList-table_paginate">
-                                <ul class="pagination">
-                                    <li class="paginate_button page-item previous disabled"
-                                        id="customerList-table_previous"><a aria-controls="customerList-table"
-                                            aria-disabled="true" role="link" data-dt-idx="previous" tabindex="-1"
-                                            class="page-link"><i class="mdi mdi-chevron-left"></i></a></li>
-                                    <li class="paginate_button page-item active"><a href="#"
-                                            aria-controls="customerList-table" role="link" aria-current="page"
-                                            data-dt-idx="0" tabindex="0" class="page-link">1</a></li>
-                                    <li class="paginate_button page-item "><a href="#"
-                                            aria-controls="customerList-table" role="link" data-dt-idx="1"
-                                            tabindex="0" class="page-link">2</a></li>
-                                    <li class="paginate_button page-item next" id="customerList-table_next"><a
-                                            href="#" aria-controls="customerList-table" role="link"
-                                            data-dt-idx="next" tabindex="0" class="page-link"><i
-                                                class="mdi mdi-chevron-right"></i></a></li>
-                                </ul>
-                            </div>
+                            <td>
+                                {{ $role->name }}
+                            </td>
+                            <td>
+                                @if ($role->permissions->isNotEmpty())
+                                    @foreach ($role->permissions->take(3) as $permission)
+                                        <span class="badge rounded-pill bg-success">
+                                            {{ $permission->name }}
+                                        </span>
+                                    @endforeach
+
+                                    @if ($role->permissions->count() > 3)
+                                        <span class="badge rounded-pill bg-primary"> +
+                                            {{ $role->permissions->count() - 3 }} quyền </span>
+                                    @endif
+                                @else
+                                    <span class="badge bg-danger-subtle text-danger text-uppercase">Không có
+                                        quyền</span>
+                                @endif
+                            </td>
+                            <td>
+                                <a href="{{ route('admin.roles.edit', $role) }}">
+                                    <button title="xem" class="btn btn-warning btn-sm " type="button"><i
+                                            class="fas fa-edit"></i></button>
+                                </a>
+
+                                <form method="POST" action="{{ route('admin.roles.destroy', $role) }}"
+                                    class="d-inline-block">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Bạn có muốn xóa không')">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>
+                            </td>
+                            </tr>
+                            @endforeach
+                            </tbody>
+                            </table>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
+    </div>
 
+@endsection
+
+@section('script')
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <!-- Buttons examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+    </script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+    </script>
+
+    <!-- Datatable init js -->
+    <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
 @endsection

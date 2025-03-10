@@ -95,6 +95,8 @@ class TicketController extends Controller
             $type_movie = $ticket->room->type_room->name;
             $category_movie = $ticket->movie->category;
             $duration = $ticket->movie->duration;
+            $barcode = DNS1D::getBarcodeHTML($ticket->code, 'C128', 1.5, 50);
+            $code = $ticket->code;
 
             return $this->successResponse([
                 'ticket' => $ticket,
@@ -111,7 +113,9 @@ class TicketController extends Controller
                 'movie' => $movie,
                 'type_movie' => $type_movie,
                 'category_movie' => $category_movie,
-                'duration' => $duration
+                'duration' => $duration,
+                'barcode' => $barcode,
+                'code' => $code
             ], 'Thành công rồi nè');
         } catch (\Throwable $th) {
             // Xử lý lỗi và trả về thông báo lỗi
@@ -139,6 +143,8 @@ class TicketController extends Controller
             $type_movie = $ticket->room->type_room->name;
             $category_movie = $ticket->movie->category;
             $duration = $ticket->movie->duration;
+            $barcode = DNS1D::getBarcodeHTML($ticket->code, 'C128', 1.5, 50);
+            $code = $ticket->code;
 
             return $this->successResponse([
                 'ticket' => $ticket,
@@ -158,6 +164,8 @@ class TicketController extends Controller
                 'type_movie' => $type_movie,
                 'category_movie' => $category_movie,
                 'duration' => $duration,
+                'barcode' => $barcode,
+                'code' => $code
             ], 'Thành công rồi nè');
         } catch (\Throwable $th) {
             // Xử lý lỗi và trả về thông báo lỗi
