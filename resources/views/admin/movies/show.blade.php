@@ -118,7 +118,8 @@
                         <p><strong><i class="bi bi-list-ul me-1"></i> Danh mục:</strong> {{ $movie->category }}</p>
                         <p><strong><i class="bi bi-person-video me-1"></i> Tác giả:</strong> {{ $movie->director }}</p>
                         <p><strong><i class="bi bi-youtube me-1"></i> Trailer:</strong>
-                            <a href="{{ $movie->trailer_url }}" target="_blank" class="trailer-link">{{ $movie->trailer_url }}</a>
+                            <a href="{{ $movie->trailer_url }}" target="_blank"
+                                class="trailer-link">{{ $movie->trailer_url }}</a>
                         </p>
                         <p><strong><i class="bi bi-clock me-1"></i> Thời lượng:</strong> {{ $movie->duration }}</p>
                         <p>
@@ -143,20 +144,39 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <h5><i class="bi bi-chat-text me-1"></i> Mô tả phim:</h5>
-                        <p class="border p-3 rounded bg-light">{{ $movie->description }}</p>
+                        <p class="border p-3 rounded bg-light">{{ strip_tags($movie->description) }}</p>
                     </div>
                 </div>
 
                 <!-- Thông tin chi tiết theo lưới -->
                 <div class="row mb-4">
                     <div class="col-md-6">
-                        <p><strong><i class="bi bi-calendar-event me-1"></i> Ngày trình chiếu:</strong> {{ $movie->release_date }}</p>
+                        <p><strong><i class="bi bi-calendar-event me-1"></i> Ngày trình chiếu:</strong>
+                            {{ $movie->release_date }}</p>
                         <p><strong><i class="bi bi-cash-stack me-1"></i> Phụ phí:</strong> {{ $movie->surcharge }}</p>
                     </div>
                     <div class="col-md-6">
                         <p><strong><i class="bi bi-calendar-x me-1"></i> Ngày kết thúc:</strong> {{ $movie->end_date }}</p>
-                        <p><strong><i class="bi bi-star me-1"></i> Đánh giá:</strong> {{ $movie->rating }}</p>
+                        <p>
+                            <strong><i class="bi bi-star me-1"></i> Đánh giá:</strong>
+                            <span class="star-display d-flex gap-1" style="font-size: 1.2rem;">
+                                @for ($i = 1; $i <= 5; $i++)
+                                    <i class="bi {{ $i <= $movie->rating ? 'bi-star-fill' : 'bi-star' }}"></i>
+                                @endfor
+                            </span>
+                            <span>({{ $movie->rating }}/5)</span>
+                        </p>
                     </div>
+
+                    <style>
+                        .star-display .bi-star-fill {
+                            color: #f1c40f;
+                        }
+
+                        .star-display .bi-star {
+                            color: #ced4da;
+                        }
+                    </style>
                 </div>
 
                 <!-- Phiên bản phim -->
@@ -174,7 +194,7 @@
                 </div>
 
                 <!-- Thể loại phim -->
-               <!-- Thể loại phim -->
+                <!-- Thể loại phim -->
                 <div class="row mb-4">
                     <div class="col-12">
                         <h5><i class="bi bi-tag me-1"></i> Thể loại phim:</h5>
@@ -210,6 +230,6 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-        crossorigin="anonymous"></script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
+    </script>
 @endsection

@@ -324,13 +324,10 @@
                 </div>
             </form>
         </div>
-        <!-- end select2 -->
 
-        <!-- Thêm CKEditor và Select2 qua CDN -->
         <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
         <script>
             document.addEventListener('DOMContentLoaded', function() {
-                // Khởi tạo CKEditor cho trường description
                 ClassicEditor
                     .create(document.querySelector('#description'), {
                         toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
@@ -344,19 +341,16 @@
                         console.error('Lỗi khi khởi tạo CKEditor:', error);
                     });
 
-                // Khởi tạo Select2 cho trường movie_genres
                 $('#movie_genres').select2({
                     placeholder: "Chọn thể loại phim",
                     allowClear: true
                 });
 
-                // Khởi tạo Select2 cho trường movie_versions
                 $('#movie_versions').select2({
                     placeholder: "Chọn phiên bản phim",
                     allowClear: true
                 });
 
-                // Cập nhật giá trị của hidden input cho các switch
                 document.querySelectorAll('.custom-switch input[type="checkbox"]').forEach(function(checkbox) {
                     checkbox.addEventListener('change', function() {
                         var hiddenInput = document.getElementById(this.id.replace('switch_', 'is_'));
@@ -366,7 +360,6 @@
                     });
                 });
 
-                // Xử lý toggle cho surcharge dựa trên switch_special
                 var specialCheckbox = document.getElementById('switch_special');
                 var surchargeContainer = document.getElementById('surcharge_container');
                 var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
@@ -381,13 +374,10 @@
                     }
                 }
 
-                // Gọi khi tải trang để đảm bảo trạng thái ban đầu
                 toggleSurchargeInput();
 
-                // Lắng nghe sự kiện thay đổi của switch_special
                 specialCheckbox.addEventListener('change', toggleSurchargeInput);
 
-                // Hàm tạo UUID
                 function generateUUID() {
                     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
                         const r = Math.random() * 16 | 0,
@@ -396,7 +386,6 @@
                     });
                 }
 
-                // Hàm chuyển đổi thành slug
                 function convertToSlug(text) {
                     return text.toLowerCase()
                         .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
@@ -405,7 +394,6 @@
                         .replace(/-+/g, '-');
                 }
 
-                // Tạo slug tự động từ tên phim
                 document.getElementById('name').addEventListener('input', function() {
                     let name = this.value.trim();
                     if (name !== '') {
@@ -423,7 +411,6 @@
         const ratingInput = document.getElementById('rating-value');
         let currentRating = ratingInput.value || 0;
 
-        // Khởi tạo trạng thái ban đầu nếu có old('rating')
         if (currentRating) {
             updateStars(currentRating);
         }

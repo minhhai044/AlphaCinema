@@ -53,7 +53,7 @@
                                                 <div class="text-danger">{{ $message }}</div>
                                             @enderror
                                         </div>
- <div class="mb-3" id="surcharge_container" style="display: none;">
+                                        <div class="mb-3" id="surcharge_container" style="display: none;">
                                             <label class="form-label">Phụ phí</label>
                                             <input type="number" name="surcharge"
                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
@@ -103,7 +103,10 @@
 
                                         <!-- Thể loại phim -->
                                         @php
-                                            $selectedVersions = (array) old('movie_versions', $movie->movie_versions ?? []);
+                                            $selectedVersions = (array) old(
+                                                'movie_versions',
+                                                $movie->movie_versions ?? [],
+                                            );
                                             $selectedGenres = (array) old('movie_genres', $movie->movie_genres ?? []);
                                         @endphp
 
@@ -115,9 +118,15 @@
                                             <select name="movie_genres[]" id="movie_genres"
                                                 class="form-control select2 {{ $errors->has('movie_genres') ? 'is-invalid' : '' }}"
                                                 multiple>
-                                                <option value="Action" {{ in_array('Action', $selectedGenres) ? 'selected' : '' }}>Hành động</option>
-                                                <option value="Horror" {{ in_array('Horror', $selectedGenres) ? 'selected' : '' }}>Kinh dị</option>
-                                                <option value="Comedy" {{ in_array('Comedy', $selectedGenres) ? 'selected' : '' }}>Hài hước</option>
+                                                <option value="Action"
+                                                    {{ in_array('Action', $selectedGenres) ? 'selected' : '' }}>Hành động
+                                                </option>
+                                                <option value="Horror"
+                                                    {{ in_array('Horror', $selectedGenres) ? 'selected' : '' }}>Kinh dị
+                                                </option>
+                                                <option value="Comedy"
+                                                    {{ in_array('Comedy', $selectedGenres) ? 'selected' : '' }}>Hài hước
+                                                </option>
                                             </select>
                                             @error('movie_genres')
                                                 <div class="text-danger">{{ $message }}</div>
@@ -132,10 +141,15 @@
                                             <select name="movie_versions[]" id="movie_versions"
                                                 class="form-control select2 {{ $errors->has('movie_versions') ? 'is-invalid' : '' }}"
                                                 multiple>
-                                                <option value="2D" {{ in_array('2D', $selectedVersions) ? 'selected' : '' }}>2D</option>
-                                                <option value="3D" {{ in_array('3D', $selectedVersions) ? 'selected' : '' }}>3D</option>
-                                                <option value="4D" {{ in_array('4D', $selectedVersions) ? 'selected' : '' }}>4D</option>
-                                                <option value="IMAX" {{ in_array('IMAX', $selectedVersions) ? 'selected' : '' }}>IMAX</option>
+                                                <option value="2D"
+                                                    {{ in_array('2D', $selectedVersions) ? 'selected' : '' }}>2D</option>
+                                                <option value="3D"
+                                                    {{ in_array('3D', $selectedVersions) ? 'selected' : '' }}>3D</option>
+                                                <option value="4D"
+                                                    {{ in_array('4D', $selectedVersions) ? 'selected' : '' }}>4D</option>
+                                                <option value="IMAX"
+                                                    {{ in_array('IMAX', $selectedVersions) ? 'selected' : '' }}>IMAX
+                                                </option>
                                             </select>
                                             @error('movie_versions')
                                                 <div class="text-danger">{{ $message }}</div>
@@ -162,7 +176,16 @@
 
                                         <div class="mb-3">
                                             <label class="form-label">Đánh giá</label>
-                                            <input type="number" name="rating" class="form-control"
+                                            <div class="star-rating d-flex gap-1"
+                                                style="font-size: 1.5rem; cursor: pointer;">
+                                                <i class="bi bi-star" data-rating="1"></i>
+                                                <i class="bi bi-star" data-rating="2"></i>
+                                                <i class="bi bi-star" data-rating="3"></i>
+                                                <i class="bi bi-star" data-rating="4"></i>
+                                                <i class="bi bi-star" data-rating="5"></i>
+                                            </div>
+                                            <!-- Hidden input để gửi giá trị rating -->
+                                            <input type="hidden" name="rating" id="rating-value" class="form-control"
                                                 value="{{ old('rating', $movie->rating) }}">
                                             @error('rating')
                                                 <div class="text-danger">{{ $message }}</div>
@@ -170,13 +193,13 @@
                                         </div>
                                     </div>
                                 </div>
-                                 <div class="mb-12">
-                                            <label class="form-label">Mô tả</label>
-                                            <textarea name="description" id="description" class="form-control">{{ old('description', $movie->description) }}</textarea>
-                                            @error('description')
-                                                <div class="text-danger">{{ $message }}</div>
-                                            @enderror
-                                        </div>
+                                <div class="mb-12">
+                                    <label class="form-label">Mô tả</label>
+                                    <textarea name="description" id="description" class="form-control">{{ old('description', $movie->description) }}</textarea>
+                                    @error('description')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
 
                         </div>
@@ -210,9 +233,10 @@
                                         value="{{ old($key, $movie->$key) }}">
                                 @endforeach
                                 <div class="d-flex flex-wrap gap-2">
-                                    <a href=""><button type="submit" class="btn btn-primary waves-effect waves-light">
-                                        Lưu
-                                    </button></a>
+                                    <a href=""><button type="submit"
+                                            class="btn btn-primary waves-effect waves-light">
+                                            Lưu
+                                        </button></a>
                                     <a href="{{ route('admin.movies.index') }}" class="btn btn-secondary mb-3">Hủy</a>
                                 </div>
                             </div>
@@ -227,13 +251,15 @@
     <!-- Thêm CKEditor qua CDN và khởi tạo -->
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             // Khởi tạo CKEditor cho trường description
             ClassicEditor
                 .create(document.querySelector('#description'), {
-                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'imageUpload', 'undo', 'redo']
+                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                        'imageUpload', 'undo', 'redo'
+                    ]
                 })
                 .then(editor => {
                     console.log('CKEditor đã được khởi tạo!', editor);
@@ -255,14 +281,14 @@
                 });
             });
             // Khởi tạo Select2 cho trường movie_genres
-                $('#movie_genres').select2({
-                    placeholder: "Chọn thể loại phim",
-                    allowClear: true
-                });
-                $('#movie_versions').select2({
-                    placeholder: "Chọn thể Phiên bản",
-                    allowClear: true
-                });
+            $('#movie_genres').select2({
+                placeholder: "Chọn thể loại phim",
+                allowClear: true
+            });
+            $('#movie_versions').select2({
+                placeholder: "Chọn thể Phiên bản",
+                allowClear: true
+            });
 
 
             // Xử lý toggle cho surcharge dựa trên switch_is_special
@@ -286,6 +312,62 @@
                 specialCheckbox.addEventListener('change', toggleSurchargeInput);
             } else {
                 console.error('Special checkbox not found');
+            }
+        });
+    </script>
+@endsection
+@section('style')
+    <style>
+        .star-rating .bi-star-fill {
+            color: #f1c40f;
+        }
+
+        .star-rating .bi-star:hover,
+        .star-rating .bi-star-fill:hover {
+            color: #f39c12;
+        }
+    </style>
+@endsection
+@section('script')
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star-rating .bi-star, .star-rating .bi-star-fill');
+            const ratingInput = document.getElementById('rating-value');
+            let currentRating = ratingInput.value || 0;
+
+            // Khởi tạo trạng thái ban đầu từ old('rating') hoặc $movie->rating
+            if (currentRating) {
+                updateStars(currentRating);
+            }
+
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    currentRating = this.getAttribute('data-rating');
+                    ratingInput.value = currentRating;
+                    updateStars(currentRating);
+                });
+
+                star.addEventListener('mouseover', function() {
+                    const hoverRating = this.getAttribute('data-rating');
+                    updateStars(hoverRating, true);
+                });
+
+                star.addEventListener('mouseout', function() {
+                    updateStars(currentRating);
+                });
+            });
+
+            function updateStars(rating, hover = false) {
+                stars.forEach(star => {
+                    const starRating = star.getAttribute('data-rating');
+                    if (starRating <= rating) {
+                        star.classList.remove('bi-star');
+                        star.classList.add('bi-star-fill');
+                    } else {
+                        star.classList.remove('bi-star-fill');
+                        star.classList.add('bi-star');
+                    }
+                });
             }
         });
     </script>

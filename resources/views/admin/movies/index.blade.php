@@ -71,7 +71,7 @@
                     </div>
 
                     <div class="table-responsive">
-                        <table id="movieTable" class="table table-bordered w-100">
+                        <table id="movieTable" class="table table-bordered w-100 ">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -118,44 +118,46 @@
                         name: 'id'
                     },
                     {
-    data: 'name',
-    name: 'name',
-    render: function(data, type, row) {
-        console.log("Dữ liệu row:", row); // Kiểm tra dữ liệu
+                        data: 'name',
+                        name: 'name',
+                        render: function(data, type, row) {
+                            console.log("Dữ liệu row:", row); // Kiểm tra dữ liệu
 
-        if (!row) return '<span style="color: gray;">Không có dữ liệu</span>';
+                            if (!row) return '<span style="color: gray;">Không có dữ liệu</span>';
 
-        // Bảng ánh xạ thể loại phim từ tiếng Anh sang tiếng Việt
-        let genreMapping = {
-            "Action": "Hành động",
-            "Horror": "Kinh dị",
-            "Comedy": "Hài",
-            "Drama": "Chính kịch",
-            "Sci-Fi": "Khoa học viễn tưởng",
-            "Fantasy": "Giả tưởng",
-            "Romance": "Lãng mạn",
-            "Thriller": "Giật gân",
-            "Adventure": "Phiêu lưu",
-            "Animation": "Hoạt hình"
-        };
+                            // Bảng ánh xạ thể loại phim từ tiếng Anh sang tiếng Việt
+                            let genreMapping = {
+                                "Action": "Hành động",
+                                "Horror": "Kinh dị",
+                                "Comedy": "Hài",
+                                "Drama": "Chính kịch",
+                                "Sci-Fi": "Khoa học viễn tưởng",
+                                "Fantasy": "Giả tưởng",
+                                "Romance": "Lãng mạn",
+                                "Thriller": "Giật gân",
+                                "Adventure": "Phiêu lưu",
+                                "Animation": "Hoạt hình"
+                            };
 
-        // Xử lý danh sách thể loại phim (movie_genres)
-        let genres = Array.isArray(row.movie_genres) ? row.movie_genres : [];
-        let genreHtml = genres.map(genre => {
-            let vietnameseGenre = genreMapping[genre] || genre; // Nếu không có trong danh sách thì giữ nguyên
-            return `<span style="background-color: green; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
+                            // Xử lý danh sách thể loại phim (movie_genres)
+                            let genres = Array.isArray(row.movie_genres) ? row.movie_genres : [];
+                            let genreHtml = genres.map(genre => {
+                                let vietnameseGenre = genreMapping[genre] ||
+                                    genre; // Nếu không có trong danh sách thì giữ nguyên
+                                return `<span style="background-color: green; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
                 ${vietnameseGenre}
             </span>`;
-        }).join(' ');
+                            }).join(' ');
 
-        // Xử lý danh sách phiên bản phim (movie_versions)
-        let versions = Array.isArray(row.movie_versions) ? row.movie_versions : [];
-        let versionHtml = versions.map(version =>
-            `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
+                            // Xử lý danh sách phiên bản phim (movie_versions)
+                            let versions = Array.isArray(row.movie_versions) ? row.movie_versions :
+                                [];
+                            let versionHtml = versions.map(version =>
+                                `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
                 ${version}
             </span>`).join(' ');
 
-        return `
+                            return `
             <div style="padding: 15px; border-radius: 8px;">
                 <h3 style="margin: 0 0 10px; color: #007bff; font-weight: bold;">${data || '<span style="color: gray;">Chưa có tên phim</span>'}</h3>
 
@@ -194,8 +196,8 @@
                 </p>
             </div>
         `;
-    }
-},
+                        }
+                    },
 
                     {
                         data: 'img_thumbnail',
@@ -338,14 +340,12 @@
                 }, 50);
             });
         });
-
-
     </script>
 @endsection
 
 @section('style')
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
@@ -354,6 +354,17 @@
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
     <style>
+        #movieTable thead th {
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        .form-check.form-switch {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0;
+        }
 
         .dataTables_wrapper .dataTables_paginate .paginate_button {
             background-color: #ffffff !important;
@@ -365,18 +376,18 @@
             transition: all 0.2s ease !important;
         }
 
-       .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
-    background-color: transparent !important;
-    color: inherit !important;
-    border: none !important;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+            background-color: transparent !important;
+            color: inherit !important;
+            border: none !important;
+        }
 
-.dataTables_wrapper .dataTables_paginate .paginate_button:active {
-    background-color: transparent !important;
-    color: inherit !important;
-    border: none !important;
-    box-shadow: none !important;
-}
+        .dataTables_wrapper .dataTables_paginate .paginate_button:active {
+            background-color: transparent !important;
+            color: inherit !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
 
         .dataTables_wrapper .dataTables_paginate .paginate_button.current {
             background-color: #565ccf !important;
