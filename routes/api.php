@@ -39,6 +39,8 @@ use App\Http\Controllers\Api\VoucherController;
 Route::prefix('movies')->group(function () {
     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
 });
+Route::patch('/admin/movies/{id}/update-status', [MovieController::class, 'updateStatus'])->name('admin.movies.update-status');
+
 
 
 Route::prefix('users')->group(function () {

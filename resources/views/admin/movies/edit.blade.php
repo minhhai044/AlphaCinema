@@ -118,8 +118,6 @@
                                                 <option value="Action" {{ in_array('Action', $selectedGenres) ? 'selected' : '' }}>Hành động</option>
                                                 <option value="Horror" {{ in_array('Horror', $selectedGenres) ? 'selected' : '' }}>Kinh dị</option>
                                                 <option value="Comedy" {{ in_array('Comedy', $selectedGenres) ? 'selected' : '' }}>Hài hước</option>
-                                                <option value="Romance" {{ in_array('Romance', $selectedGenres) ? 'selected' : '' }}>Lãng mạn</option>
-                                                <option value="Drama" {{ in_array('Drama', $selectedGenres) ? 'selected' : '' }}>Chính kịch</option>
                                             </select>
                                             @error('movie_genres')
                                                 <div class="text-danger">{{ $message }}</div>

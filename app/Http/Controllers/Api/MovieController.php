@@ -116,6 +116,21 @@ class MovieController extends Controller
             );
         }
     }
+    public function updateStatus(Request $request, $id)
+    {
+        $movie = Movie::findOrFail($id);
+        $field = $request->input('field');
+        $value = $request->input('value');
+
+        if (in_array($field, ['is_active', 'is_hot', 'is_publish'])) {
+            $movie->$field = $value;
+            $movie->save();
+
+            return response()->json(['success' => true, 'message' => 'Cập nhật thành công']);
+        }
+
+        return response()->json(['success' => false, 'message' => 'Trường không hợp lệ'], 400);
+    }
 
 
     public function update(MovieRequest $request, string $id)
