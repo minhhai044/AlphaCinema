@@ -61,7 +61,8 @@
                                             <input type="text" name="category"
                                                 class="form-control {{ $errors->has('category') ? 'is-invalid' : (old('category') ? 'is-valid' : '') }}"
                                                 value="{{ old('category') }}">
-                                            <div class="{{ $errors->has('category') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('category') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('category'))
                                                     {{ $errors->first('category') }}
                                                 @endif
@@ -73,7 +74,8 @@
                                             <input type="file" name="img_thumbnail"
                                                 class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}"
                                                 value="{{ old('img_thumbnail') }}">
-                                            <div class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('img_thumbnail'))
                                                     {{ $errors->first('img_thumbnail') }}
                                                 @endif
@@ -82,12 +84,21 @@
                                         <div class="mb-3">
                                             <label class="form-label">Thể loại phim
                                                 <span class="required" style="color: red">*</span></label>
-                                            <select name="movie_genres[]" id="movie_genres" class="form-control {{ $errors->has('movie_genres') ? 'is-invalid' : (old('movie_genres') ? 'is-valid' : '') }}" multiple>
-                                                <option value="Action" {{ in_array('Action', old('movie_genres', [])) ? 'selected' : '' }}>Hành động</option>
-                                                <option value="Horror" {{ in_array('Horror', old('movie_genres', [])) ? 'selected' : '' }}>Kinh dị</option>
-                                                <option value="Comedy" {{ in_array('Comedy', old('movie_genres', [])) ? 'selected' : '' }}>Hài hước</option>
+                                            <select name="movie_genres[]" id="movie_genres"
+                                                class="form-control {{ $errors->has('movie_genres') ? 'is-invalid' : (old('movie_genres') ? 'is-valid' : '') }}"
+                                                multiple>
+                                                <option value="Action"
+                                                    {{ in_array('Action', old('movie_genres', [])) ? 'selected' : '' }}>
+                                                    Hành động</option>
+                                                <option value="Horror"
+                                                    {{ in_array('Horror', old('movie_genres', [])) ? 'selected' : '' }}>
+                                                    Kinh dị</option>
+                                                <option value="Comedy"
+                                                    {{ in_array('Comedy', old('movie_genres', [])) ? 'selected' : '' }}>Hài
+                                                    hước</option>
                                             </select>
-                                            <div class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
+                                            <div
+                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('movie_genres'))
                                                     {{ $errors->first('movie_genres') }}
                                                 @endif
@@ -99,7 +110,8 @@
                                             <input type="number" name="surcharge"
                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
                                                 value="{{ old('surcharge') }}">
-                                            <div class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('surcharge'))
                                                     {{ $errors->first('surcharge') }}
                                                 @endif
@@ -115,7 +127,8 @@
                                             <input type="text" name="director"
                                                 class="form-control {{ $errors->has('director') ? 'is-invalid' : (old('director') ? 'is-valid' : '') }}"
                                                 value="{{ old('director') }}">
-                                            <div class="{{ $errors->has('director') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('director') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('director'))
                                                     {{ $errors->first('director') }}
                                                 @endif
@@ -128,7 +141,8 @@
                                             <input type="text" name="trailer_url"
                                                 class="form-control {{ $errors->has('trailer_url') ? 'is-invalid' : (old('trailer_url') ? 'is-valid' : '') }}"
                                                 value="{{ old('trailer_url') }}">
-                                            <div class="{{ $errors->has('trailer_url') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('trailer_url') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('trailer_url'))
                                                     {{ $errors->first('trailer_url') }}
                                                 @endif
@@ -140,7 +154,8 @@
                                             <input type="number" name="duration" min="1" step="1"
                                                 class="form-control {{ $errors->has('duration') ? 'is-invalid' : (old('duration') ? 'is-valid' : '') }}"
                                                 value="{{ old('duration') }}" placeholder="Nhập số phút">
-                                            <div class="{{ $errors->has('duration') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('duration') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('duration'))
                                                     {{ $errors->first('duration') }}
                                                 @endif
@@ -149,12 +164,14 @@
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu
                                                 <span class="required" style="color: red">*</span></label>
-                                            <div class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('release_date'))
                                                     {{ $errors->first('release_date') }}
                                                 @endif
                                             </div>
-                                            <div class="{{ $errors->has('end_date') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('end_date') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('end_date'))
                                                     {{ $errors->first('end_date') }}
                                                 @endif
@@ -177,12 +194,21 @@
                                             <label class="form-label">Phiên bản phim
                                                 <span class="required" style="color: red">*</span>
                                             </label>
-                                            <select name="movie_versions[]" id="movie_versions" class="form-control {{ $errors->has('movie_versions') ? 'is-invalid' : (old('movie_versions') ? 'is-valid' : '') }}" multiple>
-                                                <option value="2D" {{ in_array('2D', old('movie_versions', [])) ? 'selected' : '' }}>2D</option>
-                                                <option value="3D" {{ in_array('3D', old('movie_versions', [])) ? 'selected' : '' }}>3D</option>
-                                                <option value="4D" {{ in_array('4D', old('movie_versions', [])) ? 'selected' : '' }}>4D</option>
+                                            <select name="movie_versions[]" id="movie_versions"
+                                                class="form-control {{ $errors->has('movie_versions') ? 'is-invalid' : (old('movie_versions') ? 'is-valid' : '') }}"
+                                                multiple>
+                                                <option value="2D"
+                                                    {{ in_array('2D', old('movie_versions', [])) ? 'selected' : '' }}>2D
+                                                </option>
+                                                <option value="3D"
+                                                    {{ in_array('3D', old('movie_versions', [])) ? 'selected' : '' }}>3D
+                                                </option>
+                                                <option value="4D"
+                                                    {{ in_array('4D', old('movie_versions', [])) ? 'selected' : '' }}>4D
+                                                </option>
                                             </select>
-                                            <div class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
+                                            <div
+                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('movie_versions'))
                                                     {{ $errors->first('movie_versions') }}
                                                 @endif
@@ -192,28 +218,42 @@
 
 
                                         <div class="mb-3">
-                                            <label class="form-label">Đánh giá
-                                                <span class="required" style="color: red">*</span></label>
-                                            <input type="number" name="rating"
+                                            <label class="form-label">Đánh giá <span class="required"
+                                                    style="color: red">*</span></label>
+                                            <div class="star-rating d-flex gap-1"
+                                                style="font-size: 1.5rem; cursor: pointer;">
+                                                <i class="bi bi-star" data-rating="1"></i>
+                                                <i class="bi bi-star" data-rating="2"></i>
+                                                <i class="bi bi-star" data-rating="3"></i>
+                                                <i class="bi bi-star" data-rating="4"></i>
+                                                <i class="bi bi-star" data-rating="5"></i>
+                                            </div>
+                                            <!-- Hidden input để gửi giá trị rating -->
+                                            <input type="hidden" name="rating" id="rating-value"
                                                 class="form-control {{ $errors->has('rating') ? 'is-invalid' : (old('rating') ? 'is-valid' : '') }}"
                                                 value="{{ old('rating') }}">
-                                            <div class="{{ $errors->has('rating') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            <div
+                                                class="{{ $errors->has('rating') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('rating'))
                                                     {{ $errors->first('rating') }}
+                                                @elseif (old('rating'))
+                                                    Đã chọn {{ old('rating') }} sao
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
-                                     <div class="mb-12">
-                                            <label class="form-label">Mô tả
-                                                <span class="required" style="color: red">*</span></label>
-                                            <textarea name="description" id="description" class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}">{{ old('description') }}</textarea>
-                                            <div class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('description'))
-                                                    {{ $errors->first('description') }}
-                                                @endif
-                                            </div>
+                                    <div class="mb-12">
+                                        <label class="form-label">Mô tả
+                                            <span class="required" style="color: red">*</span></label>
+                                        <textarea name="description" id="description"
+                                            class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}">{{ old('description') }}</textarea>
+                                        <div
+                                            class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                            @if ($errors->has('description'))
+                                                {{ $errors->first('description') }}
+                                            @endif
                                         </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -227,18 +267,19 @@
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="custom-switch">
                                         <input type="checkbox" id="switch_active" switch="primary"
-                                               {{ old('is_active', 1) ? 'checked' : '' }} />
+                                            {{ old('is_active', 1) ? 'checked' : '' }} />
                                         <label for="switch_active" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
                                     <span>Hoạt động</span>
                                 </div>
-                                <input type="hidden" name="is_active" id="is_active" value="{{ old('is_active', 1) }}">
+                                <input type="hidden" name="is_active" id="is_active"
+                                    value="{{ old('is_active', 1) }}">
 
                                 <!-- Hot -->
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="custom-switch">
                                         <input type="checkbox" id="switch_hot" switch="primary"
-                                               {{ old('is_hot', 1) ? 'checked' : '' }} />
+                                            {{ old('is_hot', 1) ? 'checked' : '' }} />
                                         <label for="switch_hot" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
                                     <span>Nổi bật</span>
@@ -249,23 +290,25 @@
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="custom-switch">
                                         <input type="checkbox" id="switch_special" switch="primary"
-                                               {{ old('is_special', 1) ? 'checked' : '' }} />
+                                            {{ old('is_special', 1) ? 'checked' : '' }} />
                                         <label for="switch_special" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
                                     <span>Đặc biệt</span>
                                 </div>
-                                <input type="hidden" name="is_special" id="is_special" value="{{ old('is_special', 1) }}">
+                                <input type="hidden" name="is_special" id="is_special"
+                                    value="{{ old('is_special', 1) }}">
 
                                 <!-- Publish -->
                                 <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="custom-switch">
                                         <input type="checkbox" id="switch_publish" switch="primary"
-                                               {{ old('is_publish', 1) ? 'checked' : '' }} />
+                                            {{ old('is_publish', 1) ? 'checked' : '' }} />
                                         <label for="switch_publish" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
                                     <span>Xuất Bản</span>
                                 </div>
-                                <input type="hidden" name="is_publish" id="is_publish" value="{{ old('is_publish', 1) }}">
+                                <input type="hidden" name="is_publish" id="is_publish"
+                                    value="{{ old('is_publish', 1) }}">
                             </div>
                         </div>
 
@@ -290,7 +333,9 @@
                 // Khởi tạo CKEditor cho trường description
                 ClassicEditor
                     .create(document.querySelector('#description'), {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList', 'imageUpload', 'undo', 'redo']
+                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                            'imageUpload', 'undo', 'redo'
+                        ]
                     })
                     .then(editor => {
                         console.log('CKEditor đã được khởi tạo!', editor);
@@ -371,6 +416,60 @@
                     }
                 });
             });
+
+
+            document.addEventListener('DOMContentLoaded', function () {
+        const stars = document.querySelectorAll('.star-rating .bi-star, .star-rating .bi-star-fill');
+        const ratingInput = document.getElementById('rating-value');
+        let currentRating = ratingInput.value || 0;
+
+        // Khởi tạo trạng thái ban đầu nếu có old('rating')
+        if (currentRating) {
+            updateStars(currentRating);
+        }
+
+        stars.forEach(star => {
+            star.addEventListener('click', function () {
+                currentRating = this.getAttribute('data-rating');
+                ratingInput.value = currentRating;
+                updateStars(currentRating);
+            });
+
+            star.addEventListener('mouseover', function () {
+                const hoverRating = this.getAttribute('data-rating');
+                updateStars(hoverRating, true);
+            });
+
+            star.addEventListener('mouseout', function () {
+                updateStars(currentRating);
+            });
+        });
+
+        function updateStars(rating, hover = false) {
+            stars.forEach(star => {
+                const starRating = star.getAttribute('data-rating');
+                if (starRating <= rating) {
+                    star.classList.remove('bi-star');
+                    star.classList.add('bi-star-fill');
+                } else {
+                    star.classList.remove('bi-star-fill');
+                    star.classList.add('bi-star');
+                }
+            });
+        }
+    });
         </script>
     </div>
+@endsection
+
+@section('style')
+    <style>
+        .star-rating .bi-star-fill {
+        color: #f1c40f; /* Màu vàng cho ngôi sao được chọn */
+    }
+    .star-rating .bi-star:hover,
+    .star-rating .bi-star-fill:hover {
+        color: #f39c12; /* Màu khi hover */
+    }
+    </style>
 @endsection
