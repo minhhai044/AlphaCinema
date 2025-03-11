@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Filters\MovieFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MovieRequest;
+use App\Models\Movie;
 use App\Services\MovieService;
 use Illuminate\Http\Request;
 
@@ -70,7 +71,7 @@ class MovieController extends Controller
         $this->movieService->updateMovie($id, $validated);
         return redirect()->route('admin.movies.index')->with('success', 'Cập nhật phim thành công!');
     }
-
+   
 
     // 7. Xóa phim
     public function destroy($id)
