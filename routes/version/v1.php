@@ -74,4 +74,3 @@ Route::get('/settings', [SiteSettingController::class, 'index']);
 
 Route::post('{payment}/payment', [PaymentController::class, 'payment']);
 Route::get('/checkout', [PaymentController::class, 'checkout']);
-

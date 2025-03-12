@@ -61,14 +61,22 @@ class AuthController extends Controller
             // Tạo token xác thực
             $token = $user->createToken('UserToken')->plainTextToken;
 
+
+            Auth::login($user);
+
             // Tạo cookie chứa token (thời gian sống 24h - 1440 phút)
-            $cookie = cookie('user_token', $token, 1440);
+            // $cookie = cookie('user_token', $token, 1440);
+
+            // $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true);
+
+            $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true, false, 'None');
+
 
             return $this->successResponse([
                 'user' => $user,
                 'token' => $token,
                 'cookie' => $cookie
-            ], 'Đăng nhập thành công', Response::HTTP_OK);
+            ], 'Đăng nhập thành công', Response::HTTP_OK)->withCookie($cookie);
         } catch (\Throwable $th) {
             // Ghi log chi tiết lỗi
             Log::error('Lỗi đăng nhập: ' . $th->getMessage(), [
@@ -211,6 +219,8 @@ class AuthController extends Controller
                 'type_user' => 0,
             ]
         );
+
+        Auth::login($user);
 
         $token = $user->createToken('authToken')->plainTextToken;
 

@@ -22,16 +22,16 @@ class AuthenticateCookie
         try {
             $token = Cookie::get('sanctum_token');
 
-            if(!$token){
+            if (!$token) {
                 $accessToken = PersonalAccessToken::findToken($token);
 
-                if($accessToken && $accessToken->tokenable){
+                if ($accessToken && $accessToken->tokenable) {
                     Auth::login($accessToken->tokenable);
-                    Log::info("Người dùng được xác thực qua cookie: ". $accessToken->tokenable->email);
-                }else{
+                    Log::info("Người dùng được xác thực qua cookie: " . $accessToken->tokenable->email);
+                } else {
                     Log::error("Cookie không đúng");
                 }
-            }else{
+            } else {
                 Log::error("Mã token không hợp lệ");
             }
         } catch (\Exception $e) {
