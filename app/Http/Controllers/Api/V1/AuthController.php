@@ -20,6 +20,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -188,5 +190,38 @@ class AuthController extends Controller
                 'error'   => $e->getTraceAsString()
             ]);
         }
+    }
+
+    public function googleRedirect()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function googleCallBack()
+    {
+        $googleUser = Socialite::driver('google')->user();
+
+        $user = User::updateOrCreate(
+            ['google_id' => $googleUser->id],
+            [
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'password' => Str::password(12),
+                'avatar' => $googleUser->avatar,
+                'type_user' => 0,
+            ]
+        );
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        $authData = json_encode([
+            'user' => $user->only(['id', 'name', 'email', 'avatar']),
+            'token' => $token,
+            'isLogin' => true
+        ]);
+
+        $authDataEncoded = base64_encode(json_encode($authData));
+
+        return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
     }
 }

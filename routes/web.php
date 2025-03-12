@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AuthController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -24,34 +25,6 @@ Route::get('/', function () {
     return 'Hello from root';
 });
 
-Route::get('auth/google/redirect', function (Request $request) {
-    return Socialite::driver('google')->redirect();
-});
+Route::get('auth/google/redirect', [AuthController::class, 'googleRedirect']);
 
-Route::get('auth/google/callback', function (Request $request) {
-
-    $googleUser = Socialite::driver('google')->user();
-
-    $user = User::updateOrCreate(
-        ['google_id' => $googleUser->id],
-        [
-            'name' => $googleUser->name,
-            'email' => $googleUser->email,
-            'password' => Str::password(12),
-            'avatar' => $googleUser->avatar,
-            'type_user' => 0,
-        ]
-    );
-
-    $token = $user->createToken('authToken')->plainTextToken;
-
-    $authData = json_encode([
-        'user' => $user->only(['id', 'name', 'email', 'avatar']),
-        'token' => $token,
-        'isLogin' => true
-    ]);
-
-    $authDataEncoded = base64_encode(json_encode($authData));
-
-    return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
-});
+Route::get('auth/google/callback', [AuthController::class, 'googleCallBack']);
