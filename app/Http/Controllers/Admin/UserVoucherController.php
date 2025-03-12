@@ -54,7 +54,7 @@ class UserVoucherController extends Controller
                         $insertData[] = [
                             'user_id' => $userId,
                             'voucher_id' => $data['voucher_id'],
-                            'usage_count' => $data['usage_count'] ?? 0,
+                            'usage_count' => $data['usage_count'] ?? 1,
                             'created_at' => now(),
                             'updated_at' => now(),
                         ];
@@ -117,4 +117,6 @@ class UserVoucherController extends Controller
             return back()->with('error', $th->getMessage());
         }
     }
+
+    
 }

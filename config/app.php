@@ -142,7 +142,7 @@ return [
 
     'maintenance' => [
         'driver' => 'file',
-        // 'store' => 'redis',
+        'store' => 'redis',
     ],
 
     /*
@@ -172,6 +172,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Laravel\Sanctum\SanctumServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
     ])->toArray(),
 
     /*
@@ -189,6 +190,7 @@ return [
         // 'Example' => App\Facades\Example::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
         'Redis' => Illuminate\Support\Facades\Redis::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ])->toArray(),
 
 ];

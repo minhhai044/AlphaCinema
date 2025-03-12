@@ -1,5 +1,16 @@
 @extends('admin.layouts.master')
+
 @section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+
     <style>
         .table {
             vertical-align: middle !important;
@@ -12,210 +23,172 @@
             text-align: center;
         }
     </style>
+
 @endsection
 @section('content')
-    <div class="row">
-        <div class="col-12">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="card-title">Danh sách người dùng</h4>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Danh sách người dùng</h4>
 
-                    <div class="row align-items-center mb-3">
-                        <div class="col-md-6">
-                            <div class="d-flex align-items-center">
-                                <span class="me-2">Hiển thị:</span>
-                                <select id="pageLength" class="form-select w-auto">
-                                    <option value="5" selected>5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                    <option value="20">20</option>
-                                    <option value="1000">Tất cả</option>
-                                </select>
+                {{-- <div class="row align-items-center mb-3">
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <span class="me-2">Hiển thị:</span>
+                            <select id="pageLength" class="form-select w-auto">
+                                <option value="5" selected>5</option>
+                                <option value="10">10</option>
+                                <option value="15">15</option>
+                                <option value="20">20</option>
+                                <option value="1000">Tất cả</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-6 text-end">
+                        <a href="{{ route('admin.users.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                        <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#searchForm">
+                            <i class="fas fa-filter"></i> Bộ lọc
+                        </button>
+                    </div>
+                </div> --}}
+
+                <div class="d-flex flex-row-reverse mb-3">
+                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                </div>
+
+                <div class="collapse" id="searchForm">
+                    <div class="card card-body mb-3">
+                        <form id="filterForm">
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <label class="form-label">Tìm nhanh theo ID</label>
+                                    <input type="text" name="id" class="form-control" placeholder="Nhập ID">
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Giới tính</label>
+                                    <select name="gender" class="form-control">
+                                        <option value="">-- Chọn giới tính --</option>
+                                        <option value="0">Nam</option>
+                                        <option value="1">Nữ</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label class="form-label">Loại tài khoản</label>
+                                    <select name="type_user" class="form-control">
+                                        <option value="">-- Chọn loại tài khoản --</option>
+                                        <option value="1">Admin</option>
+                                        <option value="0">User</option>
+                                    </select>
+                                </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 text-end">
-                            <a href="{{ route('admin.users.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
-                            <button class="btn btn-outline-secondary" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#searchForm">
-                                <i class="fas fa-filter"></i> Bộ lọc
-                            </button>
-                        </div>
+                            <div class="mt-3">
+                                <button type="submit" class="btn btn-primary">Lọc</button>
+                                <button type="reset" class="btn btn-secondary" id="resetFilter">Reset</button>
+                            </div>
+                        </form>
                     </div>
-
-                    <div class="collapse" id="searchForm">
-                        <div class="card card-body mb-3">
-                            <form id="filterForm">
-                                <div class="row">
-                                    <div class="col-md-4">
-                                        <label class="form-label">Tìm nhanh theo ID</label>
-                                        <input type="text" name="id" class="form-control" placeholder="Nhập ID">
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Giới tính</label>
-                                        <select name="gender" class="form-control">
-                                            <option value="">-- Chọn giới tính --</option>
-                                            <option value="0">Nam</option>
-                                            <option value="1">Nữ</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label class="form-label">Loại tài khoản</label>
-                                        <select name="type_user" class="form-control">
-                                            <option value="">-- Chọn loại tài khoản --</option>
-                                            <option value="1">Admin</option>
-                                            <option value="0">User</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="mt-3">
-                                    <button type="submit" class="btn btn-primary">Lọc</button>
-                                    <button type="reset" class="btn btn-secondary" id="resetFilter">Reset</button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                </div>
 
 
-                    <div class="table-responsive">
-                        <table id="userTable" class="table table-bordered w-100 text-center">
-                            <thead>
-                                <tr class="text-center">
-                                    <th>ID</th>
-                                    <th>Tên</th>
-                                    <th>Ảnh</th>
-                                    <th>Thông tin vé</th>
-                                    <th>Chức năng</th>
-                                    <th>Loại</th>
-                                    <th>Hành động</th>
+                <div class="table-responsive">
+                    <table id="datatable" class="table table-bordered w-100 text-center">
+                        <thead>
+                            <tr class="text-center">
+                                <th>ID</th>
+                                <th>Tên</th>
+                                <th>Ảnh</th>
+                                <th>Email</th>
+                                <th>Chức năng</th>
+                                <th>Giới tính</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($users as $user)
+                                <tr>
+                                    <td>{{ $user->id }}</td>
+
+
+                                    <td>{{ $user->name }}</td>
+
+
+                                    @if ($user->avatar && Storage::exists($user->avatar))
+                                        <td><img src="{{ Storage::url($user->avatar) }}"
+                                                style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
+                                        </td>
+                                    @else
+                                        <td><img src="https://graph.facebook.com/4/picture?type=small"
+                                                style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
+                                        </td>
+                                    @endif
+
+                                    <td>{{ $user->email }}</td>
+                                    <td>
+                                        @if ($user->roles)
+                                            @foreach ($user->roles as $role)
+                                                <span class="badge bg-primary me-1">{{ $role->name }}</span>
+                                            @endforeach
+                                        @endif
+                                    </td>
+                                    <td>
+                                        {!! $user->gender === 0
+                                            ? '<span class="badge bg-primary">Nam</span>'
+                                            : '<span class="badge bg-danger">Nữ</span>' !!}
+                                    </td>
+
+                                    <td>
+                                        <a href="{{ route('admin.users.show', $user) }}">
+                                            <button title="xem" class="btn btn-success btn-sm " type="button"><i
+                                                    class="bi bi-eye"></i></button>
+                                        </a>
+
+                                        <a href="{{ route('admin.users.edit', $user) }}">
+                                            <button title="xem" class="btn btn-warning btn-sm " type="button"><i
+                                                    class="fas fa-edit"></i></button>
+                                        </a>
+
+                                        <form method="POST" action="{{ route('admin.users.softDestroy', $user) }}"
+                                            class="d-inline-block">
+                                            @csrf
+                                            @method('DELETE')
+                                            <button type="submit" class="btn btn-danger btn-sm"
+                                                onclick="return confirm('Bạn có muốn xóa không')">
+                                                <i class="bi bi-trash"></i>
+                                            </button>
+                                        </form>
+                                    </td>
                                 </tr>
-                            </thead>
-                        </table>
-                    </div>
+                            @endforeach
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
     </div>
+</div>
 @endsection
 
 @section('script')
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css">
-        <script>
-            $(document).ready(function() {
-                var table = $('#userTable').DataTable({
-                    processing: true,
-                    serverSide: true,
-                    responsive: true,
-                    autoWidth: false,
-                    order: [],
-                    ajax: {
-                        url: "{{ route('api.users.index') }}",
-                        type: "GET",
-                        data: function(d) {
-                            d.id = $('input[name="id"]').val();
-                            d.gender = $('select[name="gender"]').val();
-                            d.type_user = $('select[name="type_user"]').val();
-                        },
-                        error: function(xhr, status, error) {
-                            console.error("Lỗi API:", xhr.responseText);
-                        }
-                    },
-                    columns: [{
-                            data: 'id',
-                            name: 'id'
-                        },
-                        {
-                            data: 'name',
-                            name: 'name'
-                        },
-                        {
-                            data: 'avatar',
-                            render: function(data) {
-                                const avatarUrl = data ? '/storage/' + data :
-                                    "https://graph.facebook.com/4/picture?type=small";
-                                return `<img src="${avatarUrl}"
-                                                     style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
-                            }
-                        },
-                        {
-                            data: 'email',
-                            name: 'email'
-                        },
-                        {
-                            data: 'gender',
-                            name: 'gender',
-                            render: function(data) {
-                                if (data === 0) return '<span class="badge bg-primary">Nam</span>';
-                                if (data === 1) return '<span class="badge bg-danger">Nữ</span>';
-                                return '<span class="badge bg-secondary">Khác</span>';
-                            }
-                        },
-                        {
-                            data: 'roles',
-                            name: 'roles',
-                            render: function(data) {
-                                if (!data || data.length === 0) {
-                                    return '<span class="badge bg-secondary">Không có vai trò</span>';
-                                }
-                                return data.map(role =>
-                                    `<span class="badge bg-primary me-1">${role.name}</span>`).join(
-                                    ' ');
-                            }
-                        },
-                        {
-                            data: 'id',
-                            render: function(data) {
-                                return `
-                                    <div class="dropdown text-center">
-                                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" data-bs-toggle="dropdown">...
-                                        </button>
-                                        <ul class="dropdown-menu">
-                                            <li><a href="/admin/users/${data}" class="dropdown-item text-info"><i class="fas fa-eye"></i> Xem</a></li>
-                                            <li><a href="/admin/users/${data}/edit" class="dropdown-item text-warning"><i class="fas fa-edit"></i> Sửa</a></li>
-                                            <li>
-                                                <form action="/admin/users/${data}" method="POST" class="d-inline">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="submit" class="dropdown-item text-danger" onclick="return confirm('Bạn có chắc chắn muốn xóa?')">
-                                                        <i class="fas fa-trash-alt"></i> Xóa
-                                                    </button>
-                                                </form>
-                                            </li>
-                                        </ul>
-                                    </div>`;
-                            },
-                            orderable: false,
-                            searchable: false
-                        }
-                    ],
-                    pageLength: 5,
-                    lengthChange: false,
-                    language: {
-                        search: "Tìm kiếm:",
-                        paginate: {
-                            next: ">",
-                            previous: "<"
-                        },
-                        lengthMenu: "Hiển thị _MENU_ mục",
-                        info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
-                        emptyTable: "Không có dữ liệu để hiển thị",
-                        zeroRecords: "Không tìm thấy kết quả phù hợp"
-                    }
-                });
+<script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<!-- Buttons examples -->
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
 
-                $('#pageLength').on('change', function() {
-                    table.page.len($(this).val()).draw();
-                });
+<!-- Responsive examples -->
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+</script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+</script>
 
-                $('#filterForm').on('submit', function(e) {
-                    e.preventDefault();
-                    table.ajax.reload();
-                });
-
-                $('#resetFilter').on('click', function() {
-                    setTimeout(function() {
-                        table.ajax.reload();
-                    }, 50);
-                });
-            });
-        </script>
+<!-- Datatable init js -->
+<script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
 @endsection

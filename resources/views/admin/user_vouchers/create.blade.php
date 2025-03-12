@@ -14,6 +14,32 @@
         font-size: 0.875rem;
         margin-top: 0.25rem;
     }
+
+
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #5A54E3 !important; 
+    border: none;
+    color: white !important;
+    padding: 5px 10px;
+    border-radius: 3px;
+    font-size: 14px;
+}
+
+.select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+    color: white !important;
+    margin-right: 5px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+ .select2-results__option--highlighted {
+    background-color: #5A54E3 !important;
+    color: white !important;
+}
+
+
+
 </style>
 @endsection
 
@@ -120,11 +146,9 @@
                     <div class="card-footer">
                         <button class="btn btn-primary">
                             Submit
-                            <i class="bx bx-chevron-right ms-1"></i>
                         </button>
                         <button class="btn btn-danger" type="button" onclick="window.history.back();">
                             Cancel
-                            <i class="bx bx-chevron-right ms-1"></i>
                         </button>
                     </div>
                 </div>
@@ -146,3 +170,5 @@
 </script>
 
 @endsection
+
+

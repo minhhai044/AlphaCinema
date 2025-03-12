@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CinemaRequest;
 use App\Models\Cinema;
+use App\Models\Movie;
 use App\Services\CinemaService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Response;
@@ -43,6 +44,12 @@ class CinemaController extends Controller
         $branchId = $request->input('branch_id');
         $cinemas = Cinema::where('branch_id', $branchId)->where('is_active', 1)->get(['id', 'name']);
         return response()->json(['cinemas' => $cinemas]);
+    }
+    public function getMoviesByCinema(Request $request)
+    {
+        $cinemaId = $request->input('cinema_id');
+        $movies = Movie::where('is_active', 1)->get(['id', 'name']);
+        return response()->json(['movies' => $movies]);
     }
     public function show(string $id)
     {

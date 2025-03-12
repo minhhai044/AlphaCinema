@@ -10,6 +10,7 @@ use App\Http\Requests\CinemaRequest;
 use App\Models\Branch;
 use App\Services\CinemaService;
 use App\Traits\ApiResponseTrait;
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
 
@@ -112,5 +113,13 @@ class CinemaController extends Controller
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
         }
+    }
+    public function toggleStatus($id, Request $request)
+    {
+        $cinema = Cinema::findOrFail($id);
+        $cinema->is_active = $request->has('is_active');
+        $cinema->save();
+
+        return back();
     }
 }

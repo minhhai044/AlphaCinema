@@ -39,9 +39,10 @@ Route::prefix('branchs')->group(function () {
     Route::get('/', [BranchController::class, 'index']);
 });
 
-// Route::post('ticket', [TicketController::class, 'createTicket']);
+
 Route::get('/get-cinemas', [TicketController::class, 'getCinemas']);
-// Route::get('/get-movies', [TicketController::class, 'getMovies']);
+Route::get('tickets/{id}', [TicketController::class, 'getTicketByID']);
+Route::get('tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
@@ -71,17 +72,6 @@ Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTi
 
 Route::get('/settings', [SiteSettingController::class, 'index']);
 
-// Route::get('{id}/showtime',             [ShowtimeController::class, 'getByDate']);
-// Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
-// Route::get('/listMovies',               [ShowtimeController::class, 'listMovies']);
-// Route::get('{movie}/listShowtimes',     [ShowtimeController::class, 'listShowtimes']);
-// Route::get('{slug}/showtimeDetail',     [ShowtimeController::class, 'showtimeDetail']);
-// Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
-
-// Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
-
-// Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
-
-
 Route::post('{payment}/payment', [PaymentController::class, 'payment']);
 Route::get('/checkout', [PaymentController::class, 'checkout']);
+

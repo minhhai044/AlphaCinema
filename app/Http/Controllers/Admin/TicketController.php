@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use App\Services\TicketService;
+
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TicketController extends Controller
 {
@@ -17,8 +20,16 @@ class TicketController extends Controller
         $this->ticketService = $ticketService;
     }
 
+
+
     public function index(Request $request)
     {
+        // $user =  User::find(1);
+
+        // if($user->hasRole("System Admin")){
+        //     dd(1);
+        // }
+
         [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
 
         $cinemas = [];
@@ -30,5 +41,17 @@ class TicketController extends Controller
 
         // Truyền tất cả các biến vào view
         return view(self::PATH_VIEW . __FUNCTION__, compact('tickets', 'branches', 'cinemas', 'movies'));
+    }
+
+    public function show($ticket)
+    {
+        $ticketData = $this->ticketService->getTicketDetail($ticket);
+
+        return view(self::PATH_VIEW . 'detail', compact('ticketData'));
+
+    }
+    public function print(){
+        return view(self::PATH_VIEW.'test');
+
     }
 }

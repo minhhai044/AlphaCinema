@@ -37,7 +37,8 @@ class Site_setting extends Model
     public static function defaultSetting()
     {
         return [
-            'website_logo' => 'theme/client/images/logo.png',
+
+            'website_logo' => 'theme/client/images/logo1.jpg',
             'site_name' => 'AlphaCinema',
             'brand_name' => 'FPT Poly ',
             'slogan' => 'Phim hay giá tốt!! ',

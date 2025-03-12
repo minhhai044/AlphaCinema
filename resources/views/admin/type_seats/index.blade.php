@@ -4,6 +4,20 @@
     Danh sách loại ghế
 @endsection
 
+@section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
+    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
+
+    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
+    <!-- App Css-->
+    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
+@endsection
 @section('style-libs')
     <!-- Datatable CSS -->
     <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
@@ -31,14 +45,10 @@
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
-                {{-- <div class="card-header d-flex justify-content-between">
-                    <h5 class="card-title mb-0">Danh sách loại ghế</h5>
-                    <a href="{{ route('admin.type_seats.create') }}" class="btn btn-primary mb-3">Thêm mới</a>
-                </div> --}}
                 <div class="card-body">
-                    <table id="example" class="table table-bordered dt-responsive nowrap table-striped align-middle"
+                    <table id="datatable" class="table table-bordered dt-responsive nowrap table-striped align-middle"
                         style="width:100%">
-                        <thead>
+                        <thead  class="text-center">
                             <tr>
                                 <th>#</th>
                                 <th>Tên loại ghế</th>
@@ -46,44 +56,30 @@
                                 <th>Chức năng</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody  class="text-center">
                             @foreach ($typeSeats as $item)
                                 <tr>
                                     <td>{{ $item->id }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ number_format($item->price) }} VNĐ</td>
-
                                     <td>
-                                        <div class="dropdown">
-                                            <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown"
-                                                aria-expanded="false">
-                                                <i class="mdi mdi-dots-horizontal font-size-18"></i>
-                                            </a>
-                                            <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                <li>
-                                                    <a data-bs-toggle="modal"
-                                                        class="edit_type_seat  btn waves-effect waves-light"
-                                                        data-bs-target="#exampleModal" data-id={{ $item->id }}
-                                                        data-name="{{ $item->name }}" data-price={{ $item->price }}>
-                                                        <i class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                        Sửa 
-                                                    </a>
-                                                </li>
-                                                
-                                            </ul>
-                                        </div>
+                                        <a data-bs-toggle="modal" class="edit_type_seat btn waves-effect waves-light"
+                                            data-bs-target="#exampleModal" data-id="{{ $item->id }}"
+                                            data-name="{{ $item->name }}" data-price="{{ $item->price }}">
+                                            <button title="sửa" class="btn btn-warning btn-sm" type="button">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                        </a>
                                     </td>
-
                                 </tr>
                             @endforeach
-
                         </tbody>
                     </table>
                 </div>
             </div>
         </div><!--end col-->
     </div><!--end row-->
-
+    
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -156,7 +152,33 @@
 
 
     @section('script')
+        <!-- Required datatable js -->
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+        <!-- Buttons examples -->
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+        <script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
+        <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+        <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+    
+        <!-- Responsive examples -->
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+        </script>
+        <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+        </script>
+    
+        <!-- Datatable init js -->
+        <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
+    
+        <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
+    
         <script>
+            // <!-- Required datatable js -->
+   
             $('.edit_type_seat').click(function(e) {
                 let id = $(this).data('id');
                 let name = $(this).data('name').trim();
@@ -208,5 +230,22 @@
                     $('#price').removeClass('is-invalid');
                 }
             });
+            $(document).ready(function() {
+        $('#typeSeatsTable').DataTable({
+            paging: false, // Tắt phân trang
+            searching: true, // Bật tìm kiếm
+            ordering: true, // Bật sắp xếp
+            info: false, // Ẩn "Showing X to Y of Z entries"
+            responsive: true, // Hỗ trợ responsive
+            language: {
+                "sSearch": "Tìm kiếm:",
+                "zeroRecords": "Không tìm thấy kết quả nào",
+                "infoEmpty": "Không có dữ liệu",
+                "lengthMenu": "Hiển thị _MENU_ dòng",
+                "sProcessing": "Đang xử lý..."
+            }
+        });
+    });
+    
         </script>
     @endsection

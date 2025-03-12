@@ -23,6 +23,7 @@ class TicketSeeder extends Seeder
         $roomIds = Room::pluck('id')->toArray();
         $movieIds = Movie::pluck('id')->toArray();
         $showtimeIds = Showtime::pluck('id')->toArray();
+        // $barcode = DNS1D::getBarcodeHTML($oneTicket->code, 'C128', 1.5, 50);
 
         for ($i = 0; $i < 20; $i++) {
             $totalPrice = $faker->numberBetween(50000, 200000); // Giá vé ngẫu nhiên
@@ -42,8 +43,8 @@ class TicketSeeder extends Seeder
                 'point_use' => $pointUse, // Số điểm sử dụng
                 'point_discount' => $pointDiscount, // Giảm giá từ điểm
                 'payment_name' => $faker->randomElement(['Momo', 'ZaloPay', 'Visa', null]), // Phương thức thanh toán
-                'ticket_seats' => json_encode($faker->randomElements(['A1', 'A2', 'B1', 'B2', 'C1'], rand(1, 3))), // Ghế ngẫu nhiên
-                'ticket_combos' => json_encode($faker->randomElements(['Combo 1 - Bắp + Nước', 'Combo 2 - Bắp lớn'], rand(0, 2))), // Combo ngẫu nhiên
+                // 'ticket_seats' => $faker->randomElements(['A1', 'A2', 'B1', 'B2', 'C1'], rand(1, 3)), // Ghế ngẫu nhiên
+                // 'ticket_combos' => $faker->randomElements(['Combo 1 - Bắp + Nước', 'Combo 2 - Bắp lớn'], rand(0, 2)), // Combo ngẫu nhiên
                 'total_price' => $totalPrice - $voucherDiscount - $pointDiscount, // Tổng giá sau giảm
                 'expiry' => $faker->dateTimeBetween('now', '+1 month'), // Thời hạn vé
                 'status' => $faker->randomElement(['pending', 'confirmed']), // Trạng thái

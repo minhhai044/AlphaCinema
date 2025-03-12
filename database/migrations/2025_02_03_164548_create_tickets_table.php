@@ -31,7 +31,8 @@ return new class extends Migration
             $table->string('payment_name')->nullable();
             $table->json('ticket_seats')->nullable();
             $table->json('ticket_combos')->nullable();
-            $table->decimal('total_price')->nullable();
+            $table->json('ticket_foods')->nullable();
+            $table->unsignedBigInteger('total_price')->nullable();
             $table->datetime('expiry')->nullable();
             $table->enum('status', ['pending', 'confirmed'])->default('pending')->comment('Đang xử lý, Đã xác nhận');
             $table->timestamps();

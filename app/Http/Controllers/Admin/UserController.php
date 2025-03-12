@@ -32,6 +32,7 @@ class UserController extends Controller
         // $users = User::orderByDesc('id')->get();
         $users = User::where('type_user', 1)->with('cinema')->get();
         $roles = Role::all();
+        
         return view(self::PATH_VIEW . __FUNCTION__, compact('users', 'roles'));
     }
 
@@ -67,7 +68,7 @@ class UserController extends Controller
 
         if ($user->type_user == 0) {
             $userRank = Rank::where('total_spent', '<=', $user->total_amount)
-                ->orderByDesc('total_spent') 
+                ->orderByDesc('total_spent')
                 ->first();
 
             $pointHistories = $user->pointHistories()->get();

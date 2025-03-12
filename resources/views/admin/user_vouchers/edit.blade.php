@@ -114,11 +114,9 @@
                     <div class="card-footer">
                         <button class="btn btn-primary">
                             Cập nhật
-                            <i class="bx bx-chevron-right ms-1"></i>
                         </button>
                         <button class="btn btn-danger" type="button" onclick="window.history.back();">
                             Hủy
-                            <i class="bx bx-chevron-right ms-1"></i>
                         </button>
                     </div>
                 </div>

@@ -27,8 +27,39 @@ class TicketRepository
     /**
      * Tìm ticket theo ID
      */
-    public function find($id)
+    public function findTicket($id)
     {
-        return $this->ticket->findOrFail($id);
+        return $this->ticket
+            ->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch')
+            ->findOrFail($id);
+    }
+    public function getTickets(array $filters = []): Collection
+    {
+        $query = $this->ticket
+            ->with('user', 'cinema', 'room', 'movie', 'showtime');
+
+        if (isset($filters['date'])) {
+            $query->whereHas('showtime', function ($q) use ($filters) {
+                $q->where('date', $filters['date']);
+            });
+        }
+
+        if (isset($filters['cinema_id'])) {
+            $query->where('cinema_id', $filters['cinema_id']);
+        }
+
+        if (isset($filters['room_id'])) {
+            $query->where('room_id', $filters['room_id']);
+        }
+
+        if (isset($filters['movie_id'])) {
+            $query->where('movie_id', $filters['movie_id']);
+        }
+
+        if (isset($filters['status'])) {
+            $query->where('status', $filters['status']);
+        }
+
+        return $query->get();
     }
 }

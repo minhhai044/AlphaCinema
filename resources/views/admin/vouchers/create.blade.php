@@ -211,10 +211,10 @@
                                         <span class="required">*</span>
                                         Active:
                                     </label>
-                                    <div class="square-switch">
-                                        <input type="checkbox" id="square-switch3" switch="bool" value="1"
+                                    <div class="round-switch">
+                                        <input type="checkbox" id="switch6" switch="primary" value="1"
                                             name="is_active" {{ old('is_active', 1) ? 'checked' : '' }}>
-                                        <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                        <label for="switch6" data-on-label="Yes" data-off-label="No"></label>
                                     </div>
                                 </div>
                             </div>
@@ -232,10 +232,10 @@
             const hiddenInput = document.getElementById("discount_hidden");
 
             formattedInput.addEventListener("input", function(e) {
-                let value = e.target.value.replace(/\D/g, ""); // Loại bỏ ký tự không phải số
+                let value = e.target.value.replace(/\D/g, ""); 
                 if (value !== "") {
-                    formattedInput.value = Number(value).toLocaleString('en-US'); // Hiển thị có dấu phẩy
-                    hiddenInput.value = value; // Lưu giá trị thực không có dấu phẩy
+                    formattedInput.value = Number(value).toLocaleString('en-US'); 
+                    hiddenInput.value = value;
                 } else {
                     hiddenInput.value = "0";
                 }
