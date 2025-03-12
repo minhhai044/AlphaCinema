@@ -2,42 +2,93 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chọn phim và tạo suất chiếu</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giao diện Quản lý Lịch Chiếu Phim</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        .branch-card, .cinema-card, .room-item {
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .branch-card:hover, .cinema-card:hover, .room-item:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.2);
+        }
+
+        .branch-card, .cinema-card {
+            padding: 12px;
+            margin-bottom: 15px;
+        }
+
+        .room-item {
+            padding: 8px;
+            background-color: #f1f1f1;
+            border-radius: 4px;
+            margin-bottom: 5px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movieModal">Chọn phim</button>
-    </div>
+<div class="container py-5">
+    <h2 class="text-center mb-4">Quản lý Lịch Chiếu Phim</h2>
 
-    <!-- Modal chọn phim -->
-    <div class="modal fade" id="movieModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chọn phim</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+    <!-- Ngày -->
+    <ul class="nav nav-tabs justify-content-center mb-4" id="dateTab">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#date1">10/03/2025</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#date2">11/03/2025</button>
+        </li>
+    </ul>
+
+    <div class="tab-content">
+        <div class="tab-pane fade show active" id="date1">
+            <div class="row">
+                <!-- Chi nhánh Hà Nội -->
+                <div class="col-md-6">
+                    <div class="card branch-card shadow-sm">
+                        <h5 class="mb-3">Chi nhánh Hà Nội</h5>
+                        <div class="card cinema-card shadow-sm" data-bs-toggle="collapse" data-bs-target="#cinemaHN1">
+                            Rạp Vincom Bà Triệu
+                        </div>
+                        <div class="collapse" id="cinemaHN1">
+                            <div class="room-item">Phòng 01</div>
+                            <div class="room-item">Phòng 02</div>
+                        </div>
+
+                        <div class="card cinema-card shadow-sm" data-bs-toggle="collapse" data-bs-target="#cinemaHN2">
+                            Rạp CGV Royal City
+                        </div>
+                        <div class="collapse" id="cinemaHN2">
+                            <div class="room-item">Phòng IMAX</div>
+                            <div class="room-item">Phòng 3D</div>
+                        </div>
+                    </div>
                 </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item movie-item" data-movie="Avengers">Avengers</li>
-                        <li class="list-group-item movie-item" data-movie="Inception">Inception</li>
-                        <li class="list-group-item movie-item" data-movie="Interstellar">Interstellar</li>
-                    </ul>
+
+                <!-- Chi nhánh Hồ Chí Minh -->
+                <div class="col-md-6">
+                    <div class="card branch-card shadow-sm">
+                        <h5 class="mb-3">Chi nhánh Hồ Chí Minh</h5>
+                        <div class="card cinema-card shadow-sm" data-bs-toggle="collapse" data-bs-target="#cinemaHCM1">
+                            Rạp Galaxy Nguyễn Du
+                        </div>
+                        <div class="collapse" id="cinemaHCM1">
+                            <div class="room-item">Phòng VIP</div>
+                            <div class="room-item">Phòng thường</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.movie-item').forEach(item => {
-            item.addEventListener('click', function() {
-                let movieName = this.getAttribute('data-movie');
-                window.location.href = "showtime.html?movie=" + encodeURIComponent(movieName);
-            });
-        });
-    </script>
+        <div class="tab-pane fade" id="date2">
+            <div class="alert alert-info text-center">Chưa có dữ liệu cho ngày này.</div>
+        </div>
+    </div>
+</div>
 </body>
 </html>

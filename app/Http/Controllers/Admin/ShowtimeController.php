@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ShowtimeCopyRequest;
 use App\Http\Requests\ShowtimeRequest;
+use App\Models\Branch;
+use App\Models\Cinema;
 use App\Models\Day;
 use App\Models\Movie;
+use App\Models\Room;
 use App\Models\Showtime;
 use App\Models\Type_seat;
 use App\Services\ShowtimeService;
@@ -168,5 +171,48 @@ class ShowtimeController extends Controller
     {
         [$branchs, $branchsRelation, $rooms, $movie, $days, $slug, $roomsRelation, $specialshowtimes, $type_seats, $type_rooms] = $this->showtimeService->createService($id);
         return view(self::PATH_VIEW . __FUNCTION__, compact('type_seats', 'branchs', 'branchsRelation', 'rooms', 'movie', 'days', 'slug', 'roomsRelation', 'specialshowtimes', 'type_rooms'));
+    }
+    public function multipleSelect(Request $request, string $id)
+    {
+        if (empty($request->branches) || empty($request->dates) || empty($request->cinemas) || empty($request->rooms) || empty($request->start_time) || empty($request->end_time)) {
+            return back()->with('warning', 'Vui lòng nhập đầy đủ thông tin !!!');
+        }
+
+
+        $movie = Movie::findOrFail($id);
+
+        $dataFull = [];
+        $dates = explode(',', $request->dates);
+
+        foreach ($dates as $date) {
+            foreach ($request->branches as $branchValue) {
+                $branch = Branch::findOrFail($branchValue);
+                if (!$branch) continue;
+
+                foreach ($request->cinemas[$branchValue] ?? [] as $cinemaValue) {
+                    $cinema = Cinema::findOrFail($cinemaValue);
+                    if (!$cinema) continue;
+
+                    foreach ($request->rooms[$cinemaValue] ?? [] as $roomValue) {
+                        $room = Room::findOrFail($roomValue);
+                        if (!$room) continue;
+
+                        $dataFull[$date][] = [
+                            'branch' => $branch,
+                            'cinema' => $cinema,
+                            'room' => $room,
+                            'movie' => $movie,
+                            'start_time' => $request->start_time,
+                            'end_time' => $request->end_time,
+                        ];
+                    }
+                }
+            }
+        }
+        // Sử lý loại bỏ các bản ghi đã có
+        // dd($dataFull);
+        return redirect()->route('admin.showtimes.createList', $id)->with([
+            'dataFull' => $dataFull
+        ]);
     }
 }
