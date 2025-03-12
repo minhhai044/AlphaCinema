@@ -178,12 +178,16 @@ class ShowtimeController extends Controller
             return back()->with('warning', 'Vui lòng nhập đầy đủ thông tin !!!');
         }
 
-
-        $movie = Movie::findOrFail($id);
-
+        $movie = Movie::findOrFail($id)->toArray();
         $dataFull = [];
         $dates = explode(',', $request->dates);
-
+        $showtimes = [];
+        foreach ($request->start_time ?? [] as $keyTime => $valueTime) {
+            $showtimes[] = [
+                'start_time' => $valueTime,
+                'end_time'   => $request->end_time[$keyTime] ?? null,
+            ];
+        }
         foreach ($dates as $date) {
             foreach ($request->branches as $branchValue) {
                 $branch = Branch::findOrFail($branchValue);
@@ -194,25 +198,25 @@ class ShowtimeController extends Controller
                     if (!$cinema) continue;
 
                     foreach ($request->rooms[$cinemaValue] ?? [] as $roomValue) {
-                        $room = Room::findOrFail($roomValue);
+                        $room = Room::with('type_room')->findOrFail($roomValue);
                         if (!$room) continue;
 
-                        $dataFull[$date][] = [
-                            'branch' => $branch,
-                            'cinema' => $cinema,
-                            'room' => $room,
+                        $dataFull[$date][$branch->name][$cinema->name][] = [
+                            'branch' => $branch->toArray(),
+                            'cinema' => $cinema->toArray(),
+                            'room' => $room->toArray(),
                             'movie' => $movie,
-                            'start_time' => $request->start_time,
-                            'end_time' => $request->end_time,
+                            'showtimes' => $showtimes
                         ];
                     }
                 }
             }
         }
-        // Sử lý loại bỏ các bản ghi đã có
         // dd($dataFull);
+        // Xử lý loại bỏ các bản ghi đã tồn tại
         return redirect()->route('admin.showtimes.createList', $id)->with([
-            'dataFull' => $dataFull
+            'dataFull' => $dataFull,
+            'showtimes' => $showtimes
         ]);
     }
 }

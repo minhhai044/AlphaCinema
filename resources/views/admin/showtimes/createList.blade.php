@@ -23,6 +23,12 @@
             background-color: #556ee6;
             color: #fff;
         }
+
+        /* .nav-tabs.nav-fill .nav-link.active {
+                                                                                                                                                        background-color: #48e7cf !important;
+                                                                                                                                                        color: #fff !important;
+                                                                                                                                                        border-color: #48e7cf;
+                                                                                                                                                    } */
     </style>
     <link href="{{ asset('theme/admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" />
@@ -98,8 +104,9 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <label for="data_branchs">Chọn chi nhánh</label>
-                                        <select style="border: 1px solid #ded9d9 !important;" id="data_branchs" class="selectpicker form-control " multiple
-                                            data-live-search="true" data-actions-box="true" name="branches[]">
+                                        <select style="border: 1px solid #ded9d9 !important;" id="data_branchs"
+                                            class="selectpicker form-control " multiple data-live-search="true"
+                                            data-actions-box="true" name="branches[]">
 
                                             @foreach ($branchs as $branch)
                                                 <option value="{{ $branch->id }}">{{ $branch->name }}</option>
@@ -145,9 +152,223 @@
             </div>
         </div>
     @else
-        <h1>Danh sách suất chiếu</h1>
-    @endif
+        <div class="card">
+            <div class="card-body">
+                <div class="twitter-bs-wizard">
+                    <ul class="nav nav-pills nav-justified mb-4">
+                        @foreach (session('dataFull') as $date => $branches)
+                            <li class="nav-item">
+                                <a href="#date_{{ $loop->index }}_{{ Str::slug($date) }}"
+                                    class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab">
+                                    <i class="bx bxs-calendar"></i><br>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}
+                                </a>
+                            </li>
+                        @endforeach
+                    </ul>
 
+                    <div class="tab-content mt-3">
+                        @foreach (session('dataFull') as $date => $branches)
+                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                id="date_{{ $loop->index }}_{{ Str::slug($date) }}">
+                                <ul class="nav nav-tabs nav-fill" role="tablist">
+                                    @foreach ($branches as $nameBranch => $cinemas)
+                                        <li class="nav-item">
+                                            <a class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab"
+                                                href="#branch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
+                                                <i class="bi bi-building"></i> {{ $nameBranch }}
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                </ul>
+
+                                <div class="tab-content mt-3">
+                                    @foreach ($branches as $nameBranch => $cinemas)
+                                        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                            id="branch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
+                                            <div class="accordion"
+                                                id="cinemasAccordionBranch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
+                                                @foreach ($cinemas as $nameCinema => $rooms)
+                                                    <div class="accordion-item">
+                                                        <h2 class="accordion-header">
+                                                            <button class="accordion-button collapsed fw-semibold"
+                                                                type="button" data-bs-toggle="collapse"
+                                                                data-bs-target="#cinema_{{ Str::slug($nameCinema) }}_{{ Str::slug($date) }}">
+                                                                <i class="bi bi-camera-reels me-2"></i>
+                                                                {{ $nameCinema }}
+                                                            </button>
+                                                        </h2>
+                                                        <div id="cinema_{{ Str::slug($nameCinema) }}_{{ Str::slug($date) }}"
+                                                            class="accordion-collapse collapse">
+                                                            <div class="accordion-body">
+                                                                @foreach ($rooms as $room)
+                                                                    <input type="hidden"
+                                                                        name="dates[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                        id="day_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                        value="{{ $date }}">
+                                                                    <input type="hidden"
+                                                                        name="branches[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                        id="branch_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                        value="{{ $room['branch']['id'] }}">
+                                                                    <input type="hidden"
+                                                                        name="cinemas[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                        id="cinema_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                        value="{{ $room['cinema']['id'] }}">
+                                                                    <input type="hidden"
+                                                                        name="rooms[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                        id="room_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                        value="{{ $room['room']['id'] }}">
+                                                                    <input type="hidden"
+                                                                        name="seat_structure[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                        id="room_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                        value="{{ $room['room']['seat_structure'] }}">
+
+                                                                    <input type="hidden"
+                                                                        id="day_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+                                                                    <input type="hidden"
+                                                                        id="branch_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                        value="{{ $room['branch']['surcharge'] }}">
+                                                                    <input type="hidden"
+                                                                        id="movie_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                        value="{{ $room['movie']['surcharge'] }}">
+                                                                    <input type="hidden"
+                                                                        id="movie_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                        value="{{ $room['room']['type_room']['surcharge'] }}">
+
+                                                                    <div class="row">
+                                                                        <div class="col-lg-12">
+                                                                            <div class="card">
+                                                                                <div class="card-body"
+                                                                                    style="border: none">
+                                                                                    <div
+                                                                                        class="row p-3 bg-white rounded shadow-sm">
+                                                                                        <!-- Tên phòng -->
+                                                                                        <div class="col-lg-12 mb-4">
+                                                                                            <h4
+                                                                                                class="border-bottom pb-2 fw-bold">
+                                                                                                <i
+                                                                                                    class="bx bx-building-house text-primary"></i>
+                                                                                                Phòng: <span
+                                                                                                    class="text-success">{{ $room['room']['name'] }}</span>
+                                                                                            </h4>
+                                                                                        </div>
+
+                                                                                        <!-- Loại ngày -->
+                                                                                        <div class="col-lg-4 mb-3">
+                                                                                            <label
+                                                                                                for="day_id_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                class="form-label fw-semibold">
+                                                                                                Loại ngày <span
+                                                                                                    class="text-danger">*</span>
+                                                                                            </label>
+                                                                                            <select
+                                                                                                class="form-select shadow-sm"
+                                                                                                required
+                                                                                                id="day_id_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+                                                                                                <option disabled selected>
+                                                                                                    Chọn
+                                                                                                    loại ngày</option>
+                                                                                                @foreach ($days as $day)
+                                                                                                    <option
+                                                                                                        @disabled($day['id'] == 1 || $day['id'] == 2)
+                                                                                                        value="{{ $day['id'] }}">
+                                                                                                        {{ $day['name'] }}
+                                                                                                    </option>
+                                                                                                @endforeach
+                                                                                            </select>
+                                                                                        </div>
+
+                                                                                        <!-- Loại suất chiếu -->
+                                                                                        <div class="col-lg-4 mb-3">
+                                                                                            <label
+                                                                                                for="status_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                class="form-label fw-semibold">
+                                                                                                Loại suất chiếu <span
+                                                                                                    class="text-danger">*</span>
+                                                                                            </label>
+                                                                                            <select
+                                                                                                class="form-select shadow-sm"
+                                                                                                required
+                                                                                                id="status_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+                                                                                                <option value=""
+                                                                                                    disabled selected>Chọn
+                                                                                                    loại suất chiếu</option>
+                                                                                                @foreach ($specialshowtimes as $specialshowtime)
+                                                                                                    <option
+                                                                                                        @disabled($specialshowtime['id'] == 1 || $specialshowtime['id'] == 2)
+                                                                                                        value="{{ $specialshowtime['id'] }}">
+                                                                                                        {{ $specialshowtime['name'] }}
+                                                                                                    </option>
+                                                                                                @endforeach
+                                                                                            </select>
+                                                                                        </div>
+
+                                                                                        <!-- Phụ phí -->
+                                                                                        <div class="col-lg-4 mb-3">
+                                                                                            <label
+                                                                                                for="price_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                class="form-label fw-semibold">
+                                                                                                Phụ phí <small
+                                                                                                    class="text-muted">(Nếu
+                                                                                                    là suất đặc
+                                                                                                    biệt)</small>
+                                                                                            </label>
+                                                                                            <input type="text"
+                                                                                                name="price_special"
+                                                                                                class="form-control shadow-sm"
+                                                                                                id="price_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                placeholder="Nhập phụ phí nếu có">
+                                                                                        </div>
+
+                                                                                        <!-- Nút thêm và tự động -->
+                                                                                        <div
+                                                                                            class="col-lg-12 text-end mt-2">
+                                                                                            <button type="button"
+                                                                                                id="autoGenerate_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                class="btn btn-success btn-sm shadow-sm me-2">
+                                                                                                <i class="bx bxs-copy"></i>
+                                                                                            </button>
+                                                                                            <button type="button"
+                                                                                                id="addTime_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                class="btn btn-primary btn-sm shadow-sm">
+                                                                                                <i class="bx bx-plus"></i>
+                                                                                            </button>
+                                                                                        </div>
+
+                                                                                        <!-- Danh sách xuất chiếu -->
+                                                                                        <div class="col-lg-12 mt-4 overflow-auto"
+                                                                                            style="height: 300px;"
+                                                                                            id="listTime_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+                                                                                            <!-- Danh sách sẽ được render tại đây -->
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                @endforeach
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                </div>
+                            </div>
+                        @endforeach
+                    </div>
+
+                    <div class="mt-4 d-flex justify-content-end">
+                        <button type="submit" class="btn btn-primary">Thêm</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endif
+    @php
+        $dataFull = session('dataFull') ?? [];
+        $showtimes = session('showtimes') ?? [];
+    @endphp
 @endsection
 
 @section('script')
@@ -172,6 +393,8 @@
     <script>
         let branchs = @json($branchs);
         let movie = @json($movie);
+
+
         // Chuyển đổi thời gian về số nguyên
         function convertTimeToMinutes(timeStr) {
             if (!timeStr) return 0;
@@ -413,10 +636,10 @@
                 }
             });
         });
-        $('#listTime').on('change', 'input[name="start_time[]"]', function () {
+        $('#listTime').on('change', 'input[name="start_time[]"]', function() {
             const currentId = $(this).data('id'); // id của div đó
             const currentStart = $(this).val(); // Thời gian của start_time
-            const durationMovie = +movie.duration;// thời lượng phim
+            const durationMovie = +movie.duration; // thời lượng phim
 
             if (!currentStart) return;
             const currentStartMinutes = convertTimeToMinutes(currentStart);
@@ -424,11 +647,15 @@
 
             // Thu thập tất cả các dòng xuất chiếu có giá trị start time
             let screenings = [];
-            $('#listTime > .row').each(function () {
+            $('#listTime > .row').each(function() {
                 let rid = $(this).attr('id').replace('row_', ''); // lấy id của row đó
                 let st = $(`#start_time_${rid}`).val(); // lấy giá trị của start_time_id
                 if (st) {
-                    screenings.push({ id: +rid, start: st, startMinutes: convertTimeToMinutes(st) }); // Thêm vào mảng
+                    screenings.push({
+                        id: +rid,
+                        start: st,
+                        startMinutes: convertTimeToMinutes(st)
+                    }); // Thêm vào mảng
                 }
             });
 
@@ -444,7 +671,8 @@
                 const prevStart = $(`#start_time_${prevId}`).val(); // lấy value item trước đó
                 const prevStartMinutes = convertTimeToMinutes(prevStart); // Chuyển đổi value đó thành số nguyên
                 const prevEndMinutes = prevStartMinutes + durationMovie; // Lấy giá trị đó + thời lượng phim
-                if (currentStartMinutes < prevEndMinutes + 10) { // Nếu như start time vừa nhập mà nhỏ hơn giá trị đó + thời lượng phim + 10P
+                if (currentStartMinutes < prevEndMinutes +
+                    10) { // Nếu như start time vừa nhập mà nhỏ hơn giá trị đó + thời lượng phim + 10P
                     toastr.error('Xuất chiếu mới phải cách suất chiếu trước ít nhất 10 phút!');
                     $(this).val("");
                     $(`#end_time_${currentId}`).val("");
@@ -457,7 +685,8 @@
                 const nextId = screenings[index + 1].id; // lấy id item sau đó
                 const nextStart = $(`#start_time_${nextId}`).val(); // lấy value item sau đó
                 const nextStartMinutes = convertTimeToMinutes(nextStart);
-                if (currentEndMinutes > nextStartMinutes - 10) { // Nếu như end time vừa nhập mà lớn hơn giá trị sau đó + thời lượng phim - 10P
+                if (currentEndMinutes > nextStartMinutes -
+                    10) { // Nếu như end time vừa nhập mà lớn hơn giá trị sau đó + thời lượng phim - 10P
                     toastr.error('Xuất chiếu mới phải kết thúc ít nhất 10 phút trước khi suất chiếu sau bắt đầu!');
                     $(this).val("");
                     $(`#end_time_${currentId}`).val("");
@@ -471,5 +700,254 @@
     {{-- End Logic sử lý phần Tab --}}
     {{-- Start Logic sử lý phần chỉnh sửa showtime --}}
 
-    <script></script>
+    <script>
+        let dataFull = @json($dataFull);
+        let days = @json($days);
+        let date_create = movie.created_at.split("T")[0];
+        let release_date = movie.release_date;
+        let end_date = movie.end_date;
+        let dataShowtimeCheck = [];
+
+        for (let date in dataFull) {
+            for (let branch in dataFull[date]) {
+                for (const cinema in dataFull[date][branch]) {
+                    let arrayAll = dataFull[date][branch][cinema];
+                    arrayAll.forEach(item => {
+                        const dt = new Date(date);
+                        const day = dt.getDay();
+                        if (day == 0 || day == 6) {
+                            $(`#day_id_${item.room.id}_${date.trim()}`).val(2);
+
+                            let surchargeDay = 0;
+
+
+                            days.forEach((itemday) => {
+                                if (itemday.id == 2) {
+                                    surchargeDay = itemday.day_surcharge;
+                                }
+                            })
+
+                            $(`#day_surcharge_${item.room.id}_${date.trim()}`).val(surchargeDay);
+                        } else {
+                            let surchargeDay = 0;
+                            days.forEach((itemday) => {
+                                if (itemday.id == 1) {
+                                    surchargeDay = itemday.day_surcharge;
+                                }
+                            })
+
+                            $(`#day_id_${item.room.id}_${date.trim()}`).val(1);
+                            $(`#day_surcharge_${item.room.id}_${date.trim()}`).val(surchargeDay);
+                        }
+                        $(`#day_id_${item.room.id}_${date.trim()}`).change(function() {
+
+                            let value = $(this).val();
+
+                            let surchargeDay = 0;
+                            days.forEach((itemday) => {
+                                if (itemday.id == value) {
+                                    surchargeDay = itemday.day_surcharge;
+                                }
+                            })
+
+                            $(`#day_id_${item.room.id}_${date.trim()}`).val(value);
+                            $(`#day_surcharge_${item.room.id}_${date.trim()}`).val(surchargeDay);
+                        })
+
+                        if (date.trim() >= date_create && date.trim() < release_date) {
+                            $(`#price_special_${item.room.id}_${date.trim()}`).prop('disabled', false);
+
+                            $(`#status_special_${item.room.id}_${date.trim()}`).val(2);
+                        }
+
+                        if (date.trim() >= release_date && date.trim() <= end_date) {
+                            $(`#price_special_${item.room.id}_${date.trim()}`).prop('disabled', true).val('');
+
+                            $(`#status_special_${item.room.id}_${date.trim()}`).val(1);
+                        }
+
+                        $(`#price_special_${item.room.id}_${date.trim()}`).on('input', function(e) {
+                            e.preventDefault();
+                            let valueDiscount = $(this).val().replace(/\D/g, '');
+                            let setValueDiscount = new Intl.NumberFormat('vi-VN').format(valueDiscount);
+                            $(this).val(setValueDiscount);
+                        });
+
+                        let listTimeContainer = $(`#listTime_${item.room.id}_${date.trim()}`);
+                        listTimeContainer.empty();
+
+                        item.showtimes.forEach((value, i) => {
+                            dataShowtimeCheck.push({
+                                id: `${item.room.id}_${date.trim()}_${i}`,
+                                room_id: item.room.id,
+                                date: date.trim(), // Lưu ngày chiếu
+                                index: i,
+                                start_time: value.start_time,
+                                end_time: value.end_time
+                            });
+                            listTimeContainer.append(`
+                            <div class="row align-items-center mt-2"  id="row_${item.room.id}_${date.trim()}_${i}">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="start_time_${item.room.id}_${date.trim()}_${i}" class="form-label">
+                                            Thời gian bắt đầu <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="time" required data-id="${item.room.id}_${date.trim()}_${i}" class="form-control" name="start_time[${item.room.id}_${date.trim()}][]" id="start_time_${item.room.id}_${date.trim()}_${i}" value="${value.start_time}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="mb-3">
+                                        <label for="end_time_${item.room.id}_${date.trim()}_${i}" class="form-label">
+                                            Thời gian kết thúc <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="time" required class="form-control" name="end_time[${item.room.id}_${date.trim()}][]" id="end_time_${item.room.id}_${date.trim()}_${i}" readonly value="${value.end_time}">
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 d-flex align-items-center">
+                                    <button type="button" class="btn btn-danger btn-sm text-white removeShowtime" data-row="row_${item.room.id}_${date.trim()}_${i}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        `);
+                        });
+                        // console.log(dataShowtimeCheck);
+
+                        function addTimeRowMutiple() {
+                            const code_slug = Date.now();
+                            const html =
+                                `
+                            <div class="row align-items-center" id="row_${item.room.id}_${date.trim()}_${code_slug}">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="start_time_${item.room.id}_${date.trim()}_${code_slug}" class="form-label">
+                                            Thời gian bắt đầu <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="time" required class="form-control" name="start_time[${item.room.id}_${date.trim()}][]" data-id="${item.room.id}_${date.trim()}_${code_slug}" id="start_time_${item.room.id}_${date.trim()}_${code_slug}" aria-label="Chọn thời gian">
+                                    </div>
+                                </div>
+                                <div class="col-lg-5">
+                                    <div class="mb-3">
+                                        <label for="end_time_${item.room.id}_${date.trim()}_${code_slug}" class="form-label">
+                                            Thời gian kết thúc <span class="text-danger">*</span>
+                                        </label>
+                                        <input type="time" required class="form-control" name="end_time[${item.room.id}_${date.trim()}][]" id="end_time_${item.room.id}_${date.trim()}_${code_slug}" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 d-flex align-items-center">
+                                    <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeShowtime" data-row="row_${item.room.id}_${date.trim()}_${code_slug}">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                                                                                                                                                                                                `;
+                            listTimeContainer.append(html);
+                        }
+                        $(`#addTime_${item.room.id}_${date.trim()}`).click(function() {
+                            addTimeRowMutiple();
+                        });
+                        // console.log(dataShowtimeCheck);
+
+                        listTimeContainer.on('change', 'input[name^="start_time"]', function() {
+
+
+                            const currentIdFilter = $(this).data('id'); // Lấy id khi click
+                            const currentStartFilter = $(this).val(); // Lấy giá trị của phần time thay đổi
+                            const durationMovie = +movie.duration; // Lấy thời lượng phim
+                            console.log(currentIdFilter, 'Lấy id khi click');
+                            console.log(currentStartFilter, 'Lấy giá trị của phần time thay đổi');
+                            console.log(durationMovie, 'Lấy thời lượng phim');
+
+                            if (!currentStartFilter) return;
+                            const currentStartMinutes = convertTimeToMinutes(
+                                currentStartFilter); // Chuyển về số
+                            const currentEndMinutes = currentStartMinutes +
+                                durationMovie; // Thời gian bắt đầu + Thời lượng phim
+                            console.log(currentStartMinutes, 'phần time  Chuyển về số');
+                            console.log(currentEndMinutes, 'Thời gian bắt đầu + Thời lượng phim');
+
+                            let screenings = [];
+
+                            // Chọn tất cả các hàng trong danh sách thời gian
+                            $(`#listTime_${item.room.id}_${date.trim()} .row`).each(function() {
+                                let rid = $(this).attr('id').replace(
+                                    `row_${item.room.id}_${date.trim()}_`, ''); // Lấy ID chính xác
+                                let st = $(`#start_time_${item.room.id}_${date.trim()}_${rid}`)
+                                    .val(); // Lấy giá trị thời gian bắt đầu
+
+                                if (st) {
+                                    screenings.push({
+                                        id: rid,
+                                        start: st,
+                                        startMinutes: convertTimeToMinutes(st)
+                                    });
+                                }
+                            });
+
+                            console.log("Danh sách suất chiếu đã lấy:", screenings);
+
+
+                            screenings.sort((a, b) => a.startMinutes - b.startMinutes);
+
+                            const indexArray = screenings.findIndex(itemIndex => Number(itemIndex.id) ===
+                                Number(currentIdFilter));
+                            console.log(indexArray, 'indexArray');
+                            if (indexArray > 0) {
+                                const prevScreening = screenings[indexArray - 1]; // Lấy đối tượng trước đó
+                                const prevId = prevScreening.id; // Lấy id của nó
+                                const prevStart = $(`#start_time_${item.room.id}_${date.trim()}_${prevId}`).val(); // Lấy thời gian bắt đầu
+                                const prevStartMinutes = convertTimeToMinutes(prevStart); // Chuyển đổi về số
+                                const prevEndMinutes = prevStartMinutes + durationMovie; // Công thêm thời lượng phim để biết giờ gian kết thúc
+
+                                if (currentStartMinutes < prevEndMinutes + 10
+                                ) { // Nếu thời gian đang chọn nhỏ hơn thời gian kết thúc của phim trước đó thì
+                                    toastr.error(
+                                        'Suất chiếu mới phải cách suất chiếu trước ít nhất 10 phút!');
+                                    $(this).val(""); // Reset thời gian đang trọn
+                                    $(`#end_time_${item.room.id}_${date.trim()}_${currentIdFilter}`).val(""); // Chuyển thời gian kết thúc của thời gian đang chọn về rỗng
+                                    return;
+                                }
+                            }
+
+                            if (indexArray < screenings.length - 1) {
+                                const nextId = screenings[indexArray + 1].id; // lấy id item sau đó
+                                const nextStart = $(`#start_time_${item.room.id}_${date.trim()}_${nextId}`)
+                                    .val(); // lấy value item sau đó
+                                const nextStartMinutes = convertTimeToMinutes(
+                                    nextStart); // Chuyển thời gian đó về số
+                                if (currentEndMinutes > nextStartMinutes -
+                                    10
+                                ) { // Nếu như end time vừa nhập mà lớn hơn giá trị sau đó + thời lượng phim - 10P
+                                    toastr.error(
+                                        'Suất chiếu mới phải kết thúc ít nhất 10 phút trước khi suất chiếu sau bắt đầu!'
+                                    );
+                                    $(this).val(""); // Rest giá trị của thời gian vừa chọn
+                                    $(`#end_time_${item.room.id}_${date.trim()}_${currentIdFilter}`).val(
+                                        ""); // Chuyển thời gian kết thúc của thời gian đang chọn về rỗng
+                                    return;
+                                }
+                            }
+
+
+                            $(`#end_time_${item.room.id}_${date.trim()}_${currentIdFilter}`).val(
+                                convertMinutesToTime(currentEndMinutes));
+
+                        });
+                        $(document).on("click", ".removeShowtime", function() {
+                            let row = $(this).closest(".row");
+                            let listTimeContainer = row.closest(".card-body").find("[id^='listTime']");
+                            let count = listTimeContainer.find(".row[id^='row_']").length;
+
+                            if (count === 1) {
+                                toastr.error('Phải có ít nhất 1 khoảng thời gian trong ngày này !!!');
+                                return;
+                            }
+                            row.remove();
+                        });
+                    });
+
+                }
+            }
+        }
+    </script>
 @endsection
