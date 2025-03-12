@@ -17,6 +17,7 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -59,25 +60,33 @@ class AuthController extends Controller
             // Tạo token xác thực
             $token = $user->createToken('UserToken')->plainTextToken;
 
+            // Đối với admin, lưu thêm thông tin
+
+            Auth::login($user);
+            
+            session()->put('user_admin', [
+                'id' => $user->id,
+                'email' => $user->email,
+                'name' => $user->name,
+            ]);
+            Log::info('ĐĂng nhập  với user: ' . auth()->user()->name);
+
+
             // Tạo cookie chứa token (thời gian sống 24h - 1440 phút)
             $cookie = cookie('user_token', $token, 1440);
 
+            Log::info('ĐĂng nhập  với user: ' . auth()->user()->name);
+
             return $this->successResponse([
                 'user' => $user,
-                'token' => $token,
-                'cookie' => $cookie
-            ], 'Đăng nhập thành công', Response::HTTP_OK);
+                'token' => $token
+            ], 'Đăng nhập thành công', Response::HTTP_OK)->withCookie($cookie);
         } catch (\Throwable $th) {
             // Ghi log chi tiết lỗi
-            Log::error('Lỗi đăng nhập: ' . $th->getMessage(), [
-                'file' => $th->getFile(),
-                'line' => $th->getLine(),
-                'trace' => $th->getTraceAsString()
-            ]);
+            Log::error('Lỗi đăng nhập: ' . $th->getMessage());
 
             // Trả về lỗi JSON
-
-            $this->errorResponse(
+            return $this->errorResponse(
                 'Đã xảy ra lỗi, vui lòng thử lại',
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
