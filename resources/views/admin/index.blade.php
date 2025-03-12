@@ -9,12 +9,13 @@
                     <h4 class="mb-sm-0 font-size-18 me-3">Thống kê trên toàn hệ thống</h4>
 
                     <!-- Dropdown lọc chi nhánh -->
-                    <select id="branchSelect" class="form-select form-select-sm w-auto">
-                        <option value="all" selected>Tất cả</option>
-                        <option value="hanoi">Hà Nội</option>
-                        <option value="haiphong">Hải Phòng</option>
-                        <option value="danang">Đà Nẵng</option>
-                        <option value="hochiminh">Hồ Chí Minh</option>
+                    <select id="branchSelect" class="form-select form-select-sm w-auto"
+                        onchange="window.location.href='?branch='+this.value">
+                        <option value="all" {{ $branch == 'all' ? 'selected' : '' }}>Tất cả</option>
+                        @foreach ($cinemas as $cinema)
+                            <option value="{{ $cinema->id }}" {{ $branch == $cinema->id ? 'selected' : '' }}>
+                                {{ $cinema->name }}</option>
+                        @endforeach
                     </select>
                 </div>
 
@@ -36,14 +37,16 @@
                 <!-- card body -->
                 <div class="card-body">
                     <div class="row align-items-center">
-                        <div class="col-6">
-                            <span class="text-muted mb-3 lh-1 d-block text-truncate">Doanh thu</span>
-                            <h4 class="mb-3">
-                                <span class="counter-value" data-target="">0</span>VND
+                        <div class="col-7">
+                            <span class="text-muted mb-3 lh-1 d-block text-truncate">Doanh thu Tháng
+                                {{ $monthnow }}</span>
+                            <h4 class="mb-6">
+                                <span class="counter-value"
+                                    data-target="{{ $totalRevenue }}">{{ $formattedRevenue }}</span>VND
                             </h4>
                         </div>
 
-                        <div class="col-6">
+                        <div class="col-5">
                             <div id="mini-chart1" data-colors='["#5156be"]' class="apex-charts mb-2">
                             </div>
                         </div>
@@ -69,7 +72,7 @@
                         <div class="col-6">
                             <span class="text-muted mb-3 lh-1 d-block text-truncate">Số vé bán ra</span>
                             <h4 class="mb-3">
-                                <span class="counter-value" data-target=""></span> VÉ
+                                <span class="counter-value" data-target="{{ $ticketCount }}">{{ $ticketCount }}</span> VÉ
                             </h4>
                         </div>
                         <div class="col-6">
@@ -171,24 +174,20 @@
             </div>
         </div>
     </div> <!-- end row-->
-
-
-
-   
 @endsection
 
 @section('script')
     <!-- dashboard init -->
     <script src="{{ asset('theme/admin/assets/js/pages/dashboard.init.js') }}"></script>
 
-
+{{-- cột phần trăm --}}
     <script>
         var options = {
-            series: [30.0, 50.0, 20.0],
+            series: {!! $seatSeries !!}, // Dữ liệu tỷ lệ phần trăm từ controller
             chart: {
                 type: 'donut',
             },
-            labels: ['Ghế Thường', 'Ghế Vip', 'Ghế Đôi'],
+            labels: {!! $seatLabels !!}, // Dữ liệu nhãn từ controller
             colors: ['#2C91F7', '#2EE5AC', '#FF5733'],
             dataLabels: {
                 enabled: true,
@@ -226,55 +225,95 @@
 
     {{-- Biểu đồ doanh thu --}}
     <script>
-        const revenueData = {
-            "2025": [2.5, 3.2, 2.8, 3.5, 4.1, 3.9, 5.2, 4.8, 4.3, 3.7, 3.1, 2.9],
-            "2024": [2.0, 2.8, 2.5, 3.0, 3.8, 3.6, 4.5, 4.2, 3.9, 3.5, 3.0, 2.7]
-        };
-
         document.addEventListener("DOMContentLoaded", function() {
-            var options = {
-                series: [{
-                    name: "Doanh thu (Triệu VND)",
-                    data: revenueData["2025"]
-                }],
-                chart: {
-                    type: 'line',
-                    height: 350
-                },
-                stroke: {
-                    width: 2,
-                    curve: 'smooth'
-                },
-                xaxis: {
-                    categories: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7",
-                        "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
-                    ]
-                },
-                yaxis: {
-                    labels: {
-                        formatter: function(value) {
-                            return value + " triệu VND";
-                        }
-                    }
-                },
-                tooltip: {
-                    y: {
-                        formatter: function(val) {
-                            return val + " triệu VND";
-                        }
+        // Lấy dữ liệu ban đầu từ controller
+        let revenueData = @json($revenueData) || Array(12).fill(0);
+
+        var options = {
+            series: [{
+                name: "Doanh thu (Triệu VND)",
+                data: Object.values(revenueData)
+            }],
+            chart: {
+                type: 'line',
+                height: 350,
+                toolbar: {
+                    show: false
+                }
+            },
+            stroke: {
+                width: 2,
+                curve: 'smooth'
+            },
+            xaxis: {
+                categories: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
+                           "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"]
+            },
+            yaxis: {
+                labels: {
+                    formatter: function(value) {
+                        return value + " triệu VND";
                     }
                 }
-            };
+            },
+            tooltip: {
+                y: {
+                    formatter: function(val) {
+                        return val + " triệu VND";
+                    }
+                }
+            },
+            colors: ['#008FFB'],
+            grid: {
+                borderColor: '#f1f1f1'
+            }
+        };
 
-            var chart = new ApexCharts(document.querySelector("#revenue-chart"), options);
-            chart.render();
+        var chart = new ApexCharts(document.querySelector("#revenue-chart"), options);
+        chart.render();
 
-            document.getElementById("yearSelect").addEventListener("change", function() {
-                var selectedYear = this.value;
-                chart.updateSeries([{
-                    name: "Doanh thu (Triệu VND)",
-                    data: revenueData[selectedYear]
-                }]);
+        // Xử lý khi thay đổi năm
+        document.getElementById("yearSelect").addEventListener("change", function() {
+            var selectedYear = this.value;
+            chart.updateOptions({ chart: { animations: { enabled: true } } });
+            fetch(`/admin/dashboard?year=${selectedYear}&branch={{ $branch }}`)
+                .then(response => response.json())
+                .then(data => {
+                    chart.updateSeries([{
+                        name: "Doanh thu (Triệu VND)",
+                        data: Object.values(data.revenueData || Array(12).fill(0))
+                    }]);
+                    chart.updateOptions({ chart: { animations: { enabled: false } } });
+                })
+                .catch(error => {
+                    console.error('Error fetching revenue data:', error);
+                    chart.updateSeries([{
+                        name: "Doanh thu (Triệu VND)",
+                        data: Array(12).fill(0)
+                    }]);
+                });
+        });
+    });
+
+
+        //định dạng và load
+        $('.counter-value').each(function() {
+            var $this = $(this);
+            var target = parseFloat($this.data('target')); // Lấy số từ data-target
+            if (isNaN(target)) target = 0; // Xử lý NaN
+            $this.prop('Counter', 0).animate({
+                Counter: target
+            }, {
+                duration: 2000,
+                easing: 'swing',
+                step: function(now) {
+                    // Định dạng số với dấu chấm phân cách phần nghìn
+                    $this.text(Math.ceil(now).toLocaleString('vi-VN'));
+                },
+                complete: function() {
+                    // Đảm bảo giá trị cuối cùng đúng định dạng
+                    $this.text(target.toLocaleString('vi-VN'));
+                }
             });
         });
     </script>
