@@ -17,10 +17,11 @@ use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Socialite\Facades\Socialite;
+use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
@@ -60,33 +61,33 @@ class AuthController extends Controller
             // Tạo token xác thực
             $token = $user->createToken('UserToken')->plainTextToken;
 
-            // Đối với admin, lưu thêm thông tin
 
             Auth::login($user);
-            
-            session()->put('user_admin', [
-                'id' => $user->id,
-                'email' => $user->email,
-                'name' => $user->name,
-            ]);
-            Log::info('ĐĂng nhập  với user: ' . auth()->user()->name);
-
 
             // Tạo cookie chứa token (thời gian sống 24h - 1440 phút)
-            $cookie = cookie('user_token', $token, 1440);
+            // $cookie = cookie('user_token', $token, 1440);
 
-            Log::info('ĐĂng nhập  với user: ' . auth()->user()->name);
+            // $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true);
+
+            $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true, false, 'None');
+
 
             return $this->successResponse([
                 'user' => $user,
-                'token' => $token
+                'token' => $token,
+                'cookie' => $cookie
             ], 'Đăng nhập thành công', Response::HTTP_OK)->withCookie($cookie);
         } catch (\Throwable $th) {
             // Ghi log chi tiết lỗi
-            Log::error('Lỗi đăng nhập: ' . $th->getMessage());
+            Log::error('Lỗi đăng nhập: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+                'trace' => $th->getTraceAsString()
+            ]);
 
             // Trả về lỗi JSON
-            return $this->errorResponse(
+
+            $this->errorResponse(
                 'Đã xảy ra lỗi, vui lòng thử lại',
                 Response::HTTP_INTERNAL_SERVER_ERROR
             );
@@ -197,5 +198,40 @@ class AuthController extends Controller
                 'error'   => $e->getTraceAsString()
             ]);
         }
+    }
+
+    public function googleRedirect()
+    {
+        return Socialite::driver('google')->redirect();
+    }
+
+    public function googleCallBack()
+    {
+        $googleUser = Socialite::driver('google')->user();
+
+        $user = User::updateOrCreate(
+            ['google_id' => $googleUser->id],
+            [
+                'name' => $googleUser->name,
+                'email' => $googleUser->email,
+                'password' => Str::password(12),
+                'avatar' => $googleUser->avatar,
+                'type_user' => 0,
+            ]
+        );
+
+        Auth::login($user);
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        $authData = json_encode([
+            'user' => $user->only(['id', 'name', 'email', 'avatar']),
+            'token' => $token,
+            'isLogin' => true
+        ]);
+
+        $authDataEncoded = base64_encode(json_encode($authData));
+
+        return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
     }
 }

@@ -22,6 +22,11 @@
                     <img src="{{ asset('theme/admin/assets/images/logo-sm.svg') }}" alt="" height="24">
                     <span class="logo-txt">ALPHA CINEMA</span>
                 </span>
+
+
+                <span>{{ \Auth::user()->id }}</span>
+                <span>{{ \Auth::user()->name }}</span>
+
             </a>
 
             <a href="{{ route('admin.index') }}" class="logo logo-light">

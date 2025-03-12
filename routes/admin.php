@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\UserVoucherController;
 use App\Http\Controllers\Admin\DashBoardController;
 
+use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\DayController;
@@ -120,7 +121,6 @@ Route::group([
     Route::get('/{id}', [TicketController::class, 'show'])->name('show'); // Add this
 
     Route::get('/test', [TicketController::class, 'print']);
-
 });
 // Route::resource('typerooms', TyperoomController::class);
 Route::group([

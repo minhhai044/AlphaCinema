@@ -41,6 +41,7 @@ class VoucherController extends Controller
 
             // Kiểm tra trạng thái hoạt động của voucher
             if (!$voucher->is_active) {
+                
                 $status = 'inactive';
                 $message = 'Voucher của bạn đã ngừng hoạt động.';
             } else {

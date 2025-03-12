@@ -39,6 +39,8 @@ use App\Http\Controllers\Api\VoucherController;
 Route::prefix('movies')->group(function () {
     Route::get('/', [MovieController::class, 'index'])->name('api.movies.index');
 });
+Route::patch('/admin/movies/{id}/update-status', [MovieController::class, 'updateStatus'])->name('admin.movies.update-status');
+
 
 
 Route::prefix('users')->group(function () {
@@ -67,14 +69,15 @@ Route::post('slideshows/change-active', [UpdateActiveController::class, 'slidesh
 //     Route::delete('/{id}', [MovieController::class, 'destroy']);
 // });
 
-Route::get('/settings',[SiteSettingController::class,'index']);
+Route::get('/settings', [SiteSettingController::class, 'index']);
 
 Route::prefix('point_histories')->group(function () {
     Route::get('/', [PointHistoryController::class, 'index']);
     Route::get('{id}', [PointHistoryController::class, 'show']);
 });
-Route::middleware('auth:api')->get('/vouchers', [VoucherController::class, 'index']);
+// Route::middleware('auth:api')->get('/vouchers', [VoucherController::class, 'index']);
+
+Route::middleware('auth:sanctum')->get('/vouchers', [VoucherController::class, 'index']);
 
 Route::get('/get-cinemas', [CinemaController::class, 'getCinemasByBranch'])->name('api.get-cinemas');
 Route::get('/get-movies', [CinemaController::class, 'getMoviesByCinema'])->name('api.get-movies');
-

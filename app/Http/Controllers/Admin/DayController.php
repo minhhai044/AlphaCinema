@@ -31,7 +31,7 @@ class DayController extends Controller
     public function store(DayRequest $request)
     {
         $validated = $request->validated();
-        $day = $this->dayService->createDay($validated); 
+        $day = $this->dayService->createDay($validated);
         if ($request->expectsJson()) {
             return response()->json([
                 'success' => true,
@@ -53,7 +53,6 @@ class DayController extends Controller
     public function update(Request $request, $id)
     {
         $day = Day::findOrFail($id);
-        $day->name = $request->name;
         $day->day_surcharge = $request->day_surcharge;
         $day->save();
 

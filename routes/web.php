@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\Api\V1\AuthController;
+use App\Models\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
+use Laravel\Socialite\Facades\Socialite;
 
 /*
 |--------------------------------------------------------------------------
@@ -18,30 +25,6 @@ Route::get('/', function () {
     return 'Hello from root';
 });
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Log;
+Route::get('auth/google/redirect', [AuthController::class, 'googleRedirect']);
 
-Route::get('/test-session', function (Request $request) {
-    Log::info("Cookies: ", $request->cookies->all());
-    Log::info("Session: ", session()->all());
-
-    return response()->json([
-        'cookies' => $request->cookies->all(),
-        'session' => session()->all(),
-        'user' => Auth::user(),
-    ]);
-});
-
-Route::get('/debug-user', function () {
-
-    return response()->json([
-        'session' => session()->all(),
-        'auth_user' => Auth::user(), // Kiểm tra nếu Laravel lấy được user
-    ]);
-});
-
-Route::get('/check-auth', function () {
-    return response()->json(Auth::user());
-});
+Route::get('auth/google/callback', [AuthController::class, 'googleCallBack']);
