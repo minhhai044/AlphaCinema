@@ -1,0 +1,208 @@
+@extends('admin.layouts.master')
+@section('title', 'Thêm mới Đồ ăn')
+
+@section('content')
+    <!-- start page title -->
+    <div class="row">
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Thêm mới Đồ ăn</h4>
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('admin.foods.index') }}">Đồ ăn</a>
+                        </li>
+                        <li class="breadcrumb-item active">Thêm mới Đồ ăn</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- end page title -->
+
+    <form action="{{ route('admin.foods.store') }}" method="POST" enctype="multipart/form-data">
+        @csrf
+        <div class="row">
+            <div class="col-lg-9">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row">
+                            <!-- Combo details form -->
+
+                            <div class="col-md-4 mb-3">
+                                <div class="mb-3">
+                                    <label for="name" class="form-label">
+                                        <span class="text-danger">*</span> Tên đồ ăn
+                                    </label>
+                                    <input type="text" name="name" id="name" class="form-control"
+                                        value="{{ old('name') }}" placeholder="Nhập tên món ăn">
+                            
+                                    @if ($errors->has('name'))
+                                        <div class="text-danger">
+                                            {{ $errors->first('name') }}
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                            
+                            <div class="col-md-4 mb-3">
+                                <label for="price" class="form-label">
+                                    <span class="text-danger">*</span> Giá bán (VNĐ)
+                                </label>
+                                <input type="text" name="price" id="price" class="form-control"
+                                    value="{{ old('price') }}" placeholder="Nhập giá tiền">
+                        
+                                @if ($errors->has('price'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('price') }}
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label for="price_sale" class="form-label">
+                                    <span class="text-danger">*</span> Loại đồ ăn
+                                </label>
+                                <input type="text" name="price_sale" id="price_sale" class="form-control"
+                                    value="{{ old('price_sale') }}" placeholder="Nhập giá tiền">
+                        
+                                @if ($errors->has('price_sale'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('price_sale') }}
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+
+                        <div class="col-md-12 mb-3">
+                            <label for="food-description" class="form-label">
+                                <span class="required">*</span> Mô tả
+                            </label>
+                            <textarea
+                                class="form-control"
+                                name="description" rows="6" placeholder="Nhập mô tả">{{ old('description') }}</textarea>
+
+                            
+                                @if ($errors->has('description'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('description') }}
+                                    </div>
+                                @endif
+                        </div>
+                    </div>
+
+                    <div class="card-footer">
+                        <button class="btn btn-primary">
+                            Thêm mới
+                            <i class="bx bx-chevron-right ms-1"></i>
+                        </button>
+                        <a href="{{ route('admin.foods.index') }}" class="btn btn-danger" type="button"
+                            onclick="return confirm('Bạn có chắc chắn hủy bỏ thao tác? Mọi thay đổi sẽ không được lưu')">
+                            Hủy bỏ
+                            <i class="bx bx-chevron-right ms-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-3">
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="mb-2">
+                                            <label for="food-description" class="form-label">
+                                                <span class="required">*</span>
+                                                Hoạt động:
+                                            </label>
+                                            <div class="square-switch">
+                                                <input type="checkbox" id="square-switch3" switch="bool"
+                                                    {{ old('is_active', 1) ? 'checked' : '' }} name="is_active">
+                                                <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
+                                            </div>
+                                            <input type="hidden" name="is_active" id="is_active"
+                                                value="{{ old('is_active', 1) }}">
+                                            <!-- Active -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="mb-2">
+                                    <label for="img_thumbnail" class="form-label"> <span class="text-danger">*</span>Hình
+                                        ảnh</label>
+                                    <input type="file" name="img_thumbnail" id="img_thumbnail"
+                                        class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}">
+                                    <div
+                                        class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                        @if ($errors->has('img_thumbnail'))
+                                            {{ $errors->first('img_thumbnail') }}
+                                        @endif
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </form>
+@endsection
+
+
+@section('script')
+    <script>
+        $(document).ready(function() {
+            // Format giá tiền
+            function formatPriceInput(inputSelector, hiddenInputSelector) {
+                $(inputSelector).on("input", function() {
+                    let value = $(this).val().replace(/\D/g, ""); // Chỉ giữ lại số
+                    let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Thêm dấu ,
+
+                    $(this).val(formattedValue); // Hiển thị dạng số có dấu ,
+                    $(hiddenInputSelector).val(value || "0"); // Lưu dạng số không có dấu , vào input ẩn
+                });
+
+                $(inputSelector).on("blur", function() {
+                    if (!$(this).val()) {
+                        $(this).val("0");
+                        $(hiddenInputSelector).val("0");
+                    }
+                });
+            }
+
+            // Áp dụng cho input giá gốc & giá sale
+            formatPriceInput("#price", "#price_hidden");
+            formatPriceInput("#price_sale", "#price_sale_hidden");
+
+            // Validate các trường input
+            function validateInput(selector, condition, errorMessage) {
+                let input = $(selector);
+                let value = input.val().trim();
+                
+            }
+
+            // Validate tên combo
+            $("#name").on("input", function() {
+                validateInput(this, value => value.length > 0, "Tên combo không được để trống");
+            });
+
+            // Validate mô tả
+            $("textarea[name='description']").on("input", function() {
+                validateInput(this, value => value.length > 0, "Mô tả không được để trống");
+            });
+
+            // Validate ảnh
+            $("#img_thumbnail").on("change", function() {
+                validateInput(this, value => value.length > 0, "Vui lòng chọn ảnh");
+            });
+
+        });
+    </script>
+@endsection

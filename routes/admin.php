@@ -259,8 +259,16 @@ Route::group([
 
 
 
-Route::get('/statistical/cinemaRevenue', [StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
+// thống kê
+Route::group([
+    'prefix' => 'statistical',  // Tiền tố URL cho tất cả route
+    'as' => 'statistical.',
+], function () {
+    Route::get('/cinemaRevenue', [StatisticalController::class, 'cinemaRevenue'])->name('cinemaRevenue');
+    Route::get('/combAndFoodRevenue', [StatisticalController::class, 'combAndFoodRevenue'])->name('combAndFoodRevenue');
+});
 // Route::get('/admin/statistical/cinemaRevenue', [App\Http\Controllers\Admin\StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
+
 
 
 

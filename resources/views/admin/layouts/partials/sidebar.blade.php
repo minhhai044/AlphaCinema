@@ -35,6 +35,12 @@
                             <span data-key="t-vouchers">Thống kê phim</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.statistical.combAndFoodRevenue') }}">
+
+                            <span data-key="t-vouchers">Thống Combo và Đồ ăn</span>
+                        </a>
+                    </li>
                 </ul>
 
             </li>
