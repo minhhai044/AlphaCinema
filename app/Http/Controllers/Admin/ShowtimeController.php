@@ -16,6 +16,8 @@ use App\Services\ShowtimeService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
 
 class ShowtimeController extends Controller
 {
@@ -181,6 +183,16 @@ class ShowtimeController extends Controller
         $movie = Movie::findOrFail($id)->toArray();
         $dataFull = [];
         $dates = explode(',', $request->dates);
+        $now = Carbon::now();
+        $movieCreatedAt = Carbon::parse($movie['created_at']);
+        $movieEndDate = Carbon::parse($movie['end_date']);
+
+        $validDates = array_filter($dates, function ($date) use ($now, $movieCreatedAt, $movieEndDate) {
+            $dateObj = Carbon::parse($date);
+            return $dateObj->greaterThan($now)
+                && $dateObj->greaterThanOrEqualTo($movieCreatedAt)
+                && $dateObj->lessThanOrEqualTo($movieEndDate);
+        });
         $showtimes = [];
         foreach ($request->start_time ?? [] as $keyTime => $valueTime) {
             $showtimes[] = [
@@ -188,7 +200,21 @@ class ShowtimeController extends Controller
                 'end_time'   => $request->end_time[$keyTime] ?? null,
             ];
         }
-        foreach ($dates as $date) {
+        $CheckDuplicateShowtime = [];
+        foreach ($validDates as $date) {
+            // Lấy Các showtime để chech trùng
+            $CheckDuplicate = Showtime::with('branch', 'cinema', 'room')
+                ->where('date', $date)
+                ->get()
+                ->toArray();
+
+            foreach ($CheckDuplicate as $showtime) {
+                $branchName = $showtime['branch']['name'];
+                $cinemaName = $showtime['cinema']['name'];
+                $roomName = $showtime['room']['name'];
+                $CheckDuplicateShowtime[Str::slug($date)][$branchName][$cinemaName][$roomName][] = $showtime;
+            }
+            // Làm đẹp dữ liệu
             foreach ($request->branches as $branchValue) {
                 $branch = Branch::findOrFail($branchValue);
                 if (!$branch) continue;
@@ -201,7 +227,7 @@ class ShowtimeController extends Controller
                         $room = Room::with('type_room')->findOrFail($roomValue);
                         if (!$room) continue;
 
-                        $dataFull[$date][$branch->name][$cinema->name][] = [
+                        $dataFull[Str::slug($date)][$branch->name][$cinema->name][] = [
                             'branch' => $branch->toArray(),
                             'cinema' => $cinema->toArray(),
                             'room' => $room->toArray(),
@@ -212,11 +238,37 @@ class ShowtimeController extends Controller
                 }
             }
         }
-        // dd($dataFull);
-        // Xử lý loại bỏ các bản ghi đã tồn tại
+
+        $dataFulls = [];
+        $duplicateData = [];
+
+        foreach ($dataFull as $dateDataFull => $branches) {
+            if (isset($CheckDuplicateShowtime[Str::slug($dateDataFull)])) {
+                foreach ($branches as $branchName => $cinemas) {
+                    foreach ($cinemas as $cinemaName => $rooms) {
+                        foreach ($rooms as $key => $roomData) {
+                            $roomName = $roomData['room']['name'];
+                            if (isset($CheckDuplicateShowtime[Str::slug($dateDataFull)][$branchName][$cinemaName][$roomName])) {
+                                unset($duplicateData[$dateDataFull][$branchName][$cinemaName][$key]);
+                            } else {
+                                $duplicateData[$dateDataFull][$branchName][$cinemaName][] = $roomData;
+                            }
+                        }
+                    }
+                }
+            } else {
+                $dataFulls[$dateDataFull] = $branches;
+            }
+        }
+        $mergedData = array_merge_recursive($dataFulls, $duplicateData);
+
+        uksort($mergedData, function ($a, $b) {
+            return strtotime($a) - strtotime($b);
+        });
+
         return redirect()->route('admin.showtimes.createList', $id)->with([
-            'dataFull' => $dataFull,
+            'dataFull' => $mergedData,
             'showtimes' => $showtimes
-        ]);
+        ])->with('warning', 'Phòng sẽ bị loại bỏ nếu đã tồn tại suất chiếu trong ngày !!! ');
     }
 }
