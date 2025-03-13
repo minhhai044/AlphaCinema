@@ -27,71 +27,127 @@ class StatisticalController extends Controller
 
         return view('admin.statistical.cinema_revenue', compact('revenues'));
     }
-public function combAndFoodRevenue(Request $request)
-{
-    $user = Auth::user();
-    $branches = Branch::where('is_active', 1)->get();
-
-    // Lấy khoảng thời gian và bộ lọc từ request hoặc session
-    $startDate = $request->input('start_date', session('statistical.start_date', Carbon::now()->subDays(30)->format('Y-m-d')));
-    $endDate = $request->input('end_date', session('statistical.end_date', Carbon::now()->format('Y-m-d')));
-    $branchId = $request->input('branch_id', session('statistical.branch_id'));
-    $cinemaId = $request->input('cinema_id', session('statistical.cinema_id'));
-
-    // Lưu vào session
-    session([
-        'statistical.start_date' => $startDate,
-        'statistical.end_date' => $endDate,
-        'statistical.branch_id' => $branchId,
-        'statistical.cinema_id' => $cinemaId,
-    ]);
-
-    // Điều kiện lọc chi nhánh/rạp
-    $conditions = [];
-    if ($branchId) {
-        $cinemaIds = Cinema::where('branch_id', $branchId)->pluck('id')->toArray();
-        if (!empty($cinemaIds)) {
-            $conditions[] = "cinema_id IN (" . implode(',', $cinemaIds) . ")";
+    public function comboRevenue(Request $request)
+    {
+        $user = Auth::user();
+        $branches = Branch::where('is_active', 1)->get();
+    
+        // Lấy khoảng thời gian và bộ lọc từ request hoặc session
+        $startDate = $request->input('start_date', session('statistical.start_date', Carbon::now()->subDays(30)->format('Y-m-d')));
+        $endDate = $request->input('end_date', session('statistical.end_date', Carbon::now()->format('Y-m-d')));
+        $branchId = $request->input('branch_id', session('statistical.branch_id'));
+        $cinemaId = $request->input('cinema_id', session('statistical.cinema_id'));
+    
+        // Lưu vào session
+        session([
+            'statistical.start_date' => $startDate,
+            'statistical.end_date' => $endDate,
+            'statistical.branch_id' => $branchId,
+            'statistical.cinema_id' => $cinemaId,
+        ]);
+    
+        // Điều kiện lọc chi nhánh/rạp
+        $conditions = [];
+        if ($branchId) {
+            $cinemaIds = Cinema::where('branch_id', $branchId)->pluck('id')->toArray();
+            if (!empty($cinemaIds)) {
+                $conditions[] = "cinema_id IN (" . implode(',', $cinemaIds) . ")";
+            }
         }
+        if ($cinemaId) {
+            $conditions[] = "cinema_id = " . (int)$cinemaId;
+        }
+        $whereClause = !empty($conditions) ? " AND " . implode(' AND ', $conditions) : "";
+    
+        // Truy vấn thống kê top 5 combo theo doanh thu
+        $comboQuery = "
+            SELECT 
+                JSON_UNQUOTE(JSON_EXTRACT(tc.combo_item, '$.name')) AS combo_name,
+                CAST(FLOOR(SUM(JSON_EXTRACT(tc.combo_item, '$.quantity'))) AS UNSIGNED) AS total_quantity,
+                SUM(JSON_EXTRACT(tc.combo_item, '$.price') * JSON_EXTRACT(tc.combo_item, '$.quantity')) AS total_price,
+                CONCAT(
+                    CAST(FLOOR(SUM(JSON_EXTRACT(tc.combo_item, '$.quantity'))) AS UNSIGNED), ' lượt - ',
+                    FORMAT(SUM(JSON_EXTRACT(tc.combo_item, '$.price') * JSON_EXTRACT(tc.combo_item, '$.quantity')), 0), ' VND'
+                ) AS summary
+            FROM tickets
+            JOIN JSON_TABLE(
+                ticket_combos,
+                '$[*]' COLUMNS (
+                    combo_item JSON PATH '$'
+                )
+            ) AS tc ON 1=1
+            WHERE ticket_combos IS NOT NULL
+            AND created_at BETWEEN ? AND ?
+            $whereClause
+            GROUP BY combo_name
+            ORDER BY total_price DESC
+            LIMIT 5
+        ";
+    
+        // Thực thi truy vấn
+        $comboStatistics = DB::select($comboQuery, [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        // dd($comboStatistics);
+    
+        // Chuẩn bị dữ liệu cho view
+        $comboQuantities = array_column($comboStatistics, 'total_quantity');
+        $comboNames = array_column($comboStatistics, 'combo_name');
+        $comboSummaries = array_column($comboStatistics, 'summary');
+        $comboRevenue = array_column($comboStatistics, 'total_price');
+    
+        // Trả về view
+        return view('admin.statistical.ComboStatistical', compact(
+            'branches',
+            'branchId',
+            'cinemaId',
+            'startDate',
+            'endDate',
+            'comboStatistics',
+            'comboQuantities',
+            'comboNames',
+            'comboSummaries',
+            'comboRevenue'
+        ));
     }
-    if ($cinemaId) {
-        $conditions[] = "cinema_id = " . (int)$cinemaId;
-    }
-    $whereClause = !empty($conditions) ? " AND " . implode(' AND ', $conditions) : "";
+    public function foodRevenue(Request $request)
+    {
+        $user = Auth::user();
+        $branches = Branch::where('is_active', 1)->get();
 
-    // Truy vấn thống kê Combo
-    $comboQuery = "
-        SELECT 
-            JSON_UNQUOTE(JSON_EXTRACT(tc.combo_item, '$.name')) AS item_name,
-            'Combo' AS item_type,
-            SUM(JSON_EXTRACT(tc.combo_item, '$.quantity')) AS total_quantity,
-            SUM(JSON_EXTRACT(tc.combo_item, '$.price_sale') * JSON_EXTRACT(tc.combo_item, '$.quantity')) AS total_price,
-            CONCAT(
-                SUM(JSON_EXTRACT(tc.combo_item, '$.quantity')), ' lượt - ',
-                FORMAT(SUM(JSON_EXTRACT(tc.combo_item, '$.price_sale') * JSON_EXTRACT(tc.combo_item, '$.quantity')), 0), ' VND'
-            ) AS summary
-        FROM tickets
-        JOIN JSON_TABLE(
-            ticket_combos,
-            '$[*]' COLUMNS (
-                combo_item JSON PATH '$'
-            )
-        ) AS tc ON 1=1
-        WHERE ticket_combos IS NOT NULL
-        AND created_at BETWEEN ? AND ?
-        $whereClause
-        GROUP BY item_name
-    ";
+        // Lấy khoảng thời gian và bộ lọc từ request hoặc session
+        $startDate = $request->input('start_date', session('statistical.start_date', Carbon::now()->subDays(30)->format('Y-m-d')));
+        $endDate = $request->input('end_date', session('statistical.end_date', Carbon::now()->format('Y-m-d')));
+        $branchId = $request->input('branch_id', session('statistical.branch_id'));
+        $cinemaId = $request->input('cinema_id', session('statistical.cinema_id'));
 
-    // Truy vấn thống kê Đồ ăn
-    $foodQuery = "
+        // Lưu vào session
+        session([
+            'statistical.start_date' => $startDate,
+            'statistical.end_date' => $endDate,
+            'statistical.branch_id' => $branchId,
+            'statistical.cinema_id' => $cinemaId,
+        ]);
+
+        // Điều kiện lọc chi nhánh/rạp
+        $conditions = [];
+        if ($branchId) {
+            $cinemaIds = Cinema::where('branch_id', $branchId)->pluck('id')->toArray();
+            if (!empty($cinemaIds)) {
+                $conditions[] = "cinema_id IN (" . implode(',', $cinemaIds) . ")";
+            }
+        }
+        if ($cinemaId) {
+            $conditions[] = "cinema_id = " . (int)$cinemaId;
+        }
+        $whereClause = !empty($conditions) ? " AND " . implode(' AND ', $conditions) : "";
+
+        // Truy vấn thống kê top 5 món ăn bán chạy
+        $foodQuery = "
         SELECT 
-            JSON_UNQUOTE(JSON_EXTRACT(tf.food_item, '$.name')) AS item_name,
-            'Food' AS item_type,
-            SUM(JSON_EXTRACT(tf.food_item, '$.quantity')) AS total_quantity,
+            JSON_UNQUOTE(JSON_EXTRACT(tf.food_item, '$.name')) AS food_name,
+            CAST(FLOOR(SUM(JSON_EXTRACT(tf.food_item, '$.quantity'))) AS UNSIGNED) AS total_quantity,
             SUM(JSON_EXTRACT(tf.food_item, '$.price') * JSON_EXTRACT(tf.food_item, '$.quantity')) AS total_price,
             CONCAT(
-                SUM(JSON_EXTRACT(tf.food_item, '$.quantity')), ' lượt - ',
+                CAST(FLOOR(SUM(JSON_EXTRACT(tf.food_item, '$.quantity'))) AS UNSIGNED), ' lượt - ',
                 FORMAT(SUM(JSON_EXTRACT(tf.food_item, '$.price') * JSON_EXTRACT(tf.food_item, '$.quantity')), 0), ' VND'
             ) AS summary
         FROM tickets
@@ -104,64 +160,32 @@ public function combAndFoodRevenue(Request $request)
         WHERE ticket_foods IS NOT NULL
         AND created_at BETWEEN ? AND ?
         $whereClause
-        GROUP BY item_name
+        GROUP BY food_name
+        ORDER BY total_price DESC
+            LIMIT 5
     ";
 
-    // Kết hợp cả 2 truy vấn
-    $fullQuery = "($comboQuery) UNION ALL ($foodQuery) ORDER BY item_type, total_quantity DESC";
+        // Thực thi truy vấn
+        $foodStatistics = DB::select($foodQuery, [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        // dd($foodStatistics);
+        // Chuẩn bị dữ liệu cho view
+        $foodQuantities = array_column($foodStatistics, 'total_quantity');
+        $foodNames = array_column($foodStatistics, 'food_name');
+        $foodSummaries = array_column($foodStatistics, 'summary');
+        $foodRevenue = array_column($foodStatistics, 'total_price');
 
-    // Thực thi truy vấn
-    $statistics = DB::select($fullQuery, [$startDate . ' 00:00:00', $endDate . ' 23:59:59', $startDate . ' 00:00:00', $endDate . ' 23:59:59']);
-
-    // Tách dữ liệu cho Combo và Food
-    $comboStatistics = [];
-    $foodStatistics = [];
-    foreach ($statistics as $stat) {
-        if ($stat->item_type === 'Combo') {
-            $comboStatistics[] = [
-                'name' => $stat->item_name,
-                'total_quantity' => $stat->total_quantity,
-                'total_price' => $stat->total_price,
-                'summary' => $stat->summary,
-            ];
-        } else {
-            $foodStatistics[] = [
-                'name' => $stat->item_name,
-                'total_quantity' => $stat->total_quantity,
-                'total_price' => $stat->total_price,
-                'summary' => $stat->summary,
-            ];
-        }
+        // Trả về view
+        return view('admin.statistical.FoodStatistical', compact(
+            'branches',
+            'branchId',
+            'cinemaId',
+            'startDate',
+            'endDate',
+            'foodStatistics',
+            'foodQuantities',
+            'foodNames',
+            'foodSummaries',
+            'foodRevenue'
+        ));
     }
-
-    $comboQuantities = array_column($comboStatistics, 'total_quantity'); // Dùng số lượng thay vì doanh thu
-    $comboNames = array_column($comboStatistics, 'name');
-    $comboSummaries = array_column($comboStatistics, 'summary');
-    $comboRevenue = array_column($comboStatistics, 'total_price'); // Giữ lại để tính tổng
-
-    $foodQuantities = array_column($foodStatistics, 'total_quantity'); // Dùng số lượng thay vì doanh thu
-    $foodNames = array_column($foodStatistics, 'name');
-    $foodSummaries = array_column($foodStatistics, 'summary');
-    $foodRevenue = array_column($foodStatistics, 'total_price'); // Giữ lại để tính tổng
-
-    // dd($foodSummaries);
-    // Trả về view  
-    return view('admin.statistical.ComboAndFoodStatistial', compact(
-       'branches',
-        'branchId',
-        'cinemaId',
-        'startDate',
-        'endDate',
-        'comboStatistics',
-        'foodStatistics',
-        'comboQuantities',
-        'comboNames',
-        'comboSummaries',
-        'comboRevenue',
-        'foodQuantities',
-        'foodNames',
-        'foodSummaries',
-        'foodRevenue'
-    ));
-}
 }

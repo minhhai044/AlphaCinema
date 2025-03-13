@@ -36,9 +36,15 @@
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('admin.statistical.combAndFoodRevenue') }}">
+                        <a href="{{ route('admin.statistical.comboRevenue') }}">
 
-                            <span data-key="t-vouchers">Thống Combo và Đồ ăn</span>
+                            <span data-key="t-vouchers">Thống kê combo</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.statistical.foodRevenue') }}">
+
+                            <span data-key="t-vouchers">Thống kê đồ ăn</span>
                         </a>
                     </li>
                 </ul>
