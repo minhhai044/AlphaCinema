@@ -49,6 +49,28 @@
                 <canvas id="revenueChart" style="height: 400px; width: 100%;"></canvas>
             </div>
         </div>
+        <div class="mt-4">
+            <h2 class="mb-3">Top 5 Món Bán Chạy Nhất</h2>
+            <table class="table align-middle table-nowrap dt-responsive nowrap w-100">
+                <thead class="table-dark">
+                    <tr>
+                        <th>#</th>
+                        <th>Tên Món</th>
+                        <th>Số Lượng Bán</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{-- @foreach($top5Items as $index => $item) --}}
+                        <tr>
+                            <td>a</td>
+                            <td>a</td>
+                            <td>a</td>
+                        </tr>
+                    {{-- @endforeach --}}
+                </tbody>
+            </table>
+        </div>
+
     </div>
 
     <!-- Chart.js CDN -->

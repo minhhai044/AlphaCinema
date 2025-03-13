@@ -63,7 +63,7 @@ class FoodController extends Controller
 
             return $this->successResponse($data, 'Thêm mới đồ ăn thành công!', Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return back()->with('Thêm mới không thành công');
+            return $this->errorResponse($th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -96,7 +96,7 @@ class FoodController extends Controller
 
             return $this->successResponse($data, 'Cập nhật đồ ăn', Response::HTTP_OK);
         } catch (\Throwable $th) {
-            return back()->with('Cập nhật không thành công');
+            return $this->errorResponse($th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 
