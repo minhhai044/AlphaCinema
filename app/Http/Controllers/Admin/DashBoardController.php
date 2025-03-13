@@ -18,8 +18,8 @@ class DashBoardController extends Controller
         $thisMonthStart = $today->startOfMonth();
         $lastMonthStart = $today->subMonth()->startOfMonth();
         $lastMonthEnd = $today->subMonth()->endOfMonth();
-        $monthnow = Carbon::now()->month; // Tháng hiện tại
-        $year = Carbon::now()->year; // Năm hiện tại
+        $monthnow = Carbon::now()->month;
+        $year = Carbon::now()->year;
 
         // Lấy danh sách rạp
         $cinemas = DB::table('tickets')
@@ -36,23 +36,21 @@ class DashBoardController extends Controller
         $totalRevenue = $totalRevenue !== null ? (float) $totalRevenue : 0;
         $formattedRevenue = number_format($totalRevenue, 0, ',', '.');
 
-        // Lấy tất cả bản ghi tickets để tính số ghế và thống kê loại ghế
         $tickets = DB::table('tickets')
             ->whereMonth('created_at', $monthnow)
             ->whereYear('created_at', $year)
             ->select('ticket_seats')
             ->get();
 
-        // Tính tổng số ghế (số vé bán ra) và thống kê loại ghế
         $ticketCount = 0;
-        $seatTypes = []; // Mảng đếm số ghế theo type_seat_id
+        $seatTypes = [];
         foreach ($tickets as $ticket) {
             $seats = json_decode($ticket->ticket_seats, true);
             if (is_array($seats)) {
-                $ticketCount += count($seats); // Tổng số ghế
+                $ticketCount += count($seats);
                 foreach ($seats as $seat) {
                     $typeId = $seat['type_seat_id'];
-                    $seatTypes[$typeId] = ($seatTypes[$typeId] ?? 0) + 1; // Đếm theo type_seat_id
+                    $seatTypes[$typeId] = ($seatTypes[$typeId] ?? 0) + 1;
                 }
             }
         }
@@ -69,7 +67,7 @@ class DashBoardController extends Controller
             ];
             foreach ($seatTypes as $typeId => $count) {
                 $percentage = ($count / $ticketCount) * 100;
-                $series[] = round($percentage, 1); // Làm tròn 1 chữ số thập phân
+                $series[] = round($percentage, 1);
                 $labels[] = $seatTypeNames[$typeId] ?? 'Loại ghế ' . $typeId;
             }
         } else {
@@ -79,7 +77,7 @@ class DashBoardController extends Controller
         $seatSeries = json_encode($series);
         $seatLabels = json_encode($labels);
 
-        // 1. Doanh thu tháng này (đã trừ discount)
+        // 1. Doanh thu tháng này
         $query = DB::table('tickets')
             ->where('status', 'confirmed')
             ->whereBetween('created_at', [$thisMonthStart, $today]);
@@ -101,7 +99,7 @@ class DashBoardController extends Controller
             ? (($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth * 100)
             : 0;
 
-        // 3. Số vé bán ra tháng này (dựa trên số bản ghi tickets, không phải số ghế)
+        //Số vé bán ra tháng này
         $ticketsThisMonth = DB::table('tickets')
             ->where('status', 'confirmed')
             ->whereBetween('created_at', [$thisMonthStart, $today])
@@ -111,34 +109,33 @@ class DashBoardController extends Controller
             ->count();
 
 
-        $revenueByMonth = [];
-        $selectedYear = $request->input('year', Carbon::now()->year);
-        $branch = $request->input('branch', 'all');
+        //thống kê biểu đồ
 
-        for ($month = 1; $month <= 12; $month++) {
-            $query = DB::table('tickets')
-                ->where('status', 'confirmed')
-                ->whereYear('created_at', $selectedYear)
-                ->whereMonth('created_at', $month);
+        $years = [2024, 2025];
+        $revenueData = [];
 
-            if ($branch !== 'all') {
-                $query->where('cinema_id', $branch);
+        foreach ($years as $selectedYear) {
+            $monthlyRevenues = [];
+            for ($month = 1; $month <= 12; $month++) {
+                $query = DB::table('tickets')
+                    ->whereYear('created_at', $selectedYear)
+                    ->whereMonth('created_at', $month);
+
+                if ($branch !== 'all') {
+                    $query->where('cinema_id', $branch);
+                }
+
+                $monthlyRevenue = $query->sum(DB::raw('COALESCE(total_price, 0) '));
+                $monthlyRevenues[] = round($monthlyRevenue / 1000000, 2);
             }
-
-            $monthlyRevenue = $query->sum(DB::raw('COALESCE(total_price, 0) - COALESCE(voucher_discount, 0) - COALESCE(point_discount, 0)'));
-            $revenueByMonth[$month] = round($monthlyRevenue / 1000000, 2);
+            $revenueData[$selectedYear] = $monthlyRevenues;
         }
 
-        $revenueData = json_encode($revenueByMonth);
+        $revenueDataJson = json_encode($revenueData);
+        $selectedYear = $year;
 
-        if ($request->ajax()) {
-            return response()->json([
-                'revenueData' => json_decode($revenueData, true)
-            ]);
-        }
 
         return view(self::PATH_VIEW . __FUNCTION__, compact(
-            // ... các biến hiện có
             'revenueThisMonth',
             'revenueChange',
             'ticketsThisMonth',
@@ -153,6 +150,7 @@ class DashBoardController extends Controller
             'seatLabels',
             'revenueData',
             'selectedYear',
+            'revenueDataJson'
         ));
     }
 }

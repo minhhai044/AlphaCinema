@@ -159,6 +159,20 @@
             </div>
         </div>
 
+        {{-- <div class="col-xl-8">
+            <div class="card card-h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title">Doanh thu</h5>
+                        <select id="yearSelect" class="form-select w-auto">
+                            <option value="2025" selected>Năm 2025</option>
+                            <option value="2024">Năm 2024</option>
+                        </select>
+                    </div>
+                    <div id="revenue-chart"></div>
+                </div>
+            </div>
+        </div> --}}
         <div class="col-xl-8">
             <div class="card card-h-100">
                 <div class="card-body">
@@ -173,6 +187,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div> <!-- end row-->
 @endsection
 
@@ -180,7 +195,7 @@
     <!-- dashboard init -->
     <script src="{{ asset('theme/admin/assets/js/pages/dashboard.init.js') }}"></script>
 
-{{-- cột phần trăm --}}
+    {{-- cột phần trăm --}}
     <script>
         var options = {
             series: {!! $seatSeries !!}, // Dữ liệu tỷ lệ phần trăm từ controller
@@ -225,29 +240,27 @@
 
     {{-- Biểu đồ doanh thu --}}
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-        // Lấy dữ liệu ban đầu từ controller
-        let revenueData = @json($revenueData) || Array(12).fill(0);
+    // Sử dụng dữ liệu động từ controller thay vì dữ liệu cứng
+    const revenueData = {!! $revenueDataJson !!};
 
+    document.addEventListener("DOMContentLoaded", function() {
         var options = {
             series: [{
                 name: "Doanh thu (Triệu VND)",
-                data: Object.values(revenueData)
+                data: revenueData["{{ $selectedYear }}"]
             }],
             chart: {
                 type: 'line',
-                height: 350,
-                toolbar: {
-                    show: false
-                }
+                height: 350
             },
             stroke: {
                 width: 2,
                 curve: 'smooth'
             },
             xaxis: {
-                categories: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6",
-                           "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"]
+                categories: ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7",
+                    "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"
+                ]
             },
             yaxis: {
                 labels: {
@@ -262,36 +275,16 @@
                         return val + " triệu VND";
                     }
                 }
-            },
-            colors: ['#008FFB'],
-            grid: {
-                borderColor: '#f1f1f1'
             }
         };
-
         var chart = new ApexCharts(document.querySelector("#revenue-chart"), options);
         chart.render();
-
-        // Xử lý khi thay đổi năm
         document.getElementById("yearSelect").addEventListener("change", function() {
             var selectedYear = this.value;
-            chart.updateOptions({ chart: { animations: { enabled: true } } });
-            fetch(`/admin/dashboard?year=${selectedYear}&branch={{ $branch }}`)
-                .then(response => response.json())
-                .then(data => {
-                    chart.updateSeries([{
-                        name: "Doanh thu (Triệu VND)",
-                        data: Object.values(data.revenueData || Array(12).fill(0))
-                    }]);
-                    chart.updateOptions({ chart: { animations: { enabled: false } } });
-                })
-                .catch(error => {
-                    console.error('Error fetching revenue data:', error);
-                    chart.updateSeries([{
-                        name: "Doanh thu (Triệu VND)",
-                        data: Array(12).fill(0)
-                    }]);
-                });
+            chart.updateSeries([{
+                name: "Doanh thu (Triệu VND)",
+                data: revenueData[selectedYear]
+            }]);
         });
     });
 
