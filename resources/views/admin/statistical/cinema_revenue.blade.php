@@ -121,7 +121,7 @@
     </script>
 
 
- {{-- <script>
+ <script>
         document.addEventListener("DOMContentLoaded", function() {
             var ctx = document.getElementById('revenueChart').getContext('2d');
             var revenueData = @json($revenuesx);
@@ -177,5 +177,5 @@
                 alert("Không có dữ liệu để hiển thị biểu đồ.");
             }
         });
-    </script> --}}
+    </script>
 @endsection

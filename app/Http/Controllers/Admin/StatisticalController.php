@@ -37,44 +37,87 @@ class StatisticalController extends Controller
         $endDate = $request->input('end_date');
 
         // Xây dựng truy vấn doanh thu theo phim
-        $query = DB::table('tickets')
+        $query1 = DB::table('tickets')
             ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
             ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
             ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
-            ->join('movies', 'tickets.movie_id', '=', 'movies.id') // Join với bảng movies
+            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
             ->select(
-                'movies.name as movie_name', // Lấy tên phim
-                DB::raw('SUM(tickets.total_price) as revenue') // Tổng doanh thu theo phim
+                'movies.name as movie_name',
+                DB::raw('SUM(tickets.total_price) as revenue')
             )
-            ->where('tickets.status', 'confirmed') // Chỉ tính vé đã xác nhận
-            ->groupBy('movies.name'); // Nhóm theo tên phim
+            ->where('tickets.status', 'confirmed')
+            ->groupBy('movies.name');
+
+
+        $query2 = DB::table('tickets')
+            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
+            ->select(
+                'tickets.movie_id',
+                'movies.name as movie_name',
+                DB::raw('SUM(JSON_LENGTH(tickets.ticket_seats)) as ticket_count')
+            )
+            ->whereNotNull('tickets.ticket_seats')
+            ->groupBy('tickets.movie_id', 'movies.name');
+        if ($branchId) {
+            $query2->where('branches.id', $branchId);
+        }
+        if ($cinemaId) {
+            $query2->where('cinemas.id', $cinemaId);
+        }
+        if ($startDate) {
+            $query2->whereDate('showtimes.start_time', '>=', $startDate);
+        }
+        if ($endDate) {
+            $query2->whereDate('showtimes.start_time', '<=', $endDate);
+        }
+        if (!$startDate && !$endDate) {
+            $query2->whereDate('showtimes.start_time', '>=', Carbon::now()->subDays(7));
+        }
+
 
         // Áp dụng các điều kiện lọc theo ngày, chi nhánh, rạp
         if ($branchId) {
-            $query->where('branches.id', $branchId);
+            $query1->where('branches.id', $branchId);
         }
         if ($cinemaId) {
-            $query->where('cinemas.id', $cinemaId);
+            $query1->where('cinemas.id', $cinemaId);
         }
         if ($startDate) {
-            $query->whereDate('showtimes.start_time', '>=', $startDate);
+            $query1->whereDate('showtimes.start_time', '>=', $startDate);
         }
         if ($endDate) {
-            $query->whereDate('showtimes.start_time', '<=', $endDate);
+            $query1->whereDate('showtimes.start_time', '<=', $endDate);
         }
         // Nếu không có ngày nào được chọn, mặc định lấy 7 ngày gần nhất
         if (!$startDate && !$endDate) {
-            $query->whereDate('showtimes.start_time', '>=', Carbon::now()->subDays(7));
+            $query1->whereDate('showtimes.start_time', '>=', Carbon::now()->subDays(7));
         }
 
         // Lấy dữ liệu động từ database
-        $revenues = $query->orderBy('revenue', 'desc')->get()->toArray(); // Sắp xếp theo doanh thu giảm dần
+        $revenues = $query1->orderBy('revenue', 'desc')->get()->toArray(); // Sắp xếp theo doanh thu giảm dần
+
+        // Lấy dữ liệu động từ database
+        $revenuesx = $query2->orderBy('ticket_count', 'desc')
+            ->get()
+            ->map(function ($item) {
+                return [
+                    'movie_name' => $item->movie_name,
+                    'ticket_count' => $item->ticket_count
+                ];
+            })
+            ->toArray();
 
 
 
-
-        
-        // Trả về view với dữ liệu động
-        return view('admin.statistical.cinema_revenue', compact('branches', 'cinemas', 'revenues'));
+        return view('admin.statistical.cinema_revenue', compact(
+            'branches',
+            'cinemas',
+            'revenues',
+            'revenuesx'
+        ));
     }
 }
