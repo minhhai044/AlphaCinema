@@ -36,7 +36,12 @@ class CheckAdminMiddleware
         $accessToken = PersonalAccessToken::findToken($token);
 
         if (!$accessToken) {
-            return response()->json(['message' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
+            /**
+             * Nếu token hết hạn hoặc đã logout từ client, xóa cookie admin_token và redirect về url nuxt
+             */
+            return redirect()->to('http://localhost:3000')->withCookie(cookie()->forget('admin_token'));
+
+            // return response()->json(['message' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
         }
 
         // Lấy user từ token
