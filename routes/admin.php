@@ -73,7 +73,6 @@ Route::group([
     Route::post('change-active', [FoodController::class, 'changeActive'])->name('change-active');
 });
 
-
 // Route Combo
 Route::group([
     'prefix' => 'combos',  // Tiền tố URL cho tất cả route

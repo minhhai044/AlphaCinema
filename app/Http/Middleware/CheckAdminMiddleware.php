@@ -39,7 +39,7 @@ class CheckAdminMiddleware
             /**
              * Nếu token hết hạn hoặc đã logout từ client, xóa cookie admin_token và redirect về url nuxt
              */
-            return redirect()->to('http://localhost:3000')->withCookie(cookie()->forget('admin_token'));
+            return redirect()->to('https://alphacinema.me:3000');
 
             // return response()->json(['message' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
         }

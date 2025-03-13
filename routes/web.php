@@ -22,7 +22,7 @@ use Laravel\Socialite\Facades\Socialite;
 
 Route::get('/', function () {
     // return redirect()->route('admin.index');
-    return 'Hello from root';
+    return redirect()->to('https://alphacinema.me:3000');
 });
 
 Route::get('auth/google/redirect', [AuthController::class, 'googleRedirect']);
