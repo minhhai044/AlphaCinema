@@ -25,10 +25,10 @@
         }
 
         /* .nav-tabs.nav-fill .nav-link.active {
-                                                                                                                                                        background-color: #48e7cf !important;
-                                                                                                                                                        color: #fff !important;
-                                                                                                                                                        border-color: #48e7cf;
-                                                                                                                                                    } */
+                                                                                                                                                                        background-color: #48e7cf !important;
+                                                                                                                                                                        color: #fff !important;
+                                                                                                                                                                        border-color: #48e7cf;
+                                                                                                                                                                    } */
     </style>
     <link href="{{ asset('theme/admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" />
@@ -792,7 +792,7 @@
                                         <label for="start_time_${item.room.id}_${date.trim()}_${i}" class="form-label">
                                             Thời gian bắt đầu <span class="text-danger">*</span>
                                         </label>
-                                        <input type="time" required data-id="${item.room.id}_${date.trim()}_${i}" class="form-control" name="start_time[${item.room.id}_${date.trim()}][]" id="start_time_${item.room.id}_${date.trim()}_${i}" value="${value.start_time}">
+                                        <input type="time" required data-id="${i}" class="form-control" name="start_time[${item.room.id}_${date.trim()}][]" id="start_time_${item.room.id}_${date.trim()}_${i}" value="${value.start_time}">
                                     </div>
                                 </div>
                                 <div class="col-lg-5">
@@ -823,7 +823,7 @@
                                         <label for="start_time_${item.room.id}_${date.trim()}_${code_slug}" class="form-label">
                                             Thời gian bắt đầu <span class="text-danger">*</span>
                                         </label>
-                                        <input type="time" required class="form-control" name="start_time[${item.room.id}_${date.trim()}][]" data-id="${item.room.id}_${date.trim()}_${code_slug}" id="start_time_${item.room.id}_${date.trim()}_${code_slug}" aria-label="Chọn thời gian">
+                                        <input type="time" required class="form-control" name="start_time[${item.room.id}_${date.trim()}][]" data-id="${code_slug}" id="start_time_${item.room.id}_${date.trim()}_${code_slug}" aria-label="Chọn thời gian">
                                     </div>
                                 </div>
                                 <div class="col-lg-5">
@@ -895,16 +895,21 @@
                             if (indexArray > 0) {
                                 const prevScreening = screenings[indexArray - 1]; // Lấy đối tượng trước đó
                                 const prevId = prevScreening.id; // Lấy id của nó
-                                const prevStart = $(`#start_time_${item.room.id}_${date.trim()}_${prevId}`).val(); // Lấy thời gian bắt đầu
-                                const prevStartMinutes = convertTimeToMinutes(prevStart); // Chuyển đổi về số
-                                const prevEndMinutes = prevStartMinutes + durationMovie; // Công thêm thời lượng phim để biết giờ gian kết thúc
+                                const prevStart = $(`#start_time_${item.room.id}_${date.trim()}_${prevId}`)
+                                    .val(); // Lấy thời gian bắt đầu
+                                const prevStartMinutes = convertTimeToMinutes(
+                                    prevStart); // Chuyển đổi về số
+                                const prevEndMinutes = prevStartMinutes +
+                                    durationMovie; // Công thêm thời lượng phim để biết giờ gian kết thúc
 
-                                if (currentStartMinutes < prevEndMinutes + 10
+                                if (currentStartMinutes < prevEndMinutes +
+                                    10
                                 ) { // Nếu thời gian đang chọn nhỏ hơn thời gian kết thúc của phim trước đó thì
                                     toastr.error(
                                         'Suất chiếu mới phải cách suất chiếu trước ít nhất 10 phút!');
                                     $(this).val(""); // Reset thời gian đang trọn
-                                    $(`#end_time_${item.room.id}_${date.trim()}_${currentIdFilter}`).val(""); // Chuyển thời gian kết thúc của thời gian đang chọn về rỗng
+                                    $(`#end_time_${item.room.id}_${date.trim()}_${currentIdFilter}`).val(
+                                        ""); // Chuyển thời gian kết thúc của thời gian đang chọn về rỗng
                                     return;
                                 }
                             }
