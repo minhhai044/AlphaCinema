@@ -25,10 +25,10 @@
         }
 
         /* .nav-tabs.nav-fill .nav-link.active {
-                                                                                                                                                                        background-color: #48e7cf !important;
-                                                                                                                                                                        color: #fff !important;
-                                                                                                                                                                        border-color: #48e7cf;
-                                                                                                                                                                    } */
+                                                                                                                                                                                        background-color: #48e7cf !important;
+                                                                                                                                                                                        color: #fff !important;
+                                                                                                                                                                                        border-color: #48e7cf;
+                                                                                                                                                                                    } */
     </style>
     <link href="{{ asset('theme/admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" />
@@ -152,218 +152,228 @@
             </div>
         </div>
     @else
-        <div class="card">
-            <div class="card-body">
-                <div class="twitter-bs-wizard">
-                    <ul class="nav nav-pills nav-justified mb-4">
-                        @foreach (session('dataFull') as $date => $branches)
-                            <li class="nav-item">
-                                <a href="#date_{{ $loop->index }}_{{ Str::slug($date) }}"
-                                    class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab">
-                                    <i class="bx bxs-calendar"></i><br>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}
-                                </a>
-                            </li>
-                        @endforeach
-                    </ul>
+        <form id="formSubmit" action="{{ route('admin.showtimes.storePremium', $movie) }}" method="post">
+            @csrf
+            <div class="card">
+                <div class="card-body">
+                    <div class="twitter-bs-wizard">
+                        <ul class="nav nav-pills nav-justified mb-4">
+                            @foreach (session('dataFull') as $date => $branches)
+                                <li class="nav-item">
+                                    <a href="#date_{{ $loop->index }}_{{ Str::slug($date) }}"
+                                        class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab">
+                                        <i
+                                            class="bx bxs-calendar"></i><br>{{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}
+                                    </a>
+                                </li>
+                            @endforeach
+                        </ul>
 
-                    <div class="tab-content mt-3">
-                        @foreach (session('dataFull') as $date => $branches)
-                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
-                                id="date_{{ $loop->index }}_{{ Str::slug($date) }}">
-                                <ul class="nav nav-tabs nav-fill" role="tablist">
-                                    @foreach ($branches as $nameBranch => $cinemas)
-                                        <li class="nav-item">
-                                            <a class="nav-link {{ $loop->first ? 'active' : '' }}" data-bs-toggle="tab"
-                                                href="#branch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
-                                                <i class="bi bi-building"></i> {{ $nameBranch }}
-                                            </a>
-                                        </li>
-                                    @endforeach
-                                </ul>
+                        <div class="tab-content mt-3">
+                            @foreach (session('dataFull') as $date => $branches)
+                                <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                    id="date_{{ $loop->index }}_{{ Str::slug($date) }}">
+                                    <ul class="nav nav-tabs nav-fill" role="tablist">
+                                        @foreach ($branches as $nameBranch => $cinemas)
+                                            <li class="nav-item">
+                                                <a class="nav-link {{ $loop->first ? 'active' : '' }}"
+                                                    data-bs-toggle="tab"
+                                                    href="#branch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
+                                                    <i class="bi bi-building"></i> {{ $nameBranch }}
+                                                </a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
 
-                                <div class="tab-content mt-3">
-                                    @foreach ($branches as $nameBranch => $cinemas)
-                                        <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
-                                            id="branch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
-                                            <div class="accordion"
-                                                id="cinemasAccordionBranch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
-                                                @foreach ($cinemas as $nameCinema => $rooms)
-                                                    <div class="accordion-item">
-                                                        <h2 class="accordion-header">
-                                                            <button class="accordion-button collapsed fw-semibold"
-                                                                type="button" data-bs-toggle="collapse"
-                                                                data-bs-target="#cinema_{{ Str::slug($nameCinema) }}_{{ Str::slug($date) }}">
-                                                                <i class="bi bi-camera-reels me-2"></i>
-                                                                {{ $nameCinema }}
-                                                            </button>
-                                                        </h2>
-                                                        <div id="cinema_{{ Str::slug($nameCinema) }}_{{ Str::slug($date) }}"
-                                                            class="accordion-collapse collapse">
-                                                            <div class="accordion-body">
-                                                                @foreach ($rooms as $room)
-                                                                    <input type="hidden"
-                                                                        name="dates[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
-                                                                        id="day_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                        value="{{ $date }}">
-                                                                    <input type="hidden"
-                                                                        name="branches[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
-                                                                        id="branch_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                        value="{{ $room['branch']['id'] }}">
-                                                                    <input type="hidden"
-                                                                        name="cinemas[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
-                                                                        id="cinema_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                        value="{{ $room['cinema']['id'] }}">
-                                                                    <input type="hidden"
-                                                                        name="rooms[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
-                                                                        id="room_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                        value="{{ $room['room']['id'] }}">
-                                                                    <input type="hidden"
-                                                                        name="seat_structure[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
-                                                                        id="room_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                        value="{{ $room['room']['seat_structure'] }}">
+                                    <div class="tab-content mt-3">
+                                        @foreach ($branches as $nameBranch => $cinemas)
+                                            <div class="tab-pane fade {{ $loop->first ? 'show active' : '' }}"
+                                                id="branch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
+                                                <div class="accordion"
+                                                    id="cinemasAccordionBranch_{{ Str::slug($nameBranch) }}_{{ $loop->parent->index }}">
+                                                    @foreach ($cinemas as $nameCinema => $rooms)
+                                                        <div class="accordion-item">
+                                                            <h2 class="accordion-header">
+                                                                <button class="accordion-button collapsed fw-semibold"
+                                                                    type="button" data-bs-toggle="collapse"
+                                                                    data-bs-target="#cinema_{{ Str::slug($nameCinema) }}_{{ Str::slug($date) }}">
+                                                                    <i class="bi bi-camera-reels me-2"></i>
+                                                                    {{ $nameCinema }}
+                                                                </button>
+                                                            </h2>
+                                                            <div id="cinema_{{ Str::slug($nameCinema) }}_{{ Str::slug($date) }}"
+                                                                class="accordion-collapse collapse">
+                                                                <div class="accordion-body">
+                                                                    @foreach ($rooms as $room)
+                                                                        <input type="hidden"
+                                                                            name="dates[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                            id="day_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            value="{{ $date }}">
+                                                                        <input type="hidden"
+                                                                            name="branches[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                            id="branch_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            value="{{ $room['branch']['id'] }}">
+                                                                        <input type="hidden"
+                                                                            name="cinemas[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                            id="cinema_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            value="{{ $room['cinema']['id'] }}">
+                                                                        <input type="hidden"
+                                                                            name="rooms[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                            id="room_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            value="{{ $room['room']['id'] }}">
+                                                                        <input type="text"
+                                                                            name="seat_structure[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                            id="seat_structure_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            value="{{ $room['room']['seat_structure'] }}">
 
-                                                                    <input type="hidden"
-                                                                        id="day_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
-                                                                    <input type="hidden"
-                                                                        id="branch_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                        value="{{ $room['branch']['surcharge'] }}">
-                                                                    <input type="hidden"
-                                                                        id="movie_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                        value="{{ $room['movie']['surcharge'] }}">
-                                                                    <input type="hidden"
-                                                                        id="movie_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                        value="{{ $room['room']['type_room']['surcharge'] }}">
+                                                                        <input type="hidden"
+                                                                            id="day_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+                                                                        <input type="hidden"
+                                                                            id="branch_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            value="{{ $room['branch']['surcharge'] }}">
+                                                                        {{-- <input type="hidden"
+                                                                            id="movie_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            value="{{ $room['movie']['surcharge'] }}"> --}}
+                                                                        <input type="hidden"
+                                                                            id="type_room_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            value="{{ $room['room']['type_room']['surcharge'] }}">
 
-                                                                    <div class="row">
-                                                                        <div class="col-lg-12">
-                                                                            <div class="card">
-                                                                                <div class="card-body"
-                                                                                    style="border: none">
-                                                                                    <div
-                                                                                        class="row p-3 bg-white rounded shadow-sm">
-                                                                                        <!-- Tên phòng -->
-                                                                                        <div class="col-lg-12 mb-4">
-                                                                                            <h4
-                                                                                                class="border-bottom pb-2 fw-bold">
-                                                                                                <i
-                                                                                                    class="bx bx-building-house text-primary"></i>
-                                                                                                Phòng: <span
-                                                                                                    class="text-success">{{ $room['room']['name'] }}</span>
-                                                                                            </h4>
-                                                                                        </div>
-
-                                                                                        <!-- Loại ngày -->
-                                                                                        <div class="col-lg-4 mb-3">
-                                                                                            <label
-                                                                                                for="day_id_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                                                class="form-label fw-semibold">
-                                                                                                Loại ngày <span
-                                                                                                    class="text-danger">*</span>
-                                                                                            </label>
-                                                                                            <select
-                                                                                                class="form-select shadow-sm"
-                                                                                                required
-                                                                                                id="day_id_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
-                                                                                                <option disabled selected>
-                                                                                                    Chọn
-                                                                                                    loại ngày</option>
-                                                                                                @foreach ($days as $day)
-                                                                                                    <option
-                                                                                                        @disabled($day['id'] == 1 || $day['id'] == 2)
-                                                                                                        value="{{ $day['id'] }}">
-                                                                                                        {{ $day['name'] }}
-                                                                                                    </option>
-                                                                                                @endforeach
-                                                                                            </select>
-                                                                                        </div>
-
-                                                                                        <!-- Loại suất chiếu -->
-                                                                                        <div class="col-lg-4 mb-3">
-                                                                                            <label
-                                                                                                for="status_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                                                class="form-label fw-semibold">
-                                                                                                Loại suất chiếu <span
-                                                                                                    class="text-danger">*</span>
-                                                                                            </label>
-                                                                                            <select
-                                                                                                class="form-select shadow-sm"
-                                                                                                required
-                                                                                                id="status_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
-                                                                                                <option value=""
-                                                                                                    disabled selected>Chọn
-                                                                                                    loại suất chiếu</option>
-                                                                                                @foreach ($specialshowtimes as $specialshowtime)
-                                                                                                    <option
-                                                                                                        @disabled($specialshowtime['id'] == 1 || $specialshowtime['id'] == 2)
-                                                                                                        value="{{ $specialshowtime['id'] }}">
-                                                                                                        {{ $specialshowtime['name'] }}
-                                                                                                    </option>
-                                                                                                @endforeach
-                                                                                            </select>
-                                                                                        </div>
-
-                                                                                        <!-- Phụ phí -->
-                                                                                        <div class="col-lg-4 mb-3">
-                                                                                            <label
-                                                                                                for="price_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                                                class="form-label fw-semibold">
-                                                                                                Phụ phí <small
-                                                                                                    class="text-muted">(Nếu
-                                                                                                    là suất đặc
-                                                                                                    biệt)</small>
-                                                                                            </label>
-                                                                                            <input type="text"
-                                                                                                name="price_special"
-                                                                                                class="form-control shadow-sm"
-                                                                                                id="price_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                                                placeholder="Nhập phụ phí nếu có">
-                                                                                        </div>
-
-                                                                                        <!-- Nút thêm và tự động -->
+                                                                        <div class="row">
+                                                                            <div class="col-lg-12">
+                                                                                <div class="card">
+                                                                                    <div class="card-body"
+                                                                                        style="border: none">
                                                                                         <div
-                                                                                            class="col-lg-12 text-end mt-2">
-                                                                                            <button type="button"
-                                                                                                id="autoGenerate_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                                                class="btn btn-success btn-sm shadow-sm me-2">
-                                                                                                <i class="bx bxs-copy"></i>
-                                                                                            </button>
-                                                                                            <button type="button"
-                                                                                                id="addTime_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                                                class="btn btn-primary btn-sm shadow-sm">
-                                                                                                <i class="bx bx-plus"></i>
-                                                                                            </button>
-                                                                                        </div>
+                                                                                            class="row p-3 bg-white rounded shadow-sm">
+                                                                                            <!-- Tên phòng -->
+                                                                                            <div class="col-lg-12 mb-4">
+                                                                                                <h4
+                                                                                                    class="border-bottom pb-2 fw-bold">
+                                                                                                    <i
+                                                                                                        class="bx bx-building-house text-primary"></i>
+                                                                                                    Phòng: <span
+                                                                                                        class="text-success">{{ $room['room']['name'] }}</span>
+                                                                                                </h4>
+                                                                                            </div>
 
-                                                                                        <!-- Danh sách xuất chiếu -->
-                                                                                        <div class="col-lg-12 mt-4 overflow-auto"
-                                                                                            style="height: 300px;"
-                                                                                            id="listTime_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
-                                                                                            <!-- Danh sách sẽ được render tại đây -->
+                                                                                            <!-- Loại ngày -->
+                                                                                            <div class="col-lg-4 mb-3">
+                                                                                                <label
+                                                                                                    for="day_id_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                    class="form-label fw-semibold">
+                                                                                                    Loại ngày <span
+                                                                                                        class="text-danger">*</span>
+                                                                                                </label>
+                                                                                                <select
+                                                                                                    class="form-select shadow-sm"
+                                                                                                    required
+                                                                                                    id="day_id_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+                                                                                                    <option disabled
+                                                                                                        selected>
+                                                                                                        Chọn
+                                                                                                        loại ngày</option>
+                                                                                                    @foreach ($days as $day)
+                                                                                                        <option
+                                                                                                            @disabled($day['id'] == 1 || $day['id'] == 2)
+                                                                                                            value="{{ $day['id'] }}">
+                                                                                                            {{ $day['name'] }}
+                                                                                                        </option>
+                                                                                                    @endforeach
+                                                                                                </select>
+                                                                                            </div>
+
+                                                                                            <!-- Loại suất chiếu -->
+                                                                                            <div class="col-lg-4 mb-3">
+                                                                                                <label
+                                                                                                    for="status_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                    class="form-label fw-semibold">
+                                                                                                    Loại suất chiếu <span
+                                                                                                        class="text-danger">*</span>
+                                                                                                </label>
+                                                                                                <select
+                                                                                                    class="form-select shadow-sm"
+                                                                                                    required
+                                                                                                    id="status_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+                                                                                                    <option value=""
+                                                                                                        disabled selected>
+                                                                                                        Chọn
+                                                                                                        loại suất chiếu
+                                                                                                    </option>
+                                                                                                    @foreach ($specialshowtimes as $specialshowtime)
+                                                                                                        <option
+                                                                                                            @disabled($specialshowtime['id'] == 1 || $specialshowtime['id'] == 2)
+                                                                                                            value="{{ $specialshowtime['id'] }}">
+                                                                                                            {{ $specialshowtime['name'] }}
+                                                                                                        </option>
+                                                                                                    @endforeach
+                                                                                                </select>
+                                                                                            </div>
+
+                                                                                            <!-- Phụ phí -->
+                                                                                            <div class="col-lg-4 mb-3">
+                                                                                                <label
+                                                                                                    for="price_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                    class="form-label fw-semibold">
+                                                                                                    Phụ phí <small
+                                                                                                        class="text-muted">(Nếu
+                                                                                                        là suất đặc
+                                                                                                        biệt)</small>
+                                                                                                </label>
+                                                                                                <input type="text"
+                                                                                                    name="price_special"
+                                                                                                    class="form-control shadow-sm"
+                                                                                                    id="price_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                    placeholder="Nhập phụ phí nếu có">
+                                                                                            </div>
+
+                                                                                            <!-- Nút thêm và tự động -->
+                                                                                            <div
+                                                                                                class="col-lg-12 text-end mt-2">
+                                                                                                <button type="button"
+                                                                                                    id="autoGenerate_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                    class="btn btn-success btn-sm shadow-sm me-2">
+                                                                                                    <i
+                                                                                                        class="bx bxs-copy"></i>
+                                                                                                </button>
+                                                                                                <button type="button"
+                                                                                                    id="addTime_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                                                    class="btn btn-primary btn-sm shadow-sm">
+                                                                                                    <i
+                                                                                                        class="bx bx-plus"></i>
+                                                                                                </button>
+                                                                                            </div>
+
+                                                                                            <!-- Danh sách xuất chiếu -->
+                                                                                            <div class="col-lg-12 mt-4 overflow-auto"
+                                                                                                style="height: 300px;"
+                                                                                                id="listTime_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+                                                                                                <!-- Danh sách sẽ được render tại đây -->
+                                                                                            </div>
                                                                                         </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
-                                                                    </div>
-                                                                @endforeach
+                                                                    @endforeach
+                                                                </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                @endforeach
+                                                    @endforeach
+                                                </div>
                                             </div>
-                                        </div>
-                                    @endforeach
+                                        @endforeach
+                                    </div>
                                 </div>
-                            </div>
-                        @endforeach
-                    </div>
+                            @endforeach
+                        </div>
 
-                    <div class="mt-4 d-flex justify-content-end">
-                        <button type="submit" class="btn btn-primary">Thêm</button>
+                        <div class="mt-4 d-flex justify-content-end">
+                            <button type="button" id="clickForm" class="btn btn-primary">Thêm</button>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </form>
     @endif
     @php
         $dataFull = session('dataFull') ?? [];
@@ -707,7 +717,7 @@
         let release_date = movie.release_date;
         let end_date = movie.end_date;
         let dataShowtimeCheck = [];
-
+        let type_seats = @json($type_seats);
         for (let date in dataFull) {
             for (let branch in dataFull[date]) {
                 for (const cinema in dataFull[date][branch]) {
@@ -752,6 +762,7 @@
 
                             $(`#day_id_${item.room.id}_${date.trim()}`).val(value);
                             $(`#day_surcharge_${item.room.id}_${date.trim()}`).val(surchargeDay);
+                            setSeatStructure();
                         })
 
                         if (date.trim() >= date_create && date.trim() < release_date) {
@@ -772,7 +783,9 @@
                             let setValueDiscount = new Intl.NumberFormat('vi-VN').format(valueDiscount);
                             $(this).val(setValueDiscount);
                         });
-
+                        $(`#price_special_${item.room.id}_${date.trim()}`).change(function() {
+                            setSeatStructure();
+                        })
                         let listTimeContainer = $(`#listTime_${item.room.id}_${date.trim()}`);
                         listTimeContainer.empty();
 
@@ -949,6 +962,31 @@
                             }
                             row.remove();
                         });
+                        const setSeatStructure = () => {
+                            let seat_structure = JSON.parse($(`#seat_structure_${item.room.id}_${date.trim()}`)
+                                .val());
+                            let surchargeMovie = +movie.surcharge;
+                            let surchargeBranch = +$(`#branch_surcharge_${item.room.id}_${date.trim()}`).val();
+                            let surchargeTypeRoom = +$(`#type_room_${item.room.id}_${date.trim()}`).val();
+                            let surchargeDay = +$(`#day_surcharge_${item.room.id}_${date.trim()}`).val();
+                            let surchargeSpecial = $(`#price_special_${item.room.id}_${date.trim()}`).val() ?? 0;
+                            let dataSeatStructure = [];
+                            seat_structure.forEach((itemSeatStructure) => {
+                                dataSeatStructure.push({
+                                    ...itemSeatStructure,
+                                    price: +type_seats.filter((element) => element.id ==
+                                            itemSeatStructure.type_seat_id)[0].price +
+                                        surchargeMovie + surchargeBranch + surchargeTypeRoom +
+                                        +surchargeDay + Number(surchargeSpecial.replace(/\./g,
+                                            "")),
+                                });
+
+                            });
+                            $(`#seat_structure_${item.room.id}_${date.trim()}`).val(JSON.stringify(
+                                dataSeatStructure));
+                        }
+                        setSeatStructure();
+
                     });
 
                 }
