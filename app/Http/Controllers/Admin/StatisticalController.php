@@ -32,8 +32,8 @@ class StatisticalController extends Controller
         $endDate = $request->input('end_date');
         $defaultStartDate = Carbon::now()->subDays(30);
 
-        // Xây dựng truy vấn duy nhất lấy cả revenue và ticket_count
-        $query = DB::table('tickets')
+        // Truy vấn doanh thu và số vé theo phim
+        $revenueQuery = DB::table('tickets')
             ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
             ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
             ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
@@ -45,25 +45,55 @@ class StatisticalController extends Controller
             )
             ->groupBy('movies.name');
 
-        // Áp dụng các điều kiện lọc
-        $query->when($branchId, fn($q) => $q->where('branches.id', $branchId))
-            ->when($startDate || $endDate, function ($q) use ($startDate, $endDate, $defaultStartDate) {
-                // Trường hợp start_date và end_date trùng nhau
+        // Truy vấn số lượng suất chiếu của từng phim theo tháng
+        $showtimeQuery = DB::table('showtimes')
+            ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
+            ->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->select(
+                'movies.name as movie_name',
+                DB::raw('DATE_FORMAT(showtimes.date, "%Y-%m") as month'),
+                DB::raw('COUNT(*) as showtime_count')
+            )
+            ->groupBy('movies.name', DB::raw('DATE_FORMAT(showtimes.date, "%Y-%m")'));
+
+        // Áp dụng các điều kiện lọc cho cả hai truy vấn
+        $filterClosure = function ($q) use ($startDate, $endDate, $defaultStartDate) {
+            $q->when($startDate || $endDate, function ($q) use ($startDate, $endDate, $defaultStartDate) {
                 if ($startDate && $endDate && $startDate === $endDate) {
-                    $q->whereDate('tickets.created_at', $startDate);
+                    $q->whereDate('tickets.created_at', $startDate); // Cho revenueQuery
                 } else {
-                    // Áp dụng khoảng thời gian
                     $q->when($startDate, fn($q) => $q->whereDate('tickets.created_at', '>=', $startDate))
                         ->when($endDate, fn($q) => $q->whereDate('tickets.created_at', '<=', $endDate));
                 }
             }, fn($q) => $q->whereDate('tickets.created_at', '>=', $defaultStartDate));
+        };
+
+        $showtimeFilterClosure = function ($q) use ($startDate, $endDate, $defaultStartDate) {
+            $q->when($startDate || $endDate, function ($q) use ($startDate, $endDate, $defaultStartDate) {
+                if ($startDate && $endDate && $startDate === $endDate) {
+                    $q->where('showtimes.date', $startDate); // Cho showtimeQuery
+                } else {
+                    $q->when($startDate, fn($q) => $q->where('showtimes.date', '>=', $startDate))
+                        ->when($endDate, fn($q) => $q->where('showtimes.date', '<=', $endDate));
+                }
+            }, fn($q) => $q->where('showtimes.date', '>=', $defaultStartDate));
+        };
+
+        $revenueQuery->when($branchId, fn($q) => $q->where('branches.id', $branchId))
+            ->tap($filterClosure);
+
+        $showtimeQuery->when($branchId, fn($q) => $q->where('branches.id', $branchId))
+            ->tap($showtimeFilterClosure);
+
         // Lấy dữ liệu từ database
-        $revenues = $query->orderBy('revenue', 'desc')->get()->toArray();
+        $revenues = $revenueQuery->orderBy('revenue', 'desc')->get()->toArray();
+        $showtimes = $showtimeQuery->orderBy('month', 'asc')->get()->toArray();
 
         // Kiểm tra nếu không có dữ liệu
-        $message = empty($revenues) ? 'Không có dữ liệu để hiển thị.' : null;
+        $message = empty($revenues) && empty($showtimes) ? 'Không có dữ liệu để hiển thị.' : null;
 
         // Trả về view với dữ liệu
-        return view('admin.statistical.cinema_revenue', compact('branches', 'cinemas', 'revenues','message'));
+        return view('admin.statistical.cinema_revenue', compact('branches', 'cinemas', 'revenues', 'showtimes', 'message'));
     }
 }
