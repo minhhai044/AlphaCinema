@@ -70,8 +70,12 @@ class AuthController extends Controller
             // $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true);
             ## cookie chạy ngon
             // $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true, false, 'lax');
+
+            $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, false, false, 'none');
+
+
             ## Sửa cookie
-            $cookie = cookie('admin_token', $token, 1440, '/', null, true, true, false, 'none');
+            // $cookie = cookie('admin_token', $token, 1440, '/', null, true, true, false, 'none');
 
 
             return $this->successResponse([
@@ -133,7 +137,9 @@ class AuthController extends Controller
         return response()->json([
             'success' => false,
             'message' => 'Người dùng chưa đăng nhập'
-        ], 401);
+        ], 401)
+            ->withCookie(cookie()->forget('admin_token'))
+            ->withCookie(cookie()->forget('auth'));
     }
 
     public function updateProfile(Request $request)
