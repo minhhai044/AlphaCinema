@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 
@@ -19,17 +18,14 @@ class DashBoardController extends Controller
 
     public function index(Request $request)
     {
-
-        // Auth::logout();
-        return view(self::PATH_VIEW . __FUNCTION__);
         // Validation input
         $branch = $request->input('branch', 'all');
         $selectedMonth = $request->input('month', Carbon::now()->month) ?: Carbon::now()->month;
         $selectedYear = $request->input('year', Carbon::now()->year) ?: Carbon::now()->year;
 
         // Validate month/year
-        $selectedMonth = max(1, min(12, (int)$selectedMonth));
-        $selectedYear = max(2020, min(Carbon::now()->year, (int)$selectedYear));
+        $selectedMonth = max(1, min(12, (int) $selectedMonth));
+        $selectedYear = max(2020, min(Carbon::now()->year, (int) $selectedYear));
 
         // Date handling
         $today = Carbon::today();
@@ -175,7 +171,7 @@ class DashBoardController extends Controller
             ->orderBy('revenue', 'desc')
             ->get();
 
-        $revenueSeries = $revenueByCinema->pluck('revenue')->map(fn($value) => round((float)$value / 1000000, 2))->toArray();
+        $revenueSeries = $revenueByCinema->pluck('revenue')->map(fn($value) => round((float) $value / 1000000, 2))->toArray();
         $cinemaLabels = $revenueByCinema->pluck('cinema_name')->toArray();
 
         return [json_encode($revenueSeries), json_encode($cinemaLabels)];

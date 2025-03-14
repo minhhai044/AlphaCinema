@@ -16,8 +16,16 @@ class VoucherController extends Controller
         $user = Auth::user();
 
         // Truy xuất các bản ghi UserVoucher của người dùng, kèm theo thông tin voucher
+        // Truy xuất các bản ghi UserVoucher của người dùng, chỉ lấy voucher đang hoạt động
         $userVouchers = User_voucher::where('user_id', $user->id)
-            ->with('voucher')
+            ->whereHas('voucher', function ($query) {
+                $query->where('vouchers.is_active', 1); // Chỉ lấy voucher có is_active = 1 từ bảng vouchers
+            })
+            ->with([
+                'voucher' => function ($query) {
+                    $query->where('vouchers.is_active', 1); // Đảm bảo eager loading cũng chỉ lấy voucher đang hoạt động
+                }
+            ])
             ->get();
 
         if ($userVouchers->isEmpty()) {
@@ -41,7 +49,7 @@ class VoucherController extends Controller
 
             // Kiểm tra trạng thái hoạt động của voucher
             if (!$voucher->is_active) {
-                
+
                 $status = 'inactive';
                 $message = 'Voucher của bạn đã ngừng hoạt động.';
             } else {
@@ -73,7 +81,7 @@ class VoucherController extends Controller
                 'status'            => $status,
                 'message'           => $message,
                 'usage_count'       => $userVoucher->usage_count,
-                'discount'          => $userVoucher->discount,
+                'discount'          => $voucher->discount,
                 'limit'             => $voucher->limit,
             ];
         }
