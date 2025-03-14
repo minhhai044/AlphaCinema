@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\RevenueController;
 use App\Http\Controllers\Admin\RoleController;
 
 use App\Http\Controllers\Admin\CinemaController;

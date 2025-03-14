@@ -37,7 +37,7 @@ class VoucherController extends Controller
 
             $voucher = $userVoucher->voucher;
             $startDateTime = Carbon::parse($voucher->start_date_time);
-            $endDateTime   = Carbon::parse($voucher->end_date_time);
+            $endDateTime = Carbon::parse($voucher->end_date_time);
 
             // Kiểm tra trạng thái hoạt động của voucher
             if (!$voucher->is_active) {
@@ -63,16 +63,18 @@ class VoucherController extends Controller
             }
 
             $voucherData[] = [
-                'user_voucher_id' => $userVoucher->id,
-                'voucher_id'      => $voucher->id,
-                'code'            => $voucher->code,
-                'title'           => $voucher->title,
-                'description'     => $voucher->description,
-                'start_date_time' => $voucher->start_date_time,
-                'end_date_time'   => $voucher->end_date_time,
-                'status'          => $status,
-                'message'         => $message,
-                'usage_count'     => $userVoucher->usage_count,
+                'user_voucher_id'   => $userVoucher->id,
+                'voucher_id'        => $voucher->id,
+                'code'              => $voucher->code,
+                'title'             => $voucher->title,
+                'description'       => $voucher->description,
+                'start_date_time'   => $voucher->start_date_time,
+                'end_date_time'     => $voucher->end_date_time,
+                'status'            => $status,
+                'message'           => $message,
+                'usage_count'       => $userVoucher->usage_count,
+                'discount'          => $userVoucher->discount,
+                'limit'             => $voucher->limit,
             ];
         }
 
