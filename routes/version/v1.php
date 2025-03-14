@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\V1\ComboFoodController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
+use App\Http\Controllers\Api\V1\SendMailController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
 
 use App\Http\Controllers\Api\V1\SlideShowController;
@@ -80,3 +81,4 @@ Route::get('/settings',[SiteSettingController::class,'index']);
 
 Route::post('/payment',[PaymentController::class,'payment']);
 Route::get('/checkout',[PaymentController::class,'checkout']);
+Route::post('/sendMail',[SendMailController::class,'sendMail']);
