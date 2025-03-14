@@ -15,7 +15,7 @@
                 <i class="bi bi-geo-alt-fill"></i>
             </span>
             <select name="branch" class="form-select border-0 shadow-sm" onchange="this.form.submit()">
-                <option value="all" {{ $branch == 'all' ? 'selected' : '' }}>Tất cả rạp</option>
+                {{-- <option value="all" {{ $branch == 'all' ? 'selected' : '' }}>Tất cả rạp</option> --}}
                 @foreach ($cinemas as $cinema)
                     <option value="{{ $cinema->id }}" {{ $branch == $cinema->id ? 'selected' : '' }}>
                         {{ $cinema->name }}</option>
