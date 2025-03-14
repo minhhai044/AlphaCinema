@@ -19,7 +19,7 @@ class DashBoardController extends Controller
     public function index(Request $request)
     {
         // Validation input
-        // $branch = $request->input('branch', 'all');
+        $branch = $request->input('branch', 'all');
         $selectedMonth = $request->input('month', Carbon::now()->month) ?: Carbon::now()->month;
         $selectedYear = $request->input('year', Carbon::now()->year) ?: Carbon::now()->year;
 
