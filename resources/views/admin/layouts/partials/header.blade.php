@@ -12,8 +12,8 @@
                 </span>
 
 
-                <span>{{ \Auth::user()->id }}</span>
-                <span>{{ \Auth::user()->name }}</span>
+                {{-- <span>{{ \Auth::user()->id }}</span>
+                <span>{{ \Auth::user()->name }}</span> --}}
 
             </a>
 
