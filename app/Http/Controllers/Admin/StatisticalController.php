@@ -61,7 +61,7 @@ class StatisticalController extends Controller
         $filterClosure = function ($q) use ($startDate, $endDate, $defaultStartDate) {
             $q->when($startDate || $endDate, function ($q) use ($startDate, $endDate, $defaultStartDate) {
                 if ($startDate && $endDate && $startDate === $endDate) {
-                    $q->whereDate('tickets.created_at', $startDate); // Cho revenueQuery
+                    $q->whereDate('tickets.created_at', $startDate);
                 } else {
                     $q->when($startDate, fn($q) => $q->whereDate('tickets.created_at', '>=', $startDate))
                         ->when($endDate, fn($q) => $q->whereDate('tickets.created_at', '<=', $endDate));
@@ -72,7 +72,7 @@ class StatisticalController extends Controller
         $showtimeFilterClosure = function ($q) use ($startDate, $endDate, $defaultStartDate) {
             $q->when($startDate || $endDate, function ($q) use ($startDate, $endDate, $defaultStartDate) {
                 if ($startDate && $endDate && $startDate === $endDate) {
-                    $q->where('showtimes.date', $startDate); // Cho showtimeQuery
+                    $q->where('showtimes.date', $startDate);
                 } else {
                     $q->when($startDate, fn($q) => $q->where('showtimes.date', '>=', $startDate))
                         ->when($endDate, fn($q) => $q->where('showtimes.date', '<=', $endDate));
