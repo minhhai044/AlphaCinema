@@ -145,6 +145,7 @@
                         <th>Mã vé</th>
                         <th>Thông tin người dùng</th>
                         <th>Thông tin vé</th>
+                        <th>Trạng thái</th>
                         <th>Chức năng</th>
                         <!-- Sửa lại: Chỉ để lại một cột "Giới tính" nếu cần -->
                     </tr>
@@ -180,16 +181,27 @@
                                             {{ \Carbon\Carbon::parse($ticket->showtime->end_time ?? '')->format('H:i') }},
                                             {{ \Carbon\Carbon::parse($ticket->showtime->date ?? '')->format('d/m/Y') }}
                                         </td>
+
                                         <td>
-                                            <div class="btn-group">
-                                                <a href="{{ route('admin.tickets.show', $ticket['id']) }}" class="btn btn-sm btn-success"><i
-                                                        class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-success printTicket" data-id="{{ $ticket->id }}"><i
-                                                        class="fas fa-print"></i> Vé</button>
-                                                <button class="btn btn-sm btn-success printCombo" data-id="{{ $ticket->id }}"><i
-                                                        class="fas fa-print"></i> Combo</button>
+                                            <div class="form-check form-switch form-switch-success" style="display: flex; justify-content: center;">
+                                                <input class="form-check-input switch-is-active changeActive" type="checkbox" data-food-id="1" checked="" onclick="return confirm('Bạn có chắc muốn thay đổi?')">
+                                            </div>
+                                        </td>                                        
+                                                                                                                     
+                                        <td class="text-center">
+                                            <div class="btn-group justify-content-center align-items-center">
+                                                <a href="{{ route('admin.tickets.show', $ticket['id']) }}" class="btn btn-sm btn-success me-2">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <button class="btn btn-sm btn-primary me-2 printTicket" data-id="{{ $ticket->id }}">
+                                                    <i class="bi bi-printer-fill"></i> Vé
+                                                </button>
+                                                <button class="btn btn-sm btn-warning printCombo" data-id="{{ $ticket->id }}">
+                                                    <i class="bi bi-printer-fill"></i> Combo
+                                                </button>
                                             </div>
                                         </td>
+                                        
                                     </tr>
                     @empty
                         <tr>
