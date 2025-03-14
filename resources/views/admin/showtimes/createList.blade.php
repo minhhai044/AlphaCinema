@@ -25,10 +25,10 @@
         }
 
         /* .nav-tabs.nav-fill .nav-link.active {
-                                                                                                                                                                                                    background-color: #48e7cf !important;
-                                                                                                                                                                                                    color: #fff !important;
-                                                                                                                                                                                                    border-color: #48e7cf;
-                                                                                                                                                                                                } */
+                                                                                                                                                                                                        background-color: #48e7cf !important;
+                                                                                                                                                                                                        color: #fff !important;
+                                                                                                                                                                                                        border-color: #48e7cf;
+                                                                                                                                                                                                    } */
     </style>
     <link href="{{ asset('theme/admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" />
@@ -865,7 +865,106 @@
                             addTimeRowMutiple();
                         });
                         // console.log(dataShowtimeCheck);
+                        $(`#autoGenerate_${item.room.id}_${date.trim()}`).click(function() {
+                            const durationMovie = +movie.duration;
 
+                            if (!durationMovie) {
+                                toastr.error('Thời lượng phim không hợp lệ!');
+                                return;
+                            }
+
+                            const startOperatingMinutes = convertTimeToMinutes(operatingStart); // 8:00
+                            const endOperatingMinutes = convertTimeToMinutes(operatingEnd); // 23:00
+
+                            $(`#listTime_${item.room.id}_${date.trim()}`).empty();
+                           
+
+                            const fixedShowTimes = [
+                                convertTimeToMinutes("08:00"),
+                                convertTimeToMinutes("10:00"),
+                                convertTimeToMinutes("12:00"),
+                                convertTimeToMinutes("15:00"),
+                                convertTimeToMinutes("17:00"),
+                                convertTimeToMinutes("19:00"),
+                                convertTimeToMinutes("21:00"),
+                                convertTimeToMinutes("23:00"),
+                            ];
+
+                            let screeningsChecks = [];
+
+
+                            let lastEndTime =
+                            startOperatingMinutes; // Lưu lại thời gian kết thúc của suất chiếu trước đó
+
+                            fixedShowTimes.forEach(startTime => {
+                                // Nếu suất chiếu trước đó kết thúc gần sát suất hiện tại -> bỏ qua
+                                if (lastEndTime !== startOperatingMinutes && lastEndTime + 10 > startTime) {
+                                    return;
+                                }
+
+                                const endTime = startTime + durationMovie;
+                                if (endTime > endOperatingMinutes) return;
+
+                                // Kiểm tra có chồng lấn suất chiếu cũ không
+                                let isOverlapping = screeningsChecks.some(existing => {
+                                    return (
+                                        (startTime >= existing.startMinutes &&
+                                            startTime < existing
+                                            .endMinutes) || // Bắt đầu trong khoảng cũ
+                                        (endTime > existing.startMinutes && endTime <=
+                                            existing.endMinutes) ||
+                                        // Kết thúc trong khoảng cũ
+                                        (startTime <= existing.startMinutes &&
+                                            endTime >= existing
+                                            .endMinutes) // Bao trùm suất cũ
+                                    );
+                                });
+
+                                // Kiểm tra nếu có khoảng trống giữa các suất chiếu cũ để chèn vào
+                                let canFitBetween = screeningsChecks.every(existing => {
+                                    return (
+                                        endTime <= existing.startMinutes || startTime >=
+                                        existing.endMinutes
+                                    );
+                                });
+
+                                if (!isOverlapping || canFitBetween) {
+                                    const showStart = convertMinutesToTime(startTime);
+                                    const showEnd = convertMinutesToTime(endTime);
+                                    idRowCounter = Date.now();
+                                    const row = `
+                                        <div class="row align-items-center" id="row_${item.room.id}_${date.trim()}_${idRowCounter}">
+                                            <div class="col-lg-6">
+                                                <div class="mb-3">
+                                                    <label for="start_time_${item.room.id}_${date.trim()}_${idRowCounter}" class="form-label">
+                                                        Thời gian bắt đầu <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="time" required class="form-control" name="start_time[${item.room.id}_${date.trim()}][]" data-id="${idRowCounter}" id="start_time_${item.room.id}_${date.trim()}_${idRowCounter}" aria-label="Chọn thời gian" value="${showStart}">
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-5">
+                                                <div class="mb-3">
+                                                    <label for="end_time_${item.room.id}_${date.trim()}_${idRowCounter}" class="form-label">
+                                                        Thời gian kết thúc <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="time" required class="form-control" name="end_time[${item.room.id}_${date.trim()}][]" id="end_time_${item.room.id}_${date.trim()}_${idRowCounter}" value="${showEnd}" readonly>
+                                                </div>
+                                            </div>
+                                            <div class="col-lg-1 d-flex align-items-center">
+                                                <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeShowtime" data-row="row_${item.room.id}_${date.trim()}_${idRowCounter}">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    `;
+
+                                    $(`#listTime_${item.room.id}_${date.trim()}`).append(row);
+                                    
+
+                                    lastEndTime = endTime; // Cập nhật thời gian kết thúc của suất chiếu hiện tại
+                                }
+                            });
+                        });
                         listTimeContainer.on('change', 'input[name^="start_time"]', function() {
 
 
