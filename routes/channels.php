@@ -19,3 +19,7 @@ Broadcast::channel('App.Models.User.{id}', function ($user, $id) {
 Broadcast::channel('showtime', function () {
     return true; 
 });
+
+Broadcast::channel('voucher', function () {
+    return true; 
+});

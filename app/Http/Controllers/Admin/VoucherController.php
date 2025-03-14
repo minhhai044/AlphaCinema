@@ -1,6 +1,8 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+
+use App\Events\RealTimeVouCherEvent;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -51,10 +53,12 @@ class VoucherController extends Controller
             $data['limit_by_user'] = $data['limit_by_user'] ?? 1;
             $data['discount'] = $data['discount'] ?? 0;
     
-            Voucher::create($data);
+            $vouchers = Voucher::create($data);
     
             session()->forget('voucher_code');
-    
+
+            broadcast(new RealTimeVouCherEvent($vouchers))->toOthers();
+
             return redirect()->route('admin.vouchers.index')->with('success', 'Thêm mới mã giảm giá thành công!');
         } catch (\Throwable $th) {
             session()->flash('voucher_code', $request->code);
