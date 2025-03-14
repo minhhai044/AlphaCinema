@@ -25,10 +25,10 @@
         }
 
         /* .nav-tabs.nav-fill .nav-link.active {
-                                                                                                                                                                                        background-color: #48e7cf !important;
-                                                                                                                                                                                        color: #fff !important;
-                                                                                                                                                                                        border-color: #48e7cf;
-                                                                                                                                                                                    } */
+                                                                                                                                                                                                    background-color: #48e7cf !important;
+                                                                                                                                                                                                    color: #fff !important;
+                                                                                                                                                                                                    border-color: #48e7cf;
+                                                                                                                                                                                                } */
     </style>
     <link href="{{ asset('theme/admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" />
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" />
@@ -152,7 +152,7 @@
             </div>
         </div>
     @else
-        <form id="formSubmit" action="{{ route('admin.showtimes.storePremium', $movie) }}" method="post">
+        <form class="formSubmit" action="{{ route('admin.showtimes.storePremium', $movie) }}" method="post">
             @csrf
             <div class="card">
                 <div class="card-body">
@@ -207,8 +207,11 @@
                                                                     @foreach ($rooms as $room)
                                                                         <input type="hidden"
                                                                             name="dates[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
-                                                                            id="day_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
+                                                                            id="date_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
                                                                             value="{{ $date }}">
+                                                                        <input type="hidden"
+                                                                            name="days[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                            id="day_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
                                                                         <input type="hidden"
                                                                             name="branches[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
                                                                             id="branch_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
@@ -221,19 +224,18 @@
                                                                             name="rooms[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
                                                                             id="room_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
                                                                             value="{{ $room['room']['id'] }}">
-                                                                        <input type="text"
+                                                                        <input type="hidden"
                                                                             name="seat_structure[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
                                                                             id="seat_structure_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
                                                                             value="{{ $room['room']['seat_structure'] }}">
 
                                                                         <input type="hidden"
                                                                             id="day_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+
                                                                         <input type="hidden"
                                                                             id="branch_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
                                                                             value="{{ $room['branch']['surcharge'] }}">
-                                                                        {{-- <input type="hidden"
-                                                                            id="movie_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
-                                                                            value="{{ $room['movie']['surcharge'] }}"> --}}
+
                                                                         <input type="hidden"
                                                                             id="type_room_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
                                                                             value="{{ $room['room']['type_room']['surcharge'] }}">
@@ -320,7 +322,7 @@
                                                                                                         biệt)</small>
                                                                                                 </label>
                                                                                                 <input type="text"
-                                                                                                    name="price_special"
+                                                                                                    name="price_specials[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
                                                                                                     class="form-control shadow-sm"
                                                                                                     id="price_special_{{ $room['room']['id'] }}_{{ Str::slug($date) }}"
                                                                                                     placeholder="Nhập phụ phí nếu có">
@@ -737,6 +739,8 @@
                                 }
                             })
 
+                            $(`#day_${item.room.id}_${date.trim()}`).val(2);
+
                             $(`#day_surcharge_${item.room.id}_${date.trim()}`).val(surchargeDay);
                         } else {
                             let surchargeDay = 0;
@@ -745,6 +749,7 @@
                                     surchargeDay = itemday.day_surcharge;
                                 }
                             })
+                            $(`#day_${item.room.id}_${date.trim()}`).val(1);
 
                             $(`#day_id_${item.room.id}_${date.trim()}`).val(1);
                             $(`#day_surcharge_${item.room.id}_${date.trim()}`).val(surchargeDay);
@@ -759,20 +764,20 @@
                                     surchargeDay = itemday.day_surcharge;
                                 }
                             })
-
+                            $(`#day_${item.room.id}_${date.trim()}`).val(value);
                             $(`#day_id_${item.room.id}_${date.trim()}`).val(value);
                             $(`#day_surcharge_${item.room.id}_${date.trim()}`).val(surchargeDay);
                             setSeatStructure();
                         })
 
                         if (date.trim() >= date_create && date.trim() < release_date) {
-                            $(`#price_special_${item.room.id}_${date.trim()}`).prop('disabled', false);
+                            $(`#price_special_${item.room.id}_${date.trim()}`).prop('readonly', false).val('');
 
                             $(`#status_special_${item.room.id}_${date.trim()}`).val(2);
                         }
 
                         if (date.trim() >= release_date && date.trim() <= end_date) {
-                            $(`#price_special_${item.room.id}_${date.trim()}`).prop('disabled', true).val('');
+                            $(`#price_special_${item.room.id}_${date.trim()}`).prop('readonly', true).val('');
 
                             $(`#status_special_${item.room.id}_${date.trim()}`).val(1);
                         }
@@ -867,18 +872,12 @@
                             const currentIdFilter = $(this).data('id'); // Lấy id khi click
                             const currentStartFilter = $(this).val(); // Lấy giá trị của phần time thay đổi
                             const durationMovie = +movie.duration; // Lấy thời lượng phim
-                            console.log(currentIdFilter, 'Lấy id khi click');
-                            console.log(currentStartFilter, 'Lấy giá trị của phần time thay đổi');
-                            console.log(durationMovie, 'Lấy thời lượng phim');
 
                             if (!currentStartFilter) return;
                             const currentStartMinutes = convertTimeToMinutes(
                                 currentStartFilter); // Chuyển về số
                             const currentEndMinutes = currentStartMinutes +
                                 durationMovie; // Thời gian bắt đầu + Thời lượng phim
-                            console.log(currentStartMinutes, 'phần time  Chuyển về số');
-                            console.log(currentEndMinutes, 'Thời gian bắt đầu + Thời lượng phim');
-
                             let screenings = [];
 
                             // Chọn tất cả các hàng trong danh sách thời gian
@@ -896,8 +895,6 @@
                                     });
                                 }
                             });
-
-                            console.log("Danh sách suất chiếu đã lấy:", screenings);
 
 
                             screenings.sort((a, b) => a.startMinutes - b.startMinutes);
@@ -969,7 +966,8 @@
                             let surchargeBranch = +$(`#branch_surcharge_${item.room.id}_${date.trim()}`).val();
                             let surchargeTypeRoom = +$(`#type_room_${item.room.id}_${date.trim()}`).val();
                             let surchargeDay = +$(`#day_surcharge_${item.room.id}_${date.trim()}`).val();
-                            let surchargeSpecial = $(`#price_special_${item.room.id}_${date.trim()}`).val() ?? 0;
+                            let surchargeSpecial = $(`#price_special_${item.room.id}_${date.trim()}`).val() ??
+                                0;
                             let dataSeatStructure = [];
                             seat_structure.forEach((itemSeatStructure) => {
                                 dataSeatStructure.push({
@@ -992,5 +990,20 @@
                 }
             }
         }
+        $('#clickForm').click(function() {
+            let form = $('.formSubmit');
+
+            if ($('.formSubmit input[name^="start_time"]').length === 0) {
+                toastr.error("Bạn phải thêm ít nhất một suất chiếu!");
+                return;
+            }
+
+            if (form[0].checkValidity()) {
+                form.submit();
+            } else {
+                form[0].reportValidity();
+            }
+
+        });
     </script>
 @endsection

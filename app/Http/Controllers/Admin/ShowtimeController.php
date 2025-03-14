@@ -271,4 +271,60 @@ class ShowtimeController extends Controller
             'showtimes' => $showtimes
         ])->with('warning', 'Phòng sẽ bị loại bỏ nếu đã tồn tại suất chiếu trong ngày !!! ');
     }
+    public function storePremium(Request $request, string $id)
+    {
+        // dd($request->all(),$id);
+        try {
+            if (empty($request['dates']) || empty($request['price_specials']) || empty($request['days']) || empty($request['branches']) || empty($request['cinemas']) || empty($request['rooms']) || empty($request['seat_structure']) || empty($request['start_time']) || empty($request['end_time'])) {
+                return back()->with('error', 'Vui lòng nhập đầy đủ thông tin !!!');
+            }
+            $groupedData = [];
+    
+            foreach ($request['dates'] as $keyDate => $date) {
+    
+                foreach ($request['branches'][$keyDate] as $branch) {
+                    foreach ($request['cinemas'][$keyDate] as $cinema) {
+                        foreach ($request['rooms'][$keyDate] as $room) {
+                            $groupedData[] = [
+                                'date' => $date[0],
+                                'branch_id' => $branch,
+                                'day_id' => $request['days'][$keyDate][0],
+                                'cinema_id' => $cinema,
+                                'room_id' => $room,
+                                'seat_structure' => $request['seat_structure'][$keyDate][0],
+                                'start_times' => $request['start_time'][$keyDate],
+                                'end_times' => $request['end_time'][$keyDate],
+                                'price_special' => $request['price_specials'][$keyDate][0]
+                            ];
+                        }
+                    }
+                }
+            }
+            foreach ($groupedData as $groups) {
+                foreach ($groups['start_times'] as $keyStart_times => $start_time) {
+                    Showtime::query()->create([
+                        'branch_id' => $groups['branch_id'],
+                        'movie_id' => $id,
+                        'day_id' => $groups['day_id'],
+                        'cinema_id' => $groups['cinema_id'],
+                        'room_id' => $groups['room_id'],
+                        'seat_structure' => json_encode($groups['seat_structure']),
+                        'slug' => Showtime::generateCustomRandomString(),
+                        'date' => $groups['date'],
+                        'price_special' => isset($groups['price_special'])
+                        ? str_replace('.', '', $groups['price_special'])
+                        : 0,
+                        'start_time' => $start_time,
+                        'end_time' => $groups['end_times'][$keyStart_times],
+                        'is_active' => 1,
+                    ]);
+                }
+            }
+            return redirect()->route('admin.showtimes.index')->with('success','Thao tác thành công !!!');            
+        } catch (\Throwable $th) {
+            Log::error(__CLASS__ . __FUNCTION__, [$th->getMessage()]);
+
+            return back()->with('error','Thao tác không thành công !!!');            
+        }
+    }
 }
