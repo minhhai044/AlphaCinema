@@ -10,6 +10,7 @@ use App\Models\Rank;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -131,4 +132,48 @@ class RankController extends Controller
             Log::error($th->getMessage());
         }
     }
+    public function getRankByUser()
+    {
+        try {
+            $user = Auth::user();
+            
+            if (!$user) {
+                return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
+            }
+
+            // Lấy tổng giá trị giao dịch của user
+            $totalTransaction = $user->total_amount; // Giả sử có cột này trong bảng users
+
+            // Tìm rank phù hợp dựa trên tổng giao dịch
+            $rank = Rank::where('total_spent', '<=', $totalTransaction)
+                        ->orderBy('total_spent', 'desc')
+                        ->first();
+
+            return response()->json([
+                'status' => 'success',
+                'user' => [
+                    'id' => $user->id,
+                    'name' => $user->name,
+                    'total_amount' => $totalTransaction
+                ],
+                'rank' => $rank
+            ], 200);
+        } catch (\Throwable $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage()
+            ], 500);
+        }
+    }
+    
+    public function getRanksJson()
+    {
+        $ranks = Rank::query()->orderBy('total_spent', 'asc')->get();
+        return response()->json([
+            'status' => 'success',
+            'data' => $ranks
+        ]);
+    }
+    
+
 }
