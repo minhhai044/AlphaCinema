@@ -13,14 +13,12 @@
         .table {
             vertical-align: middle !important;
         }
-
         table.dataTable thead th,
         table.dataTable thead td,
         table.dataTable tfoot th,
         table.dataTable tfoot td {
             text-align: center;
         }
-
         .dashed-hr {
             border: 1px dashed #6c757d;
             margin: 10px 0;
@@ -174,8 +172,7 @@
                             </td>
                             <td>
                                 <div class="btn-group">
-                                    <a href="{{ route('admin.tickets.show', $ticket['id']) }}" class="btn btn-sm btn-success"><i class="fas fa-eye"></i></a>
-                                    <button class="btn btn-sm btn-success printTicket" data-id="{{ $ticket->id }}"><i class="fas fa-print"></i> Vé</button>
+<a href="{{ route('admin.tickets.show', $ticket['id']) }}" class="btn btn-sm btn-success"><i class="fas fa-eye"></i></a>                                    <button class="btn btn-sm btn-success printTicket" data-id="{{ $ticket->id }}"><i class="fas fa-print"></i> Vé</button>
                                     <button class="btn btn-sm btn-success printCombo" data-id="{{ $ticket->id }}"><i class="fas fa-print"></i> Combo</button>
                                 </div>
                             </td>
@@ -232,6 +229,10 @@
     <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
 
+    <!-- Load external ticket/index.js for printing functionality -->
+    <script src="{{ asset('assets/js/ticket/index.js') }}"></script>
+
+    <!-- Inline script for filtering cinemas based on branch -->
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const branchSelect = document.getElementById('branch_id');
@@ -255,7 +256,6 @@
                 }
             });
 
-            // Kích hoạt sự kiện change nếu đã có giá trị branch_id từ query string
             if (branchSelect.value) {
                 branchSelect.dispatchEvent(new Event('change'));
             }

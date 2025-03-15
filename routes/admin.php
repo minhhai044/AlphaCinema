@@ -119,7 +119,7 @@ Route::group([
 ], function () {
     Route::get('/', [TicketController::class, 'index'])->name('index');
 
-    Route::get('/{id}', [TicketController::class, 'show'])->name('show'); // Add this
+    // Route::get('/{id}', [TicketController::class, 'show'])->name('show'); // Add this
 
     Route::get('/test', [TicketController::class, 'print']);
 });
@@ -276,4 +276,4 @@ Route::group([
 
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
 
-Route::get('/admin/tickets/{ticket}/detail', [TicketController::class, 'show'])->name('admin.tickets.show');
+Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
