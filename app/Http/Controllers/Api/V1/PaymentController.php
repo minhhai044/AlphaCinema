@@ -241,11 +241,8 @@ class PaymentController extends Controller
                 
                 // Cộng point
                 $point = $orderData['data']['point'] ?? 0;
-                $depoint = $orderData['data']['depoint'] ?? 0;
-                $totalPoint = $point - $depoint;
-
                 User::where('id', $orderData['data']['ticket']['user_id'])
-                    ->increment('point', $totalPoint);
+                    ->increment('point', $point);
 
 
 
