@@ -9,6 +9,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
+
 class SendMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
@@ -16,9 +17,28 @@ class SendMail extends Mailable implements ShouldQueue
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    private $user_name;
+    private $total_price;
+    private $movie_name;
+    private $date;
+    private $start_time;
+    private $cinema_name;
+    private $branch_name;
+    private $seat_name;
+    private $combo_name;
+    private $food_name;
+    public function __construct($user_name, $total_price, $movie_name, $date, $start_time, $cinema_name, $branch_name, $seat_name, $combo_name, $food_name)
     {
-        //
+        $this->user_name    = $user_name;
+        $this->total_price  = $total_price;
+        $this->movie_name   = $movie_name;
+        $this->combo_name   = $combo_name;
+        $this->date         = $date;
+        $this->start_time   = $start_time;
+        $this->cinema_name  = $cinema_name;
+        $this->branch_name  = $branch_name;
+        $this->seat_name    = $seat_name;
+        $this->food_name    = $food_name;
     }
 
     /**
@@ -44,6 +64,18 @@ class SendMail extends Mailable implements ShouldQueue
     {
         return new Content(
             view: 'mail.sendMailOrder',
+            with: [
+                'user_name'   => $this->user_name,
+                'total_price' => $this->total_price,
+                'movie_name'  => $this->movie_name,
+                'date'        => $this->date,
+                'start_time'  => $this->start_time,
+                'cinema_name' => $this->cinema_name,
+                'branch_name' => $this->branch_name,
+                'seat_name'   => $this->seat_name,
+                'combo_name'  => $this->combo_name,
+                'food_name'   => $this->food_name,
+            ],
         );
     }
 

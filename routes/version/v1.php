@@ -79,6 +79,6 @@ Route::get('/settings',[SiteSettingController::class,'index']);
 // Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
 
 
-Route::post('/payment',[PaymentController::class,'payment']);
+Route::post('{payment}/payment',[PaymentController::class,'payment']);
 Route::get('/checkout',[PaymentController::class,'checkout']);
-Route::post('/sendMail',[SendMailController::class,'sendMail']);
+// Route::post('/sendMail',[SendMailController::class,'sendMail']);

@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Mail;
 
 class SendMailController extends Controller
 {
-    use ApiResponseTrait;
-    public function sendMail(Request $request){
-        $mail = $request->mail;
-        Mail::to($mail)->send(new SendMail());
-    }
+    // use ApiResponseTrait;
+    // public function sendMail(Request $request){
+    //     $mail = $request->mail;
+    //     Mail::to($mail)->send(new SendMail());
+    // }
 
 }

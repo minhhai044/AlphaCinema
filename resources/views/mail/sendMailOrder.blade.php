@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html>
+
 <head>
     <meta charset="UTF-8">
     <title>Xác nhận đặt vé - AlphaCinema</title>
@@ -9,6 +10,7 @@
             background-color: #f4f4f4;
             padding: 20px;
         }
+
         .container {
             max-width: 600px;
             margin: auto;
@@ -17,6 +19,7 @@
             border-radius: 8px;
             box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
         }
+
         .header {
             background: #ff5733;
             color: white;
@@ -26,19 +29,23 @@
             font-weight: bold;
             border-radius: 8px 8px 0 0;
         }
+
         .content {
             padding: 20px;
             text-align: left;
         }
+
         .ticket-info {
             background: #f9f9f9;
             padding: 15px;
             border-radius: 5px;
             margin-top: 10px;
         }
+
         .ticket-info p {
             margin: 5px 0;
         }
+
         .button {
             display: inline-block;
             padding: 12px 20px;
@@ -50,6 +57,7 @@
             font-weight: bold;
             text-align: center;
         }
+
         .footer {
             text-align: center;
             padding: 10px;
@@ -57,23 +65,26 @@
             color: #777;
             margin-top: 20px;
         }
+
         .qr-code {
             text-align: center;
             margin-top: 20px;
         }
+
         .qr-code img {
             width: 120px;
             height: 120px;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
             🎟 Xác Nhận Đặt Vé - AlphaCinema
         </div>
         <div class="content">
-            <p>Xin chào <strong>Nguyễn Văn A</strong>,</p>
+            <p>Xin chào <strong>{{ $user_name }}</strong>,</p>
             <p>Cảm ơn bạn đã đặt vé tại <strong>AlphaCinema</strong>. Dưới đây là thông tin chi tiết về vé của bạn:</p>
 
             <div class="ticket-info">
@@ -82,7 +93,7 @@
                 <p><strong>⏰ Giờ chiếu:</strong> 19:30</p>
                 <p><strong>🏢 Rạp:</strong> AlphaCinema - Chi Nhánh Hà Nội</p>
                 <p><strong>🪑 Ghế:</strong> H12, H13</p>
-                <p><strong>💰 Giá vé:</strong> 180.000 VNĐ</p>
+                <p><strong>💰 Tổng tiền:</strong> 180.000 VNĐ</p>
             </div>
 
             <div class="qr-code">
@@ -101,4 +112,5 @@
         </div>
     </div>
 </body>
+
 </html>
