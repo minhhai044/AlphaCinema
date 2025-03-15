@@ -225,7 +225,7 @@ class AuthController extends Controller
 
         $authDataEncoded = base64_encode(json_encode($authData));
 
-        return redirect()->to('https://alphacinema.me:3000/auth/callback?data=' . urlencode($authDataEncoded));
+        return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
     }
 
     public function getUserRank()

@@ -178,13 +178,22 @@
         <div class="dropdown d-inline-block">
             <button type="button" class="btn header-item bg-light-subtle border-start border-end"
                 id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                @if (AUTH::check() && Storage::exists($user->avatar) && $user->avatar)
+                {{-- @if (Auth::check() && Storage::exists($user->avatar) && $user->avatar)
                     <img class="rounded-circle header-profile-user" src="{{ Storage::url($user->avatar) }}"
                         alt="Header Avatar">
                 @else
                     <img class="rounded-circle header-profile-user"
                         src="https://graph.facebook.com/4/picture?type=small" alt="Header Avatar">
+                @endif --}}
+
+                @if (Auth::check() && !empty(Auth::user()->avatar) && Storage::exists(Auth::user()->avatar))
+                    <img class="rounded-circle header-profile-user" src="{{ Storage::url(Auth::user()->avatar) }}"
+                        alt="Header Avatar">
+                @else
+                    <img class="rounded-circle header-profile-user"
+                        src="https://graph.facebook.com/4/picture?type=small" alt="Header Avatar">
                 @endif
+
 
 
                 <span class="d-none d-xl-inline-block ms-1 fw-medium">{{ Auth::check() ? $user->name : '' }}</span>
@@ -215,8 +224,8 @@
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
 <script>
-    $(document).ready(function(){
-        $("#logout-btn").click(function(e){
+    $(document).ready(function() {
+        $("#logout-btn").click(function(e) {
             e.preventDefault();
             $("#logout-form").submit();
         })
