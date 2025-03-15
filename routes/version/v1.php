@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\MovieController;
+use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
+use App\Http\Controllers\Api\PointHistoryController;
 use App\Http\Controllers\Api\SiteSettingController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
@@ -15,6 +17,7 @@ use App\Http\Controllers\Api\V1\ShowtimeController;
 
 use App\Http\Controllers\Api\V1\SlideShowController;
 use App\Http\Controllers\Api\V1\TicketController;
+use App\Http\Controllers\Api\VoucherController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -44,15 +47,21 @@ Route::get('/get-cinemas', [TicketController::class, 'getCinemas']);
 Route::get('tickets/{id}', [TicketController::class, 'getTicketByID']);
 Route::get('tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
 
+Route::get('/ranksJson',[RankController::class,'getRanksJson']);
 Route::middleware('auth:sanctum')->group(function () {
-
+    
     Route::post('tickets', [TicketController::class, 'createTicket']);
-
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
-
-
+    
+    Route::get('/ticket-by-user',[TicketController::class,'getTicketByUser']);
+    Route::get('/ranks',[RankController::class,'getRankByUser']);
+    Route::get('/voucher',[VoucherController::class,'index']);
+    Route::prefix('point_histories')->group(function () {
+        Route::get('/', [PointHistoryController::class, 'index']);
+        Route::get('{id}', [PointHistoryController::class, 'show']);
+    });
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
 
     // Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
