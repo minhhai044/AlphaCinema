@@ -17,6 +17,7 @@ class Rank extends Model
         'total_spent',
         'ticket_percentage',
         'combo_percentage',
+        'feedback_percentage',
         'is_default',
     ];
 }

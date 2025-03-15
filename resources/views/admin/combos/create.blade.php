@@ -46,7 +46,7 @@
                                     </label>
                                     <input type="text" name="name" id="name" class="form-control"
                                         value="{{ old('name') }}" placeholder="Nhập tên món ăn">
-                            
+
                                     @if ($errors->has('name'))
                                         <div class="text-danger">
                                             {{ $errors->first('name') }}
@@ -58,7 +58,7 @@
                             <div class="col-md-4 mb-3">
                                 <label for="price" class="form-label ">Giá gốc (VNĐ)</label>
                                 <input type="text" class="form-control bg-light" id="price" name="price" readonly>
-                                <input type="hidden" id="price_hidden" name="price_hidden"> 
+                                <input type="hidden" id="price_hidden" name="price_hidden">
                             </div>
 
 
@@ -68,7 +68,7 @@
                                 </label>
                                 <input type="text" name="price_sale" id="price_sale" class="form-control"
                                     value="{{ old('price_sale') }}" placeholder="Nhập giá tiền">
-                        
+
                                 @if ($errors->has('price_sale'))
                                     <div class="text-danger">
                                         {{ $errors->first('price_sale') }}
@@ -81,16 +81,14 @@
                             <label for="food-description" class="form-label">
                                 <span class="required">*</span> Mô tả
                             </label>
-                            <textarea
-                                class="form-control"
-                                name="description" rows="6" placeholder="Nhập mô tả">{{ old('description') }}</textarea>
+                            <textarea class="form-control" name="description" rows="6" placeholder="Nhập mô tả">{{ old('description') }}</textarea>
 
-                            
-                                @if ($errors->has('description'))
-                                    <div class="text-danger">
-                                        {{ $errors->first('description') }}
-                                    </div>
-                                @endif
+
+                            @if ($errors->has('description'))
+                                <div class="text-danger">
+                                    {{ $errors->first('description') }}
+                                </div>
+                            @endif
                         </div>
                     </div>
 
@@ -114,45 +112,48 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-2">
-                                            <label for="food-description" class="form-label">
-                                                <span class="required">*</span>
-                                                Hoạt động:
-                                            </label>
-                                            <div class="square-switch">
-                                                <input type="checkbox" id="square-switch3" switch="bool"
-                                                    {{ old('is_active', 1) ? 'checked' : '' }} name="is_active">
-                                                <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
-                                            </div>
-                                            <input type="hidden" name="is_active" id="is_active"
-                                                value="{{ old('is_active', 1) }}">
-                                            <!-- Active -->
+                                    <div class=" d-flex gap-2">
+                                        <label for="cinema-description" class="form-label">
+                                            <span class=" text-danger required">*</span>
+                                            Hoạt động
+                                        </label>
+                                        <div class="round-switch">
+                                            <input type="checkbox" id="switch6" switch="primary" value="1"
+                                                name="is_active" {{ old('is_active', 1) ? 'checked' : '' }}>
+                                            <label for="switch6" data-on-label="Yes" data-off-label="No"></label>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="mb-2">
-                                    <label for="img_thumbnail" class="form-label"> <span class="text-danger">*</span>Hình
-                                        ảnh</label>
-                                    <input type="file" name="img_thumbnail" id="img_thumbnail"
-                                        class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}">
-                                    <div
-                                        class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                        @if ($errors->has('img_thumbnail'))
-                                            {{ $errors->first('img_thumbnail') }}
-                                        @endif
-                                    </div>
+                </div>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="mb-2">
+                                <label for="combo-image" class="form-label">
+                                    <span class=" text-danger required">*</span>Ảnh
+                                    <input class="form-control" type="file" name="img_thumbnail" id="combo-image"
+                                        onchange="previewImage(event)">
+                            </div>
+                            @if ($errors->has('img_thumbnail'))
+                                <div class="text-danger">
+                                    {{ $errors->first('img_thumbnail') }}
                                 </div>
+                            @endif
+                            <!-- Display selected image and delete button -->
+                            <div id="image-container" class="d-none position-relative">
+                                <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2"
+                                    style="max-width: 100%; max-height: 200px;">
+                                <!-- Icon thùng rác ở góc phải -->
+                                <button type="button" id="delete-image"
+                                    class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
+                                    <i class="fas fa-trash-alt"></i>
+                                </button>
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
@@ -161,8 +162,36 @@
 
 
 @section('script')
+
     <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                $('#image-preview').attr('src', reader.result);
+                $('#image-container').removeClass('d-none');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to delete the selected image
+        function deleteImage() {
+            $('#delete-image').click(() => {
+                $('#image-container').addClass('d-none');
+                $('#combo-image').val('');
+                $('#image-preview').attr('src', '');
+            });
+        }
+
         $(document).ready(function() {
+
+
+
+
             // Format giá tiền
             function formatPriceInput(inputSelector, hiddenInputSelector) {
                 $(inputSelector).on("input", function() {
@@ -205,10 +234,10 @@
                         totalPrice += (foodPrices[foodId] || 0) * quantity;
                     }
                 });
-                 // Định dạng số có dấu "," ngăn cách
-                    let formattedPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                    // console.log(totalPrice);
-                    // console.log(formattedPrice);
+                // Định dạng số có dấu "," ngăn cách
+                let formattedPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                // console.log(totalPrice);
+                // console.log(formattedPrice);
                 // Cập nhật giá trị tổng (hiển thị có dấu ,)
                 $('#price').val(formattedPrice);
                 $('#price_hidden').val(totalPrice); // Lưu số không có dấu ,
@@ -293,7 +322,7 @@
                 });
             }
 
-           
+
             // Cập nhật sự kiện click khi nhấn nút tăng/giảm số lượng
             function updateEventHandlers() {
                 // Xử lý tăng số lượng
@@ -305,7 +334,7 @@
 
                     if ($foodSelect.val() === '') {
                         $errorSpan.text('Vui lòng chọn món ăn trước!');
-                        showAlert('warning', 'Vui lòng chọn món ăn trước khi tăng số lượng!', 'Thông báo');
+
                         return;
                     } else {
                         $errorSpan.text('');
@@ -327,7 +356,7 @@
 
                     if ($foodSelect.val() === '') {
                         $errorSpan.text('Vui lòng chọn món ăn trước!');
-                        showAlert('warning', 'Vui lòng chọn món ăn trước khi giảm số lượng!', 'Thông báo');
+
                         return;
                     } else {
                         $errorSpan.text('');
@@ -357,32 +386,74 @@
             }
 
             $('#comboForm').on('submit', function(e) {
-                let isValid = true; // Biến đánh dấu trạng thái hợp lệ của form
+                let isValid = true; // Kiểm tra trạng thái form
 
-                // Kiểm tra mỗi phần tử food-select trong food list
-                $('.food-select').each(function() {
-                    const foodItemError = $(this).siblings('.food-item').find('.text-danger');
-                    if ($(this).val() === '') {
-                        isValid = false; // Nếu chưa chọn món ăn, đặt trạng thái không hợp lệ
-                        foodItemError.text('Vui lòng chọn món ăn'); // Hiển thị lỗi
+                // Kiểm tra từng món ăn đã chọn chưa
+                $('.food-item').each(function() {
+                    let $foodSelect = $(this).find('.food-select');
+                    let $quantityInput = $(this).find('.food-quantity');
+                    let foodItemError = $(this).find('.text-danger');
+
+                    const quantityValue = parseInt($quantityInput.val().trim());
+                    const selectedFood = $foodSelect.val();
+
+                    // Kiểm tra nếu món ăn chưa chọn
+                    if (selectedFood === '' || selectedFood === null) {
+                        isValid = false;
+                        // Thêm lỗi nếu chưa có
+                        if (foodItemError.length === 0) {
+                            $foodSelect.after(
+                                '<span class="text-danger small">Vui lòng chọn món ăn</span>');
+                        } else {
+                            foodItemError.text('Vui lòng chọn món ăn').show();
+                        }
                     } else {
-                        foodItemError.text(''); // Xóa lỗi nếu đã chọn món ăn
+                        foodItemError.text('').hide();
+                    }
+
+                    // Thêm sự kiện xóa lỗi khi chọn lại món
+                    $foodSelect.on('change', function() {
+                        if ($(this).val() !== '') {
+                            foodItemError.text('').hide();
+                        }
+                    });
+                });
+
+                // Kiểm tra số lượng món ăn
+                $('.food-quantity').each(function() {
+                    const quantityValue = parseInt($(this).val().trim());
+                    let $errorSpan = $(this).closest('.w-100').find(
+                        `#${$(this).attr('id')}_quantity_error`);
+
+                    if (isNaN(quantityValue) || quantityValue <= 0) {
+                        isValid = false;
+
+                        // Kiểm tra nếu chưa có lỗi thì thêm mới
+                        if ($errorSpan.length === 0) {
+                            $(this).after(
+                                `<span class="text-danger small" id="${$(this).attr('id')}_quantity_error">Số lượng chưa được chọn</span>`
+                            );
+                        } else {
+                            $errorSpan.text('Số lượng chưa được chọn').show();
+                        }
+                    } else {
+                        $errorSpan.text('').hide(); // Xóa lỗi nếu số lượng hợp lệ
                     }
                 });
 
-                // Nếu form không hợp lệ, ngừng submit
+                // Chặn submit nếu form không hợp lệ và báo lỗi Toast
                 if (!isValid) {
                     e.preventDefault();
-                    showAlert('warning', 'Vui lòng chọn đồ ăn trước khi thêm mới!',
-                        'Bạn chưa chọn đồ ăn');
                 }
             });
+
+
 
             // Validate các trường input
             function validateInput(selector, condition, errorMessage) {
                 let input = $(selector);
                 let value = input.val().trim();
-                
+
             }
 
             // Validate tên combo

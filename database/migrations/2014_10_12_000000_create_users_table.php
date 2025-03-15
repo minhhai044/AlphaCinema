@@ -28,6 +28,7 @@ return new class extends Migration
             // $table->string('service_name')->nullable(); // ?
             $table->string('google_id')->nullable();
             $table->boolean('type_user')->default(0)->comment("0 : UserMember , 1 : Admin");
+            $table->unsignedBigInteger('point')->nullable(); // ?
             $table->integer('cinema_id')->nullable(); // ?
             $table->softDeletes();
             $table->timestamps();

@@ -35,6 +35,18 @@
                             <span data-key="t-vouchers">Thống kê phim</span>
                         </a>
                     </li>
+                    <li>
+                        <a href="{{ route('admin.statistical.comboRevenue') }}">
+
+                            <span data-key="t-vouchers">Thống kê combo</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="{{ route('admin.statistical.foodRevenue') }}">
+
+                            <span data-key="t-vouchers">Thống kê đồ ăn</span>
+                        </a>
+                    </li>
                 </ul>
 
             </li>
@@ -74,83 +86,85 @@
                     </li>
 
 
-                        </a>
-                    </li>
-
-                </ul>
-
+                    </a>
             </li>
 
-            <li>
-                <a href="javascript: void(0);" class="has-arrow">
-                    <i data-feather="grid"></i>
-                    <span data-key="t-service-systems">Hệ thống Rạp</span>
-                </a>
-                <ul class="sub-menu" aria-expanded="false">
-                    <li>
-                        <a href="{{ route('admin.branches.index') }}">
-                            <span>Quản lý chi nhánh</span>
-                        </a>
-                    </li>
+        </ul>
 
-                    <li>
-                        <a href="{{ route('admin.cinemas.index') }}">
-                            <span>Quản lý Rạp</span>
-                        </a>
-                    </li>
+        </li>
 
-                    <li>
-                        <a href="{{ route('admin.rooms.index') }}">
-                            <span>Quản lý phòng</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.index.seat_templates') }}">
-                            <span>Quản lý mẫu sơ đồ ghế</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.type_seats.index') }}">
-                            <span>Quản lý loại ghế</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href=" {{ route('admin.typerooms.index') }}">
-                            <span>Quản lý loại phòng</span>
-                        </a>
-                    </li>
+        <li>
+            <a href="javascript: void(0);" class="has-arrow">
+                <i data-feather="grid"></i>
+                <span data-key="t-service-systems">Hệ thống Rạp</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li>
+                    <a href="{{ route('admin.branches.index') }}">
+                        <span>Quản lý chi nhánh</span>
+                    </a>
+                </li>
 
-                </ul>
-            </li>
-            <li>
-                <a href="javascript: void(0);" class="has-arrow">
-                    <i data-feather="grid"></i>
-                    <span data-key="t-service-systems">Phim & Suất chiếu</span>
-                </a>
-                <ul class="sub-menu" aria-expanded="false">
-                    <li>
-                        <a href="{{ route('admin.movies.index') }}">
+                <li>
+                    <a href="{{ route('admin.cinemas.index') }}">
+                        <span>Quản lý Rạp</span>
+                    </a>
+                </li>
 
-                            <span data-key="t-movies">Quản lý Phim</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href=" {{ route('admin.showtimes.index') }}">
-                            <span>Quản lý suất chiếu</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href=" {{ route('admin.tickets.index') }}">
-                            <span>Quản lý hóa đơn</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.days.index') }}">
-                            <span data-key="t-movies">Quản lý ngày</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+                <li>
+                    <a href="{{ route('admin.rooms.index') }}">
+                        <span>Quản lý phòng</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.index.seat_templates') }}">
+                        <span>Quản lý mẫu sơ đồ ghế</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.type_seats.index') }}">
+                        <span>Quản lý loại ghế</span>
+                    </a>
+                </li>
+                <li>
+                    <a href=" {{ route('admin.typerooms.index') }}">
+                        <span>Quản lý loại phòng</span>
+                    </a>
+                </li>
+
+            </ul>
+        </li>
+        <li>
+            <a href="javascript: void(0);" class="has-arrow">
+                <i data-feather="grid"></i>
+                <span data-key="t-service-systems">Phim & Suất chiếu</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li>
+                    <a href="{{ route('admin.movies.index') }}">
+
+                        <span data-key="t-movies">Quản lý Phim</span>
+                    </a>
+                </li>
+                <li>
+                    <a href=" {{ route('admin.showtimes.index') }}">
+                        <span>Quản lý suất chiếu</span>
+                    </a>
+                </li>
+                <li>
+                    <a href=" {{ route('admin.tickets.index') }}">
+                        <span>Quản lý hóa đơn</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.days.index') }}">
+                        <span data-key="t-movies">Quản lý ngày</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
+
+        @canany(['Danh sách tài khoản', 'Thêm tài khoản', 'Sửa tài khoản', 'Xóa tài khoản'])
             <li>
                 <a href="javascript: void(0);" class="has-arrow">
                     <i data-feather="grid"></i>
@@ -162,31 +176,35 @@
                             <span data-key="t-cinemas">Quản lý người dùng</span>
                         </a>
                     </li>
-                    <li>
-                        <a href="{{ route('admin.roles.index') }}">
-                            <span data-key="t-cinemas">Phân quyền</span>
-                        </a>
-                    </li>
+                    @if (auth()->user()->hasRole('System Admin'))
+                        <li>
+                            <a href="{{ route('admin.roles.index') }}">
+                                <span data-key="t-cinemas">Phân quyền</span>
+                            </a>
+                        </li>
+                    @endif
                 </ul>
             </li>
-            <li>
-                <a href="javascript: void(0);" class="has-arrow">
-                    <i data-feather="grid"></i>
-                    <span data-key="t-service-systems">Cấu hình</span>
-                </a>
-                <ul class="sub-menu" aria-expanded="false">
-                    <li>
-                        <a href="{{ route('admin.settings.index') }}">
-                            <span data-key="t-cinemas">Cấu hình cài đặt</span>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="{{ route('admin.slideshows.index') }}">
-                            <span data-key="t-cinemas">SlideShow</span>
-                        </a>
-                    </li>
-                </ul>
-            </li>
+        @endcanany
+
+        <li>
+            <a href="javascript: void(0);" class="has-arrow">
+                <i data-feather="grid"></i>
+                <span data-key="t-service-systems">Cấu hình</span>
+            </a>
+            <ul class="sub-menu" aria-expanded="false">
+                <li>
+                    <a href="{{ route('admin.settings.index') }}">
+                        <span data-key="t-cinemas">Cấu hình cài đặt</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="{{ route('admin.slideshows.index') }}">
+                        <span data-key="t-cinemas">SlideShow</span>
+                    </a>
+                </li>
+            </ul>
+        </li>
 
         </ul>
     </div>

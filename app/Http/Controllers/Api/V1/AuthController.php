@@ -8,6 +8,7 @@ use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\UserRequest;
+use App\Models\Rank;
 use App\Models\User;
 use App\Services\UserService;
 use App\Traits\ApiRequestJsonTrait;
@@ -224,6 +225,32 @@ class AuthController extends Controller
 
         $authDataEncoded = base64_encode(json_encode($authData));
 
-        return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
+        return redirect()->to('https://alphacinema.me:3000/auth/callback?data=' . urlencode($authDataEncoded));
+    }
+
+    public function getUserRank()
+    {
+        try {
+            $user_total_amount = Auth::user()->total_amount;
+
+            $rank = Rank::where("total_spent", "<=", $user_total_amount)
+                ->orderBy("total_spent", 'desc')
+                ->first();
+
+            if (!$rank) {
+                $rank = Rank::where("is_default", true)->first();
+            }
+
+            // Trả về kết quả
+            return $this->successResponse([
+                "rank" => $rank
+            ]);
+        } catch (\Exception $e) {
+
+            return $this->errorResponse([
+                "message" => "Đã xảy ra lỗi: " . $e->getMessage(),
+                "error" => $e->getTraceAsString() // Gửi thông tin lỗi chi tiết
+            ]);
+        }
     }
 }

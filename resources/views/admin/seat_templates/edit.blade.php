@@ -19,11 +19,11 @@
         }
 
         .light-blue {
-            background-color: #ee9a9a  ;
+            background-color: #61bfee  ;
         }
 
         .light-pink {
-            background-color: #47b076;
+            background-color: #367cf3;
         }
 
         .box-item {
@@ -32,17 +32,13 @@
             max-width: 35px;
             max-height: 35px;
         }
-
-        .box-item-pro {
-            width: 40px;
-            height: 40px;
-            max-width: 40px;
-            max-height: 40px;
+        .box-item-show {
+            width: 50px;
+            height: 50px;
+            max-width: 50px;
+            max-height: 50px;
         }
-        .info-show {
-            width: 20px;
-            height: 20px;
-        }
+        
         
     </style>
     <h4 class="fw-semibold">Mẫu sơ đồ ghế</h4>
@@ -66,7 +62,9 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-lg-9 text-center">
-            <div class="screen w-full mx-auto mb-4 p-2 bg-dark text-white">Màn Hình Chiếu</div>
+            <div class="screen ">
+                <img class="w-100" src="{{asset('images/seat/manhinh.png')}}" alt="">
+            </div>
             <div class="seat-map d-flex flex-column align-items-center">
 
                 <div style="width: 80%;" class="card border-0 ">
@@ -112,7 +110,7 @@
                                                     colspan="2">
                                                     <div class="box-item-seat" data-type-seat-id="3">
                                                         <!-- 3 cho ghế đôi -->
-                                                        <img src="{{ asset('images/seat/seat-2.png') }}" width="60%" class='seat'>
+                                                        <img src="{{ asset('images/seat/seat-2.png') }}" width="50%" class='seat'>
                                                     </div>
                                                 </td>
                                                 <td class="box-item border-1 {{ $rowClass }}" style="display: none;"
@@ -120,7 +118,7 @@
                                                     data-type-seat-id="3">
                                                     <div class="box-item-seat" data-type-seat-id="3">
                                                         <img src="{{ asset('svg/seat-add.svg') }}" class='seat'
-                                                            width="60%" height="60%">
+                                                            width="50%">
 
                                                     </div>
                                                 </td>
@@ -132,12 +130,12 @@
                                                         @switch($seatType)
                                                             @case(1)
                                                                 <img src="{{ asset('images/seat/seat-1.png') }}" class='seat'
-                                                                    width="60%">
+                                                                    width="70%">
                                                             @break
 
                                                             @case(2)
                                                                 <img src="{{ asset('images/seat/seat-1.png') }}" class='seat'
-                                                                    width="60%">
+                                                                    width="70%">
                                                             @break
 
                                                             @default
@@ -185,17 +183,17 @@
                                         @endphp
                                         @if ($seatType == 3)
                                             <!-- Nếu là ghế đôi -->
-                                            <td class="box-item" colspan="2">
+                                            <td class="box-item-show" colspan="2">
                                                 <div class="seat-item">
                                                     <!-- 3 cho ghế đôi -->
                                                     <img src="{{ asset('images/seat/seat-2-booked.png') }}"
-                                                        class='seat' width="77%">
+                                                        class='seat' width="60%">
                                                     <p
                                                         class="seat-label-double">{{ chr(65 + $row) . ($col + 1) }}
                                                         {{ chr(65 + $row) . ($col + 2) }}</p>
                                                 </div>
                                             </td>
-                                            <td class="box-item" style="display: none;">
+                                            <td class="box-item-show" style="display: none;">
                                                 <div class="seat-item">
                                                     <img src="{{ asset('svg/seat-add.svg') }}" class='seat'
                                                         width="60%">
@@ -203,19 +201,19 @@
                                             </td>
                                             @php $col++; @endphp
                                         @else
-                                            <td class="box-item">
+                                            <td class="box-item-show">
                                                 <div class="seat-item">
                                                     @switch($seatType)
                                                         @case(1)
                                                             <img src="{{ asset('images/seat/seat-1.png') }}"
-                                                                class='seat' width="77%">
+                                                                class='seat' width="70%">
                                                             <span
                                                                 class="seat-label">{{ chr(65 + $row) . $col + 1 }}</span>
                                                         @break
 
                                                         @case(2)
                                                             <img src="{{ asset('images/seat/seat-1-free.png') }}" class='seat'
-                                                                width="77%">
+                                                                width="70%">
                                                             <span
                                                                 class="seat-label">{{ chr(65 + $row) . $col + 1 }}</span>
                                                         @break
@@ -364,14 +362,14 @@
                         // Chọn ghế đôi bên phải
                         tdElement.attr('colspan', 2); // set colSpan = 2 cho td đang click
                         nextTd.hide(); // ẩn td bên phải
-                        img.attr('src', "{{ asset('images/seat/seat-2.png') }}"); // set src cho img
+                        img.attr('src', "{{ asset('images/seat/seat-2.png') }}").css('width', '50%'); // set src cho img
                     } else if (canMakeDoubleSeat(
                             previousTd)) { // nếu đằng trước td không còn thì sẽ quay lại đằng sau td
                         // Chọn ghế đôi bên trái
                         previousTd.attr('colspan', 2); // set colSpan = 2 cho td trước td đang click
                         tdElement.hide(); // ẩn td bên trái
                         previousTd.find('img').attr('src',
-                            "{{ asset('images/seat/seat-2.png') }}"); // set src cho img
+                            "{{ asset('images/seat/seat-2.png') }}").css('width', '50%'); // set src cho img
                     } else {
                         // nếu đằng trước và sau td không còn thì sẽ thông báo
                         toastr.error('Không có đủ chỗ trống để đặt ghế đôi !!');
@@ -380,7 +378,7 @@
                     // Xử lý ghế thường và ghế VIP
                     var seatSrc = (typeSeatId === 1) ? "{{ asset('images/seat/seat-1.png') }}" :
                         "{{ asset('images/seat/seat-1.png') }}";
-                    img.attr('src', seatSrc);
+                    img.attr('src', seatSrc).css('width', '70%');
                 }
             } else {
                 // Trả ghế về trạng thái ban đầu
@@ -433,12 +431,12 @@
             // Nếu seatType == 1 thì sẽ setAtribu cho image
             if (seatType === 1) {
                 seats.each(function() {
-                    $(this).find('img').attr('src', "{{ asset('images/seat/seat-1.png') }}");
+                    $(this).find('img').attr('src', "{{ asset('images/seat/seat-1.png') }}").css('width', '70%');
                 });
                 // Nếu seatType == 2 thì sẽ setAtribu cho image
             } else if (seatType === 2) {
                 seats.each(function() {
-                    $(this).find('img').attr('src', "{{ asset('images/seat/seat-1.png') }}");
+                    $(this).find('img').attr('src', "{{ asset('images/seat/seat-1.png') }}").css('width', '70%');
                 });
                 // Nếu seatType == 3 thì sẽ setAtribu cho image
 
@@ -474,7 +472,7 @@
                 var img = $(this).find('img');
                 var tdElement = $(this).closest('td');
 
-                img.attr('src', "{{ asset('svg/seat-add.svg') }}").css('width', '60%');
+                img.attr('src', "{{ asset('svg/seat-add.svg') }}").css('width', '50%');
 
                 if (tdElement.attr('colSpan') == 2) {
                     tdElement.attr('colSpan', 1);

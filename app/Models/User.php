@@ -31,7 +31,8 @@ class User extends Authenticatable
         'total_amount',
         'type_user',
         'cinema_id',
-        'google_id'
+        'google_id',
+        'point'
     ];
 
     /**

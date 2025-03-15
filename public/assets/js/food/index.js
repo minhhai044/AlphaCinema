@@ -1,10 +1,5 @@
-// const handleDelete = (id) => {
-//     showAlertConfirm(() => {
-//         $(`#delete-food-${id}`).submit();
-//     });
-// };
 // document.addEventListener("DOMContentLoaded", function () {
-//     // const appURL = "https://alphacinema.me"; // Đổi URL nếu cần
+//     const appURL = "https://alphacinema.me"; // Đổi URL nếu cần
 
 //     // Hàm reset lỗi
 //     const resetErrors = (prefix) => {
@@ -52,7 +47,7 @@
         
 //         let foodImg = $(this).data("food-img_thumbnail");
 //         if (foodImg) {
-//             $("#previewImgThumbnail").attr("src", `${APP_URL}/storage/${foodImg.replace("public/", "")}`).show();
+//             $("#previewImgThumbnail").attr("src", `${appURL}/storage/${foodImg.replace("public/", "")}`).show();
 //         } else {
 //             $("#previewImgThumbnail").hide();
 //         }
@@ -103,7 +98,7 @@
 //     // Xử lý tạo món ăn
 //     $("#createFoodBtn").on("click", function (event) {
 //         event.preventDefault();
-//         sendRequest(`${APP_URL}/admin/foods`, "POST", new FormData($("#createFoodForm")[0]), "create");
+//         sendRequest(`${appURL}/admin/foods`, "POST", new FormData($("#createFoodForm")[0]), "create");
 //     });
 
 //     // Xử lý cập nhật món ăn
@@ -113,9 +108,9 @@
 //         const formData = new FormData($("#updateFoodForm")[0]);
         
 //         if (!$("#updateImgThumbnail")[0].files.length) {
-//             formData.append("old_img_thumbnail", $("#previewImgThumbnail").attr("src").replace(`${APP_URL}/storage/`, ""));
+//             formData.append("old_img_thumbnail", $("#previewImgThumbnail").attr("src").replace(`${appURL}/storage/`, ""));
 //         }
         
-//         sendRequest(`${APP_URL}/admin/foods/${foodId}`, "POST", formData, "update");
+//         sendRequest(`${appURL}/admin/foods/${foodId}`, "POST", formData, "update");
 //     });
 // });

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\ComboFoodController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
+use App\Http\Controllers\Api\V1\SendMailController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
 
 use App\Http\Controllers\Api\V1\SlideShowController;
@@ -27,6 +28,9 @@ Route::prefix('users')->group(function () {
 
 Route::post('signin', [AuthController::class, 'signIn']);
 Route::post('signup', [AuthController::class, 'signUp']);
+
+
+
 Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
 Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
 Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
@@ -48,6 +52,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('tickets', [TicketController::class, 'createTicket']);
 
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get("getRank", [AuthController::class, 'getUserRank']);
+
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
 
@@ -71,6 +77,5 @@ Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTi
 
 Route::get('/settings', [SiteSettingController::class, 'index']);
 
-Route::post('{payment}/payment', [PaymentController::class, 'payment']);
-
-Route::get('/checkout', [PaymentController::class, 'checkout']);
+Route::post('{payment}/payment',[PaymentController::class,'payment']);
+Route::get('/checkout',[PaymentController::class,'checkout']);

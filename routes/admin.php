@@ -134,28 +134,32 @@ Route::group([
 });
 // Route::resource('users', [])
 Route::prefix('seat-templates')->group(function () {
-    Route::get('/', [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
-    Route::post('/', [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
-    Route::get('{id}/edit', [SeatTemplateControler::class, 'edit'])->name('edit.seat_templates');
-    Route::put('{id}/update', [SeatTemplateControler::class, 'update'])->name('update.seat_templates');
-    Route::put('{id}/update_seat', [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
+    Route::get('/',                 [SeatTemplateControler::class, 'index'])->name('index.seat_templates');
+    Route::post('/',                [SeatTemplateControler::class, 'store'])->name('store.seat_templates');
+    Route::get('{id}/edit',         [SeatTemplateControler::class, 'edit'])->name('edit.seat_templates');
+    Route::put('{id}/update',       [SeatTemplateControler::class, 'update'])->name('update.seat_templates');
+    Route::put('{id}/update_seat',  [SeatTemplateControler::class, 'update_seat'])->name('update_seat.seat_templates');
 });
 
 Route::prefix('rooms')->as('rooms.')->group(function () {
-    Route::get('/', [RoomController::class, 'index'])->name('index');
-    Route::post('/', [RoomController::class, 'store'])->name('store');
-    Route::get('{id}/show', [RoomController::class, 'show'])->name('show');
-    Route::put('{id}/update', [RoomController::class, 'update'])->name('update');
+    Route::get('/',             [RoomController::class, 'index'])->name('index');
+    Route::post('/',            [RoomController::class, 'store'])->name('store');
+    Route::get('{id}/show',     [RoomController::class, 'show'])->name('show');
+    Route::put('{id}/update',   [RoomController::class, 'update'])->name('update');
 });
 
 Route::prefix('showtimes')->as('showtimes.')->group(function () {
-    Route::get('/', [ShowtimeController::class, 'index'])->name('index');
-    Route::get('{id}/create', [ShowtimeController::class, 'create'])->name('create');
-    Route::post('/store', [ShowtimeController::class, 'store'])->name('store');
-    Route::post('/delete', [ShowtimeController::class, 'delete'])->name('delete');
-    Route::post('/copys', [ShowtimeController::class, 'copys'])->name('copys');
-    Route::get('/copys', [ShowtimeController::class, 'getCopys'])->name('getCopys');
-    Route::post('/storeCopies', [ShowtimeController::class, 'storeCopies'])->name('storeCopies');
+    Route::get('/',                 [ShowtimeController::class, 'index'])->name('index');
+    Route::get('{id}/create',       [ShowtimeController::class, 'create'])->name('create');
+    Route::post('/store',           [ShowtimeController::class, 'store'])->name('store');
+    Route::post('/delete',          [ShowtimeController::class, 'delete'])->name('delete');
+    Route::post('/copys',           [ShowtimeController::class, 'copys'])->name('copys');
+    Route::get('/copys',            [ShowtimeController::class, 'getCopys'])->name('getCopys');
+    Route::post('/storeCopies',     [ShowtimeController::class, 'storeCopies'])->name('storeCopies');
+    Route::get('{id}/createList',   [ShowtimeController::class, 'createList'])->name('createList');
+    Route::post('{id}/multipleSelect',[ShowtimeController::class, 'multipleSelect'])->name('multipleSelect');
+    Route::post('{id}/storePremium',[ShowtimeController::class, 'storePremium'])->name('storePremium');
+
 });
 
 
@@ -252,7 +256,15 @@ Route::group([
     Route::post('/reset', [SiteSettingController::class, 'resetToDefault'])->name('reset');
 });
 
-Route::get('/statistical/cinemaRevenue', [StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
+// thống kê
+Route::group([
+    'prefix' => 'statistical',  // Tiền tố URL cho tất cả route
+    'as' => 'statistical.',
+], function () {
+    Route::get('/cinemaRevenue', [StatisticalController::class, 'cinemaRevenue'])->name('cinemaRevenue');
+    Route::get('/comboRevenue', [StatisticalController::class, 'comboRevenue'])->name('comboRevenue');
+    Route::get('/foodRevenue', [StatisticalController::class, 'foodRevenue'])->name('foodRevenue');
+});
 // Route::get('/admin/statistical/cinemaRevenue', [App\Http\Controllers\Admin\StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
 
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
