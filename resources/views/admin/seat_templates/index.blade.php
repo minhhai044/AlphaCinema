@@ -1,14 +1,23 @@
 @extends('admin.layouts.master')
+@section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+
+@endsection
 @section('content')
 
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Danh sách mẫu ghế</h4>
+                <h4 class="mb-sm-0 fw-semibold font-size-20">Danh sách mẫu ghế</h4>
 
                 <div class="page-title-right">
 
-                    <button type="button" class="btn btn-primary btn-sm float-end mb-2 me-3" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">
                         Thêm mẫu ghế
                     </button>
@@ -102,7 +111,7 @@
     </div>
     {{-- Modal update --}}
 
-    <table class="table table-bordered text-center">
+    <table id="datatable" class="table table-bordered text-center">
         <thead>
             <tr>
                 <th class="fw-semibold">STT</th>
@@ -134,20 +143,22 @@
                             @endif
                         </td>
                         <td>
-                            <input type="checkbox" id="is_active{{ $data->id }}" data-publish="{{ $data->is_publish }}"
-                                switch="success" @checked($data->is_active) />
-                            <label for="is_active{{ $data->id }}"></label>
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="form-check form-switch form-switch-success">
+                                    <input @checked($data->is_active) data-publish="{{ $data->is_publish }}" class="form-check-input switch-is-active" id="is_active{{ $data->id }}" type="checkbox">
+                                </div>
+                            </div>
                         </td>
                         <td>
                             <a href="{{ route('admin.edit.seat_templates', $data) }}"><button class="btn btn-success btn-sm"><i
                                         class="mdi mdi-plus-circle-outline"></i></button>
-                                </a>
-                            <a class="edit-seat-template" href="#" data-id="{{ $data->id }}"
-                                data-name="{{ $data->name }}" data-matrix="{{ $data->matrix }}"
-                                data-regular="{{ $data->row_regular }}" data-vip="{{ $data->row_vip }}"
-                                data-double="{{ $data->row_double }}" data-description="{{ $data->description }}"
-                                data-publish="{{ $data->is_publish }}" data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
-                               <button class="btn btn-warning btn-sm"> <i class="bx bx-edit"></i></button>
+                            </a>
+                            <a class="edit-seat-template" href="#" data-id="{{ $data->id }}" data-name="{{ $data->name }}"
+                                data-matrix="{{ $data->matrix }}" data-regular="{{ $data->row_regular }}"
+                                data-vip="{{ $data->row_vip }}" data-double="{{ $data->row_double }}"
+                                data-description="{{ $data->description }}" data-publish="{{ $data->is_publish }}"
+                                data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
+                                <button class="btn btn-warning btn-sm"> <i class="bx bx-edit"></i></button>
                             </a>
 
 
@@ -156,7 +167,7 @@
             @endforeach
         </tbody>
     </table>
-    {{ $dataAll->links() }}
+    {{-- {{ $dataAll->links() }} --}}
     @php
         $appUrl = env('APP_URL');
     @endphp
@@ -243,7 +254,26 @@
     </div>
 @endsection
 @section('script')
+     <!-- Required datatable js -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <!-- Buttons examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+    </script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+    </script>
+
+    <!-- Datatable init js -->
+    <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
     <script>
+
         $(document).ready(function () {
             @if ($errors->any())
                 $('#exampleModal').modal('show'); // Giữ modal mở nếu có lỗi

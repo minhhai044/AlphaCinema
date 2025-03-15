@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\V1\ComboFoodController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
+use App\Http\Controllers\Api\V1\SendMailController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
 
 use App\Http\Controllers\Api\V1\SlideShowController;
@@ -72,5 +73,7 @@ Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTi
 
 Route::get('/settings', [SiteSettingController::class, 'index']);
 
-Route::post('{payment}/payment', [PaymentController::class, 'payment']);
-Route::get('/checkout', [PaymentController::class, 'checkout']);
+
+
+Route::post('{payment}/payment',[PaymentController::class,'payment']);
+Route::get('/checkout',[PaymentController::class,'checkout']);

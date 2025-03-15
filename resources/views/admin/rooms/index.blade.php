@@ -1,18 +1,31 @@
 @extends('admin.layouts.master')
+@section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <style>
+        .table {
+            vertical-align: middle !important;
+        }
+    </style>
+@endsection
 @section('content')
 
 
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Quản lý phòng chiếu</h4>
+                <h4 class="mb-sm-0 font-size-20 fw-semibold">Quản lý phòng chiếu</h4>
 
                 <div class="page-title-right">
 
 
-                    <button type="button" class="btn btn-primary btn-sm float-end mb-2 me-3" data-bs-toggle="modal"
+                    <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">
-                        Tạo phòng chiếu
+                        Thêm phòng chiếu
                     </button>
                 </div>
 
@@ -20,7 +33,7 @@
         </div>
     </div>
     <!-- Modal -->
-    <form action="{{route('admin.rooms.store')}}" method="post" class="formCreate">
+    <form action="{{ route('admin.rooms.store') }}" method="post" class="formCreate">
         @csrf
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
@@ -54,7 +67,6 @@
 
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">{{ $branch->name }}</option>
-
                                     @endforeach
                                 </select>
                                 @error('branch_id')
@@ -100,7 +112,6 @@
                                     @foreach ($type_rooms as $id => $type_room)
                                         <option value="{{ $id }}">{{ $type_room }}
                                         </option>
-
                                     @endforeach
                                 </select>
                                 @error('type_room_id')
@@ -109,8 +120,7 @@
                             </div>
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
-                                <textarea class="form-control" name="description" rows="3"
-                                    placeholder="Nhập mô tả..."></textarea>
+                                <textarea class="form-control" name="description" rows="3" placeholder="Nhập mô tả..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -124,7 +134,7 @@
     </form>
 
 
-    <table class="table table-bordered text-center">
+    <table id="datatable" class="table table-bordered text-center">
         <thead>
             <tr>
                 <th class="fw-semibold">STT</th>
@@ -141,26 +151,33 @@
                 @foreach ($rooms as $room)
                     <tr>
                         <td>{{ $loop->iteration }}</td>
-                        <td class="fw-semibold">{{ $room->name}}</td>
+                        <td class="fw-semibold">{{ $room->name }}</td>
                         <td>{{ $room->branch->name ?? 'Không có chi nhánh' }}</td>
                         <td>{{ $room->cinema->name ?? 'Không có rạp' }}</td>
                         <td>{{ $room->type_room->name ?? 'Không có loại phòng' }}</td>
 
                         <td>
-                            <input type="checkbox" id="is_active{{$room->id}}" data-publish="{{ $room->is_publish }}"
-                                switch="success" @checked($room->is_active) />
-                            <label for="is_active{{$room->id}}"></label>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="form-check form-switch form-switch-success">
+                                <input @checked($room->is_active) data-publish="{{ $room->is_publish }}"
+                                    class="form-check-input switch-is-active" id="is_active{{ $room->id }}"
+                                    type="checkbox">
+                            </div>
+                        </div>
+                        
                         </td>
                         <td>
-                            <button class="btn btn-success btn-sm"><a class="dropdown-item" href="{{ route('admin.rooms.show', $room) }}"><i
-                                class="bx bx-show"></i></a></button>
-                            <button class="btn btn-primary btn-sm"><a class="dropdown-item edit-room" href="#" data-id="{{ $room->id }}" data-name="{{ $room->name }}"
-                                data-branch="{{ $room->branch_id }}" data-cinema="{{ $room->cinema_id }}"
-                                data-typeroom="{{ $room->type_room_id }}" data-seattemplate="{{ $room->seat_template_id }}"
-                                data-description="{{ $room->description }}" data-publish="{{ $room->is_publish }}"
-                                data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
-                                <i class=" bx bx-edit"></i>
-                            </a></button>
+                            <button class="btn btn-success btn-sm"><a class="dropdown-item"
+                                    href="{{ route('admin.rooms.show', $room) }}"><i class="bx bx-show"></i></a></button>
+                            <button class="btn btn-warning btn-sm"><a class="dropdown-item edit-room" href="#"
+                                    data-id="{{ $room->id }}" data-name="{{ $room->name }}"
+                                    data-branch="{{ $room->branch_id }}" data-cinema="{{ $room->cinema_id }}"
+                                    data-typeroom="{{ $room->type_room_id }}"
+                                    data-seattemplate="{{ $room->seat_template_id }}"
+                                    data-description="{{ $room->description }}" data-publish="{{ $room->is_publish }}"
+                                    data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
+                                    <i class=" bx bx-edit"></i>
+                                </a></button>
                         </td>
                     </tr>
                 @endforeach
@@ -168,13 +185,14 @@
         </tbody>
 
     </table>
-    {{$rooms->links()}}
-    <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    {{-- {{$rooms->links()}} --}}
+    <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form method="post" class="submitRoomFormUpdate">
                     @csrf
-                    @method("PUT")
+                    @method('PUT')
                     <div class="modal-header">
                         <h1 class="modal-title fs-5" id="exampleModalLabel">Sửa phòng</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -242,8 +260,9 @@
                                 <label for="type_room" class="form-label">Loại phòng <span
                                         style="color: red">*</span></label>
 
-                                <select name="type_room_id" class="form-select @error('type_room_id') is-invalid @enderror"
-                                    required id="type_room">
+                                <select name="type_room_id"
+                                    class="form-select @error('type_room_id') is-invalid @enderror" required
+                                    id="type_room">
                                     <option value="" disabled selected>Chọn loại phòng</option>
                                     @foreach ($type_rooms as $id => $type_room)
                                         <option value="{{ $id }}">{{ $type_room }}
@@ -256,8 +275,7 @@
                             </div>
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
-                                <textarea class="form-control" name="description" id="description" rows="3"
-                                    placeholder="Nhập mô tả..."></textarea>
+                                <textarea class="form-control" name="description" id="description" rows="3" placeholder="Nhập mô tả..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -275,9 +293,26 @@
     @endphp
 @endsection
 @section('script')
+    <!-- Required datatable js -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <!-- Buttons examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
 
+    <!-- Responsive examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+    </script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+    </script>
+
+    <!-- Datatable init js -->
+    <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
     <script>
-        $(document).ready(function () {
+        $(document).ready(function() {
             @if ($errors->any())
                 $('#exampleModal').modal('show'); // Giữ modal mở nếu có lỗi
             @endif
@@ -285,7 +320,7 @@
         const data = @json($branchsRelation);
 
         $('#cinemas').prop('disabled', true);
-        $('#branchSelect').change(function () {
+        $('#branchSelect').change(function() {
             let id = $(this).val();
             let filteredData = "";
             Object.entries(data).forEach(([key, value]) => {
@@ -302,7 +337,7 @@
 
         const seat_templates = @json($seat_templates);
 
-        $('#seat_templates').change(function () {
+        $('#seat_templates').change(function() {
 
             let id = $(this).val();
 
@@ -325,7 +360,7 @@
 
 
         let Url = @json($appUrl);
-        $('input[id^="is_active"]').change(function () {
+        $('input[id^="is_active"]').change(function() {
             let id = this.id.replace('is_active', ''); // Lấy ID động
             let is_active = this.checked ? 1 : 0; // Kiểm tra trạng thái
             let publish = $(this).data('publish');
@@ -339,10 +374,10 @@
                         data: {
                             is_active
                         },
-                        success: function (response) {
+                        success: function(response) {
                             toastr.success('Thao tác thành công !!!');
                         },
-                        error: function (error) {
+                        error: function(error) {
                             toastr.error('Thao tác thất bại !!!');
                         }
                     });
@@ -354,7 +389,7 @@
                 toastr.error('Thao tác thất bại , Vui lòng xuất bản phòng !!!');
             }
         });
-        $('.edit-room').click(function () {
+        $('.edit-room').click(function() {
             let id = $(this).data('id');
             let name = $(this).data('name');
             let branch_id = $(this).data('branch');
@@ -404,7 +439,7 @@
 
 
         })
-        $('#branchEdit').change(function () {
+        $('#branchEdit').change(function() {
             let id = $(this).val();
             let filteredData = "";
             Object.entries(data).forEach(([key, value]) => {
@@ -418,7 +453,7 @@
             });
         });
 
-        $('#seat_templates_edit').change(function () {
+        $('#seat_templates_edit').change(function() {
 
             let id = $(this).val();
 
@@ -453,14 +488,12 @@
             }
         }
 
-        $('#submitCreate').click(function () {
+        $('#submitCreate').click(function() {
             handleSubmit('formCreate');
         });
 
-        $('#submitUpdate').click(function () {
+        $('#submitUpdate').click(function() {
             handleSubmit('submitRoomFormUpdate');
         });
-
     </script>
-
 @endsection

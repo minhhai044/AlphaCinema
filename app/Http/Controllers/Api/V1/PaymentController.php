@@ -7,6 +7,7 @@ use App\Http\Requests\Api\PaymentRequest;
 use App\Models\Showtime;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Services\MailService;
 use App\Services\ShowtimeService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
@@ -20,10 +21,12 @@ class PaymentController extends Controller
 {
     use ApiResponseTrait;
     private $showtimeService;
-    private const PATH_URL = "https://alphacinema.me";
-    public function __construct(ShowtimeService $showtimeService)
+    private $mailService;
+    private const PATH_URL = env('APP_URL');
+    public function __construct(ShowtimeService $showtimeService, MailService $mailService)
     {
         $this->showtimeService = $showtimeService;
+        $this->mailService = $mailService;
     }
 
     public static function generateOrderId()
@@ -221,7 +224,7 @@ class PaymentController extends Controller
             DB::transaction(function () use ($orderData) {
                 $data = $orderData['data']['ticket'];
                 $data['code'] = strtoupper(Str::random(8));
-                Ticket::create($data);
+                $ticket = Ticket::create($orderData['data']['ticket'])->load('user', 'cinema', 'room', 'movie', 'showtime', 'branch');
                 $dataResetSuccess = [
                     'seat_id' => $orderData['data']['seat_id'],
                     'status' => 'sold',
@@ -231,6 +234,8 @@ class PaymentController extends Controller
 
                 User::where('id', $orderData['data']['ticket']['user_id'])
                     ->increment('total_amount', $orderData['data']['ticket']['total_price']);
+
+                $this->mailService->sendMailService($ticket);
             });
 
             Redis::del("order:$txnRef");
