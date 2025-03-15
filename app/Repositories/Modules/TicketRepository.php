@@ -16,6 +16,8 @@ class TicketRepository
 
     /**
      * Lấy tất cả các ticket với các mối quan hệ
+     *
+     * @return Collection
      */
     public function all(): Collection
     {
@@ -26,6 +28,9 @@ class TicketRepository
 
     /**
      * Tìm ticket theo ID
+     *
+     * @param mixed $id
+     * @return Ticket
      */
     public function findTicket($id)
     {
@@ -33,6 +38,13 @@ class TicketRepository
             ->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch')
             ->findOrFail($id);
     }
+
+    /**
+     * Lấy danh sách ticket với các bộ lọc
+     *
+     * @param array $filters
+     * @return Collection
+     */
     public function getTickets(array $filters = []): Collection
     {
         $query = $this->ticket
