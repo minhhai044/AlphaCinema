@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\Admin\RoleController;
 
 use App\Http\Controllers\Admin\CinemaController;
@@ -8,7 +9,7 @@ use App\Http\Controllers\Admin\VoucherController;
 use App\Http\Controllers\Admin\UserVoucherController;
 use App\Http\Controllers\Admin\DashBoardController;
 
-use App\Http\Controllers\Api\V1\AuthController;
+// use App\Http\Controllers\Api\V1\AuthController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Admin\DayController;
@@ -48,6 +49,8 @@ use BeyondCode\LaravelWebSockets\Facades\WebSocketsRouter;
 */
 
 Route::get('/', [DashBoardController::class, 'index'])->name('index');
+
+Route::post("/logout", [AuthController::class, "logout"])->name("logout");
 
 Route::resource('cinemas', CinemaController::class);
 Route::post('/cinemas/{id}/toggle', [CinemaController::class, 'toggleStatus'])->name('cinemas.toggle');
@@ -106,8 +109,6 @@ Route::post('/branches/{id}/toggle', [BranchController::class, 'toggleStatus'])-
 
 Route::resource('vouchers', VoucherController::class);
 Route::post('/vouchers/{id}/toggle', [VoucherController::class, 'toggleStatus'])->name('vouchers.toggle');
-
-
 
 Route::resource('user-vouchers', UserVoucherController::class);
 
@@ -191,9 +192,7 @@ Route::group([
 });
 
 
-Route::resource("roles", RoleController::class);
-
-
+Route::resource("roles", RoleController::class)->middleware("checkSystemAdmin");
 
 Route::resource('vouchers', VoucherController::class);
 
@@ -208,8 +207,6 @@ Route::prefix('seat-templates')->group(function () {
 Route::prefix('rooms')->as('rooms.')->group(function () {
     Route::get('/', [RoomController::class, 'index'])->name('index');
 });
-
-
 
 Route::prefix('movies')->name('movies.')->group(function () {
     // Danh sách phim
@@ -246,7 +243,6 @@ Route::resource('type_seats', TypeSeatController::class);
 
 Route::post('days/update/{id}', [DayController::class, 'update'])->name('days.update');
 
-
 Route::group([
     'prefix' => 'settings',  // Tiền tố URL cho tất cả route
     'as' => 'settings.',
@@ -256,12 +252,8 @@ Route::group([
     Route::post('/reset', [SiteSettingController::class, 'resetToDefault'])->name('reset');
 });
 
-
-
 Route::get('/statistical/cinemaRevenue', [StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
 // Route::get('/admin/statistical/cinemaRevenue', [App\Http\Controllers\Admin\StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
-
-
 
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
 

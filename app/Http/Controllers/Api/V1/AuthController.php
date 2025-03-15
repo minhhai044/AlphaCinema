@@ -56,27 +56,11 @@ class AuthController extends Controller
                 return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
             }
 
-            $user->tokens()->delete();
-
             // Tạo token xác thực
             $token = $user->createToken('UserToken')->plainTextToken;
 
-
-            // Auth::login($user);
-
             // Tạo cookie chứa token (thời gian sống 24h - 1440 phút)
-            // $cookie = cookie('user_token', $token, 1440);
-
-            // $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true);
-            ## cookie chạy ngon
-            // $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true, false, 'lax');
-
-            $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, false, false, 'none');
-
-
-            ## Sửa cookie
-            // $cookie = cookie('admin_token', $token, 1440, '/', null, true, true, false, 'none');
-
+            $cookie = cookie('user_token', $token, 1440);
 
             return $this->successResponse([
                 'user' => $user,

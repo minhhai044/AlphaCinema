@@ -18,7 +18,7 @@ class CheckSystemAdminMiddleware
     {
         $user = Auth::user();
 
-        if ($user && $user->name = "System Admin") {
+        if ($user && $user->hasRole("System Admin")) {
             return $next($request);
         }
         abort(403, 'Bạn không có quyền truy cập!');

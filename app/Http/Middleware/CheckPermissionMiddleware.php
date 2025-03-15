@@ -22,7 +22,6 @@ class CheckPermissionMiddleware
         if (Auth::check() && Auth::user()->can($permission)) {
             return $next($request);
         }
-
         abort(403, "Bạn không có quyền truy cập");
     }
 }

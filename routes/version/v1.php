@@ -39,7 +39,6 @@ Route::prefix('branchs')->group(function () {
     Route::get('/', [BranchController::class, 'index']);
 });
 
-
 Route::get('/get-cinemas', [TicketController::class, 'getCinemas']);
 Route::get('tickets/{id}', [TicketController::class, 'getTicketByID']);
 Route::get('tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
@@ -73,4 +72,5 @@ Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTi
 Route::get('/settings', [SiteSettingController::class, 'index']);
 
 Route::post('{payment}/payment', [PaymentController::class, 'payment']);
+
 Route::get('/checkout', [PaymentController::class, 'checkout']);

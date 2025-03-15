@@ -63,7 +63,6 @@ class UserController extends Controller
         return redirect()->route('admin.users.index')->with('success', 'Thêm người dùng thành công!');
     }
 
-
     public function show($id)
     {
         $user = $this->userRepository->findByIdUserRepository($id);
@@ -81,8 +80,6 @@ class UserController extends Controller
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('user', 'pointHistories', 'userRank'));
     }
-
-
 
     public function edit($id)
     {
