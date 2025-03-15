@@ -31,7 +31,7 @@ return new class extends Migration
             $table->decimal('price_special', 10, 0)->default(0)->comment('Giá suất chiếu đặc biệt');
             $table->text('description_special')->nullable();
             $table->boolean('status_special')->default(0)->comment('0 : Không đặc biệt, 1 : Đặc biệt');
-            $table->boolean('is_active')->default(0)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
+            $table->boolean('is_active')->default(1)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
             $table->timestamps();
         });
     }
