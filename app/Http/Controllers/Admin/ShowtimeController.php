@@ -308,7 +308,7 @@ class ShowtimeController extends Controller
                         'day_id' => $groups['day_id'],
                         'cinema_id' => $groups['cinema_id'],
                         'room_id' => $groups['room_id'],
-                        'seat_structure' => json_encode($groups['seat_structure']),
+                        'seat_structure' => $groups['seat_structure'],
                         'slug' => Showtime::generateCustomRandomString(),
                         'date' => $groups['date'],
                         'price_special' => isset($groups['price_special'])

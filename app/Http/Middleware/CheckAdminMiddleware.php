@@ -26,35 +26,35 @@ class CheckAdminMiddleware
 
 
         // $token = Cookie::get('admin_token');
-        $token = $request->cookie('admin_token');
+        // $token = $request->cookie('admin_token');
 
-        if (!$token) {
-            return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
-        }
+        // if (!$token) {
+        //     return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        // }
 
-        // Tìm token trong bảng `personal_access_tokens`
-        $accessToken = PersonalAccessToken::findToken($token);
+        // // Tìm token trong bảng `personal_access_tokens`
+        // $accessToken = PersonalAccessToken::findToken($token);
 
-        if (!$accessToken) {
-            /**
-             * Nếu token hết hạn hoặc đã logout từ client, xóa cookie admin_token và redirect về url nuxt
-             */
-            return redirect()->to('https://alphacinema.me:3000');
+        // if (!$accessToken) {
+        //     /**
+        //      * Nếu token hết hạn hoặc đã logout từ client, xóa cookie admin_token và redirect về url nuxt
+        //      */
+        //     return redirect()->to('https://alphacinema.me:3000');
 
-            // return response()->json(['message' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
-        }
+        //     // return response()->json(['message' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
+        // }
 
-        // Lấy user từ token
-        $user = $accessToken->tokenable;
+        // // Lấy user từ token
+        // $user = $accessToken->tokenable;
 
-        // dd($user);
+        // // dd($user);
 
-        if (!$user || $user->type_user != 1) { // Đảm bảo chỉ cho phép admin
-            return response()->json(['message' => 'Access denied'], Response::HTTP_FORBIDDEN);
-        }
+        // if (!$user || $user->type_user != 1) { // Đảm bảo chỉ cho phép admin
+        //     return response()->json(['message' => 'Access denied'], Response::HTTP_FORBIDDEN);
+        // }
 
-        // Xác thực user trong Auth
-        Auth::login($user);
+        // // Xác thực user trong Auth
+        // Auth::login($user);
 
         return $next($request);
     }

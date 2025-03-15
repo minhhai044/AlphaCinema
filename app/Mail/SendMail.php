@@ -27,19 +27,30 @@ class SendMail extends Mailable implements ShouldQueue
     private $seat_name;
     private $combo_name;
     private $food_name;
-    public function __construct($user_name, $total_price, $movie_name, $date, $start_time, $cinema_name, $branch_name, $seat_name, $combo_name, $food_name)
-    {
-        $this->user_name    = $user_name;
-        $this->total_price  = $total_price;
-        $this->movie_name   = $movie_name;
-        $this->combo_name   = $combo_name;
-        $this->date         = $date;
-        $this->start_time   = $start_time;
-        $this->cinema_name  = $cinema_name;
-        $this->branch_name  = $branch_name;
-        $this->seat_name    = $seat_name;
-        $this->food_name    = $food_name;
+    public function __construct(
+        $user_name,
+        $total_price,
+        $movie_name,
+        $date,
+        $start_time,
+        $cinema_name,
+        $branch_name,
+        $seat_name = [],
+        $combo_name = [],
+        $food_name = []
+    ) {
+        $this->user_name = $user_name;
+        $this->total_price = $total_price;
+        $this->movie_name = $movie_name;
+        $this->date = $date;
+        $this->start_time = $start_time;
+        $this->cinema_name = $cinema_name;
+        $this->branch_name = $branch_name;
+        $this->seat_name = is_array($seat_name) ? $seat_name : [];
+        $this->combo_name = is_array($combo_name) ? $combo_name : [];
+        $this->food_name = is_array($food_name) ? $food_name : [];
     }
+    
 
     /**
      * Get the message envelope.
