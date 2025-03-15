@@ -13,16 +13,17 @@ use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
-
+use PgSql\Lob;
 
 class PaymentController extends Controller
 {
     use ApiResponseTrait;
     private $showtimeService;
     private $mailService;
-    private const PATH_URL = env('APP_URL');
+    private const PATH_URL = "https://alphacinema.me";
     public function __construct(ShowtimeService $showtimeService, MailService $mailService)
     {
         $this->showtimeService = $showtimeService;
@@ -224,7 +225,8 @@ class PaymentController extends Controller
             DB::transaction(function () use ($orderData) {
                 $data = $orderData['data']['ticket'];
                 $data['code'] = strtoupper(Str::random(8));
-                $ticket = Ticket::create($orderData['data']['ticket'])->load('user', 'cinema', 'room', 'movie', 'showtime', 'branch');
+                $ticket = Ticket::create($data)->load('user', 'cinema', 'room', 'movie', 'showtime', 'branch');
+                Log::info('ticket',[$ticket]);
                 $dataResetSuccess = [
                     'seat_id' => $orderData['data']['seat_id'],
                     'status' => 'sold',

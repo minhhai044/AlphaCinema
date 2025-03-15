@@ -50,7 +50,7 @@
             display: inline-block;
             padding: 12px 20px;
             margin-top: 20px;
-            background: #ff5733;
+            background: #5156be;
             color: white;
             text-decoration: none;
             border-radius: 5px;
@@ -88,20 +88,25 @@
             <p>Cảm ơn bạn đã đặt vé tại <strong>AlphaCinema</strong>. Dưới đây là thông tin chi tiết về vé của bạn:</p>
 
             <div class="ticket-info">
-                <p><strong>🎬 Phim:</strong> Avengers: Endgame</p>
-                <p><strong>📅 Ngày chiếu:</strong> 15/03/2025</p>
-                <p><strong>⏰ Giờ chiếu:</strong> 19:30</p>
-                <p><strong>🏢 Rạp:</strong> AlphaCinema - Chi Nhánh Hà Nội</p>
-                <p><strong>🪑 Ghế:</strong> H12, H13</p>
-                <p><strong>💰 Tổng tiền:</strong> 180.000 VNĐ</p>
+                <p><strong>🎬 Phim:</strong> {{ $movie_name }}</p>
+                <p><strong>📅 Ngày chiếu:</strong> {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</p>
+                <p><strong>⏰ Giờ chiếu:</strong> {{ $start_time }}</p>
+                <p><strong>🏢 Rạp:</strong> {{ $cinema_name }} - Chi Nhánh {{ $branch_name }}</p>
+                <p><strong>🪑 Ghế:</strong> 
+                    {{ implode(', ', $seat_name) }}
+                </p>
+                
+                <p><strong>🛍 Combo:</strong> 
+                    {{ implode(', ', array_map(fn($combo) => "{$combo['name']} (x{$combo['quantity']})", $combo_name)) }}
+                </p>
+                
+                <p><strong>🍿 Đồ ăn:</strong> 
+                    {{ implode(', ', array_map(fn($food) => "{$food['name']} (x{$food['quantity']})", $food_name)) }}
+                </p>
+                
+                <p><strong>💰 Tổng tiền:</strong> {{ number_format($total_price) }} VNĐ</p>
             </div>
 
-            <div class="qr-code">
-                <p>📲 Vui lòng quét mã QR dưới đây để nhận vé:</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=123456789" alt="QR Code">
-            </div>
-
-            <p><a href="https://yourwebsite.com" class="button">Xem chi tiết vé</a></p>
 
             <p>Chúng tôi mong chờ được chào đón bạn tại rạp!</p>
             <p>Trân trọng,</p>

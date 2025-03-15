@@ -79,7 +79,8 @@ class ShowtimeController extends Controller
     {
         $movie = Movie::with([
             'showtime' => function ($query) {
-                $query->where('date', '>=', Carbon::now());
+                $query->where('date', '>=', Carbon::now())
+                ->where('is_active', 1);
             },
             'room'
         ])->where('slug', $slug)->first();
