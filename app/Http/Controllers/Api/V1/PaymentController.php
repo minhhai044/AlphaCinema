@@ -7,6 +7,8 @@ use App\Http\Requests\Api\PaymentRequest;
 use App\Models\Showtime;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\User_voucher;
+use App\Models\Voucher;
 use App\Services\MailService;
 use App\Services\ShowtimeService;
 use App\Traits\ApiResponseTrait;
@@ -234,17 +236,32 @@ class PaymentController extends Controller
                 ];
                 $this->showtimeService->resetSuccessService($dataResetSuccess, $orderData['data']['ticket']['showtime_id']);
 
-               
+
                 // Cộng tổng
                 User::where('id', $orderData['data']['ticket']['user_id'])
                     ->increment('total_amount', $orderData['data']['ticket']['total_price']);
-                
+
                 // Cộng point
                 $point = $orderData['data']['point'] ?? 0;
                 User::where('id', $orderData['data']['ticket']['user_id'])
                     ->increment('point', $point);
 
+                // $voucher = Voucher::with('userVouchers')
+                //     ->where('code', $orderData['data']['code_voucher'])
+                //     ->first();
 
+                // $userVoucher = $voucher->userVouchers()
+                //     ->where('user_id', $orderData['user_id'])
+                //     ->first();
+
+                // $userVoucher->decrement('usage_count',1);
+
+        
+                User_voucher::whereHas('voucher', function ($query) use ($orderData) {
+                    $query->where('code', $orderData['data']['code_voucher']);
+                })
+                ->where('user_id', $orderData['user_id'])
+                ->decrement('usage_count',1);
 
                 $this->mailService->sendMailService($ticket);
             });
