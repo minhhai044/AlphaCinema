@@ -226,7 +226,7 @@ class PaymentController extends Controller
                 $data = $orderData['data']['ticket'];
                 $data['code'] = strtoupper(Str::random(8));
                 $ticket = Ticket::create($data)->load('user', 'cinema', 'room', 'movie', 'showtime', 'branch');
-                Log::info('ticket',[$ticket]);
+                Log::info('ticket', [$ticket]);
                 $dataResetSuccess = [
                     'seat_id' => $orderData['data']['seat_id'],
                     'status' => 'sold',
@@ -234,8 +234,20 @@ class PaymentController extends Controller
                 ];
                 $this->showtimeService->resetSuccessService($dataResetSuccess, $orderData['data']['ticket']['showtime_id']);
 
+               
+                // Cộng tổng
                 User::where('id', $orderData['data']['ticket']['user_id'])
                     ->increment('total_amount', $orderData['data']['ticket']['total_price']);
+                
+                // Cộng point
+                $point = $orderData['data']['point'] ?? 0;
+                $depoint = $orderData['data']['depoint'] ?? 0;
+                $totalPoint = $point - $depoint;
+
+                User::where('id', $orderData['data']['ticket']['user_id'])
+                    ->increment('point', $totalPoint);
+
+
 
                 $this->mailService->sendMailService($ticket);
             });
