@@ -106,69 +106,133 @@
                             </thead>
                             <tbody>
                                 @foreach ($users as $user)
-                                    <tr>
-                                        <td>{{ $user->id }}</td>
+                                    @if (auth()->check() && auth()->user()->hasRole('Quản lý cơ sở'))
+                                        @if ($user->cinema_id == auth()->user()->cinema_id)
+                                            <!-- Kiểm tra vai trò Nhân viên -->
+                                            <tr>
+                                                <td>{{ $user->id }}</td>
+                                                <td>{{ $user->name }}</td>
 
-
-                                        <td>{{ $user->name }}</td>
-
-
-                                        @if ($user->avatar && Storage::exists($user->avatar))
-                                            <td><img src="{{ Storage::url($user->avatar) }}"
-                                                    style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
-                                            </td>
-                                        @else
-                                            <td><img src="https://graph.facebook.com/4/picture?type=small"
-                                                    style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
-                                            </td>
-                                        @endif
-
-                                        <td>{{ $user->email }}</td>
-                                        <td>
-                                            @if ($user->roles)
-                                                @foreach ($user->roles as $role)
-                                                    <span class="badge bg-primary me-1">{{ $role->name }}</span>
-                                                @endforeach
-                                            @endif
-                                        </td>
-                                        <td>
-                                            {!! $user->gender === 0
-                                                ? '<span class="badge bg-primary">Nam</span>'
-                                                : '<span class="badge bg-danger">Nữ</span>' !!}
-                                        </td>
-
-                                        <td>
-                                            <a href="{{ route('admin.users.show', $user) }}">
-                                                <button title="xem" class="btn btn-success btn-sm " type="button"><i
-                                                        class="bi bi-eye"></i></button>
-                                            </a>
-                                            @if (Auth::user()->hasRole('System Admin'))
-                                                @if ($user->name != 'System Admin')
-                                                    @can('Sửa tài khoản')
-                                                        <a href="{{ route('admin.users.edit', $user) }}">
-                                                            <button title="xem" class="btn btn-warning btn-sm "
-                                                                type="button"><i class="fas fa-edit"></i></button>
-                                                        </a>
-                                                    @endcan
-
-
-                                                    @can('Xóa tài khoản')
-                                                        <form method="POST"
-                                                            action="{{ route('admin.users.softDestroy', $user) }}"
-                                                            class="d-inline-block">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-danger btn-sm"
-                                                                onclick="return confirm('Bạn có muốn xóa không')">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    @endcan
+                                                @if ($user->avatar && Storage::exists($user->avatar))
+                                                    <td><img src="{{ Storage::url($user->avatar) }}"
+                                                            style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
+                                                    </td>
+                                                @else
+                                                    <td><img src="https://graph.facebook.com/4/picture?type=small"
+                                                            style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
+                                                    </td>
                                                 @endif
+
+                                                <td>{{ $user->email }}</td>
+
+                                                <td>
+                                                    @if ($user->roles)
+                                                        @foreach ($user->roles as $role)
+                                                            <span class="badge bg-primary me-1">{{ $role->name }}</span>
+                                                        @endforeach
+                                                    @endif
+                                                </td>
+
+                                                <td>
+                                                    {!! $user->gender === 0
+                                                        ? '<span class="badge bg-primary">Nam</span>'
+                                                        : '<span class="badge bg-danger">Nữ</span>' !!}
+                                                </td>
+
+                                                <td>
+                                                    <a href="{{ route('admin.users.show', $user) }}">
+                                                        <button title="xem" class="btn btn-success btn-sm "
+                                                            type="button"><i class="bi bi-eye"></i></button>
+                                                    </a>
+                                                    @if ($user->roles->count() == 1 && $user->hasRole('Nhân viên'))
+                                                        @can('Sửa tài khoản')
+                                                            <a href="{{ route('admin.users.edit', $user) }}">
+                                                                <button title="xem" class="btn btn-warning btn-sm "
+                                                                    type="button"><i class="fas fa-edit"></i></button>
+                                                            </a>
+                                                        @endcan
+
+                                                        @can('Xóa tài khoản')
+                                                            <form method="POST"
+                                                                action="{{ route('admin.users.softDestroy', $user) }}"
+                                                                class="d-inline-block">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                                    onclick="return confirm('Bạn có muốn xóa không')">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endcan
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                        @endif
+                                    @else
+                                        <tr>
+                                            <td>{{ $user->id }}</td>
+                                            <td>{{ $user->name }}</td>
+
+                                            @if ($user->avatar && Storage::exists($user->avatar))
+                                                <td><img src="{{ Storage::url($user->avatar) }}"
+                                                        style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
+                                                </td>
+                                            @else
+                                                <td><img src="https://graph.facebook.com/4/picture?type=small"
+                                                        style="max-width: 100px; height: auto; display: block; margin: 0 auto;">
+                                                </td>
                                             @endif
-                                        </td>
-                                    </tr>
+
+                                            <td>{{ $user->email }}</td>
+
+                                            <td>
+                                                @if ($user->roles)
+                                                    @foreach ($user->roles as $role)
+                                                        <span class="badge bg-primary me-1">{{ $role->name }}</span>
+                                                    @endforeach
+                                                @endif
+                                            </td>
+
+                                            <td>
+                                                {!! $user->gender === 0
+                                                    ? '<span class="badge bg-primary">Nam</span>'
+                                                    : '<span class="badge bg-danger">Nữ</span>' !!}
+                                            </td>
+
+                                            <td>
+                                                <a href="{{ route('admin.users.show', $user) }}">
+                                                    <button title="xem" class="btn btn-success btn-sm " type="button"><i
+                                                            class="bi bi-eye"></i></button>
+                                                </a>
+                                                @if (Auth::user()->hasRole('System Admin'))
+                                                    @if ($user->name != 'System Admin')
+                                                        @can('Sửa tài khoản')
+                                                            <a href="{{ route('admin.users.edit', $user) }}">
+                                                                <button title="xem" class="btn btn-warning btn-sm "
+                                                                    type="button"><i class="fas fa-edit"></i></button>
+                                                            </a>
+                                                        @endcan
+
+                                                        @can('Xóa tài khoản')
+                                                            <form method="POST"
+                                                                action="{{ route('admin.users.softDestroy', $user) }}"
+                                                                class="d-inline-block">
+                                                                @csrf
+                                                                @method('DELETE')
+                                                                <button type="submit" class="btn btn-danger btn-sm"
+                                                                    onclick="return confirm('Bạn có muốn xóa không')">
+                                                                    <i class="bi bi-trash"></i>
+                                                                </button>
+                                                            </form>
+                                                        @endcan
+                                                    @endif
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    @endif
                                 @endforeach
+
+
                             </tbody>
                         </table>
                     </div>

@@ -34,7 +34,7 @@
                         <h4 class="text-uppercase">Bạn không thể truy cập vào trang này !</h4>
                         <h4 class="text-uppercase"></h4>
                         <div class="mt-5 text-center">
-                            <a class="btn btn-primary waves-effect waves-light" href="{{ route('admin.index') }}">
+                            <a class="btn btn-primary waves-effect waves-light" href="{{ auth()->check() ? route('admin.index') : route('showFormLogin') }}">
                                 Quay về trang chủ
                             </a>
                         </div>

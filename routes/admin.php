@@ -270,3 +270,6 @@ Route::group([
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
 
 Route::get('/admin/tickets/{ticket}/detail', [TicketController::class, 'show'])->name('admin.tickets.show');
+Route::get('print/tickets/{id}', [TicketController::class, 'getTicketByID']);
+Route::get('print/tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
+Route::post('/tickets/change-status', [TicketController::class, 'changeStatus']);

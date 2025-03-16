@@ -35,7 +35,7 @@
                             <div class="d-flex flex-column h-100">
                                 <div class="mb-4 mb-md-5 text-center">
                                     <a href="index.html" class="d-block auth-logo">
-                                        <img src="assets/images/logo-sm.svg" alt="" height="28"> <span
+                                        <img src="{{asset('theme/admin/assets/images/logo-sm.svg') }}" alt="" height="28"> <span
                                             class="logo-txt">Alpha Cinema</span>
                                     </a>
                                 </div>
@@ -111,18 +111,18 @@
 
 
     <!-- JAVASCRIPT -->
-    <script src="{{ asset('admin/theme/assets/libs/jquery/jquery.min.js') }}"></script>
-    <script src="{{ asset('admin/theme/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('admin/theme/assets/libs/metismenu/metisMenu.min.js') }}"></script>
-    <script src="{{ asset('admin/theme/assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('admin/theme/assets/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('admin/theme/assets/libs/feather-icons/feather.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/jquery/jquery.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/metismenu/metisMenu.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/simplebar/simplebar.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/node-waves/waves.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/feather-icons/feather.min.js') }}"></script>
     <!-- pace js -->
-    <script src="{{ asset('admin/theme/assets/libs/pace-js/pace.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/pace-js/pace.min.js') }}"></script>
     <!-- password addon init -->
-    <script src="{{ asset('admin/theme/assets/js/pages/pass-addon.init.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/js/pages/pass-addon.init.js') }}"></script>
 
-    <script>
+    {{-- <script>
         document.querySelector('#password-addon').addEventListener('click', function() {
             var passwordField = document.querySelector('#password');
             var icon = this.querySelector('i');
@@ -137,7 +137,7 @@
                 icon.classList.add('mdi-eye-outline');
             }
         });
-    </script>
+    </script> --}}
 
 
 </body>

@@ -139,7 +139,7 @@ class TicketService
 
         $seatDetails = array_map(function ($seat) {
             return [
-                'name' => $seat['name'] ?? 'N/A',
+                'name' => $seat['seat_name'] ?? 'N/A',
                 'price' => $seat['price'] ? number_format($seat['price'], 0, ',', '.') . ' VND' : '0 VND',
             ];
         }, $seats);
@@ -158,7 +158,7 @@ class TicketService
 
     private function getComboList($ticketCombos)
     {
-        
+
         if (!is_array($ticketCombos) || empty($ticketCombos)) {
             return [];
         }
@@ -189,7 +189,7 @@ class TicketService
                 'price' => number_format($price, 0, ',', '.') . ' VND',
                 'total_price' => $totalPrice,
             ];
-        }, $ticketCombos), fn($item) => $item !== null); 
+        }, $ticketCombos), fn($item) => $item !== null);
     }
 
     public function create(array $data)
@@ -206,6 +206,6 @@ class TicketService
 
     public function getTicketID($id){
         return $this->ticket->findOrFail($id);
-        
+
     }
 }

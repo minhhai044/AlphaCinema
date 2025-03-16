@@ -246,10 +246,9 @@ class AuthController extends Controller
                 "rank" => $rank
             ]);
         } catch (\Exception $e) {
-
             return $this->errorResponse([
                 "message" => "Đã xảy ra lỗi: " . $e->getMessage(),
-                "error" => $e->getTraceAsString() // Gửi thông tin lỗi chi tiết
+                "error" => $e->getTraceAsString()
             ]);
         }
     }

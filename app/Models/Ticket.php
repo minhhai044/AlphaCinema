@@ -25,6 +25,7 @@ class Ticket extends Model
         'ticket_combos',
         'ticket_foods',
         'total_price',
+        'staff',
         'expiry',
         'status',
     ];
@@ -38,7 +39,6 @@ class Ticket extends Model
 
         // 'total_price' => 'decimal:2',
         // 'expiry' => 'datetime',
-
         'status' => 'string',
     ];
 
@@ -89,7 +89,7 @@ class Ticket extends Model
             'id',
             'id',
             'cinema_id',
-            'branch_id'     
+            'branch_id'
         );
     }
 }

@@ -44,8 +44,7 @@ Route::prefix('branchs')->group(function () {
 });
 
 Route::get('/get-cinemas', [TicketController::class, 'getCinemas']);
-Route::get('tickets/{id}', [TicketController::class, 'getTicketByID']);
-Route::get('tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
+
 
 Route::middleware('auth:sanctum')->group(function () {
 

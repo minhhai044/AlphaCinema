@@ -190,16 +190,19 @@
                                 <div class="mb-3">
                                     <label for="account-cinema" class="form-label">
                                         Cơ sở
-                                        <span class="required">*</span> </label>
-                                    <select class="form-select" id="simpleSelect">
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="simpleSelect" name="cinema_id">
                                         @foreach ($cinemas as $cinema)
                                             <option value="{{ $cinema->id }}"
-                                                {{ $cinema->id == $user->cinema_id ? 'selected' : '' }}>
-                                                {{ $cinema->name }}</option>
+                                                {{ old('cinema_id', $user->cinema_id) == $cinema->id ? 'selected' : '' }}>
+                                                {{ $cinema->name }}
+                                            </option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
+
 
                             <div class="col-lg-6">
                                 <label for="account-role" class="form-label">

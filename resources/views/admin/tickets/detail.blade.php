@@ -99,6 +99,7 @@
                     @if (is_array($ticketData['seats']) && !empty($ticketData['seats']['details']))
                         <ul class="list-unstyled">
                             @foreach ($ticketData['seats']['details'] as $seat)
+                         
                                 <li>{{ $seat['name'] }} - <span class="price">{{ $seat['price'] }}</span></li>
                             @endforeach
                         </ul>

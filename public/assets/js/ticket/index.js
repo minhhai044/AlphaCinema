@@ -14,7 +14,7 @@ $(document).ready(function () {
 
         try {
             let response = await $.ajax({
-                url: `/api/v1/tickets/${ticketID}`,
+                url: `/admin/print/tickets/${ticketID}`,
                 type: "GET"
             });
 
@@ -42,7 +42,7 @@ $(document).ready(function () {
                                     <div class="mb-1"><strong>Rạp chiếu:</strong> ${data.cinema || 'N/A'}</div>
                                     <div class="mb-1"><strong>Địa chỉ:</strong> ${data.address || 'N/A'}</div>
                                     <div class="mb-1"><strong>Thời gian:</strong> (${data.start_time || 'N/A'} - ${data.end_time || 'N/A'}) -- ${data.showtime || 'N/A'}</div>
-                                    <div class="fw-semibold">Nhân viên in vé:  Đỗ Nam Trung </div>
+                                    <div class="fw-semibold">Nhân viên in vé:  ${data.userPrintTicket} </div>
                                 </div>
                                 <hr class="dashed-hr">
                                 <div class="mb-1">
@@ -94,7 +94,7 @@ $(document).ready(function () {
 
         try {
             let response = await $.ajax({
-                url: `/api/v1/tickets/combo/${ticketID}`,
+                url: `/admin/print/tickets/combo/${ticketID}`,
                 type: "GET"
             });
 

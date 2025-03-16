@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-    <link href="{{ asset('assets/css/ticketPrint.css') }}" rel="stylesheet" type="text/css" />
+    {{-- <link href="{{ asset('assets/css/ticketPrint.css') }}" rel="stylesheet" type="text/css" /> --}}
 
     <style>
         .table {
@@ -36,85 +36,97 @@
 @section('content')
     <h5 class="fw-bold">Quản lý hóa đơn</h5>
     <div class="rounded">
-    <form action="{{ route('admin.tickets.index') }}" method="get" class="filter-row d-flex align-items-end gap-3 mb-4">
-        <!-- Chi nhánh -->
-        <div class="form-group col-md-2">
-            <label for="branch_id" class="form-label fw-bold">
-                <i class="bi bi-geo-alt me-1"></i> Chi nhánh
-            </label>
-            <select name="branch_id" class="form-select" id="branch_id" required>
-                <option value="" disabled selected>Chọn chi nhánh</option>
-                @if ($branches && $branches->isNotEmpty())
-                    @foreach ($branches as $branch)
-                        <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
-                            {{ $branch->name }}
-                        </option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
+        <form action="{{ route('admin.tickets.index') }}" method="get"
+            class="filter-row d-flex align-items-end gap-3 mb-4">
+            <!-- Chi nhánh -->
+            @if (auth()->check() && auth()->user()->hasRole('System Admin'))
+                <div class="form-group col-md-2">
+                    <label for="branch_id" class="form-label fw-bold">
+                        <i class="bi bi-geo-alt me-1"></i> Chi nhánh
+                    </label>
+                    <select name="branch_id" class="form-select" id="branch_id" required>
+                        <option value="" disabled selected>Chọn chi nhánh</option>
+                        @if ($branches && $branches->isNotEmpty())
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}"
+                                    {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
+                                    {{ $branch->name }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            @endif
 
-        <!-- Rạp -->
-        <div class="form-group col-md-2">
-            <label for="cinema_id" class="form-label fw-bold">
-                <i class="bi bi-camera-reels me-1"></i> Rạp
-            </label>
-            <select name="cinema_id" class="form-select" id="cinema_id" required>
-                <option value="" disabled selected>Chọn rạp</option>
-                @if (!empty($cinemas))
-                    @foreach ($cinemas as $cinemaId => $cinemaName)
-                        <option value="{{ $cinemaId }}" {{ request('cinema_id') == $cinemaId ? 'selected' : '' }}>
-                            {{ $cinemaName }}
-                        </option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
+            <!-- Rạp -->
+            <div class="form-group col-md-2">
+                <label for="cinema_id" class="form-label fw-bold">
+                    <i class="bi bi-camera-reels me-1"></i> Rạp
+                </label>
+                <select name="cinema_id" class="form-select" id="cinema_id" required
+                    {{ auth()->check() && auth()->user()->hasRole('Nhân viên') && in_array(auth()->user()->cinema_id, array_keys($cinemas)) ? 'disabled' : '' }}>
 
-        <!-- Ngày -->
-        <div class="form-group col-md-2">
-            <label for="date" class="form-label fw-bold">
-                <i class="bi bi-calendar me-1"></i> Ngày
-            </label>
-            <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}" required>
-        </div>
+                    <option value="" disabled selected>Chọn rạp</option>
 
-        <!-- Phim -->
-        <div class="form-group col-md-2">
-            <label for="movie_id" class="form-label fw-bold">
-                <i class="bi bi-film me-1"></i> Phim
-            </label>
-            <select name="movie_id" class="form-select" id="movie_id" required>
-                <option value="" disabled selected>Chọn phim</option>
-                @if ($movies && $movies->isNotEmpty())
-                    @foreach ($movies as $movie)
-                        <option value="{{ $movie->id }}" {{ request('movie_id') == $movie->id ? 'selected' : '' }}>
-                            {{ $movie->name }}
-                        </option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
+                    @if (!empty($cinemas))
+                        @foreach ($cinemas as $cinemaId => $cinemaName)
+                            <option value="{{ $cinemaId }}"
+                                {{ old('cinema_id', auth()->user()->cinema_id) == $cinemaId ? 'selected' : '' }}>
+                                {{ $cinemaName }}
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
 
-        <!-- Trạng thái -->
-        <div class="form-group col-md-2">
-            <label for="status_id" class="form-label fw-bold">
-                <i class="bi bi-check-circle me-1"></i> Trạng thái
-            </label>
-            <select name="status_id" class="form-select" id="status_id" required>
-                <option value="" selected>Tất cả</option>
-                <option value="confirmed" {{ request('status_id') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
-                <option value="pending" {{ request('status_id') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
-            </select>
-        </div>
+            </div>
 
-        <!-- Nút Lọc -->
-        <div class="form-group col-md-1 d-flex align-items-end">
-            <button type="submit" class="btn btn-primary w-100">
-                <i class="bi bi-funnel me-1"></i> Lọc
-            </button>
-        </div>
-    </form>
+
+            <!-- Ngày -->
+            <div class="form-group col-md-2">
+                <label for="date" class="form-label fw-bold">
+                    <i class="bi bi-calendar me-1"></i> Ngày
+                </label>
+                <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}"
+                    required>
+            </div>
+
+            <!-- Phim -->
+            <div class="form-group col-md-2">
+                <label for="movie_id" class="form-label fw-bold">
+                    <i class="bi bi-film me-1"></i> Phim
+                </label>
+                <select name="movie_id" class="form-select" id="movie_id" required>
+                    <option value="" disabled selected>Chọn phim</option>
+                    @if ($movies && $movies->isNotEmpty())
+                        @foreach ($movies as $movie)
+                            <option value="{{ $movie->id }}" {{ request('movie_id') == $movie->id ? 'selected' : '' }}>
+                                {{ $movie->name }}
+                            </option>
+                        @endforeach
+                    @endif
+                </select>
+            </div>
+
+            <!-- Trạng thái -->
+            <div class="form-group col-md-2">
+                <label for="status_id" class="form-label fw-bold">
+                    <i class="bi bi-check-circle me-1"></i> Trạng thái
+                </label>
+                <select name="status_id" class="form-select" id="status_id" required>
+                    <option value="" selected>Tất cả</option>
+                    <option value="confirmed" {{ request('status_id') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận
+                    </option>
+                    <option value="pending" {{ request('status_id') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
+                </select>
+            </div>
+
+            <!-- Nút Lọc -->
+            <div class="form-group col-md-1 d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">
+                    <i class="bi bi-funnel me-1"></i> Lọc
+                </button>
+            </div>
+        </form>
 
         <div class="modal fade" id="movieModal" tabindex="-1">
             <div class="modal-dialog">
@@ -145,52 +157,107 @@
                         <th>Mã vé</th>
                         <th>Thông tin người dùng</th>
                         <th>Thông tin vé</th>
+                        <th>Trạng thái</th>
                         <th>Chức năng</th>
                         <!-- Sửa lại: Chỉ để lại một cột "Giới tính" nếu cần -->
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($tickets as $ticket)
-                                    <tr>
-                                        <td>{{ $ticket->code }}</td>
-                                        <td>
-                                            <strong>Người dùng:</strong> {{ $ticket->user->name ?? 'N/A' }}<br>
-                                            <strong>Chức vụ:</strong><span
-                                                class="badge bg-success">{{ $ticket->user->role ?? 'member' }}</span><br>
-                                            <strong>Email:</strong> {{ $ticket->user->email ?? 'N/A' }}<br>
-                                            <strong>Phương thức thanh toán:</strong> {{ $ticket->payment_name ?? 'N/A' }}
-                                        </td>
-                                        <td>
-                                            <strong>Phim:</strong> {{ $ticket->movie->name ?? 'N/A' }}<br>
-                                            <strong>Nơi chiếu:</strong> {{ $ticket->branch->name ?? 'N/A' }} -
-                                            {{ $ticket->cinema->name ?? 'N/A' }} <br>
-                                            <strong>Ghế:</strong>
-                                            @php
-    $seats = $ticket->ticket_seats ?? [];
-    $seatNames = array_map(fn($seat) => $seat['name'] ?? 'N/A', $seats);
-    echo implode(', ', $seatNames) ?: 'N/A';
-                                            @endphp<br>
-                                            <strong>Tổng tiền:</strong> {{ number_format($ticket->total_price, 0, ',', '.') }} VNĐ<br>
-                                            <strong>Trạng thái:</strong>
-                                            {{ $ticket->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận' }}<br>
-                                            <strong>Lịch chiếu:</strong> {{ $ticket->showtime->start_time ?? 'N/A' }} -
-                                            {{ $ticket->showtime->end_time ?? 'N/A' }}<br>
-                                            <strong>Ngày chiếu:</strong> {{ $ticket->showtime->date ?? 'N/A' }}<br>
-                                            <strong>Thời hạn sử dụng:</strong>
-                                            {{ \Carbon\Carbon::parse($ticket->showtime->end_time ?? '')->format('H:i') }},
-                                            {{ \Carbon\Carbon::parse($ticket->showtime->date ?? '')->format('d/m/Y') }}
-                                        </td>
-                                        <td>
-                                            <div class="btn-group">
-                                                <a href="{{ route('admin.tickets.show', $ticket['id']) }}" class="btn btn-sm btn-success"><i
-                                                        class="fas fa-eye"></i></a>
-                                                <button class="btn btn-sm btn-success printTicket" data-id="{{ $ticket->id }}"><i
-                                                        class="fas fa-print"></i> Vé</button>
-                                                <button class="btn btn-sm btn-success printCombo" data-id="{{ $ticket->id }}"><i
-                                                        class="fas fa-print"></i> Combo</button>
-                                            </div>
-                                        </td>
-                                    </tr>
+                        <tr>
+                            <td>{{ $ticket->code }}</td>
+                            <td>
+                                <div><span class="fw-bold">Người dùng:</span> {{ $ticket->user->name ?? 'N/A' }}</div>
+                                <div><span class="fw-bold">Chức vụ:</span>
+                                    <span class="badge bg-success">{{ $ticket->user->role ?? 'member' }}</span>
+                                </div>
+                                <div><span class="fw-bold">Email:</span> {{ $ticket->user->email ?? 'N/A' }}</div>
+                                <div><span class="fw-bold">Phương thức thanh toán:</span>
+                                    {{ $ticket->payment_name ?? 'N/A' }}</div>
+                            </td>
+
+                            <td>
+                                <div><span class="fw-bold">Phim:</span> {{ $ticket->movie->name ?? 'N/A' }}</div>
+
+                                <div><span class="fw-bold">Nơi chiếu:</span> {{ $ticket->branch->name ?? 'N/A' }} -
+                                    {{ $ticket->cinema->name ?? 'N/A' }}
+                                </div>
+
+                                <div>
+                                    <span class="fw-bold">Ghế:</span>
+                                    @php
+                                        $seats = $ticket->ticket_seats ?? [];
+                                        $seatNames = array_map(fn($seat) => $seat['seat_name'] ?? 'N/A', $seats);
+                                        echo implode(', ', $seatNames) ?: 'N/A';
+                                    @endphp
+                                </div>
+
+                                <div><span class="fw-bold">Tổng tiền:</span>
+                                    {{ number_format($ticket->total_price, 0, ',', '.') }} VNĐ</div>
+
+                                <div>
+                                    <span class="fw-bold">Trạng thái:</span>
+                                    <span id="statusTicket"
+                                        class="badge {{ $ticket->status == 'confirmed' ? 'bg-success' : 'bg-warning' }}">
+                                        {{ $ticket->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận' }}
+                                    </span>
+                                </div>
+
+                                <div>
+                                    <span class="fw-bold">Lịch chiếu:</span>
+                                    {{ $ticket->showtime->start_time ?? 'N/A' }} -
+                                    {{ $ticket->showtime->end_time ?? 'N/A' }}
+                                </div>
+
+                                <div><span class="fw-bold">Ngày chiếu:</span> {{ $ticket->showtime->date ?? 'N/A' }}</div>
+
+                                <div>
+                                    <span class="fw-bold">Thời hạn sử dụng:</span>
+                                    {{ \Carbon\Carbon::parse($ticket->showtime->end_time ?? '')->format('H:i') }},
+                                    {{ \Carbon\Carbon::parse($ticket->showtime->date ?? '')->format('d/m/Y') }}
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="form-check form-switch form-switch-success"
+                                    style="display: flex; justify-content: center;">
+                                    <input class="form-check-input switch-is-active changeStatus" type="checkbox"
+                                        data-ticket-id="{{ $ticket->id }}"
+                                        data-user-type="{{ auth()->user()->type_user }}"
+                                        {{ $ticket->status === 'confirmed' ? 'checked disabled' : '' }}
+                                        onclick="changeStatus(event)">
+                                </div>
+
+                            </td>
+
+                            <td class="text-center">
+                                <div class="btn-group justify-content-center align-items-center">
+                                    <a href="{{ route('admin.tickets.show', $ticket) }}"
+                                        class="btn btn-sm btn-success me-2">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                    @if ($ticket->status === 'confirmed')
+                                        <button class="btn btn-sm btn-primary me-2 btn-print-ticket printTicket"
+                                            data-id="{{ $ticket->id }}">
+                                            <i class="bi bi-printer-fill"></i> Vé
+                                        </button>
+                                        <button class="btn btn-sm btn-warning btn-print-combo printCombo"
+                                            data-id="{{ $ticket->id }}">
+                                            <i class="bi bi-printer-fill"></i> Combo
+                                        </button>
+                                    @else
+                                        <button class="btn btn-sm btn-primary me-2 btn-print-ticket d-none printTicket"
+                                            data-id="{{ $ticket->id }}">
+                                            <i class="bi bi-printer-fill"></i> Vé
+                                        </button>
+                                        <button class="btn btn-sm btn-warning btn-print-combo d-none printCombo"
+                                            data-id="{{ $ticket->id }}">
+                                            <i class="bi bi-printer-fill"></i> Combo
+                                        </button>
+                                    @endif
+                                </div>
+                            </td>
+                        </tr>
                     @empty
                         <tr>
                             <td colspan="4" class="text-center">Không có vé nào.</td>
@@ -247,17 +314,62 @@
     <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
     {{-- <script src="{{ asset('theme/admin/assets/js/pages/modal.init.js') }}"></script> --}}
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+    <script>
+        function changeStatus(event) {
+            let ticketId = $(event.target).data('ticket-id');
+            let status = event.target.checked ? 'confirmed' : 'pending';
+
+            let staff = $(event.target).data('user-type') == 1 ? 'Admin' : 'Member';
+
+            if (!confirm('Bạn có chắc muốn thay đổi trạng thái vé?')) {
+                event.target.checked = !event.target.checked; // Nếu không xác nhận, hoàn tác thay đổi
+                return;
+            }
+
+            $.ajax({
+                url: '/admin/tickets/change-status',
+                method: 'POST',
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") // CSRF Token
+                },
+                data: {
+                    ticket_id: ticketId,
+                    status: status,
+                    staff: staff,
+                },
+                success: function(response) {
+                    alert('Trạng thái ticket đã được thay đổi!');
+
+                    let row = $(event.target).closest('tr'); // Lấy dòng hiện tại
+                    let statusTicket = row.find("#statusTicket"); // Tìm phần tử hiển thị trạng thái
+
+                    // **Cập nhật trạng thái hiển thị**
+                    let newStatusText = status === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận';
+                    let newBadgeClass = status === 'confirmed' ? 'bg-success' : 'bg-warning';
+
+                    statusTicket.text(newStatusText) // Cập nhật nội dung
+                        .removeClass('bg-success bg-warning') // Xóa class cũ
+                        .addClass(newBadgeClass); // Thêm class mới
+
+                    // **Hiển thị hoặc ẩn nút in vé**
+                    if (status === 'confirmed') {
+                        row.find('.btn-print-ticket, .btn-print-combo').removeClass('d-none'); // Hiện nút in
+                        $(event.target).prop('disabled', true); // Vô hiệu hóa switch sau khi xác nhận
+                    } else {
+                        row.find('.btn-print-ticket, .btn-print-combo').addClass('d-none'); // Ẩn nút in
+                    }
+                },
+
+                error: function() {
+                    alert('Đã có lỗi xảy ra!');
+                }
+            });
+        }
+    </script>
 
     <script src="{{ asset('assets/js/ticket/index.js') }}">
         $(document).ready(function() {
             // Hàm định dạng tiền tệ
-            const formatCurrency = (number) => {
-                return new Intl.NumberFormat('vi-VN', {
-                    minimumFractionDigits: 0,
-                    maximumFractionDigits: 0
-                }).format(number);
-            };
-
             // Khi người dùng thay đổi chi nhánh
             $('#branch_id').change(function() {
                 var branchId = $(this).val();
@@ -316,6 +428,7 @@
                     });
                 }
             });
+
         });
     </script>
 @endsection
