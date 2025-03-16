@@ -28,7 +28,7 @@ class TicketService
         $branch_id = $request->query('branch_id', '');
         $cinema_id = $request->query('cinema_id', '');
         $movie_id = $request->query("movie_id", "");
-        $status = $request->query("status_id", ""); // Sửa từ status thành status_id
+        $status = $request->query("status_id", "");
 
         if (empty($date) && empty($branch_id) && empty($cinema_id) && empty($movie_id) && empty($status)) {
             $tickets = Ticket::with('movie', 'branch', 'cinema', 'user')->get();
@@ -64,9 +64,9 @@ class TicketService
     public function getTicketDetail($id)
     {
         $ticketDetail = $this->ticketRepository->findTicket($id);
+   
 
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);
-
         $totalSeatPrice = $seatData['total_price'] ?? 0;
 
         $combos = $this->getComboList($ticketDetail->ticket_combos);
@@ -96,10 +96,10 @@ class TicketService
                 'date' => $ticketDetail->showtime->date ? Carbon::parse($ticketDetail->showtime->date)->format('d/m/Y') : 'N/A',
             ],
             'seats' => $seatData,
-            'ticket_price' => $totalSeatPrice ? number_format($totalSeatPrice, 0, ',', '.') . ' VND' : '0 VND',
+            'ticket_price' => $this->formatPrice($totalSeatPrice),
             'combos' => $combos,
-            'total_combo_price' => $totalComboPrice ? number_format($totalComboPrice, 0, ',', '.') . ' VND' : '0 VND',
-            'total_amount' => $ticketDetail->total_price ? number_format($ticketDetail->total_price, 0, ',', '.') . ' VND' : 'N/A',
+            'total_combo_price' => $this->formatPrice($totalComboPrice),
+            'total_amount' => $this->formatPrice($ticketDetail->total_price),
             'status' => $ticketDetail->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận',
             'user' => [
                 'name' => $ticketDetail->user->name ?? 'N/A',
@@ -111,12 +111,13 @@ class TicketService
             'payment_time' => $ticketDetail->created_at ? Carbon::parse($ticketDetail->created_at)->format('H:i - d/m/Y') : 'N/A',
             'customer_name' => $ticketDetail->user->name ?? 'N/A',
             'voucher_code' => $ticketDetail->voucher_code ?? 'N/A',
-            'voucher_discount' => $ticketDetail->voucher_discount ? number_format($ticketDetail->voucher_discount, 0, ',', '.') . ' VND' : 'N/A',
+            'voucher_discount' => $this->formatPrice($ticketDetail->voucher_discount),
             'point_use' => $ticketDetail->point_use ? number_format($ticketDetail->point_use, 0, ',', '.') : 'N/A',
-            'point_discount' => $ticketDetail->point_discount ? number_format($ticketDetail->point_discount, 0, ',', '.') . ' VND' : 'N/A',
+            'point_discount' => $this->formatPrice($ticketDetail->point_discount),
             'expiry' => $ticketDetail->expiry ? Carbon::parse($ticketDetail->expiry)->format('d/m/Y H:i') : 'N/A',
         ];
     }
+
     private function getSeatList($ticketSeats)
     {
         $result = [
@@ -158,7 +159,6 @@ class TicketService
 
     private function getComboList($ticketCombos)
     {
-
         if (!is_array($ticketCombos) || empty($ticketCombos)) {
             return [];
         }
@@ -186,10 +186,15 @@ class TicketService
                 'image' => $imgThumbnail,
                 'foods' => $foodList,
                 'quantity' => $quantity,
-                'price' => number_format($price, 0, ',', '.') . ' VND',
+                'price' => $this->formatPrice($price),
                 'total_price' => $totalPrice,
             ];
         }, $ticketCombos), fn($item) => $item !== null);
+    }
+
+    private function formatPrice($price, $currency = 'VND'): string
+    {
+        return $price ? number_format($price, 0, ',', '.') . ' ' . $currency : '0 ' . $currency;
     }
 
     public function create(array $data)
@@ -204,8 +209,8 @@ class TicketService
         }
     }
 
-    public function getTicketID($id){
+    public function getTicketID($id)
+    {
         return $this->ticket->findOrFail($id);
-
     }
 }

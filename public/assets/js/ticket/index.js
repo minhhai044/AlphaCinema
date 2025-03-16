@@ -126,6 +126,9 @@ $(document).ready(function () {
                 });
             }
 
+            console.log(data);
+
+
             discount = (totalComboPrice + totalFoodPrice) * 0.1;
             totalPrice = totalComboPrice + totalFoodPrice - discount;
 
@@ -140,7 +143,7 @@ $(document).ready(function () {
                         <div class="mb-1">
                             <div class="mb-1 fw-semibold fs-5">Alpha Cinema ${data.cinema || 'N/A'} - ${data.branch || 'N/A'}</div>
                             <div class="mb-1">Thời gian đặt vé: ${data.created_at || 'N/A'}</div>
-                            <p>Được in bởi: Donald Trump</p>
+                            <p>Được in bởi:  ${data.userPrintTicket}</p>
                         </div>
                         <hr class="dashed-hr">
                         ${data.ticket_combos && data.ticket_combos.length > 0 ? data.ticket_combos.map(combo => `

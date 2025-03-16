@@ -218,14 +218,14 @@ class AuthController extends Controller
         $token = $user->createToken('authToken')->plainTextToken;
 
         $authData = json_encode([
-            'user' => $user->only(['id', 'name', 'email', 'avatar']),
+            'user' => $user,
             'token' => $token,
             'isLogin' => true
         ]);
 
         $authDataEncoded = base64_encode(json_encode($authData));
 
-        return redirect()->to('https://alphacinema.me:3000/auth/callback?data=' . urlencode($authDataEncoded));
+        return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
     }
 
     public function getUserRank()

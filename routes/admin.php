@@ -117,9 +117,6 @@ Route::group([
     'as' => 'tickets.',
 ], function () {
     Route::get('/', [TicketController::class, 'index'])->name('index');
-
-    Route::get('/{id}', [TicketController::class, 'show'])->name('show'); // Add this
-
     Route::get('/test', [TicketController::class, 'print']);
 });
 // Route::resource('typerooms', TyperoomController::class);
@@ -269,7 +266,7 @@ Route::group([
 
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
 
-Route::get('/admin/tickets/{ticket}/detail', [TicketController::class, 'show'])->name('admin.tickets.show');
+Route::get('/tickets/{ticket}/detail', [TicketController::class, 'show'])->name('tickets.show');
 Route::get('print/tickets/{id}', [TicketController::class, 'getTicketByID']);
 Route::get('print/tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
 Route::post('/tickets/change-status', [TicketController::class, 'changeStatus']);
