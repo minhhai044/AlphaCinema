@@ -247,8 +247,10 @@ class PaymentController extends Controller
 
                 // Cộng point
                 $point = $orderData['data']['point'] ?? 0;
-                User::where('id', $orderData['data']['ticket']['user_id'])->update(['point',$point]);
-                    // ->increment('point', $point);
+                // User::where('id', $orderData['data']['ticket']['user_id'])->update(['point', $point]);
+                User::where('id', $orderData['data']['ticket']['user_id'])->update(['point' => $point]);
+
+                // ->increment('point', $point);
 
                 // $voucher = Voucher::with('userVouchers')
                 //     ->where('code', $orderData['data']['code_voucher'])
