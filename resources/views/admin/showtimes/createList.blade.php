@@ -103,7 +103,7 @@
                             <div class="tab-pane fade show active" id="branchs">
                                 <div class="row">
                                     <div class="col-lg-6">
-                                        <label for="data_branchs">Chọn chi nhánh</label>
+                                        <label for="data_branchs">Chọn chi nhánh <span class="text-danger">*</span></label>
                                         <select style="border: 1px solid #ded9d9 !important;" id="data_branchs"
                                             class="selectpicker form-control " multiple data-live-search="true"
                                             data-actions-box="true" name="branches[]">
@@ -114,7 +114,7 @@
                                         </select>
                                     </div>
                                     <div class="col-lg-6">
-                                        <label for="datepicker-multiple">Chọn ngày</label>
+                                        <label for="datepicker-multiple">Chọn ngày <span class="text-danger">*</span></label>
                                         <input type="text" class="form-control shadow-sm" name="dates"
                                             id="datepicker-multiple" placeholder="Chọn ngày...">
                                     </div>
