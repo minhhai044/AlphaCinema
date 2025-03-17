@@ -8,8 +8,10 @@ use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\UserRequest;
+use App\Models\Point_history;
 use App\Models\Rank;
 use App\Models\User;
+use App\Models\User_voucher;
 use App\Services\UserService;
 use App\Traits\ApiRequestJsonTrait;
 use App\Traits\ApiResponseTrait;
@@ -230,27 +232,110 @@ class AuthController extends Controller
 
     public function getUserRank()
     {
+       
+
+
         try {
-            $user_total_amount = Auth::user()->total_amount;
-
-            $rank = Rank::where("total_spent", "<=", $user_total_amount)
-                ->orderBy("total_spent", 'desc')
-                ->first();
-
-            if (!$rank) {
-                $rank = Rank::where("is_default", true)->first();
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
             }
-
-            // Trả về kết quả
-            return $this->successResponse([
-                "rank" => $rank
+    
+            $totalTransaction = $user->total_amount;
+            $point = $user->point;
+            $created_at =$user->created_at;
+    
+            // Lấy rank hiện tại
+            $currentRank = Rank::where("total_spent", "<=", $totalTransaction)
+                ->orderBy("total_spent", "desc")
+                ->first();
+    
+            if (!$currentRank) {
+                $currentRank = Rank::where("is_default", true)->first();
+            }
+    
+            // Lấy rank tiếp theo (rank cao hơn)
+            $nextRank = Rank::where("total_spent", ">", $totalTransaction)
+                ->orderBy("total_spent", "asc")
+                ->first();
+    
+            return response()->json([
+                "status" => "success",
+                "user" => [
+                    "id" => $user->id,
+                    "name" => $user->name,
+                    "total_amount" => $totalTransaction,
+                    "point" => $point, // point hiện có
+                    "created_at"=>$created_at
+                ],
+                "rank" => $currentRank,
+                "next_rank" => $nextRank
             ]);
         } catch (\Exception $e) {
-
-            return $this->errorResponse([
+            return response()->json([
+                "status" => "error",
                 "message" => "Đã xảy ra lỗi: " . $e->getMessage(),
-                "error" => $e->getTraceAsString() // Gửi thông tin lỗi chi tiết
-            ]);
+            ], 500);
         }
     }
-}
+    public function getUserVoucher(){
+        try {
+            // Lấy ID người dùng đang đăng nhập
+            $userId = Auth::id();
+
+            // Kiểm tra người dùng đã đăng nhập chưa
+            if (!$userId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            // Lấy danh sách voucher của người dùng
+            $vouchers = User_voucher::where('user_id', $userId)->with('voucher')->get();
+
+            return response()->json([
+                'success' => true,
+                'vouchers' => $vouchers
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getUserPointHistory(Request $request)
+    {
+        try {
+            // Lấy thông tin user đã đăng nhập
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['message' => 'User not authenticated'], 401);
+            }
+            $point = $user->point;
+            // Lấy lịch sử điểm của người dùng
+            $history = Point_history::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+               "user" => [
+                    "id" => $user->id,
+                    "name" => $user->name,
+                    "point" => $point,
+                ],
+                "history-point" => $history,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi lấy lịch sử điểm',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    }
