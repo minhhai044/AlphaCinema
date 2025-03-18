@@ -160,17 +160,15 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="row">
-                                    <div class="col-md-4">
-                                        <div class="mb-2">
-                                            <label for="food-description" class="form-label">
-                                                <span class="required">*</span>
-                                                Hoạt động:
-                                            </label>
-                                            <div class="square-switch">
-                                                <input type="checkbox" @checked($combo->is_active) id="square-switch3"
-                                                    switch="bool" value="1" name="is_active">
-                                                <label for="square-switch3" data-on-label="Yes" data-off-label="No"></label>
-                                            </div>
+                                    <div class=" d-flex gap-2">
+                                        <label for="cinema-description" class="form-label">
+                                            <span class="required">*</span>
+                                            Hoạt động
+                                        </label>
+                                        <div class="round-switch">
+                                            <input type="checkbox" @checked($combo->is_active) id="switch6" switch="primary" value="1"
+                                                name="is_active" {{ old('is_active',1) ? 'checked' : '' }}>
+                                            <label for="switch6" data-on-label="Yes" data-off-label="No"></label>
                                         </div>
                                     </div>
 
@@ -182,16 +180,46 @@
                         <div class="card">
                             <div class="card-body">
                                 <div class="mb-2">
+                                    <label for="combo-image" class="form-label">
+                                        <span class=" text-danger required">*</span>Ảnh
+                                        <input class="form-control" type="file" name="img_thumbnail" id="combo-image"
+                                            onchange="previewImage(event)">
+                                </div>
+                                @if ($combo->img_thumbnail)
+                                <div class="mt-3 text-center">
+                                    <img src="{{ Storage::url($combo->img_thumbnail) }}" alt="Thumbnail"
+                                        class="img-fluid" width="200">
+                                </div>
+                                @endif
+                                @if ($errors->has('img_thumbnail'))
+                                    <div class="text-danger">
+                                        {{ $errors->first('img_thumbnail') }}
+                                    </div>
+                                @endif
+                                <!-- Display selected image and delete button -->
+                                <div id="image-container" class="d-none position-relative mt-3">
+                                    <span>Ảnh mới</span>
+                                    <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2 text-center"
+                                        style="max-width: 70%; max-height: 200px;">
+                                    <!-- Icon thùng rác ở góc phải -->
+                                    <button type="button" id="delete-image"
+                                        class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    {{-- <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <div class="mb-2">
                                     <label for="img_thumbnail" class="form-label"> <span class="text-danger">*</span>Hình
                                         ảnh</label>
                                     <input type="file" name="img_thumbnail" id="img_thumbnail"
                                         class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}">
                                     <div
-                                        class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                        @if ($errors->has('img_thumbnail'))
-                                            {{ $errors->first('img_thumbnail') }}
-                                        @endif
-                                    </div>
+                                     
                                     @if ($combo->img_thumbnail)
                                         <div class="mt-3 text-center">
                                             <img src="{{ Storage::url($combo->img_thumbnail) }}" alt="Thumbnail"
@@ -201,7 +229,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                 </div>
             </div>
@@ -211,6 +239,28 @@
 @endsection
 @section('script')
     <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                $('#image-preview').attr('src', reader.result);
+                $('#image-container').removeClass('d-none');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        // Function to delete the selected image
+        function deleteImage() {
+            $('#delete-image').click(() => {
+                $('#image-container').addClass('d-none');
+                $('#combo-image').val('');
+                $('#image-preview').attr('src', '');
+            });
+        }
         $(document).ready(function () {
             // Format giá tiền
             function formatPriceInput(inputSelector, hiddenInputSelector) {
@@ -351,8 +401,10 @@
                     let $foodItem = $(this).closest('.food-item');
                     let $foodSelect = $foodItem.find('.food-select');
                     let $quantityInput = $foodItem.find('.food-quantity');
+                    let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
 
                     if ($foodSelect.val() === '') {
+                        $errorSpan.text('Vui lòng chọn món ăn trước!')
                         showAlert('warning', 'Vui lòng chọn món ăn trước khi giảm số lượng!', 'Thông báo');
                         return;
                     }
@@ -381,25 +433,87 @@
             // Xử lý khi nhấn nút thêm món ăn
             $('#add').on('click', addFoodItem);
 
-            // Kiểm tra validate trước khi submit form
-            $('#updateFormCombo').on('submit', function (e) {
-                let isValid = true;
+            $('#updateFormCombo').on('submit', function(e) {
+                let isValid = true; // Kiểm tra trạng thái form
 
-                $('.food-select').each(function () {
-                    const foodItemError = $(this).siblings('.food-error');
-                    if ($(this).val() === '') {
+                // Kiểm tra từng món ăn đã chọn chưa
+                $('.food-item').each(function() {
+                    let $foodSelect = $(this).find('.food-select');
+                    let $quantityInput = $(this).find('.food-quantity');
+                    let foodItemError = $(this).find('.text-danger');
+
+                    const quantityValue = parseInt($quantityInput.val().trim());
+                    const selectedFood = $foodSelect.val();
+
+                    // Kiểm tra nếu món ăn chưa chọn
+                    if (selectedFood === '' || selectedFood === null) {
                         isValid = false;
-                        foodItemError.text('Vui lòng chọn món ăn');
+                        // Thêm lỗi nếu chưa có
+                        if (foodItemError.length === 0) {
+                            $foodSelect.after(
+                                '<span class="text-danger small">Vui lòng chọn món ăn</span>');
+                        } else {
+                            foodItemError.text('Vui lòng chọn món ăn').show();
+                        }
                     } else {
-                        foodItemError.text('');
+                        foodItemError.text('').hide();
+                    }
+
+                    // Thêm sự kiện xóa lỗi khi chọn lại món
+                    $foodSelect.on('change', function() {
+                        if ($(this).val() !== '') {
+                            foodItemError.text('').hide();
+                        }
+                    });
+                });
+
+                // Kiểm tra số lượng món ăn
+                $('.food-quantity').each(function() {
+                    const quantityValue = parseInt($(this).val().trim());
+                    let $errorSpan = $(this).closest('.w-100').find(
+                        `#${$(this).attr('id')}_quantity_error`);
+
+                    if (isNaN(quantityValue) || quantityValue <= 0) {
+                        isValid = false;
+
+                        // Kiểm tra nếu chưa có lỗi thì thêm mới
+                        if ($errorSpan.length === 0) {
+                            $(this).after(
+                                `<span class="text-danger small" id="${$(this).attr('id')}_quantity_error">Số lượng chưa được chọn</span>`
+                            );
+                        } else {
+                            $errorSpan.text('Số lượng chưa được chọn').show();
+                        }
+                    } else {
+                        $errorSpan.text('').hide(); // Xóa lỗi nếu số lượng hợp lệ
                     }
                 });
 
+                // Chặn submit nếu form không hợp lệ và báo lỗi Toast
                 if (!isValid) {
                     e.preventDefault();
-                    showAlert('warning', 'Vui lòng chọn đồ ăn trước khi cập nhật!', 'Thông báo');
                 }
             });
+
+            // Kiểm tra validate trước khi submit form
+            // $('#updateFormCombo').on('submit', function (e) {
+            //     let isValid = true;
+
+            //     $('.food-select').each(function () {
+            //         const foodItemError = $(this).siblings('.food-error');
+            //         if ($(this).val() === '') {
+            //             isValid = false;
+            //             foodItemError.text('Vui lòng chọn món ăn');
+            //         } else {
+            //             foodItemError.text('');
+            //         }
+            //     });
+
+            //     if (!isValid) {
+            //         e.preventDefault();
+            //         showAlert('warning', 'Vui lòng chọn đồ ăn trước khi cập nhật!', 'Thông báo');
+            //     }
+            // });
 
             function validateInput(selector, condition, errorMessage) {
                 let input = $(selector);

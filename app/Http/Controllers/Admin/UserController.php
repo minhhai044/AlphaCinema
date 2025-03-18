@@ -9,9 +9,11 @@ use App\Models\User;
 use App\Models\Rank;
 use App\Repositories\Modules\UserRepository;
 use App\Services\UserService;
+use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Permission\Models\Role;
 
 class UserController extends Controller
@@ -32,7 +34,7 @@ class UserController extends Controller
         // $users = User::orderByDesc('id')->get();
         $users = User::where('type_user', 1)->with('cinema')->get();
         $roles = Role::all();
-        
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('users', 'roles'));
     }
 
@@ -49,7 +51,7 @@ class UserController extends Controller
     {
         $data = $userRequest->validated();
         $data['type_user'] = 1;
-
+        dd($data);
         $user =  $this->userService->storeUser($data);
 
         if ($userRequest->has('role_id')) {
@@ -60,7 +62,6 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'Thêm người dùng thành công!');
     }
-
 
     public function show($id)
     {
@@ -80,8 +81,6 @@ class UserController extends Controller
         return view(self::PATH_VIEW . __FUNCTION__, compact('user', 'pointHistories', 'userRank'));
     }
 
-
-
     public function edit($id)
     {
 
@@ -99,8 +98,9 @@ class UserController extends Controller
     {
 
         $data = $userRequest->validated();
-        $data['type_user'] = 1;
         // dd($data);
+        $data['type_user'] = 1;
+
         $result = $this->userService->updateUser($id, $data);
 
         if ($userRequest->has('role_id')) {
@@ -134,4 +134,8 @@ class UserController extends Controller
             return back()->with('error', 'Xóa không thành công');
         }
     }
+
+    // Trong controller Laravel
+    // Trong controller Laravel
+
 }

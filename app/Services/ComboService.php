@@ -128,12 +128,14 @@ class ComboService
 
         return DB::transaction(function () use ($id) {
             $combo = Combo::with('comboFood')->findOrFail($id);
+
             foreach ($combo->comboFood ?? [] as $food) {
                 $food->delete();
             }
             if (Storage::exists($combo->img_thumbnail)) {
                 Storage::delete($combo->img_thumbnail);
             }
+
 
             $combo->delete();
             return true;

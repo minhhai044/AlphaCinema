@@ -7,23 +7,29 @@ use App\Http\Requests\Api\PaymentRequest;
 use App\Models\Showtime;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\User_voucher;
+use App\Models\Voucher;
+use App\Services\MailService;
 use App\Services\ShowtimeService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Str;
-
+use PgSql\Lob;
 
 class PaymentController extends Controller
 {
     use ApiResponseTrait;
     private $showtimeService;
+    private $mailService;
     private const PATH_URL = "https://alphacinema.me";
-    public function __construct(ShowtimeService $showtimeService)
+    public function __construct(ShowtimeService $showtimeService, MailService $mailService)
     {
         $this->showtimeService = $showtimeService;
+        $this->mailService = $mailService;
     }
 
     public static function generateOrderId()
@@ -61,6 +67,8 @@ class PaymentController extends Controller
         $data = [
             'ticket' => $request->ticket,
             'seat_id' => $request->seat_id,
+            'point' => $request->point,
+            'code_voucher' => $request->code_voucher,
         ];
         $payment == 'momo' ? $paymentResult = $this->processPayment($data) : $paymentResult = $this->processVnPayPayment($data);
         if (!isset($paymentResult)) {
@@ -215,13 +223,16 @@ class PaymentController extends Controller
 
         $orderData = json_decode($orderData, true);
 
+        // dd($orderData);
+
         $isSuccess = ($resultCode === "0" || $vnp_TransactionStatus === "00");
 
         if ($isSuccess) {
             DB::transaction(function () use ($orderData) {
                 $data = $orderData['data']['ticket'];
                 $data['code'] = strtoupper(Str::random(8));
-                Ticket::create($data);
+                $ticket = Ticket::create($data)->load('user', 'cinema', 'room', 'movie', 'showtime', 'branch');
+                Log::info('ticket', [$ticket]);
                 $dataResetSuccess = [
                     'seat_id' => $orderData['data']['seat_id'],
                     'status' => 'sold',
@@ -229,8 +240,36 @@ class PaymentController extends Controller
                 ];
                 $this->showtimeService->resetSuccessService($dataResetSuccess, $orderData['data']['ticket']['showtime_id']);
 
+
+                // Cộng tổng
                 User::where('id', $orderData['data']['ticket']['user_id'])
                     ->increment('total_amount', $orderData['data']['ticket']['total_price']);
+
+                // Cộng point
+                $point = $orderData['data']['point'] ?? 0;
+                // User::where('id', $orderData['data']['ticket']['user_id'])->update(['point', $point]);
+                User::where('id', $orderData['data']['ticket']['user_id'])->update(['point' => $point]);
+
+                // ->increment('point', $point);
+
+                // $voucher = Voucher::with('userVouchers')
+                //     ->where('code', $orderData['data']['code_voucher'])
+                //     ->first();
+
+                // $userVoucher = $voucher->userVouchers()
+                //     ->where('user_id', $orderData['user_id'])
+                //     ->first();
+
+                // $userVoucher->decrement('usage_count',1);
+
+
+                User_voucher::whereHas('voucher', function ($query) use ($orderData) {
+                    $query->where('code', $orderData['data']['code_voucher']);
+                })
+                    ->where('user_id', $orderData['data']['ticket']['user_id'])
+                    ->decrement('usage_count', 1);
+
+                $this->mailService->sendMailService($ticket);
             });
 
             Redis::del("order:$txnRef");

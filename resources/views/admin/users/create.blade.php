@@ -199,16 +199,17 @@
                                 <div class="mb-3">
                                     <label for="account-cinema" class="form-label">
                                         Cơ sở
-                                        <span class="required">*</span> </label>
-                                    <select class="form-select" id="simpleSelect" name="cinema"
-                                        value="{{ old('cinema') }}">
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="simpleSelect" name="cinema_id">
                                         @foreach ($cinemas as $cinema)
                                             <option value="{{ $cinema->id }}"
-                                                {{ old('cinema') == $cinema->id ? 'selected' : '' }}> {{ $cinema->name }}
+                                                {{ old('cinema_id') == $cinema->id ? 'selected' : '' }}>
+                                                {{ $cinema->name }}
                                             </option>
                                         @endforeach
                                     </select>
-                                    @error('cinema')
+                                    @error('cinema_id')
                                         <div class="text-danger">
                                             <strong>{{ $message }}</strong>
                                         </div>

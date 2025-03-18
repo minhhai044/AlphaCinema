@@ -223,6 +223,12 @@ class DatabaseSeeder extends Seeder
             'Thêm vouchers',
             'Sửa vouchers',
             'Xóa vouchers',
+            'Áp dụng vouchers',
+            'Sửa áp dụng vouchers',
+            'Xóa áp dụng vouchers',
+            'Danh sách hạn mức',
+            'Sửa hạn mức',
+
             'Danh sách thanh toán',
             'Thêm thanh toán',
             'Sửa thanh toán',
@@ -250,8 +256,9 @@ class DatabaseSeeder extends Seeder
             'Xóa tài khoản',
             'Cấu hình website',
             'Danh sách thống kê',
-            'Thẻ thành viên'
-
+            'Thẻ thành viên',
+            'Danh sách ngày',
+            'Sửa ngày',
         ];
 
         // Tạo các quyền từ danh sách
@@ -353,9 +360,9 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('System Admin');
 
         $user = User::find(7);
-        $user->assignRole('Quản lý cơ sở','Nhân viên', );
+        $user->assignRole('Quản lý cơ sở', 'Nhân viên',);
         $user = User::find(8);
-        $user->assignRole('Quản lý cơ sở','Nhân viên');
+        $user->assignRole('Quản lý cơ sở', 'Nhân viên');
 
         $user = User::find(2);
         $user->assignRole('Quản lý cơ sở');
@@ -369,8 +376,8 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('Quản lý cơ sở');
 
 
-         // Seed food table
-         $foods = [
+        // Seed food table
+        $foods = [
             ['name' => 'Burger', 'img_thumbnail' => 'images/burger.jpg', 'type' => 'Đồ ăn', 'price' => 50000, 'description' => 'Burger bò thơm ngon', 'is_active' => 1],
             ['name' => 'Pizza', 'img_thumbnail' => 'images/pizza.jpg', 'type' => 'Đồ ăn', 'price' => 120000, 'description' => 'Pizza hải sản', 'is_active' => 1],
             ['name' => 'Coca Cola', 'img_thumbnail' => 'images/coca.jpg', 'type' => 'Đồ uống', 'price' => 15000, 'description' => 'Nước giải khát có ga', 'is_active' => 1],
@@ -425,7 +432,5 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('slideshows')->insert($slideshows);
-
-
     }
 }

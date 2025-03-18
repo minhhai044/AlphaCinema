@@ -1,4 +1,11 @@
 <div class="navbar-header">
+    @php
+        $user = \Auth::user();
+    @endphp
+
+    {{-- <span>{{ \Auth::user()->id }}</span>
+    <span>{{ \Auth::user()->name }}</span> --}}
+
     <div class="d-flex">
         <!-- LOGO -->
         <div class="navbar-brand-box">
@@ -10,11 +17,6 @@
                     <img src="{{ asset('theme/admin/assets/images/logo-sm.svg') }}" alt="" height="24">
                     <span class="logo-txt">ALPHA CINEMA</span>
                 </span>
-
-
-                <span>{{ \Auth::user()->id }}</span>
-                <span>{{ \Auth::user()->name }}</span>
-
             </a>
 
             <a href="{{ route('admin.index') }}" class="logo logo-light">
@@ -176,9 +178,25 @@
         <div class="dropdown d-inline-block">
             <button type="button" class="btn header-item bg-light-subtle border-start border-end"
                 id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <img class="rounded-circle header-profile-user"
-                    src="{{ asset('theme/admin/assets/images/users/avatar-1.jpg') }}" alt="Header Avatar">
-                <span class="d-none d-xl-inline-block ms-1 fw-medium">Shawn L.</span>
+                {{-- @if (Auth::check() && Storage::exists($user->avatar) && $user->avatar)
+                    <img class="rounded-circle header-profile-user" src="{{ Storage::url($user->avatar) }}"
+                        alt="Header Avatar">
+                @else
+                    <img class="rounded-circle header-profile-user"
+                        src="https://graph.facebook.com/4/picture?type=small" alt="Header Avatar">
+                @endif --}}
+
+                @if (Auth::check() && !empty(Auth::user()->avatar) && Storage::exists(Auth::user()->avatar))
+                    <img class="rounded-circle header-profile-user" src="{{ Storage::url(Auth::user()->avatar) }}"
+                        alt="Header Avatar">
+                @else
+                    <img class="rounded-circle header-profile-user"
+                        src="https://graph.facebook.com/4/picture?type=small" alt="Header Avatar">
+                @endif
+
+
+
+                <span class="d-none d-xl-inline-block ms-1 fw-medium">{{ Auth::check() ? $user->name : '' }}</span>
                 <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-end">
@@ -192,60 +210,24 @@
                     <i class="mdi mdi-logout font-size-16 align-middle me-1"></i>
                     Logout
                 </a>
+
+                <!-- Form ẩn để gửi POST yêu cầu logout -->
+                <form id="logout-form" action="{{ route('admin.logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
             </div>
         </div>
 
     </div>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    document.getElementById('logout-btn').addEventListener('click', function() {
-        let adminToken = getCookie('admin_token');
-        let authToken = getCookie('auth');
-
-
-        adminToken = decodeURIComponent(adminToken);
-        authToken = decodeURIComponent(authToken);
-
-        // console.log(adminToken);
-        // console.log(authToken);
-        // return;
-
-
-
-        if (!adminToken) {
-            console.error('Không tìm thấy admin_token');
-            return;
-        }
-
-        fetch('https://alphacinema.me/api/v1/logout', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${adminToken}`, // Gửi token lên header
-                    'Content-Type': 'application/json'
-                },
-                credentials: 'include' // Đảm bảo gửi cookie lên server
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    deleteCookie('admin_token', '.alphacinema.me');
-                    deleteCookie('auth', '.alphacinema.me');
-                    window.location.href =
-                        "https://alphacinema.me:3000"; // Chuyển hướng về trang login admin
-                }
-            })
-            .catch(error => console.error('Lỗi khi logout:', error));
+    $(document).ready(function() {
+        $("#logout-btn").click(function(e) {
+            e.preventDefault();
+            $("#logout-form").submit();
+        })
     });
-
-    // Hàm lấy giá trị của cookie
-    function getCookie(name) {
-        let match = document.cookie.match(new RegExp('(^| )' + name + '=([^;]+)'));
-        return match ? match[2] : null;
-    }
-
-    function deleteCookie(name, domain) {
-        document.cookie =
-            `${name}=; path=/; domain=${domain}; expires=Thu, 01 Jan 1970 00:00:00 UTC; secure; SameSite=None`;
-    }
 </script>

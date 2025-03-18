@@ -91,7 +91,7 @@ class ComboController extends Controller
         try {
 
             $data = $comboRequest->validated();
-
+            $data['is_active'] = $data['is_active'] ?? 0;    
             if (empty($data['price_sale'])) {
                 $data['price_sale'] = 0;
             }

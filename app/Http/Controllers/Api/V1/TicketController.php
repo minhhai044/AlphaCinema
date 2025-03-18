@@ -6,12 +6,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\TicketRequest;
 use App\Models\Cinema;
 use App\Models\Movie;
+use App\Models\Ticket;
 use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
 use App\Traits\ApiResponseTrait;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Milon\Barcode\Facades\DNS1DFacade as DNS1D;
 
@@ -173,4 +175,23 @@ class TicketController extends Controller
             return $this->errorResponse('Có lỗi xảy ra, vui lòng thử lại!', 500);
         }
     }
+
+    public function getTicketByUser()
+    {
+        try {
+            // Lấy ID của user đang đăng nhập
+            // $userId = Auth::id();
+            $user = Auth::user();
+
+            // Lấy danh sách vé của người dùng
+            $tickets = Ticket::where('user_id', $user['id'])
+            ->with(['showtime', 'movie', 'room','cinema','branch']) 
+            ->get();
+
+            return response()->json(['status' => 'success', 'data' => $tickets], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
 }
