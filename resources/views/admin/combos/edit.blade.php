@@ -51,7 +51,7 @@
                                         id="${id}_item">
                                         <div class="col-md-6">
                                             <label for="${id}_select" class="form-label">Đồ ăn</label>
-                                            <select name="combo_food[]" id="${id}_select" class="form-control food-select">
+                                            <select name="combo_food[]" id="${id}_select" class="form-control food-select" data-id="${id}">
                                                 @foreach ($food as $itemId => $itemName)
                                                     <option value="{{ $itemId }}" @selected($item->food_id == $itemId)>
                                                         {{ $itemName }}
@@ -197,10 +197,10 @@
                                     </div>
                                 @endif
                                 <!-- Display selected image and delete button -->
-                                <div id="image-container" class="d-none position-relative mt-3">
-                                    <span>Ảnh mới</span>
+                                <div id="image-container" class="d-none position-relative mt-3 text-center">
+                                    {{-- <span>Ảnh mới</span> --}}
                                     <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2 text-center"
-                                        style="max-width: 70%; max-height: 200px;">
+                                        style="max-width: 70%; max-height: 150px;">
                                     <!-- Icon thùng rác ở góc phải -->
                                     <button type="button" id="delete-image"
                                         class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
@@ -300,7 +300,7 @@
                                         <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded" id="${id}_item">
                                             <div class="col-md-6">
                                                 <label for="${id}_select" class="form-label">Đồ ăn</label>
-                                                <select name="combo_food[]" id="${id}_select" class="form-control food-select">
+                                                <select name="combo_food[]" id="${id}_select" class="form-control food-select" data-id="${id}">
                                                     <option value="">--Chọn đồ ăn--</option>
                                                     @foreach ($food as $itemId => $itemName)
                                                         <option value="{{ $itemId }}">{{ $itemName }}</option>
@@ -317,6 +317,7 @@
                                                             id="${id}" value="1" min="1" max="10" readonly>
                                                         <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
                                                     </div>
+                                                    <span class="text-danger small" id="${id}_quantity_error"></span>
                                                 </div>
                                             </div>
                                             <div class="col-md-2 text-center">

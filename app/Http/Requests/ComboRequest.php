@@ -126,8 +126,9 @@ class ComboRequest extends FormRequest
             'is_active.boolean' => 'Trạng thái kích hoạt phải là hoạt động hoặc không hoạt động.',
 
 
-            'combo_food.*.exists' => 'Món ăn bạn chọn không tồn tại.',
-            'combo_quantity.*.integer' => 'Số lượng phải là số nguyên.',
+            'combo_food.*.required' => 'Vui lòng chọn món ăn cho combo.',
+            'combo_food.*.exists' => 'Món ăn đã chọn không tồn tại.',
+            'combo_quantity.*.required' => 'Vui lòng nhập số lượng cho món ăn.',
             'combo_quantity.*.min' => 'Số lượng phải lớn hơn 0.',
             'combo_quantity.*.max' => 'Số lượng phải nhỏ hơn 9.',
         ];

@@ -34,11 +34,62 @@
                                     ăn</button>
                             </div>
                             <div id="food_list" class="col-md-12">
-                                <!-- Các phần tử food sẽ được thêm vào đây -->
-                                <p></p>
+                                @if (old('combo_food'))
+                                    @foreach (old('combo_food') as $index => $foodId)
+                                        <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded shadow-sm"
+                                            id="food_{{ $index }}_item">
+                                            <div class="col-md-5">
+                                                <label for="food_{{ $index }}_select" class="form-label fw-bold">Đồ
+                                                    ăn</label>
+                                                <select name="combo_food[]" id="food_{{ $index }}_select"
+                                                    class="form-control food-select" data-id="food_{{ $index }}">
+                                                    <option value="">--Chọn đồ ăn--</option>
+                                                    @foreach ($foodPrice as $food)
+                                                        <option value="{{ $food['id'] }}"
+                                                            {{ $food['id'] == $foodId ? 'selected' : '' }}>
+                                                            {{ $food['name'] }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has("combo_food.$index"))
+                                                    <span
+                                                        class="text-danger small">{{ $errors->first("combo_food.$index") }}</span>
+                                                @endif
+                                            </div>
+
+                                            <div class="col-md-4 d-flex align-items-center justify-content-between">
+                                                <div class="w-100">
+                                                    <label for="food_{{ $index }}" class="form-label fw-bold">Số
+                                                        lượng</label>
+                                                    <div class="d-flex align-items-center rounded p-2">
+                                                        <button type="button"
+                                                            class="minuss btn btn-danger px-3 py-1">-</button>
+                                                        <input type="number" name="combo_quantity[]"
+                                                            class="food-quantity text-center border-0 bg-transparent"
+                                                            id="food_{{ $index }}"
+                                                            value="{{ old('combo_quantity.' . $index, 0) }}" min="0"
+                                                            max="10" readonly>
+                                                        <button type="button"
+                                                            class="pluss btn btn-success px-3 py-1">+</button>
+                                                    </div>
+                                                    @if ($errors->has("combo_quantity.$index"))
+                                                        <span
+                                                            class="text-danger small">{{ $errors->first("combo_quantity.$index") }}</span>
+                                                    @endif
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-2 d-flex align-items-end justify-content-center mt-3">
+                                                <button type="button" class="btn btn-danger remove-food">
+                                                    <span class="bx bx-trash"></span>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    @endforeach
+                                @else
+                                    <p></p>
+                                @endif
                             </div>
-
-
                             <div class="col-md-4 mb-3">
                                 <div class="mb-3">
                                     <label for="name" class="form-label">
@@ -143,9 +194,9 @@
                                 </div>
                             @endif
                             <!-- Display selected image and delete button -->
-                            <div id="image-container" class="d-none position-relative">
+                            <div id="image-container" class="d-none position-relative text-center">
                                 <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2"
-                                    style="max-width: 100%; max-height: 200px;">
+                                    style="max-width: 70%; max-height: 100px;">
                                 <!-- Icon thùng rác ở góc phải -->
                                 <button type="button" id="delete-image"
                                     class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
@@ -160,7 +211,259 @@
     </form>
 @endsection
 
+@section('script')
+    <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
 
+            reader.onload = function() {
+                $('#image-preview').attr('src', reader.result);
+                $('#image-container').removeClass('d-none');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function deleteImage() {
+            $('#image-container').addClass('d-none');
+            $('#combo-image').val('');
+            $('#image-preview').attr('src', '');
+        }
+
+        $(document).ready(function() {
+            // Format giá tiền
+            function formatPriceInput(inputSelector, hiddenInputSelector) {
+                $(inputSelector).on("input", function() {
+                    let value = $(this).val().replace(/\D/g, "");
+                    let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    $(this).val(formattedValue);
+                    $(hiddenInputSelector).val(value || "0");
+                });
+
+                $(inputSelector).on("blur", function() {
+                    if (!$(this).val()) {
+                        $(this).val("0");
+                        $(hiddenInputSelector).val("0");
+                    }
+                });
+            }
+
+            formatPriceInput("#price", "#price_hidden");
+            formatPriceInput("#price_sale", "#price_sale_hidden");
+
+            let foodCount = $('.food-item').length; // Đếm số món ăn hiện tại từ HTML
+            const minFoodItems = 2;
+            const maxFoodItems = 8;
+            const foodList = $('#food_list');
+            const foodPrices = @json($foodPrice->pluck('price', 'id'));
+
+            function updateTotalPrice() {
+                let totalPrice = 0;
+                $('.food-item').each(function() {
+                    const foodId = $(this).find('.food-select').val();
+                    const quantity = parseInt($(this).find('.food-quantity').val()) || 0;
+                    if (foodId && quantity > 0) {
+                        totalPrice += (foodPrices[foodId] || 0) * quantity;
+                    }
+                });
+                let formattedPrice = totalPrice.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                $('#price').val(formattedPrice);
+                $('#price_hidden').val(totalPrice);
+            }
+
+            function addFoodItem() {
+                if (foodCount >= maxFoodItems) {
+                    showAlert('warning', 'Chỉ được thêm tối đa 8 món ăn', 'AlphaCinema thông báo');
+                    return;
+                }
+                const id = 'food_' + Date.now();
+                const foodItemHtml = `
+                    <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded shadow-sm" id="${id}_item">
+                        <div class="col-md-5">
+                            <label for="${id}_select" class="form-label fw-bold">Đồ ăn</label>
+                            <select name="combo_food[]" id="${id}_select" class="form-control food-select" data-id="${id}">
+                                <option value="">--Chọn đồ ăn--</option>
+                                @foreach ($foodPrice as $food)
+                                    <option value="{{ $food['id'] }}">{{ $food['name'] }}</option>
+                                @endforeach
+                            </select>
+                            <span class="text-danger small" id="${id}_food_error"></span>
+                        </div>
+                        <div class="col-md-4 d-flex align-items-center justify-content-between">
+                            <div class="w-100">
+                                <label for="${id}" class="form-label fw-bold">Số lượng</label>
+                                <div class="d-flex align-items-center rounded p-2">
+                                    <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
+                                    <input type="number" name="combo_quantity[]" class="food-quantity text-center border-0 bg-transparent"
+                                        id="${id}" value="0" min="0" max="10" readonly>
+                                    <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
+                                </div>
+                                <span class="text-danger small" id="${id}_quantity_error"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-2 d-flex align-items-end justify-content-center mt-3">
+                            <button type="button" class="btn btn-danger remove-food">
+                                <span class="bx bx-trash"></span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+                foodList.append(foodItemHtml);
+                foodCount++;
+                updateEventHandlers();
+                updateSelectOptions();
+                updateTotalPrice();
+            }
+
+            function removeFoodItem(foodItem) {
+                if (foodCount > minFoodItems) {
+                    foodItem.remove();
+                    foodCount--;
+                    updateTotalPrice();
+                    updateSelectOptions();
+                } else {
+                    showAlert('warning', 'Cần ít nhất 2 món ăn để tạo Combo!', 'AlphaCinema thông báo');
+                }
+            }
+
+            function updateSelectOptions() {
+                const selectedValues = $('.food-select').map(function() {
+                    return $(this).val();
+                }).get().filter(value => value !== "");
+                $('.food-select').each(function() {
+                    const currentValue = $(this).val();
+                    $(this).find('option').each(function() {
+                        $(this).prop('disabled', $(this).val() !== currentValue && selectedValues
+                            .includes($(this).val()));
+                    });
+                });
+            }
+
+            function updateEventHandlers() {
+                $('.pluss').off('click').on('click', function() {
+                    let $foodItem = $(this).closest('.food-item');
+                    let $foodSelect = $foodItem.find('.food-select');
+                    let $quantityInput = $foodItem.find('.food-quantity');
+                    let $errorSpan = $foodItem.find(`#${$quantityInput.attr('id')}_quantity_error`);
+                    if ($foodSelect.val() === '') {
+                        $errorSpan.text('Vui lòng chọn món ăn trước!');
+                        return;
+                    } else {
+                        $errorSpan.text('');
+                    }
+                    let currentValue = parseInt($quantityInput.val());
+                    if (currentValue < 10) {
+                        $quantityInput.val(currentValue + 1);
+                        updateTotalPrice();
+                    }
+                });
+
+                $('.minuss').off('click').on('click', function() {
+                    let $foodItem = $(this).closest('.food-item');
+                    let $foodSelect = $foodItem.find('.food-select');
+                    let $quantityInput = $foodItem.find('.food-quantity');
+                    let $errorSpan = $foodItem.find(`#${$quantityInput.attr('id')}_quantity_error`);
+                    if ($foodSelect.val() === '') {
+                        $errorSpan.text('Vui lòng chọn món ăn trước!');
+                        return;
+                    } else {
+                        $errorSpan.text('');
+                    }
+                    let currentValue = parseInt($quantityInput.val());
+                    if (currentValue > 0) {
+                        $quantityInput.val(currentValue - 1);
+                        updateTotalPrice();
+                    }
+                });
+
+                $('.food-select').off('change').on('change', function() {
+                    updateSelectOptions();
+                    updateTotalPrice();
+                });
+
+                $('.remove-food').off('click').on('click', function() {
+                    removeFoodItem($(this).closest('.food-item'));
+                });
+            }
+
+            $('#add').on('click', addFoodItem);
+
+            // Chỉ thêm 2 món mặc định nếu không có dữ liệu cũ
+            if ($('.food-item').length === 0) {
+                for (let i = 0; i < minFoodItems; i++) {
+                    addFoodItem();
+                }
+            } else {
+                updateEventHandlers(); // Gắn sự kiện cho các món ăn từ old()
+                updateTotalPrice(); // Cập nhật giá ngay khi tải trang
+                updateSelectOptions(); // Cập nhật danh sách chọn
+            }
+
+            $('#comboForm').on('submit', function(e) {
+                let isValid = true;
+                $('.food-item').each(function() {
+                    let $foodSelect = $(this).find('.food-select');
+                    let $quantityInput = $(this).find('.food-quantity');
+                    let $foodError = $(this).find(`#${$foodSelect.attr('id')}_food_error`);
+                    let $quantityError = $(this).find(
+                        `#${$quantityInput.attr('id')}_quantity_error`);
+
+                    if (!$foodSelect.val()) {
+                        isValid = false;
+                        $foodError.text('Vui lòng chọn món ăn');
+                    } else {
+                        $foodError.text('');
+                    }
+
+                    const quantity = parseInt($quantityInput.val());
+                    if (isNaN(quantity) || quantity <= 0) {
+                        isValid = false;
+                        $quantityError.text('Số lượng phải lớn hơn 0');
+                    } else {
+                        $quantityError.text('');
+                    }
+
+                    // Kiểm tra price_sale so với price
+                    const price = parseInt($('#price_hidden').val() || 0); // Giá gốc từ input ẩn
+                    const priceSaleInput = $('#price_sale');
+                    const priceSale = parseInt(priceSaleInput.val().replace(/\D/g, '')) ||
+                    0; // Giá bán, bỏ dấu phẩy
+                    // Chỉ kiểm tra khi priceSale > 0
+                    if (priceSale > 0) {
+                        if (priceSale >= price) {
+                            isValid = false;
+                            if ($priceSaleError.length) {
+                                $priceSaleError.text('Giá bán phải nhỏ hơn giá gốc');
+                            } else {
+                                priceSaleInput.after(
+                                    '<span id="price_sale_error" class="text-danger small">Giá bán phải nhỏ hơn giá gốc</span>'
+                                );
+                            }
+                        } else {
+                            if ($priceSaleError.length) {
+                                $priceSaleError.text('');
+                            }
+                        }
+                    } else {
+                        // Nếu priceSale chưa nhập hoặc bằng 0, không hiển thị lỗi
+                        if ($priceSaleError.length) {
+                            $priceSaleError.text('');
+                        }
+                    }
+                });
+
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+        });
+    </script>
+@endsection
+
+{{-- 
 @section('script')
 
     <script>
@@ -188,10 +491,6 @@
         }
 
         $(document).ready(function() {
-
-
-
-
             // Format giá tiền
             function formatPriceInput(inputSelector, hiddenInputSelector) {
                 $(inputSelector).on("input", function() {
@@ -222,6 +521,9 @@
 
             // Danh sách giá món ăn (Thay thế bằng dữ liệu thực tế)
             const foodPrices = @json($foodPrice->pluck('price', 'id'));
+            const foodAlls = @json($foodPrice);
+            console.log(foodAlls);
+
 
             // Hàm tính tổng giá tiền dựa trên số lượng và giá của món ăn
             function updateTotalPrice() {
@@ -246,6 +548,54 @@
 
 
             // Hàm thêm món ăn vào danh sách
+            // function addFoodItem() {
+            //     if (foodCount >= maxFoodItems) {
+            //         showAlert('warning ', 'Chỉ được thêm tối đa 8 món ăn', 'AlphaCinema thông báo');
+            //         // alert('Chỉ được thêm tối đa ' + maxFoodItems + ' món ăn.');
+            //         return;
+            //     }
+            //     const id = 'food_' + Date.now(); // Tạo ID duy nhất cho món ăn
+            //     const foodItemHtml = `
+        //          <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded shadow-sm" id="${id}_item">
+        //             <div class="col-md-5">
+        //                 <label for="${id}_select" class="form-label fw-bold">Đồ ăn</label>
+        //                 <select name="combo_food[]" id="${id}_select" class="form-control food-select">
+        //                     <option value="">--Chọn đồ ăn--</option>
+        //                     @foreach ($food as $itemId => $itemName)
+        //                         <option value="{{ $itemId }}">{{ $itemName }}</option>
+        //                     @endforeach
+        //                 </select>
+        //                 <span class="text-danger small" id="${id}_food_error"></span>
+        //             </div>
+
+        //             <div class="col-md-4 d-flex align-items-center justify-content-between">
+        //                 <div class="w-100">
+        //                     <label for="${id}" class="form-label fw-bold">Số lượng</label>
+        //                     <div class="d-flex align-items-center rounded p-2">
+        //                         <button type="button" class="minuss btn btn-danger px-3 py-1">-</button>
+        //                         <input type="number" name="combo_quantity[]" class="food-quantity text-center border-0 bg-transparent"
+        //                             id="${id}" value="0" min="0" max="10" readonly>
+        //                         <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
+        //                     </div>
+        //                     <span class="text-danger small" id="${id}_quantity_error"></span>
+        //                 </div>
+        //             </div>
+
+        //             <div class="col-md-2 d-flex align-items-end justify-content-center mt-3">
+        //                 <button type="button" class="btn btn-danger remove-food">
+        //                     <span class="bx bx-trash"></span>
+        //                 </button>
+        //             </div>
+        //         </div>
+        //         `;
+
+            //     foodList.append(foodItemHtml); // Thêm HTML vào danh sách món ăn
+            //     foodCount++; // Tăng số lượng món ăn hiện tại
+
+            //     updateEventHandlers(); // Cập nhật lại sự kiện cho các phần tử mới
+            //     updateSelectOptions(); // Cập nhật danh sách món ăn đã chọn
+            //     updateTotalPrice(); // Cập nhật tổng giá tiền
+            // }
             function addFoodItem() {
                 if (foodCount >= maxFoodItems) {
                     showAlert('warning ', 'Chỉ được thêm tối đa 8 món ăn', 'AlphaCinema thông báo');
@@ -257,10 +607,10 @@
                      <div class="col-md-12 mb-3 food-item d-flex align-items-center justify-content-between p-3 border rounded shadow-sm" id="${id}_item">
                         <div class="col-md-5">
                             <label for="${id}_select" class="form-label fw-bold">Đồ ăn</label>
-                            <select name="combo_food[]" id="${id}_select" class="form-control food-select">
+                            <select name="combo_food[]" id="${id}_select" class="form-control food-select" data-id="${id}">
                                 <option value="">--Chọn đồ ăn--</option>
-                                @foreach ($food as $itemId => $itemName)
-                                    <option value="{{ $itemId }}">{{ $itemName }}</option>
+                                @foreach ($foodPrice as $food)
+                                    <option value="{{ $food['id'] }}">{{ $food['name'] }}</option>
                                 @endforeach
                             </select>
                             <span class="text-danger small" id="${id}_food_error"></span>
@@ -307,6 +657,25 @@
                 }
             }
 
+            $(document).on('change', '.food-select', function() {
+                let selectedValue = $(this).val();
+                foodAlls.forEach(item => {
+                    if (item.id == selectedValue) {
+                        let price = item.price;
+                        let id = $(this).data('id');
+                        let quantity = $(`#${id}`).val();
+                        let totalPrice = price * quantity;
+                        $(`#${id}_price`).val(totalPrice);
+                        $(`#${id}_price_hidden`).val(totalPrice);
+                        updateTotalPrice();
+                    }
+                });
+
+                if (selectedValue) {
+                    $(this).find('option[value=""]').hide();
+                }
+            });
+
             // Hàm cập nhật danh sách các món ăn đã chọn để tránh trùng lặp
             function updateSelectOptions() {
                 const selectedValues = $('.food-select').map(function() {
@@ -330,16 +699,13 @@
                     let $foodItem = $(this).closest('.food-item');
                     let $foodSelect = $foodItem.find('.food-select');
                     let $quantityInput = $foodItem.find('.food-quantity');
-                    let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
-
+                    let $errorSpan = $foodItem.find(`#${$quantityInput.attr('id')}_quantity_error`);
                     if ($foodSelect.val() === '') {
                         $errorSpan.text('Vui lòng chọn món ăn trước!');
-
                         return;
                     } else {
                         $errorSpan.text('');
                     }
-
                     let currentValue = parseInt($quantityInput.val());
                     if (currentValue < 10) {
                         $quantityInput.val(currentValue + 1);
@@ -352,16 +718,13 @@
                     let $foodItem = $(this).closest('.food-item');
                     let $foodSelect = $foodItem.find('.food-select');
                     let $quantityInput = $foodItem.find('.food-quantity');
-                    let $errorSpan = $foodItem.find('#' + $quantityInput.attr('id') + '_quantity_error');
-
+                    let $errorSpan = $foodItem.find(`#${$quantityInput.attr('id')}_quantity_error`);
                     if ($foodSelect.val() === '') {
                         $errorSpan.text('Vui lòng chọn món ăn trước!');
-
                         return;
                     } else {
                         $errorSpan.text('');
                     }
-
                     let currentValue = parseInt($quantityInput.val());
                     if (currentValue > 0) {
                         $quantityInput.val(currentValue - 1);
@@ -377,100 +740,48 @@
                 });
             }
 
-
             $('#add').on('click', addFoodItem);
 
             // Thêm sẵn 2 món ăn vào danh sách khi tải trang
-            for (let i = 0; i < minFoodItems; i++) {
-                addFoodItem();
+            // Chỉ thêm 2 món mặc định nếu không có dữ liệu cũ
+            if ($('.food-item').length === 0) {
+                for (let i = 0; i < minFoodItems; i++) {
+                    addFoodItem();
+                }
+            } else {
+                updateEventHandlers(); // Gắn sự kiện cho các món ăn từ old()
+                updateTotalPrice(); // Cập nhật giá ngay khi tải trang
+                updateSelectOptions(); // Cập nhật danh sách chọn
             }
-
             $('#comboForm').on('submit', function(e) {
-                let isValid = true; // Kiểm tra trạng thái form
-
-                // Kiểm tra từng món ăn đã chọn chưa
+                let isValid = true;
                 $('.food-item').each(function() {
                     let $foodSelect = $(this).find('.food-select');
                     let $quantityInput = $(this).find('.food-quantity');
-                    let foodItemError = $(this).find('.text-danger');
+                    let $foodError = $(this).find(`#${$foodSelect.attr('id')}_food_error`);
+                    let $quantityError = $(this).find(
+                        `#${$quantityInput.attr('id')}_quantity_error`);
 
-                    const quantityValue = parseInt($quantityInput.val().trim());
-                    const selectedFood = $foodSelect.val();
-
-                    // Kiểm tra nếu món ăn chưa chọn
-                    if (selectedFood === '' || selectedFood === null) {
+                    if (!$foodSelect.val()) {
                         isValid = false;
-                        // Thêm lỗi nếu chưa có
-                        if (foodItemError.length === 0) {
-                            $foodSelect.after(
-                                '<span class="text-danger small">Vui lòng chọn món ăn</span>');
-                        } else {
-                            foodItemError.text('Vui lòng chọn món ăn').show();
-                        }
+                        $foodError.text('Vui lòng chọn món ăn');
                     } else {
-                        foodItemError.text('').hide();
+                        $foodError.text('');
                     }
 
-                    // Thêm sự kiện xóa lỗi khi chọn lại món
-                    $foodSelect.on('change', function() {
-                        if ($(this).val() !== '') {
-                            foodItemError.text('').hide();
-                        }
-                    });
-                });
-
-                // Kiểm tra số lượng món ăn
-                $('.food-quantity').each(function() {
-                    const quantityValue = parseInt($(this).val().trim());
-                    let $errorSpan = $(this).closest('.w-100').find(
-                        `#${$(this).attr('id')}_quantity_error`);
-
-                    if (isNaN(quantityValue) || quantityValue <= 0) {
+                    const quantity = parseInt($quantityInput.val());
+                    if (isNaN(quantity) || quantity <= 0) {
                         isValid = false;
-
-                        // Kiểm tra nếu chưa có lỗi thì thêm mới
-                        if ($errorSpan.length === 0) {
-                            $(this).after(
-                                `<span class="text-danger small" id="${$(this).attr('id')}_quantity_error">Số lượng chưa được chọn</span>`
-                            );
-                        } else {
-                            $errorSpan.text('Số lượng chưa được chọn').show();
-                        }
+                        $quantityError.text('Số lượng phải lớn hơn 0');
                     } else {
-                        $errorSpan.text('').hide(); // Xóa lỗi nếu số lượng hợp lệ
+                        $quantityError.text('');
                     }
                 });
 
-                // Chặn submit nếu form không hợp lệ và báo lỗi Toast
                 if (!isValid) {
                     e.preventDefault();
                 }
             });
-
-
-
-            // Validate các trường input
-            function validateInput(selector, condition, errorMessage) {
-                let input = $(selector);
-                let value = input.val().trim();
-
-            }
-
-            // Validate tên combo
-            $("#name").on("input", function() {
-                validateInput(this, value => value.length > 0, "Tên combo không được để trống");
-            });
-
-            // Validate mô tả
-            $("textarea[name='description']").on("input", function() {
-                validateInput(this, value => value.length > 0, "Mô tả không được để trống");
-            });
-
-            // Validate ảnh
-            $("#img_thumbnail").on("change", function() {
-                validateInput(this, value => value.length > 0, "Vui lòng chọn ảnh");
-            });
-
         });
     </script>
-@endsection
+@endsection --}}

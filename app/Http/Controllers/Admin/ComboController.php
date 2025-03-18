@@ -113,7 +113,7 @@ class ComboController extends Controller
     public function destroy(string $id)
     {
         $this->comboService->forceDeleteComboService($id);
-        Alert::success('Xóa thành công', 'AlphaCinema Thông Báo!');
+        Toastr::success('', 'Xóa thành công');
         return back();
     }
 }

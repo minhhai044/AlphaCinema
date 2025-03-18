@@ -25,41 +25,63 @@
             <div class="card">
                 <div class="card-body">
                     <div class="row align-items-center mb-3">
-                        <div class="col-sm">
-                            <h6 class="mb-sm-0 font-size-16">Danh sách đồ ăn</h6>
-                        </div>
-                        <div class="col-sm-auto">
-                            <a class="btn btn-light waves-effect waves-light openCreateFoodModal">
-                                <i class="bx bx-plus me-1"></i> Thêm mới đồ ăn
-                            </a>
-                        </div>
-                        <div class="col-sm-auto">
-                           <div class="mb-4">
-                                <a href="{{ route('admin.export', 'food') }}"
-                                    class="btn btn-warning waves-effect waves-light">
-                                    <i class="bx bx-download me-1"></i>
-                                    Xuất Excel
-                                </a>
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    <!-- Bộ lọc số lượng hiển thị và tìm kiếm -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
+                        <!-- Cột bên trái: Hiển thị -->
+                        <div class="col-md-6 text-end">
                             <div class="d-flex align-items-center">
-                                <span class="me-2">Hiển thị:</span>
-                                <select id="pageLength" class="form-select form-select-sm w-auto">
+                                {{-- <span class="me-2">Hiển thị:</span>
+                                <select id="pageLength" class="form-select w-auto">
                                     <option value="5" selected>5</option>
                                     <option value="10">10</option>
-                                    <option value="25">25</option>
-                                    <option value="10000">Tất cả</option>
-                                </select>
-                                <span class="ms-2">mục</span>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                    <option value="1000">Tất cả</option>
+                                </select> --}}
                             </div>
                         </div>
+                        <!-- Cột bên phải: Thêm mới và Bộ lọc -->
+                        <div class="col-md-6 text-end">
+                            <a class="btn btn-primary openCreateFoodModal me-2">+ Thêm mới</a>
+                            <button class="btn btn-outline-secondary me-2 " type="button" data-bs-toggle="collapse"
+                                data-bs-target="#searchForm">
+                                <i class="fas fa-filter"></i> Bộ lọc
+                            </button>
+                            <a href="{{ route('admin.export', 'food') }}" class="btn btn-warning waves-effect waves-light">
+                                <i class="bx bx-download me-1"></i>
+                                Xuất Excel
+                            </a>
+                        </div>
+                    </div>
 
+                    <div class="collapse" id="searchForm">
+                        <div class="card card-body mb-3">
+                            <form id="filterForm">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label class="form-label">Tìm nhanh theo ID</label>
+                                        <input type="text" name="id" class="form-control" placeholder="Nhập ID">
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Khoảng giá</label>
+                                        <div class="d-flex">
+                                            <input type="number" name="price_min" class="form-control me-2"
+                                                placeholder="Từ">
+                                            <input type="number" name="price_max" class="form-control" placeholder="Đến">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <label class="form-label">Lọc theo món ăn</label>
+                                        <select name="food_name" id="foodSelect" class="form-select select2">
+                                            <option value="">--Chọn món ăn--</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="mt-3">
+                                    <button type="submit" class="btn btn-primary">Lọc</button>
+                                    <button type="reset" class="btn btn-secondary" id="resetFilter">Reset</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
 
                     <!-- Bảng danh sách -->
@@ -122,7 +144,8 @@
                                 <span class="text-danger mt-3" id="createPriceError"></span>
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="createImgThumbnail" class="form-label"><span class="text-danger">*</span> Hình
+                                <label for="createImgThumbnail" class="form-label"><span class="text-danger">*</span>
+                                    Hình
                                     ảnh:</label>
                                 <input type="file" name="img_thumbnail" id="createImgThumbnail" class="form-control"
                                     required>
@@ -132,8 +155,8 @@
                                 <label for="createDescription" class="form-label"><span class="text-danger">*</span> Mô
                                     tả:</label>
 
-                                <textarea id="createDescription" class="form-control" name="description" rows="6"
-                                    placeholder="Nhập mô tả" required></textarea>
+                                <textarea id="createDescription" class="form-control" name="description" rows="6" placeholder="Nhập mô tả"
+                                    required></textarea>
 
                                 <span class="text-danger mt-3" id="createDescriptionError"></span>
                             </div>
@@ -149,7 +172,8 @@
     </div>
 
     <!-- Modal cập nhật -->
-    <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel" aria-hidden="true">
+    <div class="modal fade" id="updateFoodModal" tabindex="-1" aria-labelledby="updateFoodModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -203,8 +227,8 @@
                                 <label for="updateDescription" class="form-label"><span class="text-danger">*</span> Mô
                                     tả:</label>
 
-                                <textarea id="updateDescription" class="form-control" name="description" rows="6"
-                                    placeholder="Nhập mô tả" required></textarea>
+                                <textarea id="updateDescription" class="form-control" name="description" rows="6" placeholder="Nhập mô tả"
+                                    required></textarea>
 
                                 <span class="text-danger mt-3" id="updateDescriptionError"></span>
                             </div>
@@ -230,30 +254,28 @@
 @section('script')
     <script>
         var appURL = @json($appUrl);
-        // console.log(appURL);
     </script>
-    <script>
-        $(document).ready(function () {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
+    <script>
+        $(document).ready(function() {
             // Format giá tiền
-            const formatPriceInput = (input, hiddenInput) => {
-                input.addEventListener("input", function (e) {
+            const formatPriceInput = (input) => {
+                input.addEventListener("input", function(e) {
                     let value = e.target.value.replace(/\D/g, "");
                     input.value = value ? Number(value).toLocaleString("en-US") : "";
-                    hiddenInput.value = value || "0";
                 });
-
-                input.addEventListener("blur", function (e) {
+                input.addEventListener("blur", function(e) {
                     if (!e.target.value) {
                         e.target.value = "0";
-                        hiddenInput.value = "0";
                     }
                 });
             };
-
-            formatPriceInput(document.getElementById("createPrice"), document.getElementById("price_hidden"));
-            formatPriceInput(document.getElementById("updatePrice"), document.getElementById("price_hidden"));
-
+            formatPriceInput(document.getElementById("createPrice"));
+            formatPriceInput(document.getElementById("updatePrice"));
 
             // Khởi tạo DataTable
             var table = $('#foodTable').DataTable({
@@ -262,97 +284,81 @@
                 responsive: true,
                 autoWidth: false,
                 ajax: {
-                    url: "{{ route('api.foods.index') }}", // Route API
+                    url: "{{ route('api.foods.index') }}",
                     type: "GET",
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         console.error("Lỗi API:", xhr.responseText);
                     }
                 },
                 columns: [{
-                    data: 'id',
-                    name: 'id',
-                    render: function (data) {
-                        return `<div class="form-check">
+                        data: 'id',
+                        name: 'id',
+                        render: function(data) {
+                            return `<div class="form-check">
                                         <input class="form-check-input" type="checkbox" id="foodcheck-${data}">
                                         <label class="form-check-label" for="foodcheck-${data}">${data}</label>
                                     </div>`;
-                    }
-                },
-                {
-                    data: 'name',
-                    name: 'name'
-                },
-                {
-                    data: 'type',
-                    name: 'type'
-                },
-                {
-                    data: 'img_thumbnail',
-                    render: function (data) {
-
-                        return data ?
-                            `<img src="/storage/${data}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">` :
-                            'Không có ảnh';
-
-                    },
-                    orderable: false,
-                    searchable: false
-                },
-
-                {
-                    data: 'price',
-                    render: function (data) {
-                        return `<strong class="text-red-500">${new Intl.NumberFormat('en-US').format(data)} VNĐ</strong>`;
-                    }
-                },
-                {
-                    data: 'is_active',
-                    render: function (data, type, row) {
-                        return `<div class="form-check form-switch form-switch-success">
-                                                                    <input class="form-check-input switch-is-active changeActive" type="checkbox"
-                                                                        data-food-id="${row.id}" ${data ? 'checked' : ''}
-                                                                        onclick="return confirm('Bạn có chắc muốn thay đổi?')">
-                                                                </div>`;
-                    },
-                    orderable: false
-                },
-                {
-                    data: 'id',
-                    render: function (data, type, row) {
-                        let deleteButton = "";
-
-                        // Nếu combos_count = 0 thì mới cho xóa
-                        if (row.combos_count == 0) {
-                            deleteButton = `
-                                            <form method="POST" action="foods/${data}/destroy" class="d-inline-block" id="delete-food-${data}">
-                                                    @csrf
-                                                    @method('DELETE')
-                                                    <button type="button" class="btn btn-danger btn-sm" onclick="handleDelete(${data})">
-                                                        <i class="bi bi-trash"></i>
-                                                    </button>
-                                             </form>`;
                         }
-                        return `
-                                            <div class="d-flex align-items-center gap-2">
-                                               <!-- Nút Cập nhật -->
-                                                 <a class="btn btn-warning btn-sm openUpdateFoodModal"
-                                                    data-food-id="${data}"
-                                                    data-food-name="${row.name}"
-                                                    data-food-type="${row.type}"
-                                                    data-food-price="${row.price}"
-                                                    data-food-img_thumbnail="${row.img_thumbnail}"
-                                                    data-food-description="${row.description}">
-                                                    <i class="fas fa-edit"></i>
-                                                </a>
-                                                 ${deleteButton}
-                                            </div>`;
                     },
-                    orderable: false,
-                    searchable: false
-                }
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
+                    {
+                        data: 'type',
+                        name: 'type'
+                    },
+                    {
+                        data: 'img_thumbnail',
+                        render: function(data) {
+                            return data ?
+                                `<img src="/storage/${data}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">` :
+                                'Không có ảnh';
+                        },
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'price',
+                        render: function(data) {
+                            return `<strong class="text-red-500">${new Intl.NumberFormat('en-US').format(data)} VNĐ</strong>`;
+                        }
+                    },
+                    {
+                        data: 'is_active',
+                        render: function(data, type, row) {
+                            return `<div class="form-check form-switch form-switch-success">
+                                        <input class="form-check-input switch-is-active changeActive" type="checkbox" data-food-id="${row.id}" ${data ? 'checked' : ''} onclick="return confirm('Bạn có chắc muốn thay đổi?')">
+                                    </div>`;
+                        },
+                        orderable: false
+                    },
+                    {
+                        data: 'id',
+                        render: function(data, type, row) {
+                            let deleteButton = row.combos_count == 0 ? `
+                                <form method="POST" action="foods/${data}/destroy" class="d-inline-block" id="delete-food-${data}">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="button" class="btn btn-danger btn-sm" onclick="handleDelete(${data})">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </form>` : '';
+                            return `
+                                <div class="d-flex align-items-center gap-2">
+                                    <a class="btn btn-warning btn-sm openUpdateFoodModal" data-food-id="${data}" data-food-name="${row.name}" data-food-type="${row.type}" data-food-price="${row.price}" data-food-img_thumbnail="${row.img_thumbnail}" data-food-description="${row.description}">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    ${deleteButton}
+                                </div>`;
+                        },
+                        orderable: false,
+                        searchable: false
+                    }
                 ],
                 pageLength: 5,
-                lengthChange: false,
+                lengthChange: true,
+                lengthMenu: [5,10, 20, 50, 100],
                 language: {
                     search: "Tìm kiếm:",
                     paginate: {
@@ -361,34 +367,34 @@
                     },
                     info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
                     emptyTable: "Không có dữ liệu để hiển thị",
-                    zeroRecords: "Không tìm thấy kết quả phù hợp"
+                    zeroRecords: "Không tìm thấy kết quả phù hợp",
+                    "lengthMenu": "Hiển thị _MENU_ mục"
                 }
             });
 
             // Thay đổi số dòng hiển thị
-            $('#pageLength').on('change', function () {
+            $('#pageLength').on('change', function() {
                 table.page.len($(this).val()).draw();
             });
 
             // Tìm kiếm theo tên
-            $('#searchInput').on('keyup', function () {
+            $('#searchInput').on('keyup', function() {
                 table.search(this.value).draw();
             });
 
             // Xử lý sự kiện thay đổi trạng thái is_active
-            $(document).on("change", ".changeActive", function () {
+            $(document).on("change", ".changeActive", function() {
                 let foodId = $(this).data("food-id");
                 let is_active = $(this).is(":checked") ? 1 : 0;
-
                 $.ajax({
                     url: "{{ route('food.change-active') }}",
                     method: "POST",
                     data: {
                         _token: "{{ csrf_token() }}",
                         id: foodId,
-                        is_active: is_active,
+                        is_active: is_active
                     },
-                    success: function (response) {
+                    success: function(response) {
                         if (response.success) {
                             Swal.fire({
                                 icon: "success",
@@ -406,7 +412,7 @@
                             $(`[data-food-id="${foodId}"]`).prop("checked", !is_active);
                         }
                     },
-                    error: function (xhr) {
+                    error: function(xhr) {
                         Swal.fire({
                             icon: "error",
                             title: "Lỗi!",
@@ -417,8 +423,23 @@
                 });
             });
 
-            // Mở modal cập nhật và điền dữ liệu
-            $(document).on('click', '.openUpdateFoodModal', function () {
+            // Mở modal tạo mới và đồng bộ aria-hidden
+            $('.openCreateFoodModal').click(function() {
+                $('#createFoodForm')[0].reset();
+                $(".text-danger").text("");
+                $(".form-control").removeClass("is-invalid");
+                $('#createFoodModal').modal('show');
+            });
+
+            $('#createFoodModal').on('shown.bs.modal', function() {
+                $(this).attr('aria-hidden', 'false');
+                $('#createName').focus();
+            }).on('hidden.bs.modal', function() {
+                $(this).attr('aria-hidden', 'true');
+            });
+
+            // Mở modal cập nhật và đồng bộ aria-hidden
+            $(document).on('click', '.openUpdateFoodModal', function() {
                 let foodId = $(this).data('food-id');
                 $('#updateFoodId').val(foodId);
                 $('#updateName').val($(this).data('food-name'));
@@ -431,17 +452,83 @@
                 } else {
                     $('#previewImgThumbnail').hide();
                 }
-                $("#updateNameError").text("");
-                $("#updateTypeError").text("");
-                $("#updatePriceError").text("");
-                $("#updateImgThumbnailError").text("");
-
+                $(".text-danger").text("");
                 $('#updateFoodModal').modal('show');
-
             });
 
+            $('#updateFoodModal').on('shown.bs.modal', function() {
+                $(this).attr('aria-hidden', 'false');
+                $('#updateName').focus();
+            }).on('hidden.bs.modal', function() {
+                $(this).attr('aria-hidden', 'true');
+            });
+
+            // Submit form tạo mới
+            $('#createFoodBtn').click(function() {
+                let formData = new FormData($("#createFoodForm")[0]);
+                $.ajax({
+                    url: "{{ route('admin.foods.store') }}",
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status === true) {
+                            Swal.fire('Thành công!', 'Đồ ăn đã được thêm mới.', 'success');
+                            $('#createFoodModal').modal('hide');
+                            table.ajax.reload();
+                        }
+                    },
+                    error: function(xhr) {
+                        handleAjaxErrors(xhr, "create");
+                    }
+                });
+            });
+
+            // Submit form cập nhật
+            $('#updateFoodBtn').click(function() {
+                let formData = new FormData($('#updateFoodForm')[0]);
+                let foodId = $('#updateFoodId').val();
+                let price = $('#updatePrice').val().replace(/[^\d]/g, '');
+                formData.set('price', price);
+                if (!price || parseFloat(price) <= 0) {
+                    $("#updatePriceError").text("Giá phải là số và lớn hơn 0.");
+                    return;
+                }
+                $.ajax({
+                    url: `foods/${foodId}`,
+                    method: "POST",
+                    data: formData,
+                    processData: false,
+                    contentType: false,
+                    success: function(response) {
+                        if (response.status === true) {
+                            Swal.fire('Thành công!', 'Đồ ăn đã được cập nhật.', 'success');
+                            $('#updateFoodModal').modal('hide');
+                            table.ajax.reload();
+                        }
+                    },
+                    error: function(xhr) {
+                        handleAjaxErrors(xhr, "update");
+                    }
+                });
+            });
+
+            // Hàm xử lý lỗi AJAX
+            function handleAjaxErrors(xhr, prefix) {
+                let errors = xhr.responseJSON?.errors || {};
+                console.log('Lỗi từ server:', xhr.responseText); // Log để debug
+                $(".text-danger").text("");
+                for (let field in errors) {
+                    $(`#${prefix}${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errors[field][0]);
+                }
+                if (!Object.keys(errors).length) {
+                    Swal.fire('Lỗi!', 'Không thể xử lý yêu cầu. Kiểm tra console để biết thêm chi tiết.', 'error');
+                }
+            }
+
             // Xử lý xóa
-            window.handleDelete = function (foodId) {
+            window.handleDelete = function(foodId) {
                 Swal.fire({
                     title: 'Bạn có chắc chắn?',
                     text: "Hành động này không thể hoàn tác!",
@@ -455,103 +542,6 @@
                     }
                 });
             };
-
-            // Mở modal tạo mới
-            $('.openCreateFoodModal').click(function () {
-                $('#createFoodForm')[0].reset();
-                $(".text-danger").text(""); // Xóa thông báo lỗi cũ
-                $(".form-control").removeClass("is-invalid"); // Xóa border đỏ input bị lỗi
-                $('#createFoodModal').modal('show');
-            });
-
-            // Submit form tạo mới
-            $('#createFoodBtn').click(function () {
-                let formData = new FormData($("#createFoodForm")[0]);
-
-                $.ajax({
-                    url: "{{ route('admin.foods.store') }}",
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if (response.status === true) {
-                            Swal.fire('Thành công!', 'Đồ ăn đã được thêm mới.', 'success');
-                            $('#createFoodModal').modal('hide');
-                            table.ajax.reload();
-                        }
-                    },
-                    error: function (xhr) {
-                        let errors = xhr.responseJSON.errors;
-
-                        // Xóa tất cả thông báo lỗi cũ trước khi hiển thị lỗi mới
-                        $(".text-danger").text("");
-
-                        for (let field in errors) {
-                            let errorMessage = errors[field]; // Lấy lỗi đầu tiên
-
-                            // Xử lý trường hợp đặc biệt cho input file
-                            if (field === "img_thumbnail") {
-                                $("#createImgThumbnailError").text(errorMessage);
-                            } else {
-                                $(`#create${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errorMessage);
-                            }
-
-                            console.log(`Lỗi ở trường ${field}: ${errorMessage}`);
-                        }
-                    }
-                });
-            });
-
-            // Submit form cập nhật
-            $('#updateFoodBtn').click(function () {
-                let formData = new FormData($('#updateFoodForm')[0]);
-                let foodId = $('#updateFoodId').val();
-
-                // Lấy giá trị của trường giá
-                let price = parseFloat($('#updatePrice').val().trim());
-
-                // Xóa thông báo lỗi cũ trước khi kiểm tra lại
-                $("#updatePriceError").text("");
-
-                // Kiểm tra giá có hợp lệ không
-                if (isNaN(price) || price <= 0) {
-                    $("#updatePriceError").text("Giá phải là số và lớn hơn 0.");
-                    return; // Ngăn không cho gửi request nếu có lỗi
-                }
-
-                console.log(formData);
-
-                $.ajax({
-                    url: `foods/${foodId}`,
-                    method: "POST",
-                    data: formData,
-                    processData: false,
-                    contentType: false,
-                    success: function (response) {
-                        if (response.status === true) {
-                            Swal.fire('Thành công!', 'Đồ ăn đã được cập nhật.', 'success');
-                            $('#updateFoodModal').modal('hide');
-                            table.ajax.reload();
-                        }
-                    },
-                    error: function (xhr) {
-                        handleAjaxErrors(xhr, "update");
-                    }
-                });
-            });
-
-
-            // Hàm xử lý lỗi AJAX chung
-            function handleAjaxErrors(xhr, prefix) {
-                let errors = xhr.responseJSON.errors;
-                $(".text-danger").text(""); // Xóa lỗi cũ
-
-                for (let field in errors) {
-                    let errorMessage = errors[field];
-                    $(`#${prefix}${field.charAt(0).toUpperCase() + field.slice(1)}Error`).text(errorMessage);
-                }
-            }
         });
     </script>
 @endsection
