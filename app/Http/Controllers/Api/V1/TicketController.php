@@ -182,16 +182,9 @@ class TicketController extends Controller
             // $userId = Auth::id();
             $user = Auth::user();
 
-
-            // return response()->json(['status' => 'success', 'data' => $user, 'id' => $user['id']], 200);
-
-            // if (!$userId) {
-            //     return response()->json(['message' => 'Unauthorized'], 401);
-            // }
-
             // Lấy danh sách vé của người dùng
             $tickets = Ticket::where('user_id', $user['id'])
-            ->with(['showtime', 'movie', 'room']) 
+            ->with(['showtime', 'movie', 'room','cinema','branch']) 
             ->get();
 
             return response()->json(['status' => 'success', 'data' => $tickets], 200);
