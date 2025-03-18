@@ -175,4 +175,23 @@ class TicketController extends Controller
             return $this->errorResponse('Có lỗi xảy ra, vui lòng thử lại!', 500);
         }
     }
+
+    public function getTicketByUser()
+    {
+        try {
+            // Lấy ID của user đang đăng nhập
+            // $userId = Auth::id();
+            $user = Auth::user();
+
+            // Lấy danh sách vé của người dùng
+            $tickets = Ticket::where('user_id', $user['id'])
+            ->with(['showtime', 'movie', 'room','cinema','branch']) 
+            ->get();
+
+            return response()->json(['status' => 'success', 'data' => $tickets], 200);
+        } catch (\Throwable $e) {
+            return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
 }

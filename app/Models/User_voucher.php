@@ -24,4 +24,5 @@ class User_voucher extends Model
     {
         return $this->belongsTo(User::class, 'user_id');
     }
+    
 }

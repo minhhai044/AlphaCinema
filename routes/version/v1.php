@@ -54,18 +54,18 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::post('tickets', [TicketController::class, 'createTicket']);
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get("getRank", [AuthController::class, 'getUserRank']);
+    Route::get('/getRank', [AuthController::class, 'getUserRank']);
 
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
+    Route::get('/pointhistory', [AuthController::class, 'getUserPointHistory']);
     
     Route::get('/ticket-by-user',[TicketController::class,'getTicketByUser']);
-    Route::get('/ranks',[RankController::class,'getRankByUser']);
-    Route::get('/voucher',[VoucherController::class,'index']);
-    Route::prefix('point_histories')->group(function () {
-        Route::get('/', [PointHistoryController::class, 'index']);
-        Route::get('{id}', [PointHistoryController::class, 'show']);
-    });
+    Route::get('/voucher',[AuthController::class,'getUserVoucher']);
+    // Route::prefix('point_histories')->group(function () {
+    //     Route::get('/', [PointHistoryController::class, 'index']);
+    //     Route::get('{id}', [PointHistoryController::class, 'show']);
+    // });
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
 
     // Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
