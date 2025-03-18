@@ -18,44 +18,9 @@ class CheckAdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        // if (Auth::check() && Auth::user()->isAdmin()) {
-        //     return $next($request);
-        // }
-
-        // abort(403);
-
-
-        // $token = Cookie::get('admin_token');
-        $token = $request->cookie('admin_token');
-
-        if (!$token) {
-            return response()->json(['message' => 'Unauthorized'], Response::HTTP_UNAUTHORIZED);
+        if (Auth::check() && Auth::user()->isAdmin()) {
+            return $next($request);
         }
-
-        // Tìm token trong bảng `personal_access_tokens`
-        $accessToken = PersonalAccessToken::findToken($token);
-
-        if (!$accessToken) {
-            /**
-             * Nếu token hết hạn hoặc đã logout từ client, xóa cookie admin_token và redirect về url nuxt
-             */
-            return redirect()->to('https://alphacinema.me:3000');
-
-            // return response()->json(['message' => 'Invalid token'], Response::HTTP_UNAUTHORIZED);
-        }
-
-        // Lấy user từ token
-        $user = $accessToken->tokenable;
-
-        // dd($user);
-
-        if (!$user || $user->type_user != 1) { // Đảm bảo chỉ cho phép admin
-            return response()->json(['message' => 'Access denied'], Response::HTTP_FORBIDDEN);
-        }
-
-        // Xác thực user trong Auth
-        Auth::login($user);
-
-        return $next($request);
+        abort(403);
     }
 }
