@@ -82,6 +82,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'cinema_id' => null,
+                'branch_id' => 1,
             ],
             [
                 'name' => 'Đặng Văn Sơn',
@@ -95,6 +96,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'cinema_id' => null,
+                'branch_id' => 2,
             ],
             [
                 'name' => 'Trần Minh Hải',
@@ -108,6 +110,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'cinema_id' => null,
+                'branch_id' => 3,
             ],
             [
                 'name' => 'Phùng Quang Huy',
@@ -121,6 +124,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'cinema_id' => null,
+                'branch_id' => 4,
             ],
             [
                 'name' => 'Nguyễn Đức Tùng Lâm',
@@ -134,6 +138,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'cinema_id' => null,
+                'branch_id' => 5,
             ],
             [
                 'name' => 'Nguyễn Hoàng Anh',
@@ -147,6 +152,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'cinema_id' => null,
+                'branch_id' => 1,
             ],
             [
                 'name' => 'Vũ Nhật Quỳnh',
@@ -160,6 +166,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'cinema_id' => null,
+                'branch_id' => 2,
             ],
             [
                 'name' => 'Hoa Hương Quỳnh',
@@ -173,6 +180,7 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'cinema_id' => null,
+                'branch_id' => 3,
             ],
         ];
 
@@ -360,7 +368,7 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('System Admin');
 
         $user = User::find(7);
-        $user->assignRole('Quản lý cơ sở', 'Nhân viên',);
+        $user->assignRole('Quản lý cơ sở', 'Nhân viên', );
         $user = User::find(8);
         $user->assignRole('Quản lý cơ sở', 'Nhân viên');
 
