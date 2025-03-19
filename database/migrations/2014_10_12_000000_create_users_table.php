@@ -30,6 +30,7 @@ return new class extends Migration
             $table->boolean('type_user')->default(0)->comment("0 : UserMember , 1 : Admin");
             $table->unsignedBigInteger('point')->nullable(); // ?
             $table->integer('cinema_id')->nullable(); // ?
+            $table->integer('branch_id')->nullable(); // ?
             $table->softDeletes();
             $table->timestamps();
         });

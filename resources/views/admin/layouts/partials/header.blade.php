@@ -11,21 +11,19 @@
         <div class="navbar-brand-box">
             <a href="{{ route('admin.index') }}" class="logo logo-dark">
                 <span class="logo-sm">
-                    <img src="{{ asset('theme/admin/assets/images/logo-sm.svg') }}" alt="" height="24">
+                    <img src="{{ asset('logo/Icon Alpha cinema.svg') }}" alt=""  style="width: 140%">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{ asset('theme/admin/assets/images/logo-sm.svg') }}" alt="" height="24">
-                    <span class="logo-txt">ALPHA CINEMA</span>
+                    <img src="{{ asset('logo/Logo Alpha cinema.svg') }}" alt="" style="width: 52%">
                 </span>
             </a>
 
             <a href="{{ route('admin.index') }}" class="logo logo-light">
                 <span class="logo-sm">
-                    <img src="{{ asset('theme/admin/assets/images/logo-sm.svg') }}" alt="" height="24">
+                    <img src="{{ asset('logo/Icon Alpha cinema.svg') }}" alt="" height="24">
                 </span>
                 <span class="logo-lg">
-                    <img src="{{ asset('theme/admin/assets/images/logo-sm.svg') }}" alt="" height="24"> <span
-                        class="logo-txt">ALPHA CINEMA</span>
+                    <img src="{{ asset('logo/Logo Alpha cinema.svg') }}" alt="" height="24">
                 </span>
             </a>
         </div>

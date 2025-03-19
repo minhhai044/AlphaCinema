@@ -270,3 +270,4 @@ Route::get('/tickets/{ticket}/detail', [TicketController::class, 'show'])->name(
 Route::get('print/tickets/{id}', [TicketController::class, 'getTicketByID']);
 Route::get('print/tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
 Route::post('/tickets/change-status', [TicketController::class, 'changeStatus']);
+

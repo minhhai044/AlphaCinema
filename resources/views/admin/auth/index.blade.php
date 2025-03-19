@@ -32,17 +32,15 @@
                 <div class="col-xxl-12 col-lg-12 col-md-12">
                     <div class="auth-full-page-content d-flex p-sm-5 p-4">
                         <div class="w-100 d-flex justify-content-center">
-                            <div class="d-flex flex-column h-100">
-                                <div class="mb-4 mb-md-5 text-center">
+                            <div class="d-flex flex-column w-25">
+                                <div class="mb-1 mb-md-5 text-center">
                                     <a href="index.html" class="d-block auth-logo">
-                                        <img src="{{asset('theme/admin/assets/images/logo-sm.svg') }}" alt="" height="28"> <span
-                                            class="logo-txt">Alpha Cinema</span>
+                                        <img src="{{ asset('logo/Logo Alpha cinema.svg') }}" alt="">
                                     </a>
                                 </div>
-                                <div class="auth-content my-auto">
+                                <div>
                                     <div class="text-center">
-                                        <h5 class="mb-0">Welcome Back !</h5>
-                                        <p class="text-muted mt-2">Sign in to continue to Alpha Cinema.</p>
+                                        <p class="fw-bold fs-5">Đăng nhập vào hệ thống</p>
                                     </div>
                                     <form class="mt-4 pt-2" action="{{ route('login') }}" method="POST">
                                         @csrf

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRequest;
+use App\Models\Branch;
 use App\Models\Cinema;
 use App\Models\User;
 use App\Models\Rank;
@@ -32,7 +33,8 @@ class UserController extends Controller
     public function index()
     {
         // $users = User::orderByDesc('id')->get();
-        $users = User::where('type_user', 1)->with('cinema')->get();
+        $users = User::where('type_user', 1)->with('cinema.branch')->get();
+
         $roles = Role::all();
 
         return view(self::PATH_VIEW . __FUNCTION__, compact('users', 'roles'));
@@ -42,21 +44,22 @@ class UserController extends Controller
     {
         $typeAdmin = User::TYPE_ADMIN;
         $roles = Role::all();
+        $branches = Branch::where('is_active', 1)->get();
 
         $cinemas = Cinema::where('is_active', '1')->first('branch_id')->get();
-        return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas']));
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas', 'branches']));
     }
 
     public function store(UserRequest $userRequest)
     {
         $data = $userRequest->validated();
         $data['type_user'] = 1;
-        dd($data);
+        // dd($data);
         $user =  $this->userService->storeUser($data);
 
         if ($userRequest->has('role_id')) {
-
-            // dd($userRequest->role_id);
+            dd($userRequest->role_id);
             $user->assignRole($userRequest->role_id);
         }
 
@@ -88,10 +91,11 @@ class UserController extends Controller
         $roles = Role::all();
 
         $cinemas = Cinema::where('is_active', '1')->first('branch_id')->get();
+        $branches = Branch::where('is_active', 1)->get();
 
         $user =  $this->userRepository->findByIdUserRepository($id);
         // dd($user);
-        return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas', 'user']));
+        return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas', 'user', 'branches']));
     }
 
     public function update(UserRequest $userRequest, $id)
@@ -104,6 +108,7 @@ class UserController extends Controller
         $result = $this->userService->updateUser($id, $data);
 
         if ($userRequest->has('role_id')) {
+            // dd($userRequest->role_id);
             $result->roles()->sync($userRequest->role_id);
         } else {
             $result->roles()->detach();
@@ -117,7 +122,7 @@ class UserController extends Controller
     }
 
     // xóa mềm
-    public function solfDestroy(string $id)
+    public function softDestroy(string $id)
     {
         try {
             $user =  $this->userRepository->findByIdUserRepository($id);

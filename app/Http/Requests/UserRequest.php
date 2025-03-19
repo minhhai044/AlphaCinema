@@ -48,6 +48,7 @@ class UserRequest extends FormRequest
             'total_amount' => 'nullable|numeric',  // Nếu cần kiểu dữ liệu số cho 'total_amount'
             'type_user' => 'boolean',
             'cinema_id' => 'nullable|exists:cinemas,id',
+            'branch_id' => 'nullable|exists:branches,id',
         ];
     }
 
@@ -65,6 +66,7 @@ class UserRequest extends FormRequest
             'total_amount' => 'nullable|numeric',  // Kiểm tra dữ liệu số cho 'total_amount'
             'type_user' => 'boolean',
             'cinema_id' => 'nullable|exists:cinemas,id',
+            'branch_id' => 'nullable|exists:branches,id',
         ];
     }
 
