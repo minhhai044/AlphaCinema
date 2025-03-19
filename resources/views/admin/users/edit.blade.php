@@ -189,10 +189,34 @@
                             <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="account-cinema" class="form-label">
+                                        Chi nhánh
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="simpleSelect" name="branch_id">
+                                        <option value="">Chọn chi nhánh làm việc</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{ $branch->id }}"
+                                                {{ old('branch_id', $user->branch_id) == $branch->id ? 'selected' : '' }}>
+                                                {{ $branch->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('branch_id')
+                                        <div class="text-danger">
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6">
+                                <div class="mb-3">
+                                    <label for="account-cinema" class="form-label">
                                         Cơ sở
                                         <span class="required">*</span>
                                     </label>
                                     <select class="form-select" id="simpleSelect" name="cinema_id">
+                                        <option value="">Chọn rạp làm việc</option>
                                         @foreach ($cinemas as $cinema)
                                             <option value="{{ $cinema->id }}"
                                                 {{ old('cinema_id', $user->cinema_id) == $cinema->id ? 'selected' : '' }}>

@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use SebastianBergmann\Type\NullType;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -81,7 +82,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Đặng Văn Sơn',
@@ -94,7 +99,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Trần Minh Hải',
@@ -107,7 +116,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Phùng Quang Huy',
@@ -120,7 +133,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Nguyễn Đức Tùng Lâm',
@@ -133,7 +150,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Nguyễn Hoàng Anh',
@@ -146,7 +167,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Vũ Nhật Quỳnh',
@@ -159,7 +184,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 1,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Hoa Hương Quỳnh',
@@ -172,7 +201,29 @@ class DatabaseSeeder extends Seeder
                 'gender' => 1,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
+            ],
+            [
+                'name' => 'Quản lý chi nhánh',
+                'avatar' => '',
+                'phone' => '0987654345',
+                'email_verified_at' => '2025-02-22 19:58:51',
+                'email' => 'qlcnHN@gmail.com',
+                'password' => Hash::make('qlcnHN@gmail.com'),
+                'address' => 'Hà Nội',
+                'gender' => 1,
+                'birthday' => '2000-01-01',
+                'type_user' => 1,
+                'total_amount' => 0,
+                'branch_id' => 1,
+                'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
         ];
 
@@ -268,6 +319,7 @@ class DatabaseSeeder extends Seeder
 
         $roles = [
             'System Admin',
+            'Quản lý chi nhánh',
             'Quản lý cơ sở',
             'Nhân viên'
         ];
@@ -279,7 +331,7 @@ class DatabaseSeeder extends Seeder
         $adminRole = Role::findByName('System Admin');
         $adminRole->syncPermissions(Permission::all());
 
-        $managerRole = Role::findByName('Quản lý cơ sở');
+        $managerRole = Role::findByName('Quản lý chi nhánh');
         $managerRole->givePermissionTo([
             'Danh sách phòng chiếu',
             'Thêm phòng chiếu',
@@ -302,9 +354,7 @@ class DatabaseSeeder extends Seeder
             'Xem chi tiết suất chiếu',
             'Danh sách hóa đơn',
             'Quét hóa đơn',
-
             'Xem chi tiết hóa đơn',
-
             'Danh sách đồ ăn',
             'Thêm đồ ăn',
             'Sửa đồ ăn',
@@ -322,9 +372,7 @@ class DatabaseSeeder extends Seeder
             'Sửa thanh toán',
             'Xóa thanh toán',
             'Danh sách giá',
-            // 'Thêm giá',
             'Sửa giá',
-            // 'Xóa giá',
             'Danh sách bài viết',
             'Thêm bài viết',
             'Sửa bài viết',
@@ -335,9 +383,7 @@ class DatabaseSeeder extends Seeder
             'Sửa slideshows',
             'Xóa slideshows',
             'Danh sách liên hệ',
-            // 'Thêm liên hệ',
             'Sửa liên hệ',
-            // 'Xóa liên hệ',
             'Danh sách tài khoản',
             'Thêm tài khoản',
             'Sửa tài khoản',
@@ -345,7 +391,47 @@ class DatabaseSeeder extends Seeder
             'Cấu hình website',
             'Danh sách thống kê',
             'Thẻ thành viên'
-
+        ]);
+        $managerRole = Role::findByName('Quản lý cơ sở');
+        $managerRole->givePermissionTo([
+            'Danh sách phòng chiếu',
+            'Thêm phòng chiếu',
+            'Sửa phòng chiếu',
+            'Xem chi tiết phòng chiếu',
+            'Danh sách mẫu sơ đồ ghế',
+            'Thêm mẫu sơ đồ ghế',
+            'Sửa mẫu sơ đồ ghế',
+            'Danh sách phim',
+            'Thêm phim',
+            'Sửa phim',
+            'Xem chi tiết phim',
+            'Danh sách suất chiếu',
+            'Thêm suất chiếu',
+            'Sửa suất chiếu',
+            'Xem chi tiết suất chiếu',
+            'Danh sách hóa đơn',
+            'Quét hóa đơn',
+            'Xem chi tiết hóa đơn',
+            'Danh sách đồ ăn',
+            'Thêm đồ ăn',
+            'Sửa đồ ăn',
+            'Danh sách combo',
+            'Thêm combo',
+            'Sửa combo',
+            'Danh sách vouchers',
+            'Thêm vouchers',
+            'Sửa vouchers',
+            'Danh sách giá',
+            'Danh sách bài viết',
+            'Thêm bài viết',
+            'Xem chi tiết bài viết',
+            'Danh sách liên hệ',
+            'Sửa liên hệ',
+            'Danh sách tài khoản',
+            'Thêm tài khoản',
+            'Sửa tài khoản',
+            'Xóa tài khoản',
+            'Danh sách thống kê',
         ]);
 
         $managerRole = Role::findByName('Nhân viên');
@@ -363,6 +449,8 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('Quản lý cơ sở', 'Nhân viên',);
         $user = User::find(8);
         $user->assignRole('Quản lý cơ sở', 'Nhân viên');
+        $user = User::find(9);
+        $user->assignRole('Quản lý chi nhánh');
 
         $user = User::find(2);
         $user->assignRole('Quản lý cơ sở');

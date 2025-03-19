@@ -32,6 +32,7 @@ class TicketController extends Controller
 
         $cinemas = Cinema::pluck('id', 'name');
 // dd($cinemas);
+// dd(auth()->user()->cinema_id, auth()->user());
 
 
         return view(self::PATH_VIEW . 'index', compact('tickets', 'branches', 'branchesRelation', 'movies', 'cinemas'));

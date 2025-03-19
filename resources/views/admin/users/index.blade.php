@@ -106,7 +106,7 @@
                             </thead>
                             <tbody>
                                 @foreach ($users as $user)
-                                    @if (auth()->check() && auth()->user()->hasRole('Quản lý cơ sở'))
+                                    @if (auth()->check() && auth()->user()->hasRole(['Quản lý cơ sở', 'Quản lý chi nhánh']))
                                         @if ($user->cinema_id == auth()->user()->cinema_id)
                                             <!-- Kiểm tra vai trò Nhân viên -->
                                             <tr>
@@ -204,7 +204,7 @@
                                                     <button title="xem" class="btn btn-success btn-sm " type="button"><i
                                                             class="bi bi-eye"></i></button>
                                                 </a>
-                                                @if (Auth::user()->hasRole('System Admin'))
+                                                @if (Auth::user()->hasRole(['System Admin', 'Quản lý chi nhánh']))
                                                     @if ($user->name != 'System Admin')
                                                         @can('Sửa tài khoản')
                                                             <a href="{{ route('admin.users.edit', $user) }}">
