@@ -273,6 +273,26 @@
         }
 
         $(document).ready(function() {
+            // Format giá tiền
+            function formatPriceInput(inputSelector, hiddenInputSelector) {
+                $(inputSelector).on("input", function() {
+                    let value = $(this).val().replace(/\D/g, "");
+                    let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                    $(this).val(formattedValue);
+                    $(hiddenInputSelector).val(value || "0");
+                });
+
+                $(inputSelector).on("blur", function() {
+                    if (!$(this).val()) {
+                        $(this).val("0");
+                        $(hiddenInputSelector).val("0");
+                    }
+                });
+            }
+
+            formatPriceInput("#price", "#price_hidden");
+            formatPriceInput("#price_sale", "#price_sale_hidden");
+
             let foodCount = $('.food-item').length;
             const minFoodItems = 2;
             const maxFoodItems = 8;
@@ -341,7 +361,8 @@
                 $('.food-select').each(function() {
                     const currentValue = $(this).val();
                     $(this).find('option').each(function() {
-                        $(this).prop('disabled', $(this).val() !== currentValue && selectedValues.includes($(this).val()));
+                        $(this).prop('disabled', $(this).val() !== currentValue && selectedValues
+                            .includes($(this).val()));
                     });
                 });
             }
@@ -371,10 +392,16 @@
                     } else {
                         $errorSpan.text('');
                     }
+
                     let currentValue = parseInt($quantityInput.val()) || 0;
                     if (currentValue < 10) {
                         $quantityInput.val(currentValue + 1);
                         updateTotalPrice();
+                        $errorSpan.text('');
+                    } else if (currentValue >= 10) {
+                        $errorSpan.removeClass('text-danger').addClass(
+                            'text-warning'); // Xanh cho thành công
+                        $errorSpan.text('Số lượng tối đa là 10');
                     }
                 });
 
@@ -393,6 +420,11 @@
                     if (currentValue > 0) {
                         $quantityInput.val(currentValue - 1);
                         updateTotalPrice();
+                        $errorSpan.text(''); // Xóa lỗi nếu giảm thành công
+                    } else if (currentValue <= 0) {
+                        $errorSpan.removeClass('text-danger').addClass(
+                            'text-danger'); // Xanh cho thành công
+                        $errorSpan.text('Số lượng phải lớn hơn 0');
                     }
                 });
 

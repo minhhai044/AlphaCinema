@@ -361,10 +361,16 @@
                     } else {
                         $errorSpan.text('');
                     }
-                    let currentValue = parseInt($quantityInput.val());
+
+                    let currentValue = parseInt($quantityInput.val()) || 0;
                     if (currentValue < 10) {
                         $quantityInput.val(currentValue + 1);
                         updateTotalPrice();
+                        $errorSpan.text('');
+                    } else if (currentValue >= 10) {
+                        $errorSpan.removeClass('text-danger').addClass(
+                            'text-warning'); // Xanh cho thành công
+                        $errorSpan.text('Số lượng tối đa là 10');
                     }
                 });
 
@@ -379,10 +385,15 @@
                     } else {
                         $errorSpan.text('');
                     }
-                    let currentValue = parseInt($quantityInput.val());
+                    let currentValue = parseInt($quantityInput.val()) || 0;
                     if (currentValue > 0) {
                         $quantityInput.val(currentValue - 1);
                         updateTotalPrice();
+                        $errorSpan.text(''); // Xóa lỗi nếu giảm thành công
+                    } else if (currentValue <= 0) {
+                        $errorSpan.removeClass('text-danger').addClass(
+                            'text-danger'); // Xanh cho thành công
+                        $errorSpan.text('Số lượng phải lớn hơn 0');
                     }
                 });
 
