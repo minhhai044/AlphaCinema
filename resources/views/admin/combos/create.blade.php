@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('title', 'Quản lý Combo')
+@section('title', 'Thêm mới Combo')
 
 @section('content')
     <!-- start page title -->
@@ -341,6 +341,13 @@
                     });
                 });
             }
+            // nếu đã chọn đồ ăn ẩn -chọn đồ ăn-
+            $(document).on('change', '.food-select', function() {
+                let selectedValue = $(this).val();
+                if (selectedValue) {
+                    $(this).find('option[value=""]').hide();
+                }
+            });
 
             function updateEventHandlers() {
                 $('.pluss').off('click').on('click', function() {
@@ -430,7 +437,7 @@
                     const price = parseInt($('#price_hidden').val() || 0); // Giá gốc từ input ẩn
                     const priceSaleInput = $('#price_sale');
                     const priceSale = parseInt(priceSaleInput.val().replace(/\D/g, '')) ||
-                    0; // Giá bán, bỏ dấu phẩy
+                        0; // Giá bán, bỏ dấu phẩy
                     // Chỉ kiểm tra khi priceSale > 0
                     if (priceSale > 0) {
                         if (priceSale >= price) {
