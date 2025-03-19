@@ -106,8 +106,9 @@
                             </thead>
                             <tbody>
                                 @foreach ($users as $user)
-                                    @if (auth()->check() && auth()->user()->hasRole(['Quản lý cơ sở', 'Quản lý chi nhánh']))
-                                        @if ($user->cinema_id == auth()->user()->cinema_id)
+                                    @if (auth()->check() && auth()->user()->hasRole(['Quản lý cơ sở','Quản lý chi nhánh']))
+                                    {{-- @dd($user->cinema->branch_id) --}}
+                                        @if ($user->cinema->branch_id !== auth()->user()->branch_id)
                                             <!-- Kiểm tra vai trò Nhân viên -->
                                             <tr>
                                                 <td>{{ $user->id }}</td>
@@ -144,7 +145,7 @@
                                                         <button title="xem" class="btn btn-success btn-sm "
                                                             type="button"><i class="bi bi-eye"></i></button>
                                                     </a>
-                                                    @if ($user->roles->count() == 1 && $user->hasRole('Nhân viên'))
+                                                    @if ( $user->hasRole(['Nhân viên', 'Quản lý cơ sở']))
                                                         @can('Sửa tài khoản')
                                                             <a href="{{ route('admin.users.edit', $user) }}">
                                                                 <button title="xem" class="btn btn-warning btn-sm "

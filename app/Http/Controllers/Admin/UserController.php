@@ -33,7 +33,7 @@ class UserController extends Controller
     public function index()
     {
         // $users = User::orderByDesc('id')->get();
-        $users = User::where('type_user', 1)->with('cinema')->get();
+        $users = User::where('type_user', 1)->with('cinema.branch')->get();
 
         $roles = Role::all();
 
