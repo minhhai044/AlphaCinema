@@ -155,7 +155,7 @@ class ShowtimeController extends Controller
         }
 
         $data = [
-            'movie' => $movie, 
+            'movie' => $movie,
             'showtimes' => $showtimes
         ];
 
@@ -165,11 +165,16 @@ class ShowtimeController extends Controller
         );
     }
 
-    public function showtimeDetail(string $slug)
+    public function showtimeDetail(string $slug, Request $request)
     {
         try {
+            $branchId = $request->branchId;
+            $cinemId = $request->cinemId;
             $showtime = Showtime::with('branch', 'movie', 'cinema', 'room')
                 ->where('slug', $slug)
+                ->where('start_time', '>=', Carbon::now()->toTimeString())
+                ->where('branch_id', $branchId)
+                ->where('cinema_id', $cinemId)
                 ->first();
 
             $seatMap = json_decode($showtime['seat_structure'], true);
