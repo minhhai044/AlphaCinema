@@ -62,6 +62,8 @@ class ShowtimeController extends Controller
                 $query->where('date', '>=', Carbon::now()->toDateString());
                 $query->where('branch_id', $branchId);
                 $query->where('cinema_id', $cinemId);
+                $query->where('start_time','>=', Carbon::now()->toTimeString());
+
             })
                 ->with('showtime')
                 ->latest('id')
