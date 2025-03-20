@@ -1,78 +1,89 @@
 @extends('admin.layouts.master')
 
 @section('style')
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" type="text/css" />
     <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
     <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-    {{-- <link href="{{ asset('assets/css/ticketPrint.css') }}" rel="stylesheet" type="text/css" /> --}}
 
     <style>
-        .table {
-            vertical-align: middle !important;
-        }
-
-        table.dataTable thead th,
-        table.dataTable thead td,
-        table.dataTable tfoot th,
-        table.dataTable tfoot td {
+        .table { vertical-align: middle !important; }
+        table.dataTable thead th, table.dataTable thead td, table.dataTable tfoot th, table.dataTable tfoot td {
             text-align: center;
         }
-
-        .dashed-hr {
-            border: 1px dashed #6c757d;
-            margin: 10px 0;
-            opacity: 0.5;
-            background-color: #efefff
-        }
+        .dashed-hr { border: 1px dashed #6c757d; margin: 10px 0; opacity: 0.5; background-color: #efefff }
     </style>
 @endsection
 
 @section('content')
     <h5 class="fw-bold">Quản lý hóa đơn</h5>
     <div class="rounded">
+        <form action="{{ route('admin.tickets.index') }}" method="get" class="filter-row d-flex align-items-end gap-3 mb-4">
+            <!-- Chi nhánh (Chỉ hiển thị dropdown cho System Admin) -->
+            @if(auth()->user()->hasRole('system-admin'))
+                <div class="form-group col-md-2">
+                    <label for="branch_id" class="form-label fw-bold">
+                        <i class="bi bi-geo-alt me-1"></i> Chi nhánh
+                    </label>
+                    <select name="branch_id" class="form-select" id="branch_id">
+                        <option value="" {{ request('branch_id') ? '' : 'selected' }}>Chọn chi nhánh</option>
+                        @if ($branches && $branches->isNotEmpty())
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
+                                    {{ $branch->name }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            @else
+                @if(auth()->user()->branch_id)
+                    <input type="hidden" name="branch_id" value="{{ auth()->user()->branch_id }}">
+                    <div class="form-group col-md-2">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-geo-alt me-1"></i> Chi nhánh
+                        </label>
+                        <p class="form-control-static">{{ auth()->user()->branch->name ?? 'N/A' }}</p>
+                    </div>
+                @endif
+            @endif
 
-        <form action="{{ route('admin.tickets.index') }}" method="get"
-            class="filter-row d-flex align-items-end gap-3 mb-4">
-            <!-- Chi nhánh -->
-            <div class="form-group col-md-2">
-                <label for="branch_id" class="form-label fw-bold">
-                    <i class="bi bi-geo-alt me-1"></i> Chi nhánh
-                </label>
-                <select name="branch_id" class="form-select" id="branch_id">
-                    <option value="" {{ request('branch_id') ? '' : 'selected' }}>Chọn chi nhánh</option>
-                    @if ($branches && $branches->isNotEmpty())
-                        @foreach ($branches as $branch)
-                            <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
-                                {{ $branch->name }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
-
-            <!-- Rạp -->
-            <div class="form-group col-md-2">
-                <label for="cinema_id" class="form-label fw-bold">
-                    <i class="bi bi-camera-reels me-1"></i> Rạp
-                </label>
-                <select name="cinema_id" class="form-select" id="cinema_id">
-                    {{ auth()->check() && auth()->user()->hasRole('Nhân viên') && in_array(auth()->user()->cinema_id, array_keys($cinemas->toArray())) ? 'disabled' : '' }}>
-                    <option value="" {{ request('cinema_id') ? '' : 'selected' }}>Chọn rạp</option>
-                    @if (request('branch_id') && isset($branchesRelation[request('branch_id')]))
-                        @foreach ($branchesRelation[request('branch_id')] as $cinemaId => $cinemaName)
-                            <option value="{{ $cinemaId }}" {{ request('cinema_id') == $cinemaId ? 'selected' : '' }}>
-                                {{ $cinemaName }}
-                            </option>
-                        @endforeach
-                    @endif
-                </select>
-            </div>
+            <!-- Rạp (Hiển thị dropdown cho System Admin hoặc Quản lý chi nhánh) -->
+            @if(auth()->user()->hasRole('system-admin') || auth()->user()->branch_id)
+                <div class="form-group col-md-2">
+                    <label for="cinema_id" class="form-label fw-bold">
+                        <i class="bi bi-camera-reels me-1"></i> Rạp
+                    </label>
+                    <select name="cinema_id" class="form-select" id="cinema_id">
+                        <option value="" {{ request('cinema_id') ? '' : 'selected' }}>Chọn rạp</option>
+                        @if(auth()->user()->hasRole('system-admin') && request('branch_id') && isset($branchesRelation[request('branch_id')]))
+                            @foreach ($branchesRelation[request('branch_id')] as $cinemaId => $cinemaName)
+                                <option value="{{ $cinemaId }}" {{ request('cinema_id') == $cinemaId ? 'selected' : '' }}>
+                                    {{ $cinemaName }}
+                                </option>
+                            @endforeach
+                        @elseif(auth()->user()->branch_id && isset($branchesRelation[auth()->user()->branch_id]))
+                            @foreach ($branchesRelation[auth()->user()->branch_id] as $cinemaId => $cinemaName)
+                                <option value="{{ $cinemaId }}" {{ request('cinema_id') == $cinemaId ? 'selected' : '' }}>
+                                    {{ $cinemaName }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            @else
+                @if(auth()->user()->cinema_id)
+                    <input type="hidden" name="cinema_id" value="{{ auth()->user()->cinema_id }}">
+                    <div class="form-group col-md-2">
+                        <label class="form-label fw-bold">
+                            <i class="bi bi-camera-reels me-1"></i> Rạp
+                        </label>
+                        <p class="form-control-static">{{ auth()->user()->cinema->name ?? 'N/A' }}</p>
+                    </div>
+                @endif
+            @endif
 
             <!-- Ngày -->
             <div class="form-group col-md-2">
@@ -106,8 +117,7 @@
                 </label>
                 <select name="status_id" class="form-select" id="status_id">
                     <option value="" {{ request('status_id') ? '' : 'selected' }}>Tất cả</option>
-                    <option value="confirmed" {{ request('status_id') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận
-                    </option>
+                    <option value="confirmed" {{ request('status_id') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận</option>
                     <option value="pending" {{ request('status_id') == 'pending' ? 'selected' : '' }}>Chờ xác nhận</option>
                 </select>
             </div>
@@ -120,6 +130,7 @@
             </div>
         </form>
 
+        <!-- Modal danh sách phim -->
         <div class="modal fade" id="movieModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -142,6 +153,7 @@
             </div>
         </div>
 
+        <!-- Bảng dữ liệu -->
         <div class="table-responsive mt-3">
             <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
                 <thead>
@@ -166,14 +178,10 @@
                                 <div><span class="fw-bold">Phương thức thanh toán:</span>
                                     {{ $ticket->payment_name ?? 'N/A' }}</div>
                             </td>
-
                             <td>
-                                <div><span class="fw-bold">Phim:</span> {{ $ticket->movie->name ?? 'N/A' }}</div>
-
+                                <div>Phim:</span> {{ $ticket->movie->name ?? 'N/A' }}</div>
                                 <div><span class="fw-bold">Nơi chiếu:</span> {{ $ticket->branch->name ?? 'N/A' }} -
-                                    {{ $ticket->cinema->name ?? 'N/A' }}
-                                </div>
-
+                                    {{ $ticket->cinema->name ?? 'N/A' }}</div>
                                 <div>
                                     <span class="fw-bold">Ghế:</span>
                                     @php
@@ -182,67 +190,52 @@
                                         echo implode(', ', $seatNames) ?: 'N/A';
                                     @endphp
                                 </div>
-
                                 <div><span class="fw-bold">Tổng tiền:</span>
                                     {{ number_format($ticket->total_price, 0, ',', '.') }} VNĐ</div>
-
                                 <div>
                                     <span class="fw-bold">Trạng thái:</span>
-                                    <span id="statusTicket"
-                                        class="badge {{ $ticket->status == 'confirmed' ? 'bg-success' : 'bg-warning' }}">
+                                    <span id="statusTicket" class="badge {{ $ticket->status == 'confirmed' ? 'bg-success' : 'bg-warning' }}">
                                         {{ $ticket->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận' }}
                                     </span>
                                 </div>
-
                                 <div>
                                     <span class="fw-bold">Lịch chiếu:</span>
                                     {{ $ticket->showtime->start_time ?? 'N/A' }} -
                                     {{ $ticket->showtime->end_time ?? 'N/A' }}
                                 </div>
-
                                 <div><span class="fw-bold">Ngày chiếu:</span> {{ $ticket->showtime->date ?? 'N/A' }}</div>
-
                                 <div>
                                     <span class="fw-bold">Thời hạn sử dụng:</span>
                                     {{ \Carbon\Carbon::parse($ticket->showtime->end_time ?? '')->format('H:i') }},
                                     {{ \Carbon\Carbon::parse($ticket->showtime->date ?? '')->format('d/m/Y') }}
                                 </div>
                             </td>
-
                             <td>
-                                <div class="form-check form-switch form-switch-success"
-                                    style="display: flex; justify-content: center;">
+                                <div class="form-check form-switch form-switch-success" style="display: flex; justify-content: center;">
                                     <input class="form-check-input switch-is-active changeStatus" type="checkbox"
                                         data-ticket-id="{{ $ticket->id }}"
                                         data-user-type="{{ auth()->user()->type_user }}"
                                         {{ $ticket->status === 'confirmed' ? 'checked disabled' : '' }}
                                         onclick="changeStatus(event)">
                                 </div>
-
                             </td>
-
                             <td class="text-center">
                                 <div class="btn-group justify-content-center align-items-center">
-                                    <a href="{{ route('admin.tickets.show', $ticket) }}"
-                                        class="btn btn-sm btn-success me-2">
+                                    <a href="{{ route('admin.tickets.show', $ticket) }}" class="btn btn-sm btn-success me-2">
                                         <i class="fas fa-eye"></i>
                                     </a>
                                     @if ($ticket->status === 'confirmed')
-                                        <button class="btn btn-sm btn-primary me-2 btn-print-ticket printTicket"
-                                            data-id="{{ $ticket->id }}">
+                                        <button class="btn btn-sm btn-primary me-2 btn-print-ticket printTicket" data-id="{{ $ticket->id }}">
                                             <i class="bi bi-printer-fill"></i> Vé
                                         </button>
-                                        <button class="btn btn-sm btn-warning btn-print-combo printCombo"
-                                            data-id="{{ $ticket->id }}">
+                                        <button class="btn btn-sm btn-warning btn-print-combo printCombo" data-id="{{ $ticket->id }}">
                                             <i class="bi bi-printer-fill"></i> Combo
                                         </button>
                                     @else
-                                        <button class="btn btn-sm btn-primary me-2 btn-print-ticket d-none printTicket"
-                                            data-id="{{ $ticket->id }}">
+                                        <button class="btn btn-sm btn-primary me-2 btn-print-ticket d-none printTicket" data-id="{{ $ticket->id }}">
                                             <i class="bi bi-printer-fill"></i> Vé
                                         </button>
-                                        <button class="btn btn-sm btn-warning btn-print-combo d-none printCombo"
-                                            data-id="{{ $ticket->id }}">
+                                        <button class="btn btn-sm btn-warning btn-print-combo d-none printCombo" data-id="{{ $ticket->id }}">
                                             <i class="bi bi-printer-fill"></i> Combo
                                         </button>
                                     @endif
@@ -251,13 +244,14 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="4" class="text-center">Không có vé nào.</td>
+                            <td colspan="5" class="text-center">Không có vé nào.</td>
                         </tr>
                     @endforelse
                 </tbody>
             </table>
         </div>
 
+        <!-- Modal thông tin vé -->
         <div id="ticketModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
                 <div class="modal-content">
@@ -279,10 +273,8 @@
 @endsection
 
 @section('script')
-    <!-- Required datatable js -->
     <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <!-- Buttons examples -->
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
@@ -291,26 +283,20 @@
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
-
-    <!-- Responsive examples -->
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
-    </script>
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
-    </script>
-
-    <!-- Datatable init js -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js"></script>
+
     <script>
         function changeStatus(event) {
             let ticketId = $(event.target).data('ticket-id');
             let status = event.target.checked ? 'confirmed' : 'pending';
-
             let staff = $(event.target).data('user-type') == 1 ? 'Admin' : 'Member';
 
             if (!confirm('Bạn có chắc muốn thay đổi trạng thái vé?')) {
-                event.target.checked = !event.target.checked; // Nếu không xác nhận, hoàn tác thay đổi
+                event.target.checked = !event.target.checked;
                 return;
             }
 
@@ -318,7 +304,7 @@
                 url: '/admin/tickets/change-status',
                 method: 'POST',
                 headers: {
-                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content") // CSRF Token
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
                 },
                 data: {
                     ticket_id: ticketId,
@@ -327,27 +313,22 @@
                 },
                 success: function(response) {
                     alert('Trạng thái ticket đã được thay đổi!');
-
-                    let row = $(event.target).closest('tr'); // Lấy dòng hiện tại
-                    let statusTicket = row.find("#statusTicket"); // Tìm phần tử hiển thị trạng thái
-
-                    // **Cập nhật trạng thái hiển thị**
+                    let row = $(event.target).closest('tr');
+                    let statusTicket = row.find("#statusTicket");
                     let newStatusText = status === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận';
                     let newBadgeClass = status === 'confirmed' ? 'bg-success' : 'bg-warning';
 
-                    statusTicket.text(newStatusText) // Cập nhật nội dung
-                        .removeClass('bg-success bg-warning') // Xóa class cũ
-                        .addClass(newBadgeClass); // Thêm class mới
+                    statusTicket.text(newStatusText)
+                        .removeClass('bg-success bg-warning')
+                        .addClass(newBadgeClass);
 
-                    // **Hiển thị hoặc ẩn nút in vé**
                     if (status === 'confirmed') {
-                        row.find('.btn-print-ticket, .btn-print-combo').removeClass('d-none'); // Hiện nút in
-                        $(event.target).prop('disabled', true); // Vô hiệu hóa switch sau khi xác nhận
+                        row.find('.btn-print-ticket, .btn-print-combo').removeClass('d-none');
+                        $(event.target).prop('disabled', true);
                     } else {
-                        row.find('.btn-print-ticket, .btn-print-combo').addClass('d-none'); // Ẩn nút in
+                        row.find('.btn-print-ticket, .btn-print-combo').addClass('d-none');
                     }
                 },
-
                 error: function() {
                     alert('Đã có lỗi xảy ra!');
                 }
@@ -355,16 +336,15 @@
         }
     </script>
 
-    <!-- Load external ticket/index.js for printing functionality -->
     <script src="{{ asset('assets/js/ticket/index.js') }}"></script>
 
-    <!-- Inline script for filtering cinemas based on branch -->
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const branchSelect = document.getElementById('branch_id');
-            const cinemaSelect = document.getElementById('cinema_id');
-            const branchesRelation = @json($branchesRelation);
+    document.addEventListener('DOMContentLoaded', function() {
+        const branchSelect = document.getElementById('branch_id');
+        const cinemaSelect = document.getElementById('cinema_id');
+        const branchesRelation = @json($branchesRelation);
 
+        @if(auth()->user()->hasRole('System Admin')) // Sửa thành 'System Admin'
             branchSelect.addEventListener('change', function() {
                 const branchId = this.value;
                 cinemaSelect.innerHTML = '<option value="" selected>Chọn rạp</option>';
@@ -385,6 +365,7 @@
             if (branchSelect.value) {
                 branchSelect.dispatchEvent(new Event('change'));
             }
-        });
-    </script>
+        @endif
+    });
+</script>
 @endsection

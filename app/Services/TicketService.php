@@ -24,32 +24,49 @@ class TicketService
 
     public function getService($request)
     {
+        $user = auth()->user();
         $date = $request->query('date', '');
-        $branch_id = $request->query('branch_id', '');
-        $cinema_id = $request->query('cinema_id', '');
-        $movie_id = $request->query("movie_id", "");
-        $status = $request->query("status_id", "");
+        $branch_id = $request->query('branch_id', $user->branch_id ?? ''); // Mặc định dùng branch_id của user nếu có
+        $cinema_id = $request->query('cinema_id', $user->cinema_id ?? ''); // Mặc định dùng cinema_id của user nếu có
+        $movie_id = $request->query('movie_id', '');
+        $status = $request->query('status_id', '');
 
-        if (empty($date) && empty($branch_id) && empty($cinema_id) && empty($movie_id) && empty($status)) {
-            $tickets = Ticket::with('movie', 'branch', 'cinema', 'user')->get();
+        $ticketsQuery = Ticket::with('movie', 'branch', 'cinema', 'user', 'showtime');
+
+        // Phân quyền mặc định dựa trên vai trò user
+        if ($user->hasRole('System Admin')) {
+            // System Admin: Lấy tất cả vé nếu không có filter cụ thể
+        } elseif ($user->branch_id) {
+            // Quản lý chi nhánh: Lấy vé của chi nhánh ngay từ đầu
+            $ticketsQuery->whereHas('cinema', function ($q) use ($user) {
+                $q->where('branch_id', $user->branch_id);
+            });
+        } elseif ($user->cinema_id) {
+            // Quản lý rạp: Lấy vé của rạp ngay từ đầu
+            $ticketsQuery->where('cinema_id', $user->cinema_id);
         } else {
-            $tickets = Ticket::with('movie', 'branch', 'cinema', 'user', 'showtime')
-                ->when($date, function ($query) use ($date) {
-                    $query->whereHas('showtime', function ($q) use ($date) {
-                        $q->where('date', $date);
-                    });
-                })
-                ->when($branch_id, function ($query) use ($branch_id) {
-                    $query->whereHas('cinema', function ($q) use ($branch_id) {
-                        $q->where('branch_id', $branch_id);
-                    });
-                })
-                ->when($cinema_id, fn($query) => $query->where('cinema_id', $cinema_id))
-                ->when($movie_id, fn($query) => $query->where('movie_id', $movie_id))
-                ->when($status, fn($query) => $query->where('status', $status))
-                ->get();
+            // Không có quyền: Trả về rỗng
+            $ticketsQuery->where('id', 0);
         }
 
+        // Áp dụng các filter từ query params (nếu có)
+        $tickets = $ticketsQuery
+            ->when($date, function ($query) use ($date) {
+                $query->whereHas('showtime', function ($q) use ($date) {
+                    $q->where('date', $date);
+                });
+            })
+            ->when($branch_id, function ($query) use ($branch_id) {
+                $query->whereHas('cinema', function ($q) use ($branch_id) {
+                    $q->where('branch_id', $branch_id);
+                });
+            })
+            ->when($cinema_id, fn($query) => $query->where('cinema_id', $cinema_id))
+            ->when($movie_id, fn($query) => $query->where('movie_id', $movie_id))
+            ->when($status, fn($query) => $query->where('status', $status))
+            ->get();
+
+        // Lấy danh sách chi nhánh và rạp
         $branches = Branch::with('cinemas.rooms')->where('is_active', 1)->get();
         $branchesRelation = [];
         foreach ($branches as $branch) {
@@ -60,11 +77,10 @@ class TicketService
 
         return [$tickets, $branches, $branchesRelation, $movies];
     }
-
     public function getTicketDetail($id)
     {
         $ticketDetail = $this->ticketRepository->findTicket($id);
-   
+
 
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);
         $totalSeatPrice = $seatData['total_price'] ?? 0;

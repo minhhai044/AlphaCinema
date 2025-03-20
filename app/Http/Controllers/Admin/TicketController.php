@@ -31,10 +31,9 @@ class TicketController extends Controller
         [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
 
         $cinemas = Cinema::pluck('id', 'name');
-// dd($cinemas);
-
 
         return view(self::PATH_VIEW . 'index', compact('tickets', 'branches', 'branchesRelation', 'movies', 'cinemas'));
+
     }
 
     public function show(Ticket $ticket)
