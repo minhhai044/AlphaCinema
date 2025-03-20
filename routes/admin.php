@@ -269,4 +269,7 @@ Route::get('/export/{table}', [ExportController::class, 'export'])->name('export
 Route::get('/tickets/{ticket}/detail', [TicketController::class, 'show'])->name('tickets.show');
 Route::get('print/tickets/{id}', [TicketController::class, 'getTicketByID']);
 Route::get('print/tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
-Route::post('/tickets/change-status', [TicketController::class, 'changeStatus']);
+// Route::post('/tickets/change-status', [TicketController::class, 'changeStatus']);
+
+
+Route::post('/tickets/change-status', [TicketController::class, 'changeStatus'])->name('admin.tickets.change-status');
