@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Branch;
 use App\Models\Cinema;
+use App\Models\Rank;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
@@ -520,5 +521,86 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('slideshows')->insert($slideshows);
+
+        DB::table('type_rooms')->insert([
+            [
+                'name' => 'Phòng 2D',
+                'surcharge' => 50000, // Giá mặc định 50k50k
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Phòng 3D ',
+                'surcharge' => 100000, // Giá mặc định 100k 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Phòng 4D ',
+                'surcharge' => 150000, // Giá mặc định 150k 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        DB::table('type_seats')->insert([
+            [
+                'name' => 'Ghế thường',
+                'price' => 5000, // Giá mặc định 50k50k
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Ghế VIP',
+                'price' => 10000, // Giá mặc định 100k 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Ghế đôi',
+                'price' => 15000, // Giá mặc định 150k 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        $ranks = [
+            [
+                'name' => 'Member',
+                'total_spent' => 0,
+                'ticket_percentage' => 0,
+                'combo_percentage' => 0,
+                'feedback_percentage' => 0,
+                'is_default' => 1,
+            ],
+            [
+                'name' => 'Gold',
+                'total_spent' => 1000000,
+                'ticket_percentage' => 7,
+                'combo_percentage' => 5,
+                'feedback_percentage' => 3,
+                'is_default' => 0,
+            ],
+            [
+                'name' => 'Platinum',
+                'total_spent' => 3000000,
+                'ticket_percentage' => 10,
+                'feedback_percentage' => 5,
+                'combo_percentage' => 7,
+                'is_default' => 0,
+            ],
+            [
+                'name' => 'Diamond',
+                'total_spent' => 5000000,
+                'ticket_percentage' => 15,
+                'feedback_percentage' => 7,
+                'combo_percentage' => 10,
+                'is_default' => 0,
+            ],
+        ];
+
+        foreach ($ranks as $rank) {
+            Rank::create($rank);
+        }
     }
 }

@@ -16,19 +16,19 @@ class TypeSeatSeeder extends Seeder
         DB::table('type_seats')->insert([
             [
                 'name' => 'Ghế thường',
-                'price' => 50000, // Giá mặc định 50k50k
+                'price' => 5000, // Giá mặc định 50k50k
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Ghế VIP',
-                'price' => 100000, // Giá mặc định 100k 
+                'price' => 10000, // Giá mặc định 100k 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Ghế đôi',
-                'price' => 150000, // Giá mặc định 150k 
+                'price' => 15000, // Giá mặc định 150k 
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
