@@ -62,8 +62,7 @@ class ShowtimeController extends Controller
                 $query->where('date', '>=', Carbon::now()->toDateString());
                 $query->where('branch_id', $branchId);
                 $query->where('cinema_id', $cinemId);
-                $query->where('start_time','>=', Carbon::now()->toTimeString());
-
+                $query->where('start_time', '>=', Carbon::now()->toTimeString());
             })
                 ->with('showtime')
                 ->latest('id')
@@ -84,17 +83,65 @@ class ShowtimeController extends Controller
     }
 
 
-    public function movieShowTimes(string $slug)
-    {
-        $movie = Movie::with([
-            'showtime' => function ($query) {
-                $query->where('date', '>=', Carbon::now())
-                    ->where('is_active', 1);
-            },
-            'room'
-        ])->where('slug', $slug)->first();
+    // public function movieShowTimes(string $slug,Request $request)
+    // {
+    //     $branchId = $request->branchId;
+    //     $cinemId = $request->cinemId;
+    //     $movie = Movie::with([
+    //         'showtime' => function ($query) {
+    //             $query->where('date', '>=', Carbon::now())
+    //                 ->where('is_active', 1);
+    //         },
+    //         'room'
+    //     ])->where('slug', $slug)->first();
 
-        $data = [];
+    //     $data = [];
+
+    //     $showtimes = [];
+
+    //     foreach ($movie->showtime as $showtime) {
+    //         $showtimes[$showtime['date']][] = [
+    //             'id' => $showtime['id'],
+    //             'start_time' => $showtime['start_time'],
+    //             'slug' => $showtime['slug'],
+    //             'name_room' => $showtime['room']['name']
+    //         ];
+    //     }
+
+    //     $data = [
+    //         'showtimes' => $showtimes, // Lịch chiếu theo ngày
+    //         'movie' => $movie, // Thông tin phim
+    //     ];
+
+    //     return $this->successResponse(
+    //         $data,
+    //         'Thao tác thành công'
+    //     );
+    // }
+
+
+    public function movieShowTimes(string $slug, Request $request)
+    {
+        $branchId = $request->branchId;
+        $cinemId = $request->cinemId;
+        $movie = null;
+
+        if ($branchId && $cinemId) {
+            $movie = Movie::with([
+                'showtime' => function ($query) use ($branchId, $cinemId) {
+                    $query->where('date', '>=', Carbon::now()->toDateString())
+                        ->where('is_active', 1)
+                        ->where('branch_id', $branchId)
+                        ->where('cinema_id', $cinemId)
+                        ->where('start_time', '>=', Carbon::now()->toTimeString());
+                },
+                'showtime.room'
+            ])->where('slug', $slug)->first();
+        }
+
+        if (!$movie) {
+            return $this->errorResponse('Không tìm thấy phim hoặc lịch chiếu', 404);
+        }
 
         $showtimes = [];
 
@@ -103,13 +150,13 @@ class ShowtimeController extends Controller
                 'id' => $showtime['id'],
                 'start_time' => $showtime['start_time'],
                 'slug' => $showtime['slug'],
-                'name_room' => $showtime['room']['name']
+                'name_room' => optional($showtime->room)->name
             ];
         }
 
         $data = [
-            'showtimes' => $showtimes, // Lịch chiếu theo ngày
-            'movie' => $movie, // Thông tin phim
+            'movie' => $movie, 
+            'showtimes' => $showtimes
         ];
 
         return $this->successResponse(
