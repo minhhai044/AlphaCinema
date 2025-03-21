@@ -62,7 +62,7 @@ class ShowtimeController extends Controller
                 $query->where('date', '>=', Carbon::now()->toDateString());
                 $query->where('branch_id', $branchId);
                 $query->where('cinema_id', $cinemId);
-                $query->where('start_time', '>=', Carbon::now()->toTimeString());
+                // $query->where('start_time', '>=', Carbon::now()->toTimeString());
             })
                 ->with('showtime')
                 ->latest('id')
@@ -172,10 +172,23 @@ class ShowtimeController extends Controller
             $cinemId = $request->cinemId;
             $showtime = Showtime::with('branch', 'movie', 'cinema', 'room')
                 ->where('slug', $slug)
-                ->where('start_time', '>=', Carbon::now()->toTimeString())
+                // ->where('start_time', '>=', Carbon::now()->toTimeString())
                 ->where('branch_id', $branchId)
                 ->where('cinema_id', $cinemId)
                 ->first();
+
+            if (!$showtime) {
+                return $this->errorResponse([
+                    'message' => 'Showtime not found',
+                    'code' => 404
+                ], Response::HTTP_NOT_FOUND);
+                // throw new \Exception('Showtime not found', 404);
+            }
+
+            if (empty($showtime->seat_structure)) {
+                return $this->errorResponse('Dữ liệu ghế không khả dụng', Response::HTTP_BAD_REQUEST);
+            }
+
 
             $seatMap = json_decode($showtime['seat_structure'], true);
             // $seatMap = $showtime['seat_structure'];
