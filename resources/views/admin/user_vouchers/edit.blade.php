@@ -62,7 +62,7 @@
                                 <label for="user_id" class="form-label">
                                     <span class="required">*</span> Người dùng
                                 </label>
-                                <select name="user_id" id="user_id" class="form-select">
+                                <select name="user_id_disabled" id="user_id" class="form-select" disabled>
                                     <option value="">Chọn người dùng</option>
                                     @foreach ($users as $user)
                                         <option value="{{ $user->id }}" {{ $User_voucher->user_id == $user->id ? 'selected' : '' }}>
@@ -70,6 +70,8 @@
                                         </option>
                                     @endforeach
                                 </select>
+                                
+                                <input type="hidden" name="user_id" value="{{ $User_voucher->user_id }}">
                                 @error('user_id')
                                 <div class="text-danger">{{ $message }}</div>
                                 @enderror
