@@ -31,7 +31,7 @@
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item">
-                            <a href="javascript: void(0);">Danh sách phòng</a>
+                            <a href="javascript: void(0);">Menu</a>
                         </li>
                         <li class="breadcrumb-item active">Danh sách phòng </li>
                     </ol>
@@ -47,7 +47,7 @@
                     <div class="row">
                         <div class="col-sm">
                             <div class="mb-4">
-                                <h6 class="mb-sm-0 font-size-16">Danh sách phòng </h6>
+                                
                             </div>
                         </div>
                         <div class="col-sm-auto">
@@ -55,7 +55,7 @@
                         </div>
                         <div class="col-sm-auto">
                             <div class="mb-4">
-                                <a data-bs-toggle="modal" class="add_type_room btn btn-light waves-effect waves-light"
+                                <a data-bs-toggle="modal" class="add_type_room btn btn-primary waves-effect waves-light"
                                     data-bs-target="#addModal">
                                     <i class="mdi mdi-plus"></i>
                                     Thêm mới
@@ -69,7 +69,7 @@
                                 <table class="table align-middle table-nowrap dt-responsive nowrap w-100"
                                     id="datatable">
                                     <thead class="table-light">
-                                        <tr class="text-center">
+                                        <tr >
                                             <th>#</th>
                                             <th>Loại phòng</th>
                                             <th>Phụ Phí</th>
@@ -77,13 +77,14 @@
                                             <th>Hành động</th>
                                         </tr>
                                     </thead>
-                                    <tbody class="roomList text-center">
+                                    <tbody class="roomList">
                                         @foreach ($type_rooms as $item)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td> <!-- Hiển thị số thứ tự thay vì ID -->
                                                 <td>{{ $item->name }}</td>
                                                 <td>{{ number_format($item->surcharge) }} VND</td>
-                                                <td>{{ $item->created_at }}</td>
+                                                <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}</td>
+
                                                 <td>
                                                     <!-- Nút sửa -->
                                                     <button type="button" data-bs-toggle="modal" title="sửa"

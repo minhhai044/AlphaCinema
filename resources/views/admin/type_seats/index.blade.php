@@ -33,7 +33,7 @@
                 <h4 class="mb-sm-0">Loại ghế</h4>
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript: void(0);">Tables</a></li>
+                        <li class="breadcrumb-item"><a href="javascript: void(0);">Menu</a></li>
                         <li class="breadcrumb-item active">Loại ghế</li>
                     </ol>
                 </div>
@@ -48,7 +48,7 @@
                 <div class="card-body">
                     <table id="datatable" class="table table-bordered dt-responsive nowrap table-striped align-middle"
                         style="width:100%">
-                        <thead  class="text-center">
+                        <thead  >
                             <tr>
                                 <th>#</th>
                                 <th>Tên loại ghế</th>
@@ -56,7 +56,7 @@
                                 <th>Chức năng</th>
                             </tr>
                         </thead>
-                        <tbody  class="text-center">
+                        <tbody  >
                             @foreach ($typeSeats as $item)
                                 <tr>
                                     <td>{{ $item->id }}</td>
@@ -141,7 +141,7 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary btn-close-modal"
-                                data-bs-dismiss="modal">Close</button>
+                                data-bs-dismiss="modal">Đóng</button>
                             <button type="submit" class="btn btn-primary">Sửa ghế </button>
                         </div>
                     </form>
