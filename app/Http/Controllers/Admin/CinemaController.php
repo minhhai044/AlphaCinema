@@ -30,11 +30,6 @@ class CinemaController extends Controller
     {
         $cinemas = $this->cinemaService->getAllPaginateService(10);
         $branchs = Branch::query()->orderByDesc('id')->get();
-
-        if (request()->page > $cinemas->lastPage()) {
-            return redirect()->route('admin.cinemas.index', ['page' => 1]);
-        }
-
         return view(self::PATH_VIEW . __FUNCTION__, compact('cinemas', 'branchs'));
     }
     /**

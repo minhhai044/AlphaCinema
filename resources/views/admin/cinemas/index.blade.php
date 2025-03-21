@@ -1,6 +1,5 @@
 @extends('admin.layouts.master')
 @section('title', 'Quản lý rạp')
-
 @section('style')
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
         type="text/css" />
@@ -8,18 +7,11 @@
         rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
-
-    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- App Css-->
-    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-@endsection
-@section('style-libs')
-    <!-- Datatable CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
+    <style>
+        .table {
+            vertical-align: middle !important;
+        }
+    </style>
 @endsection
 @section('content')
     {{-- <a href="{{ route('export', ['table' => 'cinemas']) }}" class="btn btn-success">
@@ -61,15 +53,15 @@
                     </div>
 
                     <div class="table-responsive min-vh-100">
-                        <table class="table table-striped table-bordered" id="datatable">
-                            <thead class="table-light">
+                        <table id="datatable" class="table table-bordered text-center">
+                            <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Name</th>
-                                    <th>Branch</th>
-                                    <th>Address</th>
-                                    <th>Active</th>
-                                    <th>Action</th>
+                                    <th class="fw-semibold text-center">STT</th>
+                                    <th class="fw-semibold text-center">Tên rạp</th>
+                                    <th class="fw-semibold text-center">Chi nhánh</th>
+                                    <th class="fw-semibold text-center">Địa chỉ</th>
+                                    <th class="fw-semibold text-center">Hoạt động</th>
+                                    <th class="fw-semibold text-center">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -80,14 +72,7 @@
                                         <td>{{ limitText($cinema->branch->name, 20) }}</td>
                                         <td>{{ limitText($cinema->address, 20) }}</td>
                                         <td>
-                                            {{-- <span class="badge {{ $cinema->is_active ? 'badge-soft-success' : 'badge-soft-danger' }}">
-                                                {{ $cinema->is_active ? 'Active' : 'No Active' }}
-                                            </span> --}}
-                                            {{-- <input type="checkbox" id="switch{{ $cinema->id }}" switch="primary"
-                                                {{ $cinema->is_active ? 'checked' : '' }}
-                                                onchange="toggleCinemaStatus({{ $cinema->id }}, this.checked)">
-                                            <label for="switch{{ $cinema->id }}" data-on-label="Yes"
-                                                data-off-label="No"></label> --}}
+
                                             <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST"
                                                 id="toggleForm{{ $cinema->id }}">
                                                 @csrf
@@ -100,15 +85,6 @@
 
 
                                         </td>
-                                        {{-- <td>
-                                            <form action="{{ route('admin.vouchers.toggle', $voucher->id) }}" method="POST" id="toggleForm{{ $voucher->id }}">
-                                                @csrf
-                                                <input type="checkbox" name="is_active" id="switch{{ $voucher->id }}" switch="primary"
-                                                       {{ $voucher->is_active ? 'checked' : '' }}
-                                                       onchange="confirmChange({{ $voucher->id }})">
-                                                <label for="switch{{ $voucher->id }}" data-on-label="Yes" data-off-label="No"></label>
-                                            </form>
-                                        </td> --}}
                                         <td>
                                             <div class="dropdown">
                                                 <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
@@ -142,8 +118,11 @@
                                     </tr>
                                 @endforeach
                             </tbody>
+
                         </table>
+
                     </div>
+
                 </div>
             </div>
         </div>
@@ -298,32 +277,22 @@
 @endsection
 
 @section('script')
-    <!-- Required datatable js -->
     <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <!-- Buttons examples -->
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
 
-    <!-- Responsive examples -->
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
     </script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
     </script>
 
-    <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
 
-    <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
-
-    <script src="{{ asset('assets/js/common.js') }}"></script>
-    <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
     <script>
         function confirmChange(voucherId) {
             if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
