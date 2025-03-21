@@ -176,6 +176,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                             <div class="col-lg-6">
                                 <div>
@@ -195,7 +196,8 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6">
+                            <div
+                                class="col-lg-6 {{ auth()->user()->hasRole('Quản lý chi nhánh') || auth()->user()->hasRole('Quản lý cơ sở') ? 'd-none' : '' }}">
                                 <div class="mb-3">
                                     <label for="account-cinema" class="form-label">
                                         Chi nhánh
@@ -224,10 +226,12 @@
                                         Cơ sở
                                         <span class="required">*</span>
                                     </label>
-                                    <select class="form-select" id="simpleSelect" name="cinema_id">
+                                    <select class="form-select" id="simpleSelect" name="cinema_id"
+                                        {{ auth()->user()->hasRole('Quản lý cơ sở') ? 'disabled' : '' }}>
                                         <option value="">Chọn rạp làm việc</option>
                                         @foreach ($cinemas as $cinema)
                                             <option value="{{ $cinema->id }}"
+                                                {{ auth()->user()->hasRole('Quản lý cơ sở') && auth()->user()->cinema_id == $cinema->id ? 'selected' : '' }}
                                                 {{ old('cinema_id') == $cinema->id ? 'selected' : '' }}>
                                                 {{ $cinema->name }}
                                             </option>
@@ -240,6 +244,7 @@
                                     @enderror
                                 </div>
                             </div>
+
 
                             <div class="col-lg-6">
                                 <label for="account-gender" class="form-label">
@@ -260,13 +265,32 @@
                                     placeholder="Chọn một hoặc nhiều mục" multiple>
                                     @foreach ($roles as $role)
                                         @if ($role['name'] != 'System Admin')
-                                            <option id="{{ $role['name'] }}"
-                                                {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}>
-                                                {{ $role['name'] }}</option>
+                                            @if (auth()->user()->hasRole('System Admin'))
+                                                <!-- Admin can select all roles -->
+                                                <option id="{{ $role['name'] }}"
+                                                    {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}>
+                                                    {{ $role['name'] }}
+                                                </option>
+                                            @elseif (auth()->user()->hasRole('Quản lý chi nhánh'))
+                                                <!-- Branch Manager can assign 'Quản lý chi nhánh' and 'Nhân viên' roles -->
+                                                @if ($role['name'] == 'Quản lý cơ sở' || $role['name'] == 'Nhân viên')
+                                                    <option id="{{ $role['name'] }}"
+                                                        {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}>
+                                                        {{ $role['name'] }}
+                                                    </option>
+                                                @endif
+                                            @elseif (auth()->user()->hasRole('Quản lý cơ sở'))
+                                                <!-- Facility Manager can only assign 'Nhân viên' role -->
+                                                @if ($role['name'] == 'Nhân viên')
+                                                    <option id="{{ $role['name'] }}"
+                                                        {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}>
+                                                        {{ $role['name'] }}
+                                                    </option>
+                                                @endif
+                                            @endif
                                         @endif
                                     @endforeach
                                 </select>
-
 
                                 <div class="text-danger"> <strong id="errorSelect2"></strong> </div>
 

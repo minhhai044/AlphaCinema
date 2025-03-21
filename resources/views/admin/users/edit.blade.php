@@ -187,14 +187,12 @@
                             </div>
 
                             <div
-                                class="col-lg-6 {{ auth()->user()->hasRole('Quản lý chi nhánh') && $user->hasRole(['Quản lý cơ sở', 'Nhân viên']) ? 'd-none' : '' }}">
+                                class="col-lg-6 {{ auth()->user()->hasRole(['Quản lý chi nhánh', 'Quản lý cơ sở']) && $user->hasRole(['Quản lý cơ sở', 'Nhân viên'])? 'd-none': '' }}">
                                 <div class="mb-3">
-                                    <label for="account-cinema" class="form-label">
-                                        Chi nhánh
-                                        <span class="required">*</span>
-                                    </label>
+                                    <label for="account-cinema" class="form-label">Chi nhánh <span
+                                            class="required">*</span></label>
                                     <select class="form-select disabled" id="simpleSelect" name="branch_id">
-                                        <option value="">Chọn chi nhánh làm việc</option>
+                                        <option value="">Chọn chi nhánh</option>
                                         @foreach ($branches as $branch)
                                             <option value="{{ $branch->id }}"
                                                 {{ old('branch_id', $user->branch_id) == $branch->id ? 'selected' : '' }}>
@@ -203,13 +201,10 @@
                                         @endforeach
                                     </select>
                                     @error('branch_id')
-                                        <div class="text-danger">
-                                            <strong>{{ $message }}</strong>
-                                        </div>
+                                        <div class="text-danger"><strong>{{ $message }}</strong></div>
                                     @enderror
                                 </div>
                             </div>
-
 
                             <div class="col-lg-6">
                                 <div class="mb-3">
@@ -217,15 +212,20 @@
                                         Cơ sở
                                         <span class="required">*</span>
                                     </label>
-                                    <select class="form-select" id="simpleSelect" name="cinema_id">
+                                    <select class="form-select" id="simpleSelect" name="cinema_id" {{ auth()->user()->hasRole('Quản lý cơ sở') ? 'disabled' : ''}}>
                                         <option value="">Chọn rạp làm việc</option>
                                         @foreach ($cinemas as $cinema)
-                                            <option value="{{ $cinema->id }}"
-                                                {{ old('cinema_id', $user->cinema_id) == $cinema->id ? 'selected' : '' }}>
+                                            <option value="{{ $cinema->id }}" {{auth()->user()->hasRole('Quản lý cơ sở') &&  auth()->user()->cinema_id ==$cinema->id   ? 'selected'  : '' }}
+                                                {{ old('cinema_id') == $cinema->id ? 'selected' : '' }}>
                                                 {{ $cinema->name }}
                                             </option>
                                         @endforeach
                                     </select>
+                                    @error('cinema_id')
+                                        <div class="text-danger">
+                                            <strong>{{ $message }}</strong>
+                                        </div>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -249,11 +249,28 @@
                                     multiple="multiple">
                                     @foreach ($roles as $role)
                                         @if ($role->name != 'System Admin')
-                                            @if ($role->name != 'Quản lý chi nhánh' && auth()->user()->hasRole('Quản lý chi nhánh'))
+                                            @if (auth()->user()->hasRole('System Admin'))
+                                                <!-- Admin can select all roles except 'System Admin' -->
                                                 <option value="{{ $role->id }}"
                                                     {{ $user->roles->contains($role) ? 'selected' : '' }}>
                                                     {{ $role->name }}
                                                 </option>
+                                            @elseif (auth()->user()->hasRole('Quản lý chi nhánh'))
+                                                <!-- Branch Manager can select 'Quản lý chi nhánh' and 'Nhân viên' -->
+                                                @if ($role->name == 'Quản lý cơ sở' || $role->name == 'Nhân viên')
+                                                    <option value="{{ $role->id }}"
+                                                        {{ $user->roles->contains($role) ? 'selected' : '' }}>
+                                                        {{ $role->name }}
+                                                    </option>
+                                                @endif
+                                            @elseif (auth()->user()->hasRole('Quản lý cơ sở'))
+                                                <!-- Facility Manager can only select 'Nhân viên' -->
+                                                @if ($role->name == 'Nhân viên')
+                                                    <option value="{{ $role->id }}"
+                                                        {{ $user->roles->contains($role) ? 'selected' : '' }}>
+                                                        {{ $role->name }}
+                                                    </option>
+                                                @endif
                                             @endif
                                         @endif
                                     @endforeach

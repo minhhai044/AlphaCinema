@@ -54,12 +54,17 @@ class UserController extends Controller
     public function store(UserRequest $userRequest)
     {
         $data = $userRequest->validated();
+
         $data['type_user'] = 1;
+        if (auth()->user()->hasRole('Quản lý cơ sở')) {
+            $data['cinema_id'] = auth()->user()->cinema_id;
+        }
+      
         // dd($data);
         $user =  $this->userService->storeUser($data);
 
         if ($userRequest->has('role_id')) {
-            dd($userRequest->role_id);
+            // dd($userRequest->role_id);
             $user->assignRole($userRequest->role_id);
         }
 
