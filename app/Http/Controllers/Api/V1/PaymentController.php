@@ -145,7 +145,7 @@ class PaymentController extends Controller
         $vnp_TmnCode = 'CW3MWMKN';
         $vnp_HashSecret = "2EQ9DCNFBR3H0GRQ4RCVHYTO1VZYXFLZ";
         $vnp_Locale = 'vn';
-        $vnp_BankCode = 'NCB';
+        // $vnp_BankCode = 'NCB';
         $vnp_TxnRef = self::generateOrderId();
         $vnp_Amount = $dataRequest['ticket']['total_price'] * 100;
         $vnp_IpAddr = request()->ip();
