@@ -25,7 +25,7 @@
 
                     <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">
-                        Thêm phòng chiếu
+                        <i class="bi bi-plus-lg"></i> Thêm phòng chiếu
                     </button>
                 </div>
 
