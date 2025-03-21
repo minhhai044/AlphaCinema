@@ -2,8 +2,8 @@
 @section('title', 'Quản lý rạp')
 
 @section('style')
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
@@ -46,10 +46,10 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-lg-12">
-            <div class="card al-card">
+            <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h6 class="font-size-16">Cinema List</h6>
+                        <h6 class="font-size-16"></h6>
                         <div class="d-flex gap-2">
                             <a id="openCreateCinemaModal" class="btn btn-light">
                                 <i class="bx bx-plus me-1"></i> Thêm Mới
@@ -76,9 +76,9 @@
                                 @foreach ($cinemas as $cinema)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $cinema->name }}</td>
-                                        <td>{{ $cinema->branch->name }}</td>
-                                        <td>{{ $cinema->address }}</td>
+                                        <td>{{ limitText($cinema->name, 20) }}</td>
+                                        <td>{{ limitText($cinema->branch->name, 20) }}</td>
+                                        <td>{{ limitText($cinema->address, 20) }}</td>
                                         <td>
                                             {{-- <span class="badge {{ $cinema->is_active ? 'badge-soft-success' : 'badge-soft-danger' }}">
                                                 {{ $cinema->is_active ? 'Active' : 'No Active' }}
@@ -88,14 +88,16 @@
                                                 onchange="toggleCinemaStatus({{ $cinema->id }}, this.checked)">
                                             <label for="switch{{ $cinema->id }}" data-on-label="Yes"
                                                 data-off-label="No"></label> --}}
-                                                <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST" id="toggleForm{{ $cinema->id }}">
-                                                    @csrf
-                                                    <input type="checkbox" name="is_active" id="switch{{ $cinema->id }}" switch="success"
-                                                           {{ $cinema->is_active ? 'checked' : '' }}
-                                                           onchange="confirmChange({{ $cinema->id }})">
-                                                    <label for="switch{{ $cinema->id }}" data-on-label="Yes" data-off-label="No"></label>
-                                                </form>
-                                                
+                                            <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST"
+                                                id="toggleForm{{ $cinema->id }}">
+                                                @csrf
+                                                <input type="checkbox" name="is_active" id="switch{{ $cinema->id }}"
+                                                    switch="success" {{ $cinema->is_active ? 'checked' : '' }}
+                                                    onchange="confirmChange({{ $cinema->id }})">
+                                                <label for="switch{{ $cinema->id }}" data-on-label="Yes"
+                                                    data-off-label="No"></label>
+                                            </form>
+
 
                                         </td>
                                         {{-- <td>
@@ -115,7 +117,11 @@
                                                 <ul class="dropdown-menu">
                                                     <li>
                                                         <a class="dropdown-item openUpdateCinemaModal"
-                                                            data-edit-id="{{ $cinema->id }}">
+                                                            data-edit-id="{{ $cinema->id }}"
+                                                            data-branch-id="{{ $cinema->branch_id }}"
+                                                            data-name="{{ $cinema->name }}"
+                                                            data-address="{{ $cinema->address }}"
+                                                            data-description="{{ $cinema->description }}">
                                                             <i class="mdi mdi-pencil text-success me-1"></i> Edit
                                                         </a>
                                                     </li>
@@ -173,8 +179,8 @@
                                     <span class="text-danger">*</span>
                                     Chi nhánh
                                 </label>
-                                <select id="createBranch" class="form-control create-branch_id" placeholder="Chọn chi nhánh"
-                                    name="branch_id">
+                                <select id="createBranch" class="form-control create-branch_id"
+                                    placeholder="Chọn chi nhánh" name="branch_id">
                                     <option selected value="" class="text-secondary">Select branch</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">
@@ -318,13 +324,14 @@
 
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
-    <script>function confirmChange(voucherId) {
-        if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
-            document.getElementById('toggleForm' + voucherId).submit();
-        } else {
-            return false;
+    <script>
+        function confirmChange(voucherId) {
+            if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
+                document.getElementById('toggleForm' + voucherId).submit();
+            } else {
+                return false;
+            }
         }
-    }</script>
-   
-@endsection
+    </script>
 
+@endsection
