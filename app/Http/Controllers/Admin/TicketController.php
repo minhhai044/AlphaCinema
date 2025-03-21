@@ -31,11 +31,9 @@ class TicketController extends Controller
         [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
 
         $cinemas = Cinema::pluck('id', 'name');
-// dd($cinemas);
-// dd(auth()->user()->cinema_id, auth()->user());
-
 
         return view(self::PATH_VIEW . 'index', compact('tickets', 'branches', 'branchesRelation', 'movies', 'cinemas'));
+
     }
 
     public function show(Ticket $ticket)
@@ -155,24 +153,20 @@ class TicketController extends Controller
 
     public function changeStatus(Request $request)
     {
-        try {
-            // Tìm ticket theo ID
-            $ticket = Ticket::findOrFail($request->ticket_id);
+        $request->validate([
+            'ticket_id' => 'required|exists:tickets,id',
+            'status' => 'required|in:confirmed,pending',
+            'staff' => 'required|string',
+        ]);
 
-            // Cập nhật trạng thái của ticket
-            $ticket->status = $request->status;
-            $ticket->staff = $request->staff;  // Có thể bỏ dòng này nếu không thay đổi `staff`
-            $ticket->save(); // Lưu thay đổi
-
-            // Trả về phản hồi thành công
-            return response()->json(['message' => 'Trạng thái ticket đã được thay đổi!'], 200);
-        } catch (\Exception $e) {
-            // Bắt lỗi và trả về thông báo lỗi
-            Log::error($e->getMessage());
-            return response()->json([
-                'message' => 'Đã có lỗi xảy ra khi thay đổi trạng thái ticket!',
-                'error' => $e->getMessage(), // Lấy thông báo lỗi chi tiết
-            ], 500);
+        $ticket = Ticket::find($request->ticket_id);
+        if (!$ticket) {
+            return response()->json(['message' => 'Vé không tồn tại'], 404);
         }
+
+        $ticket->status = $request->status;
+        $ticket->save();
+
+        return response()->json(['message' => 'Cập nhật trạng thái thành công']);
     }
 }

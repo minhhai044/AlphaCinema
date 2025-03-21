@@ -58,6 +58,7 @@ class User extends Authenticatable
 
     const ROLE = [
         'System Admin',
+        'Branch Manager',
         'Cinema Manager',
         'Staff'
     ];
@@ -68,6 +69,10 @@ class User extends Authenticatable
     public function isAdmin()
     {
         return $this->type_user === self::TYPE_ADMIN;
+    }
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
     }
 
     public function cinema()

@@ -447,7 +447,7 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('System Admin');
 
         $user = User::find(7);
-        $user->assignRole('Quản lý cơ sở', 'Nhân viên',);
+        $user->assignRole('Quản lý cơ sở', 'Nhân viên', );
         $user = User::find(8);
         $user->assignRole('Quản lý cơ sở', 'Nhân viên');
         $user = User::find(9);
@@ -531,13 +531,13 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Phòng 3D ',
-                'surcharge' => 100000, // Giá mặc định 100k 
+                'surcharge' => 100000, // Giá mặc định 100k
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Phòng 4D ',
-                'surcharge' => 150000, // Giá mặc định 150k 
+                'surcharge' => 150000, // Giá mặc định 150k
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -552,13 +552,13 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Ghế VIP',
-                'price' => 10000, // Giá mặc định 100k 
+                'price' => 10000, // Giá mặc định 100k
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Ghế đôi',
-                'price' => 15000, // Giá mặc định 150k 
+                'price' => 15000, // Giá mặc định 150k
                 'created_at' => now(),
                 'updated_at' => now(),
             ],

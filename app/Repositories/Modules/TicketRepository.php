@@ -4,6 +4,7 @@ namespace App\Repositories\Modules;
 
 use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Support\Facades\Auth;
 
 class TicketRepository
 {
@@ -21,9 +22,18 @@ class TicketRepository
      */
     public function all(): Collection
     {
-        return $this->ticket
-            ->with('user', 'cinema', 'room', 'movie', 'showtime')
-            ->get();
+        $query = $this->ticket->with('user', 'cinema', 'room', 'movie', 'showtime');
+        $user = Auth::user();
+
+        if ($user->hasRole('Quản lý chi nhánh')) {
+            $query->whereHas('cinema', function ($q) use ($user) {
+                $q->where('branch_id', $user->branch_id);
+            });
+        } elseif ($user->hasRole('Quản lý rạp')) {
+            $query->where('cinema_id', $user->cinema_id);
+        }
+
+        return $query->get();
     }
 
     /**
@@ -34,9 +44,18 @@ class TicketRepository
      */
     public function findTicket($id)
     {
-        return $this->ticket
-            ->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch')
-            ->findOrFail($id);
+        $query = $this->ticket->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch');
+        $user = Auth::user();
+
+        if ($user->hasRole('Quản lý chi nhánh')) {
+            $query->whereHas('cinema', function ($q) use ($user) {
+                $q->where('branch_id', $user->branch_id);
+            });
+        } elseif ($user->hasRole('Quản lý rạp')) {
+            $query->where('cinema_id', $user->cinema_id);
+        }
+
+        return $query->findOrFail($id);
     }
 
     /**
@@ -47,9 +66,19 @@ class TicketRepository
      */
     public function getTickets(array $filters = []): Collection
     {
-        $query = $this->ticket
-            ->with('user', 'cinema', 'room', 'movie', 'showtime');
+        $query = $this->ticket->with('user', 'cinema', 'room', 'movie', 'showtime');
+        $user = Auth::user();
 
+        // Áp dụng phân quyền
+        if ($user->hasRole('Quản lý chi nhánh')) {
+            $query->whereHas('cinema', function ($q) use ($user) {
+                $q->where('branch_id', $user->branch_id);
+            });
+        } elseif ($user->hasRole('Quản lý rạp')) {
+            $query->where('cinema_id', $user->cinema_id);
+        }
+
+        // Áp dụng các bộ lọc
         if (isset($filters['date'])) {
             $query->whereHas('showtime', function ($q) use ($filters) {
                 $q->where('date', $filters['date']);

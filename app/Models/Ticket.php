@@ -92,4 +92,17 @@ class Ticket extends Model
             'branch_id'
         );
     }
+
+
+    public function scopeByUser($query, $user)
+    {
+        if ($user->hasRole('system-admin')) {
+            return $query;
+        } elseif ($user->branch_id) {
+            return $query->whereHas('cinema', fn($q) => $q->where('branch_id', $user->branch_id));
+        } elseif ($user->cinema_id) {
+            return $query->where('cinema_id', $user->cinema_id);
+        }
+        return $query->where('id', 0);
+    }
 }

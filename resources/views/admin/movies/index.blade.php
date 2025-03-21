@@ -10,16 +10,7 @@
                     <!-- Container chứa các action -->
                     <div class="row align-items-center mb-3">
                         <div class="col-md-6">
-                            <div class="d-flex align-items-center">
-                                <span class="me-2">Hiển thị:</span>
-                                <select id="pageLength" class="form-select w-auto">
-                                    <option value="5" selected>5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                    <option value="20">20</option>
-                                    <option value="1000">Tất cả</option>
-                                </select>
-                            </div>
+                            <!-- Không cần #pageLength ở đây nữa -->
                         </div>
                         <div class="col-md-6 text-end">
                             <a href="{{ route('admin.movies.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
@@ -29,7 +20,7 @@
                             </button>
                             <button class="btn btn-warning waves-effect waves-light">
                                 <a href="{{ route('admin.export', 'movies') }}">
-                                    <i class="bx bx-download me-1"></i> Xuất Excel</a>
+                                   <span style="color: white"> <i class="bx bx-download me-1"></i>Xuất Excel</span></a>
                             </button>
                         </div>
                     </div>
@@ -70,8 +61,28 @@
                         </div>
                     </div>
 
+                    <!-- Container cho #pageLength và tìm kiếm -->
+                    <div class="row align-items-center mb-2" id="table-controls">
+                        <div class="col-md-6">
+                            <div class="d-flex align-items-center">
+                                <span class="me-2">Hiển thị:</span>
+                                <select id="pageLength" class="form-select w-auto">
+                                    <option value="5" selected>5</option>
+                                    <option value="10">10</option>
+                                    <option value="15">15</option>
+                                    <option value="20">20</option>
+                                    <option value="1000">Tất cả</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <!-- Phần tìm kiếm của DataTables sẽ được di chuyển vào đây bằng JS -->
+                            <div id="dataTables-search" class="text-end"></div>
+                        </div>
+                    </div>
+
                     <div class="table-responsive">
-                        <table id="movieTable" class="table table-bordered w-100 ">
+                        <table id="movieTable" class="table table-bordered w-100">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -142,63 +153,70 @@
                             // Xử lý danh sách thể loại phim (movie_genres)
                             let genres = Array.isArray(row.movie_genres) ? row.movie_genres : [];
                             let genreHtml = genres.map(genre => {
-                                let vietnameseGenre = genreMapping[genre] ||
-                                    genre; // Nếu không có trong danh sách thì giữ nguyên
+                                let vietnameseGenre = genreMapping[genre] || genre;
                                 return `<span style="background-color: green; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
-                ${vietnameseGenre}
-            </span>`;
+                                    ${vietnameseGenre}
+                                </span>`;
                             }).join(' ');
 
                             // Xử lý danh sách phiên bản phim (movie_versions)
-                            let versions = Array.isArray(row.movie_versions) ? row.movie_versions :
-                                [];
+                            let versions = Array.isArray(row.movie_versions) ? row.movie_versions : [];
                             let versionHtml = versions.map(version =>
                                 `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
-                ${version}
-            </span>`).join(' ');
+                                    ${version}
+                                </span>`).join(' ');
 
                             return `
-            <div style="padding: 15px; border-radius: 8px;">
-                <h3 style="margin: 0 0 10px; color: #007bff; font-weight: bold;">${data || '<span style="color: gray;">Chưa có tên phim</span>'}</h3>
-
-                <p style="margin: 5px 0; font-size: 14px;">
-                    <strong style="color: #333;">Đạo diễn:</strong> ${row.director || '<span style="color: gray;">Đang cập nhật</span>'}
-                </p>
-
-                <p style="margin: 5px 0; font-size: 14px;">
-                    <strong style="color: #333;">Thời lượng:</strong> ${row.duration || '<span style="color: gray;">Chưa có</span>'} phút
-                </p>
-
-                <p style="margin: 5px 0; font-size: 14px;">
-                    <strong style="color: #333;">Thể loại:</strong> ${genreHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
-                </p>
-
-                <p style="margin: 5px 0; font-size: 14px;">
-                    <strong style="color: #333;">Ngày khởi chiếu:</strong> ${row.release_date || '<span style="color: gray;">Chưa có</span>'}
-                </p>
-
-                <p style="margin: 5px 0; font-size: 14px;">
-                    <strong style="color: #333;">Ngày kết thúc:</strong> ${row.end_date || '<span style="color: gray;">Chưa có</span>'}
-                </p>
-
-                <p style="margin: 5px 0; font-size: 14px;">
-                    <strong style="color: #333;">Danh mục:</strong> ${row.category || '<span style="color: gray;">Chưa có</span>'}
-                </p>
-
-                <p style="margin: 5px 0; font-size: 14px;">
-                    <strong style="color: #333;">Phiên bản:</strong> ${versionHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
-                </p>
-
-                <p style="margin: 5px 0; font-size: 14px;">
-                    <strong style="color: #333;">Mã YouTube Trailer:</strong>
-                    <input type="text" value="${row.trailer_url || 'Không có'}" readonly
-                        style="border: 1px solid #ccc; padding: 5px; width: 100%; border-radius: 4px; background: #fff; font-size: 13px;">
-                </p>
-            </div>
-        `;
+                                <div style="padding: 15px; border-radius: 8px;">
+                                    <h3 style="margin: 0 0 10px; color: #007bff; font-weight: bold;">${data || '<span style="color: gray;">Chưa có tên phim</span>'}</h3>
+                                    <p style="margin: 5px 0; font-size: 14px;">
+                                        <strong style="color: #333;">Đạo diễn:</strong> ${row.director || '<span style="color: gray;">Đang cập nhật</span>'}
+                                    </p>
+                                    <p style="margin: 5px 0; font-size: 14px;">
+                                        <strong style="color: #333;">Thời lượng:</strong> ${row.duration || '<span style="color: gray;">Chưa có</span>'} phút
+                                    </p>
+                                    <p style="margin: 5px 0; font-size: 14px;">
+                                        <strong style="color: #333;">Thể loại:</strong> ${genreHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
+                                    </p>
+                                    <p style="margin: 5px 0; font-size: 14px;">
+                                        <strong style="color: #333;">Ngày khởi chiếu:</strong> ${
+                                            row.release_date
+                                                ? (() => {
+                                                    const date = new Date(row.release_date);
+                                                    return isNaN(date.getTime())
+                                                        ? '<span style="color: gray;">Chưa có</span>'
+                                                        : `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getFullYear())}`;
+                                                  })()
+                                                : '<span style="color: gray;">Chưa có</span>'
+                                        }
+                                    </p>
+                                    <p style="margin: 5px 0; font-size: 14px;">
+                                        <strong style="color: #333;">Ngày kết thúc:</strong> ${
+                                            row.end_date
+                                                ? (() => {
+                                                    const date = new Date(row.end_date);
+                                                    return isNaN(date.getTime())
+                                                        ? '<span style="color: gray;">Chưa có</span>'
+                                                        : `${String(date.getDate()).padStart(2, '0')}/${String(date.getMonth() + 1).padStart(2, '0')}/${String(date.getFullYear())}`;
+                                                  })()
+                                                : '<span style="color: gray;">Chưa có</span>'
+                                        }
+                                    </p>
+                                    <p style="margin: 5px 0; font-size: 14px;">
+                                        <strong style="color: #333;">Danh mục:</strong> ${row.category || '<span style="color: gray;">Chưa có</span>'}
+                                    </p>
+                                    <p style="margin: 5px 0; font-size: 14px;">
+                                        <strong style="color: #333;">Phiên bản:</strong> ${versionHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
+                                    </p>
+                                    <p style="margin: 5px 0; font-size: 14px;">
+                                        <strong style="color: #333;">Mã YouTube Trailer:</strong>
+                                        <input type="text" value="${row.trailer_url || 'Không có'}" readonly
+                                            style="border: 1px solid #ccc; padding: 5px; width: 100%; border-radius: 4px; background: #fff; font-size: 13px;">
+                                    </p>
+                                </div>
+                            `;
                         }
                     },
-
                     {
                         data: 'img_thumbnail',
                         render: function(data) {
@@ -211,7 +229,7 @@
                         data: 'is_active',
                         render: function(data, type, row) {
                             return `
-                                <div class="form-check form-switch form-switch-success">
+                                <div class="form-check form-switch form-switch-md form-switch-success ">
                                     <input class="form-check-input changeStatus"
                                            type="checkbox"
                                            data-movie-id="${row.id}"
@@ -228,7 +246,7 @@
                         data: 'is_hot',
                         render: function(data, type, row) {
                             return `
-                                <div class="form-check form-switch form-switch-success">
+                                <div class="form-check form-switch form-switch-md  form-switch-success">
                                     <input class="form-check-input changeStatus"
                                            type="checkbox"
                                            data-movie-id="${row.id}"
@@ -245,7 +263,7 @@
                         data: 'is_publish',
                         render: function(data, type, row) {
                             return `
-                                <div class="form-check form-switch form-switch-success">
+                                <div class="form-check form-switch form-switch-md  form-switch-success">
                                     <input class="form-check-input changeStatus"
                                            type="checkbox"
                                            data-movie-id="${row.id}"
@@ -269,7 +287,6 @@
                                     <a href="/admin/movies/${data}/edit" class="btn btn-warning">
                                         <i class="fas fa-edit"></i>
                                     </a>
-
                                 </div>
                             `;
                         },
@@ -289,6 +306,9 @@
                     info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
                     emptyTable: "Không có dữ liệu để hiển thị",
                     zeroRecords: "Không tìm thấy kết quả phù hợp"
+                },
+                drawCallback: function() {
+                    $('#dataTables-search').html($('.dataTables_filter').detach());
                 }
             });
 
@@ -357,6 +377,13 @@
         #movieTable thead th {
             text-align: center;
             vertical-align: middle;
+        }
+        #movieTable tbody td {
+            text-align: center;
+            vertical-align: middle;
+        }
+        #movieTable tbody td:nth-child(2) {
+            text-align: left;
         }
 
         .form-check.form-switch {
@@ -427,6 +454,25 @@
         td img {
             max-width: 100px;
             height: auto;
+        }
+
+        #table-controls {
+            margin-bottom: 10px; /* Khoảng cách nhỏ giữa controls và bảng */
+        }
+
+        #dataTables-search .dataTables_filter {
+            margin: 0; /* Loại bỏ margin mặc định của DataTables */
+        }
+
+        #dataTables-search .dataTables_filter label {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+        }
+
+        #dataTables-search .dataTables_filter input {
+            margin-left: 5px;
+            width: 200px; /* Điều chỉnh chiều rộng ô tìm kiếm nếu cần */
         }
 
         #pageLength {

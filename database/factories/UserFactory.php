@@ -35,6 +35,7 @@ class UserFactory extends Factory
             'type_user' => fake()->boolean(),
             'total_amount' => fake()->numberBetween(1000000, 5000000),
             'cinema_id' => fake()->numberBetween(1, 50),
+            'branch_id' => fake()->numberBetween(1, 5),
         ];
     }
 
@@ -43,7 +44,7 @@ class UserFactory extends Factory
      */
     public function unverified(): static
     {
-        return $this->state(fn (array $attributes) => [
+        return $this->state(fn(array $attributes) => [
             'email_verified_at' => null,
         ]);
     }

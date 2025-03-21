@@ -97,7 +97,7 @@
 
 @section('content')
     <div class="container movie-container my-4">
-        <h1 class="mb-4 text-center">Chi tiết phim: {{ $movie->name }}</h1>
+        <h3 class="mb-4 text-center">Chi tiết phim: {{ $movie->name }}</h3>
         <div class="card">
             <div class="card-body p-4">
                 <div class="row mb-4 align-items-center">
