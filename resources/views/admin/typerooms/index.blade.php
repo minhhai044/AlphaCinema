@@ -28,13 +28,14 @@
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">Quản lí danh sách phòng </h4>
 
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item">
-                            <a href="javascript: void(0);">Menu</a>
-                        </li>
-                        <li class="breadcrumb-item active">Danh sách phòng </li>
-                    </ol>
+                <div class="col-sm-auto">
+                    <div class="mb-4">
+                        <a data-bs-toggle="modal" class="add_type_room btn btn-primary waves-effect waves-light"
+                            data-bs-target="#addModal">
+                            <i class="mdi mdi-plus"></i>
+                            Thêm mới
+                        </a>
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,15 +54,7 @@
                         <div class="col-sm-auto">
 
                         </div>
-                        <div class="col-sm-auto">
-                            <div class="mb-4">
-                                <a data-bs-toggle="modal" class="add_type_room btn btn-primary waves-effect waves-light"
-                                    data-bs-target="#addModal">
-                                    <i class="mdi mdi-plus"></i>
-                                    Thêm mới
-                                </a>
-                            </div>
-                        </div>
+                        
                     </div>
                     <div class="row">
                         <div class="col-sm-12">
@@ -182,7 +175,7 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-primary btn-submit"> Thêm mới</button>
                     </div>
                 </form>
