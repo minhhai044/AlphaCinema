@@ -38,3 +38,7 @@
 .cursor-pointer {
     cursor: pointer !important;
 }
+
+.card {
+    --bs-card-border-width: 0px !important;
+}

@@ -46,10 +46,10 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-lg-12">
-            <div class="card al-card">
+            <div class="card">
                 <div class="card-body">
                     <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h6 class="font-size-16">Cinema List</h6>
+                        <h6 class="font-size-16"></h6>
                         <div class="d-flex gap-2">
                             <a id="openCreateCinemaModal" class="btn btn-light">
                                 <i class="bx bx-plus me-1"></i> Thêm Mới
