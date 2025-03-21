@@ -1,43 +1,104 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html>
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Chọn phim và tạo suất chiếu</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Xác nhận đặt vé - AlphaCinema</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            padding: 20px;
+        }
+        .container {
+            max-width: 600px;
+            margin: auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+        }
+        .header {
+            background: #ff5733;
+            color: white;
+            padding: 15px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            border-radius: 8px 8px 0 0;
+        }
+        .content {
+            padding: 20px;
+            text-align: left;
+        }
+        .ticket-info {
+            background: #f9f9f9;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .ticket-info p {
+            margin: 5px 0;
+        }
+        .button {
+            display: inline-block;
+            padding: 12px 20px;
+            margin-top: 20px;
+            background: #ff5733;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            text-align: center;
+        }
+        .footer {
+            text-align: center;
+            padding: 10px;
+            font-size: 12px;
+            color: #777;
+            margin-top: 20px;
+        }
+        .qr-code {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .qr-code img {
+            width: 120px;
+            height: 120px;
+        }
+    </style>
 </head>
 <body>
-    <div class="container mt-5">
-        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movieModal">Chọn phim</button>
-    </div>
+    <div class="container">
+        <div class="header">
+            🎟 Xác Nhận Đặt Vé - AlphaCinema
+        </div>
+        <div class="content">
+            <p>Xin chào <strong>Nguyễn Văn A</strong>,</p>
+            <p>Cảm ơn bạn đã đặt vé tại <strong>AlphaCinema</strong>. Dưới đây là thông tin chi tiết về vé của bạn:</p>
 
-    <!-- Modal chọn phim -->
-    <div class="modal fade" id="movieModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">Chọn phim</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                </div>
-                <div class="modal-body">
-                    <ul class="list-group">
-                        <li class="list-group-item movie-item" data-movie="Avengers">Avengers</li>
-                        <li class="list-group-item movie-item" data-movie="Inception">Inception</li>
-                        <li class="list-group-item movie-item" data-movie="Interstellar">Interstellar</li>
-                    </ul>
-                </div>
+            <div class="ticket-info">
+                <p><strong>🎬 Phim:</strong> Avengers: Endgame</p>
+                <p><strong>📅 Ngày chiếu:</strong> 15/03/2025</p>
+                <p><strong>⏰ Giờ chiếu:</strong> 19:30</p>
+                <p><strong>🏢 Rạp:</strong> AlphaCinema - Chi Nhánh Hà Nội</p>
+                <p><strong>🪑 Ghế:</strong> H12, H13</p>
+                <p><strong>💰 Giá vé:</strong> 180.000 VNĐ</p>
             </div>
+
+            <div class="qr-code">
+                <p>📲 Vui lòng quét mã QR dưới đây để nhận vé:</p>
+                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=123456789" alt="QR Code">
+            </div>
+
+            <p><a href="https://yourwebsite.com" class="button">Xem chi tiết vé</a></p>
+
+            <p>Chúng tôi mong chờ được chào đón bạn tại rạp!</p>
+            <p>Trân trọng,</p>
+            <p><strong>Đội ngũ AlphaCinema</strong></p>
+        </div>
+        <div class="footer">
+            &copy; 2025 AlphaCinema. Mọi quyền được bảo lưu.
         </div>
     </div>
-
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script>
-        document.querySelectorAll('.movie-item').forEach(item => {
-            item.addEventListener('click', function() {
-                let movieName = this.getAttribute('data-movie');
-                window.location.href = "showtime.html?movie=" + encodeURIComponent(movieName);
-            });
-        });
-    </script>
 </body>
 </html>

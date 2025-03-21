@@ -22,9 +22,8 @@
         "php-flasher/flasher-toastr-laravel": "^1.15",
         "predis/predis": "^2.3",
         "pusher/pusher-php-server": "^7.2",
-        "spatie/laravel-permission": "^6.16",
-        "tinymce/tinymce": "^7.7",
-        "yajra/laravel-datatables-oracle": "10.9"
+        "spatie/laravel-permission": "^6.12",
+        "tinymce/tinymce": "^7.7"
     },
     "require-dev": {
         "barryvdh/laravel-debugbar": "^3.14",

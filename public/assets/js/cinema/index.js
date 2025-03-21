@@ -1,7 +1,7 @@
 const { z } = Zod;
 
 $(document).ready(function () {
-  const url = "http://alphacinema.test/admin";
+  const url = APP_URL;
   const modal = new bootstrap.Modal($("#createCinemaModal")[0]);
 
   const prefix = "create";

@@ -14,9 +14,7 @@ class SeatTemplateService
             $name = $request->query('name', '');
             $query->where('name', 'LIKE', "%$name%");
         }
-
-
-        return  $query->paginate(10);
+        return  $query->get();
     }
     public function storeService(array $data)
     {

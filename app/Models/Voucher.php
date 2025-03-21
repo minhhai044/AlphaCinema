@@ -27,4 +27,7 @@ class Voucher extends Model
         'start_date_time',
         'end_date_time',
     ];
+    public function userVouchers(){
+        return $this->hasMany(User_voucher::class);
+    }
 }

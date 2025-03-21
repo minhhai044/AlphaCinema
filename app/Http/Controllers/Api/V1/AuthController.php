@@ -8,7 +8,10 @@ use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\UserRequest;
+use App\Models\Point_history;
+use App\Models\Rank;
 use App\Models\User;
+use App\Models\User_voucher;
 use App\Services\UserService;
 use App\Traits\ApiRequestJsonTrait;
 use App\Traits\ApiResponseTrait;
@@ -56,27 +59,11 @@ class AuthController extends Controller
                 return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
             }
 
-            $user->tokens()->delete();
-
             // Tạo token xác thực
             $token = $user->createToken('UserToken')->plainTextToken;
 
-
-            // Auth::login($user);
-
             // Tạo cookie chứa token (thời gian sống 24h - 1440 phút)
-            // $cookie = cookie('user_token', $token, 1440);
-
-            // $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true);
-            ## cookie chạy ngon
-            // $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, true, false, 'lax');
-
-            $cookie = cookie('admin_token', $token, 1440, '/', '.alphacinema.me', true, false, false, 'none');
-
-
-            ## Sửa cookie
-            // $cookie = cookie('admin_token', $token, 1440, '/', null, true, true, false, 'none');
-
+            $cookie = cookie('user_token', $token, 1440);
 
             return $this->successResponse([
                 'user' => $user,
@@ -233,13 +220,123 @@ class AuthController extends Controller
         $token = $user->createToken('authToken')->plainTextToken;
 
         $authData = json_encode([
-            'user' => $user->only(['id', 'name', 'email', 'avatar']),
+            'user' => $user,
             'token' => $token,
             'isLogin' => true
         ]);
 
         $authDataEncoded = base64_encode(json_encode($authData));
 
-        return redirect()->to('https://alphacinema.me:3000/auth/callback?data=' . urlencode($authDataEncoded));
+        return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
     }
-}
+
+    public function getUserRank()
+    {
+       
+
+
+        try {
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
+            }
+    
+            $totalTransaction = $user->total_amount;
+            $point = $user->point;
+            $created_at =$user->created_at;
+    
+            // Lấy rank hiện tại
+            $currentRank = Rank::where("total_spent", "<=", $totalTransaction)
+                ->orderBy("total_spent", "desc")
+                ->first();
+    
+            if (!$currentRank) {
+                $currentRank = Rank::where("is_default", true)->first();
+            }
+    
+            // Lấy rank tiếp theo (rank cao hơn)
+            $nextRank = Rank::where("total_spent", ">", $totalTransaction)
+                ->orderBy("total_spent", "asc")
+                ->first();
+    
+            return response()->json([
+                "status" => "success",
+                "user" => [
+                    "id" => $user->id,
+                    "name" => $user->name,
+                    "total_amount" => $totalTransaction,
+                    "point" => $point, // point hiện có
+                    "created_at"=>$created_at
+                ],
+                "rank" => $currentRank,
+                "next_rank" => $nextRank
+            ]);
+        } catch (\Exception $e) {
+
+            return response()->json([
+                "status" => "error",
+                "message" => "Đã xảy ra lỗi: " . $e->getMessage(),
+            ], 500);
+        }
+    }
+    public function getUserVoucher(){
+        try {
+            // Lấy ID người dùng đang đăng nhập
+            $userId = Auth::id();
+
+            // Kiểm tra người dùng đã đăng nhập chưa
+            if (!$userId) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
+
+            // Lấy danh sách voucher của người dùng
+            $vouchers = User_voucher::where('user_id', $userId)->with('voucher')->get();
+
+            return response()->json([
+                'success' => true,
+                'vouchers' => $vouchers
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Something went wrong',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function getUserPointHistory(Request $request)
+    {
+        try {
+            // Lấy thông tin user đã đăng nhập
+            $user = Auth::user();
+            if (!$user) {
+                return response()->json(['message' => 'User not authenticated'], 401);
+            }
+            $point = $user->point;
+            // Lấy lịch sử điểm của người dùng
+            $history = Point_history::where('user_id', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json([
+                'success' => true,
+               "user" => [
+                    "id" => $user->id,
+                    "name" => $user->name,
+                    "point" => $point,
+                ],
+                "history-point" => $history,
+            ], 200);
+        } catch (Exception $e) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Lỗi khi lấy lịch sử điểm',
+                'error' => $e->getMessage(),
+            ], 500);
+        }
+    }
+    }

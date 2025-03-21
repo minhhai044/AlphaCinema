@@ -14,7 +14,7 @@ $(document).ready(function () {
 
         try {
             let response = await $.ajax({
-                url: `/api/v1/tickets/${ticketID}`,
+                url: `/admin/print/tickets/${ticketID}`,
                 type: "GET"
             });
 
@@ -42,7 +42,7 @@ $(document).ready(function () {
                                     <div class="mb-1"><strong>Rạp chiếu:</strong> ${data.cinema || 'N/A'}</div>
                                     <div class="mb-1"><strong>Địa chỉ:</strong> ${data.address || 'N/A'}</div>
                                     <div class="mb-1"><strong>Thời gian:</strong> (${data.start_time || 'N/A'} - ${data.end_time || 'N/A'}) -- ${data.showtime || 'N/A'}</div>
-                                    <div class="fw-semibold">Nhân viên in vé:  Đỗ Nam Trung </div>
+                                    <div class="fw-semibold">Nhân viên in vé:  ${data.userPrintTicket} </div>
                                 </div>
                                 <hr class="dashed-hr">
                                 <div class="mb-1">
@@ -94,7 +94,7 @@ $(document).ready(function () {
 
         try {
             let response = await $.ajax({
-                url: `/api/v1/tickets/combo/${ticketID}`,
+                url: `/admin/print/tickets/combo/${ticketID}`,
                 type: "GET"
             });
 
@@ -126,6 +126,9 @@ $(document).ready(function () {
                 });
             }
 
+            console.log(data);
+
+
             discount = (totalComboPrice + totalFoodPrice) * 0.1;
             totalPrice = totalComboPrice + totalFoodPrice - discount;
 
@@ -140,7 +143,7 @@ $(document).ready(function () {
                         <div class="mb-1">
                             <div class="mb-1 fw-semibold fs-5">Alpha Cinema ${data.cinema || 'N/A'} - ${data.branch || 'N/A'}</div>
                             <div class="mb-1">Thời gian đặt vé: ${data.created_at || 'N/A'}</div>
-                            <p>Được in bởi: Donald Trump</p>
+                            <p>Được in bởi:  ${data.userPrintTicket}</p>
                         </div>
                         <hr class="dashed-hr">
                         ${data.ticket_combos && data.ticket_combos.length > 0 ? data.ticket_combos.map(combo => `

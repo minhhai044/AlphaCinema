@@ -51,21 +51,45 @@ class ShowtimeController extends Controller
             );
         }
     }
-    public function listMovies()
+    public function listMovies(Request $request)
     {
-        // $movies = Movie::whereHas('showtime', function ($query) use ($branch, $cinema) {
-        //     $query->where('date', '>=', Carbon::now()->toDateString());
-        //     $query->where('branch_id', $branch);
-        //     $query->where('cinema_id', $cinema);
-        // })
-        //     ->with('showtime')
-        //     ->latest('id')
-        //     ->get();
+        $branchId = $request->branchId;
+        $cinemId = $request->cinemId;
 
-        // return $this->successResponse(
-        //     $movies,
-        //     'Thao tác thành công'
-        // );
+        if ($branchId && $cinemId) {
+
+            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
+            //     $query->where('branch_id', $branchId);
+            //     $query->where('cinema_id', $cinemId);
+            //     $query->where('date', '>', Carbon::now()->toDateString())
+            //         ->orWhere(function ($q) {
+            //             $q->where('date', Carbon::now()->toDateString())
+            //                 ->where('start_time', '>=', Carbon::now()->toTimeString());
+            //         });
+            // })
+            //     ->with('showtime')
+            //     ->latest('id')
+            //     ->get();
+
+            $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
+                $query->where('branch_id', $branchId)
+                    ->where('cinema_id', $cinemId)
+                    ->where(function ($q) {
+                        $q->where('date', '>=', Carbon::now()->toDateString())
+                            ->where('start_time', '>=', Carbon::now()->toTimeString());
+                    });
+            })
+                ->with('showtime')
+                ->latest('id')
+                ->get();
+
+
+            return $this->successResponse(
+                $movies,
+                'Thao tác thành công'
+            );
+        }
+
 
         $movies = Movie::query()->latest('id')->get();
         return $this->successResponse(
@@ -75,16 +99,65 @@ class ShowtimeController extends Controller
     }
 
 
-    public function movieShowTimes(string $slug)
-    {
-        $movie = Movie::with([
-            'showtime' => function ($query) {
-                $query->where('date', '>=', Carbon::now());
-            },
-            'room'
-        ])->where('slug', $slug)->first();
+    // public function movieShowTimes(string $slug,Request $request)
+    // {
+    //     $branchId = $request->branchId;
+    //     $cinemId = $request->cinemId;
+    //     $movie = Movie::with([
+    //         'showtime' => function ($query) {
+    //             $query->where('date', '>=', Carbon::now())
+    //                 ->where('is_active', 1);
+    //         },
+    //         'room'
+    //     ])->where('slug', $slug)->first();
 
-        $data = [];
+    //     $data = [];
+
+    //     $showtimes = [];
+
+    //     foreach ($movie->showtime as $showtime) {
+    //         $showtimes[$showtime['date']][] = [
+    //             'id' => $showtime['id'],
+    //             'start_time' => $showtime['start_time'],
+    //             'slug' => $showtime['slug'],
+    //             'name_room' => $showtime['room']['name']
+    //         ];
+    //     }
+
+    //     $data = [
+    //         'showtimes' => $showtimes, // Lịch chiếu theo ngày
+    //         'movie' => $movie, // Thông tin phim
+    //     ];
+
+    //     return $this->successResponse(
+    //         $data,
+    //         'Thao tác thành công'
+    //     );
+    // }
+
+
+    public function movieShowTimes(string $slug, Request $request)
+    {
+        $branchId = $request->branchId;
+        $cinemId = $request->cinemId;
+        $movie = null;
+
+        if ($branchId && $cinemId) {
+            $movie = Movie::with([
+                'showtime' => function ($query) use ($branchId, $cinemId) {
+                    $query->where('date', '>=', Carbon::now()->toDateString())
+                        ->where('is_active', 1)
+                        ->where('branch_id', $branchId)
+                        ->where('cinema_id', $cinemId)
+                        ->where('start_time', '>=', Carbon::now()->toTimeString());
+                },
+                'showtime.room'
+            ])->where('slug', $slug)->first();
+        }
+
+        if (!$movie) {
+            return $this->errorResponse('Không tìm thấy phim hoặc lịch chiếu', 404);
+        }
 
         $showtimes = [];
 
@@ -93,13 +166,13 @@ class ShowtimeController extends Controller
                 'id' => $showtime['id'],
                 'start_time' => $showtime['start_time'],
                 'slug' => $showtime['slug'],
-                'name_room' => $showtime['room']['name']
+                'name_room' => optional($showtime->room)->name
             ];
         }
 
         $data = [
-            'showtimes' => $showtimes, // Lịch chiếu theo ngày
-            'movie' => $movie, // Thông tin phim
+            'movie' => $movie,
+            'showtimes' => $showtimes
         ];
 
         return $this->successResponse(
@@ -108,12 +181,30 @@ class ShowtimeController extends Controller
         );
     }
 
-    public function showtimeDetail(string $slug)
+    public function showtimeDetail(string $slug, Request $request)
     {
         try {
+            $branchId = $request->branchId;
+            $cinemId = $request->cinemId;
             $showtime = Showtime::with('branch', 'movie', 'cinema', 'room')
                 ->where('slug', $slug)
+                // ->where('start_time', '>=', Carbon::now()->toTimeString())
+                ->where('branch_id', $branchId)
+                ->where('cinema_id', $cinemId)
                 ->first();
+
+            if (!$showtime) {
+                return $this->errorResponse([
+                    'message' => 'Showtime not found',
+                    'code' => 404
+                ], Response::HTTP_NOT_FOUND);
+                // throw new \Exception('Showtime not found', 404);
+            }
+
+            if (empty($showtime->seat_structure)) {
+                return $this->errorResponse('Dữ liệu ghế không khả dụng', Response::HTTP_BAD_REQUEST);
+            }
+
 
             $seatMap = json_decode($showtime['seat_structure'], true);
             // $seatMap = $showtime['seat_structure'];

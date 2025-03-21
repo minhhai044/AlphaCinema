@@ -30,7 +30,7 @@
                 <div class="card-body">
                     <div class="row align-items-center mb-3">
                         <!-- Cột bên trái: Hiển thị -->
-                        <div class="col-md-6">
+                        <div class="col-md-6 text-end">
                             <div class="d-flex align-items-center">
                                 <span class="me-2">Hiển thị:</span>
                                 <select id="pageLength" class="form-select w-auto">

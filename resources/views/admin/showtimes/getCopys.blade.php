@@ -7,10 +7,10 @@
     <div class="col-12">
         <div class="d-sm-flex align-items-center justify-content-between text-center row">
             <div class="text-center col-lg-9">
-                <h4 class="mb-2 text-primary fw-bold">
-                    <i class="bi bi-film"></i> Nhân bản suất chiếu cho phim :
-                    <span class="text-info">{{ $movie->name }}</span>
-                </h4>
+                <h5 class="mb-2 text-secondary fw-semibold">
+                    <i class="bi bi-film"></i> Phim :
+                    <span class="text-light-emphasis">{{ $movie->name }}</span>
+                </h5>
                 <p class="text-muted fs-6">
                     <i class="bi bi-calendar-event"></i> Ngày tạo:
                     <span class="text-warning fw-semibold">
@@ -123,10 +123,8 @@
                         <!-- Nút thêm xuất chiếu -->
                         <div class="col-lg-12">
                             <button type="button" id="addTime{{$key}}"
-                                class="btn btn-primary btn-sm float-end ms-3">Thêm thời
-                                gian</button>
-                            <button type="button" id="autoGenerate{{$key}}" class="btn btn-success btn-sm float-end">Tự
-                                động</button>
+                                class="btn btn-primary btn-sm float-end ms-3"><i class=" bx bx-plus"></i></button>
+                            <button type="button" id="autoGenerate{{$key}}" class="btn btn-success btn-sm float-end"><i class="bx bxs-copy"></i></button>
                         </div>
                         <!-- Danh sách xuất chiếu -->
                         <div class="col-lg-12 overflow-auto" style="height: 300px;" id="listTime{{$key}}">
@@ -391,7 +389,7 @@
                 showtime.forEach((value, i) => {
                     listTimeContainer.append(`
                         <div class="row align-items-center mt-2" id="row_${index}_${i}">
-                            <div class="col-lg-5">
+                            <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="start_time_${index}_${i}" class="form-label">
                                         Thời gian bắt đầu <span class="text-danger">*</span>
@@ -407,7 +405,7 @@
                                     <input type="time" required class="form-control" name="end_time[${index}][]" id="end_time_${index}_${i}" readonly value="${value.end_time}">
                                 </div>
                             </div>
-                            <div class="col-lg-2 d-flex align-items-center">
+                            <div class="col-lg-1 d-flex align-items-center">
                                 <button type="button" class="btn btn-danger btn-sm text-white removeShowtime" data-row="row_${index}_${i}">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -423,7 +421,7 @@
                 const id = Date.now();
                 const html = `
                         <div class="row align-items-center" id="row_${index}_${id}">
-                            <div class="col-lg-5">
+                            <div class="col-lg-6">
                                 <div class="mb-3">
                                     <label for="start_time_${index}_${id}" class="form-label">
                                         Thời gian bắt đầu <span class="text-danger">*</span>
@@ -439,7 +437,7 @@
                                     <input type="time" required class="form-control" name="end_time[${index}][]" id="end_time_${index}_${id}" readonly>
                                 </div>
                             </div>
-                            <div class="col-lg-2 d-flex align-items-center">
+                            <div class="col-lg-1 d-flex align-items-center">
                                 <button type="button" class="btn btn-danger btn-sm text-white mt-3 removeShowtime" data-row="row_${index}_${id}">
                                     <i class="bi bi-trash"></i>
                                 </button>
@@ -589,7 +587,7 @@
 
                         const row = `
                             <div class="row align-items-center" id="row_${index}_${idRowCounter}">
-                                <div class="col-lg-5">
+                                <div class="col-lg-6">
                                     <div class="mb-3">
                                         <label for="start_time_${index}_${idRowCounter}" class="form-label">
                                             Thời gian bắt đầu <span class="text-danger">*</span>
@@ -605,7 +603,7 @@
                                         <input type="time" required class="form-control" name="end_time[${index}][]" id="end_time_${index}_${idRowCounter}" value="${showEnd}" readonly>
                                     </div>
                                 </div>
-                                <div class="col-lg-2 d-flex align-items-center">
+                                <div class="col-lg-1 d-flex align-items-center">
                                     <button type="button" class="btn btn-danger btn-sm text-white removeShowtime" data-row="row_${index}_${idRowCounter}">
                                         <i class="bi bi-trash"></i>
                                     </button>

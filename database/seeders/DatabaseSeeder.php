@@ -6,12 +6,14 @@ namespace Database\Seeders;
 
 use App\Models\Branch;
 use App\Models\Cinema;
+use App\Models\Rank;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
+use SebastianBergmann\Type\NullType;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -81,7 +83,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Đặng Văn Sơn',
@@ -94,7 +100,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Trần Minh Hải',
@@ -107,7 +117,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Phùng Quang Huy',
@@ -120,7 +134,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Nguyễn Đức Tùng Lâm',
@@ -133,7 +151,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Nguyễn Hoàng Anh',
@@ -146,7 +168,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Vũ Nhật Quỳnh',
@@ -159,7 +185,11 @@ class DatabaseSeeder extends Seeder
                 'gender' => 1,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
             [
                 'name' => 'Hoa Hương Quỳnh',
@@ -172,7 +202,29 @@ class DatabaseSeeder extends Seeder
                 'gender' => 1,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
+                'total_amount' => 0,
                 'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
+            ],
+            [
+                'name' => 'Quản lý chi nhánh',
+                'avatar' => '',
+                'phone' => '0987654345',
+                'email_verified_at' => '2025-02-22 19:58:51',
+                'email' => 'qlcnHN@gmail.com',
+                'password' => Hash::make('qlcnHN@gmail.com'),
+                'address' => 'Hà Nội',
+                'gender' => 1,
+                'birthday' => '2000-01-01',
+                'type_user' => 1,
+                'total_amount' => 0,
+                'branch_id' => 1,
+                'cinema_id' => null,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
             ],
         ];
 
@@ -223,6 +275,12 @@ class DatabaseSeeder extends Seeder
             'Thêm vouchers',
             'Sửa vouchers',
             'Xóa vouchers',
+            'Áp dụng vouchers',
+            'Sửa áp dụng vouchers',
+            'Xóa áp dụng vouchers',
+            'Danh sách hạn mức',
+            'Sửa hạn mức',
+
             'Danh sách thanh toán',
             'Thêm thanh toán',
             'Sửa thanh toán',
@@ -250,8 +308,9 @@ class DatabaseSeeder extends Seeder
             'Xóa tài khoản',
             'Cấu hình website',
             'Danh sách thống kê',
-            'Thẻ thành viên'
-
+            'Thẻ thành viên',
+            'Danh sách ngày',
+            'Sửa ngày',
         ];
 
         // Tạo các quyền từ danh sách
@@ -261,6 +320,7 @@ class DatabaseSeeder extends Seeder
 
         $roles = [
             'System Admin',
+            'Quản lý chi nhánh',
             'Quản lý cơ sở',
             'Nhân viên'
         ];
@@ -272,7 +332,7 @@ class DatabaseSeeder extends Seeder
         $adminRole = Role::findByName('System Admin');
         $adminRole->syncPermissions(Permission::all());
 
-        $managerRole = Role::findByName('Quản lý cơ sở');
+        $managerRole = Role::findByName('Quản lý chi nhánh');
         $managerRole->givePermissionTo([
             'Danh sách phòng chiếu',
             'Thêm phòng chiếu',
@@ -295,9 +355,7 @@ class DatabaseSeeder extends Seeder
             'Xem chi tiết suất chiếu',
             'Danh sách hóa đơn',
             'Quét hóa đơn',
-
             'Xem chi tiết hóa đơn',
-
             'Danh sách đồ ăn',
             'Thêm đồ ăn',
             'Sửa đồ ăn',
@@ -315,9 +373,7 @@ class DatabaseSeeder extends Seeder
             'Sửa thanh toán',
             'Xóa thanh toán',
             'Danh sách giá',
-            // 'Thêm giá',
             'Sửa giá',
-            // 'Xóa giá',
             'Danh sách bài viết',
             'Thêm bài viết',
             'Sửa bài viết',
@@ -328,9 +384,7 @@ class DatabaseSeeder extends Seeder
             'Sửa slideshows',
             'Xóa slideshows',
             'Danh sách liên hệ',
-            // 'Thêm liên hệ',
             'Sửa liên hệ',
-            // 'Xóa liên hệ',
             'Danh sách tài khoản',
             'Thêm tài khoản',
             'Sửa tài khoản',
@@ -338,7 +392,47 @@ class DatabaseSeeder extends Seeder
             'Cấu hình website',
             'Danh sách thống kê',
             'Thẻ thành viên'
-
+        ]);
+        $managerRole = Role::findByName('Quản lý cơ sở');
+        $managerRole->givePermissionTo([
+            'Danh sách phòng chiếu',
+            'Thêm phòng chiếu',
+            'Sửa phòng chiếu',
+            'Xem chi tiết phòng chiếu',
+            'Danh sách mẫu sơ đồ ghế',
+            'Thêm mẫu sơ đồ ghế',
+            'Sửa mẫu sơ đồ ghế',
+            'Danh sách phim',
+            'Thêm phim',
+            'Sửa phim',
+            'Xem chi tiết phim',
+            'Danh sách suất chiếu',
+            'Thêm suất chiếu',
+            'Sửa suất chiếu',
+            'Xem chi tiết suất chiếu',
+            'Danh sách hóa đơn',
+            'Quét hóa đơn',
+            'Xem chi tiết hóa đơn',
+            'Danh sách đồ ăn',
+            'Thêm đồ ăn',
+            'Sửa đồ ăn',
+            'Danh sách combo',
+            'Thêm combo',
+            'Sửa combo',
+            'Danh sách vouchers',
+            'Thêm vouchers',
+            'Sửa vouchers',
+            'Danh sách giá',
+            'Danh sách bài viết',
+            'Thêm bài viết',
+            'Xem chi tiết bài viết',
+            'Danh sách liên hệ',
+            'Sửa liên hệ',
+            'Danh sách tài khoản',
+            'Thêm tài khoản',
+            'Sửa tài khoản',
+            'Xóa tài khoản',
+            'Danh sách thống kê',
         ]);
 
         $managerRole = Role::findByName('Nhân viên');
@@ -353,9 +447,11 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('System Admin');
 
         $user = User::find(7);
-        $user->assignRole('Quản lý cơ sở','Nhân viên', );
+        $user->assignRole('Quản lý cơ sở', 'Nhân viên',);
         $user = User::find(8);
-        $user->assignRole('Quản lý cơ sở','Nhân viên');
+        $user->assignRole('Quản lý cơ sở', 'Nhân viên');
+        $user = User::find(9);
+        $user->assignRole('Quản lý chi nhánh');
 
         $user = User::find(2);
         $user->assignRole('Quản lý cơ sở');
@@ -369,8 +465,8 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('Quản lý cơ sở');
 
 
-         // Seed food table
-         $foods = [
+        // Seed food table
+        $foods = [
             ['name' => 'Burger', 'img_thumbnail' => 'images/burger.jpg', 'type' => 'Đồ ăn', 'price' => 50000, 'description' => 'Burger bò thơm ngon', 'is_active' => 1],
             ['name' => 'Pizza', 'img_thumbnail' => 'images/pizza.jpg', 'type' => 'Đồ ăn', 'price' => 120000, 'description' => 'Pizza hải sản', 'is_active' => 1],
             ['name' => 'Coca Cola', 'img_thumbnail' => 'images/coca.jpg', 'type' => 'Đồ uống', 'price' => 15000, 'description' => 'Nước giải khát có ga', 'is_active' => 1],
@@ -426,6 +522,85 @@ class DatabaseSeeder extends Seeder
 
         DB::table('slideshows')->insert($slideshows);
 
+        DB::table('type_rooms')->insert([
+            [
+                'name' => 'Phòng 2D',
+                'surcharge' => 50000, // Giá mặc định 50k50k
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Phòng 3D ',
+                'surcharge' => 100000, // Giá mặc định 100k 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Phòng 4D ',
+                'surcharge' => 150000, // Giá mặc định 150k 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
 
+        DB::table('type_seats')->insert([
+            [
+                'name' => 'Ghế thường',
+                'price' => 5000, // Giá mặc định 50k50k
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Ghế VIP',
+                'price' => 10000, // Giá mặc định 100k 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'name' => 'Ghế đôi',
+                'price' => 15000, // Giá mặc định 150k 
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
+
+        $ranks = [
+            [
+                'name' => 'Member',
+                'total_spent' => 0,
+                'ticket_percentage' => 0,
+                'combo_percentage' => 0,
+                'feedback_percentage' => 0,
+                'is_default' => 1,
+            ],
+            [
+                'name' => 'Gold',
+                'total_spent' => 1000000,
+                'ticket_percentage' => 7,
+                'combo_percentage' => 5,
+                'feedback_percentage' => 3,
+                'is_default' => 0,
+            ],
+            [
+                'name' => 'Platinum',
+                'total_spent' => 3000000,
+                'ticket_percentage' => 10,
+                'feedback_percentage' => 5,
+                'combo_percentage' => 7,
+                'is_default' => 0,
+            ],
+            [
+                'name' => 'Diamond',
+                'total_spent' => 5000000,
+                'ticket_percentage' => 15,
+                'feedback_percentage' => 7,
+                'combo_percentage' => 10,
+                'is_default' => 0,
+            ],
+        ];
+
+        foreach ($ranks as $rank) {
+            Rank::create($rank);
+        }
     }
 }

@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Admin\MovieController;
+use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
+use App\Http\Controllers\Api\PointHistoryController;
 use App\Http\Controllers\Api\SiteSettingController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
@@ -11,10 +13,12 @@ use App\Http\Controllers\Api\V1\ComboFoodController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
+use App\Http\Controllers\Api\V1\SendMailController;
 use App\Http\Controllers\Api\V1\ShowtimeController;
 
 use App\Http\Controllers\Api\V1\SlideShowController;
 use App\Http\Controllers\Api\V1\TicketController;
+use App\Http\Controllers\Api\VoucherController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -27,6 +31,9 @@ Route::prefix('users')->group(function () {
 
 Route::post('signin', [AuthController::class, 'signIn']);
 Route::post('signup', [AuthController::class, 'signUp']);
+
+
+
 Route::get('{id}/showtime', [ShowtimeController::class, 'getByDate']);
 Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes']);
 Route::get('/listMovies', [ShowtimeController::class, 'listMovies']);
@@ -39,20 +46,26 @@ Route::prefix('branchs')->group(function () {
     Route::get('/', [BranchController::class, 'index']);
 });
 
-
 Route::get('/get-cinemas', [TicketController::class, 'getCinemas']);
-Route::get('tickets/{id}', [TicketController::class, 'getTicketByID']);
-Route::get('tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
 
+
+Route::get('/ranksJson',[RankController::class,'getRanksJson']);
 Route::middleware('auth:sanctum')->group(function () {
-
+    
     Route::post('tickets', [TicketController::class, 'createTicket']);
-
     Route::post('/logout', [AuthController::class, 'logout']);
+    Route::get('/getRank', [AuthController::class, 'getUserRank']);
+
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
-
-
+    Route::get('/pointhistory', [AuthController::class, 'getUserPointHistory']);
+    
+    Route::get('/ticket-by-user',[TicketController::class,'getTicketByUser']);
+    Route::get('/voucher',[AuthController::class,'getUserVoucher']);
+    // Route::prefix('point_histories')->group(function () {
+    //     Route::get('/', [PointHistoryController::class, 'index']);
+    //     Route::get('{id}', [PointHistoryController::class, 'show']);
+    // });
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
 
     // Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
@@ -72,5 +85,5 @@ Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTi
 
 Route::get('/settings', [SiteSettingController::class, 'index']);
 
-Route::post('{payment}/payment', [PaymentController::class, 'payment']);
-Route::get('/checkout', [PaymentController::class, 'checkout']);
+Route::post('{payment}/payment',[PaymentController::class,'payment']);
+Route::get('/checkout',[PaymentController::class,'checkout']);

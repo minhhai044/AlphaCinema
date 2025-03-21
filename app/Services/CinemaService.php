@@ -21,7 +21,7 @@ class CinemaService
     public function storeService($data)
     {
         return DB::transaction(function () use ($data) {
-            $data['is_active'] ??= 0;
+            $data['is_active'] ??= 1;
             $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
 
             return $this->cinemaRepository->createCinemaRepository($data);
@@ -30,13 +30,13 @@ class CinemaService
     public function updateSevice($cinema, $data)
     {
         return DB::transaction(function () use ($cinema, $data) {
-            $data['is_active'] ??= 0;
+            $data['is_active'] ??= 1;
             $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
 
             return $cinema->update($data);
         });
     }
-    
+
     public function deleteSevice($id)
     {
         $findCinema = $this->cinemaRepository->findByIdCinemaRepository($id);

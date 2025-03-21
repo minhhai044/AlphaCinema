@@ -12,6 +12,7 @@ use App\Models\Seat_template;
 use App\Models\Showtime;
 use App\Models\Type_room;
 use App\Models\Type_seat;
+use Carbon\Carbon;
 
 class ShowtimeService
 {
@@ -21,7 +22,27 @@ class ShowtimeService
         $date = $request->query('date', '');
         $branch_id = $request->query('branch_id', '');
         $cinema_id = $request->query('cinema_id', '');
+        $listShowtimesByDates = collect();
+        if (empty($date) && !empty($branch_id) && !empty($cinema_id)) {
+            $showtimes = Showtime::with('movie', 'room.type_room', 'branch', 'cinema')
+                ->where('date', '>=', Carbon::now()->toDateString())
+                ->where('branch_id', $branch_id)
+                ->where('cinema_id', $cinema_id)
+                ->get();
 
+            $listShowtimesByDates = $showtimes->groupBy('date')->map(function ($showtimesByDate) {
+                return [
+                    'movies' => $showtimesByDate->groupBy('movie_id')->map(function ($showtimes) {
+                        return [
+                            'movie' => $showtimes->first()->movie,
+                            'showtimes' => $showtimes->map(function ($showtime) {
+                                return $showtime;
+                            })->values(),
+                        ];
+                    })->values(),
+                ];
+            });
+        }
         if (empty($date) || empty($branch_id) || empty($cinema_id)) {
             $showtimes = collect();
         } else {
@@ -36,8 +57,8 @@ class ShowtimeService
 
         $listShowtimes = $showtimes->groupBy('movie_id')->map(function ($showtimes) {
             return [
-                'movie' => $showtimes->first()->movie, // Lấy thông tin phim từ showtime đầu tiên
-                'showtimes' => $showtimes->toArray(), // Danh sách suất chiếu của phim đó
+                'movie' => $showtimes->first()->movie,
+                'showtimes' => $showtimes->toArray(),
             ];
         });
 
@@ -46,11 +67,10 @@ class ShowtimeService
         foreach ($branchs as $branch) {
             $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
         }
-        // dd($listShowtimes);
 
         $movies = Movie::query()->where('is_active', 1)->get();
 
-        return [$branchs, $branchsRelation, $listShowtimes, $movies];
+        return [$branchs, $branchsRelation, $listShowtimes, $movies, $listShowtimesByDates];
     }
     public function createService(string $id)
     {

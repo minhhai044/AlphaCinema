@@ -30,21 +30,7 @@ class CinemaController extends Controller
     {
         $cinemas = $this->cinemaService->getAllPaginateService(10);
         $branchs = Branch::query()->orderByDesc('id')->get();
-
-        if (request()->page > $cinemas->lastPage()) {
-            return redirect()->route('admin.cinemas.index', ['page' => 1]);
-        }
-
         return view(self::PATH_VIEW . __FUNCTION__, compact('cinemas', 'branchs'));
-    }
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        $branchs = Branch::query()->orderByDesc('id')->get();
-
-        return view(self::PATH_VIEW . __FUNCTION__, compact('branchs'));
     }
     /**
      * Store a newly created resource in storage.
@@ -66,24 +52,6 @@ class CinemaController extends Controller
         }
     }
     /**
-     * Display the specified resource.
-     */
-    public function show(Cinema $cinema)
-    {
-        $cinema->load('branch');
-
-        return view(self::PATH_VIEW . __FUNCTION__, compact('cinema'));
-    }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Cinema $cinema)
-    {
-        $branchs = Branch::query()->orderByDesc('id')->get();
-
-        return view(self::PATH_VIEW . __FUNCTION__, compact('cinema', 'branchs'));
-    }
-    /**
      * Update the specified resource in storage.
      */
     public function update(CinemaRequest $request, Cinema $cinema)
@@ -97,23 +65,8 @@ class CinemaController extends Controller
         }
     }
     /**
-     * Remove the specified resource from storage.
+     * Update the specified resource in storage.
      */
-    public function destroy(Cinema $cinema)
-    {
-        try {
-            /** 
-             * Nếu rạp chiếu đã có phòng không cho xóa
-             */
-            // $cinema->delete();
-
-            Alert::info('Đang chờ nâng cấp', 'Alpha Cinema Thông Báo');
-
-            return redirect()->back();
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-        }
-    }
     public function toggleStatus($id, Request $request)
     {
         $cinema = Cinema::findOrFail($id);

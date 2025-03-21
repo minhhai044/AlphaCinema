@@ -14,7 +14,7 @@ class CinemaRepository extends BaseRepository
 
     public function getPaginateCinemaRepository($perPage = 10, string $latest = 'id')
     {
-        return $this->model->latest($latest)->paginate($perPage);
+        return $this->model->latest($latest)->get();
     }
 
     public function findByIdCinemaRepository($id)
