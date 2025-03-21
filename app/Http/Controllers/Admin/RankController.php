@@ -28,14 +28,6 @@ class RankController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        return view(self::PATH_VIEW . __FUNCTION__);
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(RankRequest $request)
@@ -58,25 +50,6 @@ class RankController extends Controller
         }
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Rank $rank)
-    {
-        return view(self::PATH_VIEW . __FUNCTION__);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Rank $rank)
-    {
-        return view(self::PATH_VIEW . __FUNCTION__);
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
     public function update(RankRequest $request, Rank $rank)
     {
         try {
@@ -104,34 +77,6 @@ class RankController extends Controller
         }
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Rank $rank)
-    {
-        try {
-            DB::transaction(function () use ($rank) {
-                if (Rank::count() <= Rank::MIN_RANK) {
-                    Alert::error('Số lượng cấp bậc đã đạt đến tối tiểu, không thể xóa', 'Alpha Cinema Thông Báo');
-                    return redirect()->back();
-                }
-
-                // Kiểm tra nếu $rank có is_default = true
-                if ($rank->is_default) {
-                    Alert::error('Không thể xóa cấp bậc mặc định', 'Alpha Cinema Thông Báo');
-                    return redirect()->back();
-                }
-
-                // Thực hiện xóa nếu các điều kiện thỏa mãn
-                $rank->delete();
-            });
-
-            Alert::success('Xóa thành công', 'Alpha Cinema Thông Báo');
-            return redirect()->back();
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
-        }
-    }
     public function getRankByUser()
     {
         try {
