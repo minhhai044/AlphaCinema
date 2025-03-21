@@ -112,15 +112,15 @@
     {{-- Modal update --}}
 
     <table id="datatable" class="table table-bordered text-center">
-        <thead>
+        <thead >
             <tr>
-                <th class="fw-semibold">STT</th>
-                <th class="fw-semibold">Tên mẫu ghế</th>
-                <th class="fw-semibold">Mô tả</th>
-                <th class="fw-semibold">Ma trận</th>
-                <th class="fw-semibold">Trạng thái</th>
-                <th class="fw-semibold">Hoạt động</th>
-                <th class="fw-semibold">Chức năng</th>
+                <th class="fw-semibold text-center">STT</th>
+                <th class="fw-semibold text-center">Tên mẫu ghế</th>
+                <th class="fw-semibold text-center">Mô tả</th>
+                <th class="fw-semibold text-center">Ma trận</th>
+                <th class="fw-semibold text-center">Trạng thái</th>
+                <th class="fw-semibold text-center">Hoạt động</th>
+                <th class="fw-semibold text-center">Chức năng</th>
             </tr>
         </thead>
         <tbody>
