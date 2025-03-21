@@ -50,20 +50,23 @@ class MovieService
     public function updateMovie($id, $data)
     {
         return DB::transaction(function () use ($id, $data) {
+            // Tìm movie hoặc throw exception nếu không tồn tại
             $movie = Movie::findOrFail($id);
 
+            // Gán giá trị mặc định cho các trường boolean
             $data['is_active'] = $data['is_active'] ?? 0;
             $data['is_hot'] = $data['is_hot'] ?? 0;
             $data['is_special'] = $data['is_special'] ?? 0;
             $data['is_publish'] = $data['is_publish'] ?? 0;
 
-            // Kiểm tra phị phí nếu là đặc biệt
-            $data['surcharge'] = $data['is_special'] == 0 ? 0 : $movie->surcharge;
+            // Xử lý surcharge dựa trên is_special
+            $data['surcharge'] = $data['is_special'] == 0 ? 0 : ($data['surcharge'] ?? $movie->surcharge);
 
-            // Kiểm tra và giữ lại giá trị cũ nếu không cập nhật
+            // Giữ nguyên giá trị cũ nếu không có dữ liệu mới
             $data['release_date'] = $data['release_date'] ?? $movie->release_date;
-            $data['end_date'] = $data['end_date'] ?? $movie->end_date;
+            $data[' end_date'] = $data['end_date'] ?? $movie->end_date;
 
+            // Xử lý ảnh thumbnail nếu có
             if (isset($data['img_thumbnail'])) {
                 if (Storage::exists($movie->img_thumbnail)) {
                     Storage::delete($movie->img_thumbnail);
@@ -71,10 +74,13 @@ class MovieService
                 $data['img_thumbnail'] = Storage::put('movie_images', $data['img_thumbnail']);
             }
 
-            $data['movie_versions'] = isset($data['movie_versions']) ? ($data['movie_versions']) : ([]);
-            $data['movie_genres'] = isset($data['movie_genres']) ? ($data['movie_genres']) : ([]);
+            // Xử lý movie_versions và movie_genres, mặc định là mảng rỗng nếu không có
+            $data['movie_versions'] = $data['movie_versions'] ?? [];
+            $data['movie_genres'] = $data['movie_genres'] ?? [];
 
+            // Cập nhật dữ liệu và trả về model
             $movie->update($data);
+
             return $movie;
         });
     }

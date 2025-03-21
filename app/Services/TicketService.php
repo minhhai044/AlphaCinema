@@ -26,8 +26,8 @@ class TicketService
     {
         $user = auth()->user();
         $date = $request->query('date', '');
-        $branch_id = $request->query('branch_id', $user->branch_id ?? ''); // Mặc định dùng branch_id của user nếu có
-        $cinema_id = $request->query('cinema_id', $user->cinema_id ?? ''); // Mặc định dùng cinema_id của user nếu có
+        $branch_id = $request->query('branch_id', $user->branch_id ?? '');
+        $cinema_id = $request->query('cinema_id', $user->cinema_id ?? ''); 
         $movie_id = $request->query('movie_id', '');
         $status = $request->query('status_id', '');
 

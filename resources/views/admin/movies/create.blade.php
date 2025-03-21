@@ -5,7 +5,7 @@
     <div class="row">
         <div class="col-12">
             <h1 class="card-title">Tạo mới phim</h1>
-            <a href="{{ route('admin.movies.index') }}" class="btn btn-primary mb-3">Quay lại</a>
+            {{-- <a href="{{ route('admin.movies.index') }}" class="btn btn-primary mb-3">Quay lại</a> --}}
             <form action="{{ route('admin.movies.store') }}" method="POST" enctype="multipart/form-data"
                 class="custom-validation">
                 @csrf
@@ -13,12 +13,12 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">MOVIES</h4>
+                                <h4 class="mb-sm-0 font-size-18">Quản lí phim</h4>
 
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Movies</a></li>
-                                        <li class="breadcrumb-item active">Table Movies</li>
+                                        <li class="breadcrumb-item"><a href="{{ route('admin.movies.index') }}">Danh sách phim</a></li>
+                                        <li class="breadcrumb-item active">Thêm mới</li>
                                     </ol>
                                 </div>
                             </div>
@@ -39,7 +39,7 @@
                                                 value="{{ old('name') }}" placeholder="Nhập tên phim">
                                             <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('name'))
-                                                    {{ $errors->first('name') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('name') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -51,7 +51,7 @@
                                                 value="{{ old('slug') }}" readonly>
                                             <div class="{{ $errors->has('slug') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('slug'))
-                                                    {{ $errors->first('slug') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('slug') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -64,7 +64,7 @@
                                             <div
                                                 class="{{ $errors->has('category') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('category'))
-                                                    {{ $errors->first('category') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('category') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -77,7 +77,7 @@
                                             <div
                                                 class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('img_thumbnail'))
-                                                    {{ $errors->first('img_thumbnail') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('img_thumbnail') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -100,7 +100,7 @@
                                             <div
                                                 class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('movie_genres'))
-                                                    {{ $errors->first('movie_genres') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('movie_genres') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -113,7 +113,7 @@
                                             <div
                                                 class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('surcharge'))
-                                                    {{ $errors->first('surcharge') }}
+                                                   <span class="text-danger fw-medium"> {{ $errors->first('surcharge') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -130,7 +130,7 @@
                                             <div
                                                 class="{{ $errors->has('director') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('director'))
-                                                    {{ $errors->first('director') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('director') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -144,7 +144,7 @@
                                             <div
                                                 class="{{ $errors->has('trailer_url') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('trailer_url'))
-                                                    {{ $errors->first('trailer_url') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('trailer_url') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -157,7 +157,7 @@
                                             <div
                                                 class="{{ $errors->has('duration') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('duration'))
-                                                    {{ $errors->first('duration') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('duration') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -167,13 +167,13 @@
                                             <div
                                                 class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('release_date'))
-                                                    {{ $errors->first('release_date') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('release_date') }}</span>
                                                 @endif
                                             </div>
                                             <div
                                                 class="{{ $errors->has('end_date') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('end_date'))
-                                                    {{ $errors->first('end_date') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('end_date') }}</span>
                                                 @endif
                                             </div>
                                             <div class="input-daterange input-group" id="datepicker6"
@@ -210,7 +210,7 @@
                                             <div
                                                 class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('movie_versions'))
-                                                    {{ $errors->first('movie_versions') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('movie_versions') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -235,7 +235,7 @@
                                             <div
                                                 class="{{ $errors->has('rating') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('rating'))
-                                                    {{ $errors->first('rating') }}
+                                                    <span class="text-danger fw-medium">{{ $errors->first('rating') }}</span>
                                                 @elseif (old('rating'))
                                                     Đã chọn {{ old('rating') }} sao
                                                 @endif
@@ -250,7 +250,7 @@
                                         <div
                                             class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
                                             @if ($errors->has('description'))
-                                                {{ $errors->first('description') }}
+                                                <span class="text-danger fw-medium">{{ $errors->first('description') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -342,6 +342,7 @@
                     });
 
                 $('#movie_genres').select2({
+
                     placeholder: "Chọn thể loại phim",
                     allowClear: true
                 });
@@ -458,5 +459,10 @@
     .star-rating .bi-star-fill:hover {
         color: #f39c12; /* Màu khi hover */
     }
+    .select2-container--default .select2-selection--multiple .select2-selection__choice {
+    background-color: #545cee; /* Nền xanh đậm cho mục đã chọn */
+    color: white; /* Chữ trắng để nổi bật */
+    border: 1px solid darkblue; /* Viền xanh đậm hơn */
+}
     </style>
 @endsection

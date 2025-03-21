@@ -20,7 +20,7 @@
                                             <input type="text" name="name" value="{{ old('name', $movie->name) }}"
                                                 class="form-control">
                                             @error('name')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -29,7 +29,7 @@
                                             <input type="text" name="slug" value="{{ old('slug', $movie->slug) }}"
                                                 class="form-control">
                                             @error('slug')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -38,7 +38,7 @@
                                             <input type="text" name="category"
                                                 value="{{ old('category', $movie->category) }}" class="form-control">
                                             @error('category')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -50,7 +50,7 @@
                                                     class="mt-2">
                                             @endif
                                             @error('img_thumbnail')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
                                         <div class="mb-3" id="surcharge_container" style="display: none;">
@@ -72,7 +72,7 @@
                                             <input type="text" name="director"
                                                 value="{{ old('director', $movie->director) }}" class="form-control">
                                             @error('director')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
                                         <div class="mb-3">
@@ -80,7 +80,7 @@
                                             <input type="text" name="trailer_url"
                                                 value="{{ old('trailer_url', $movie->trailer_url) }}" class="form-control">
                                             @error('trailer_url')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -89,7 +89,7 @@
                                             <input type="text" name="duration"
                                                 value="{{ old('duration', $movie->duration) }}" class="form-control">
                                             @error('duration')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -129,7 +129,7 @@
                                                 </option>
                                             </select>
                                             @error('movie_genres')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -152,7 +152,7 @@
                                                 </option>
                                             </select>
                                             @error('movie_versions')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
 
@@ -162,12 +162,12 @@
                                                 <input type="date" class="form-control" name="release_date"
                                                     value="{{ old('release_date', $movie->release_date ? date('Y-m-d', strtotime($movie->release_date)) : '') }}">
                                                 @error('release_date')
-                                                    <div class="text-danger">{{ $message }}</div>
+                                                    <div class="text-danger fw-medium">{{ $message }}</div>
                                                 @enderror
                                                 <input type="date" class="form-control" name="end_date"
                                                     value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}">
                                                 @error('end_date')
-                                                    <div class="text-danger">{{ $message }}</div>
+                                                    <div class="text-danger fw-medium">{{ $message }}</div>
                                                 @enderror
                                             </div>
                                         </div>
@@ -188,7 +188,7 @@
                                             <input type="hidden" name="rating" id="rating-value" class="form-control"
                                                 value="{{ old('rating', $movie->rating) }}">
                                             @error('rating')
-                                                <div class="text-danger">{{ $message }}</div>
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
                                     </div>
@@ -197,7 +197,7 @@
                                     <label class="form-label">Mô tả</label>
                                     <textarea name="description" id="description" class="form-control">{{ old('description', $movie->description) }}</textarea>
                                     @error('description')
-                                        <div class="text-danger">{{ $message }}</div>
+                                        <div class="text-danger fw-medium">{{ $message }}</div>
                                     @enderror
                                 </div>
                             </div>
@@ -326,6 +326,7 @@
         .star-rating .bi-star-fill:hover {
             color: #f39c12;
         }
+
     </style>
 @endsection
 @section('script')

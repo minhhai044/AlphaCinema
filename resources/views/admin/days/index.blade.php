@@ -9,11 +9,10 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">DAYS</h4>
+                                <h4 class="mb-sm-0 font-size-18">Quản lí Ngày</h4>
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="javascript: void(0);">Days</a></li>
-                                        <li class="breadcrumb-item active">Table Days</li>
+                                        <li class="breadcrumb-item active"><a href="javascript: void(0);">Danh sách ngày</a></li>
                                     </ol>
                                 </div>
                             </div>
@@ -25,22 +24,22 @@
                     <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Loại ngày</th>
-                                <th>Phụ phí</th>
-                                <th>Hành Động</th>
+                                <th class="text-center">ID</th>
+                                <th class="text-center">Loại ngày</th>
+                                <th class="text-center">Phụ phí</th>
+                                <th class="text-center">Hành Động</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($days as $day)
                                 <tr data-id="{{ $day->id }}">
-                                    <td>{{ $day->id }}</td>
-                                    <td>{{ $day->name }}</td>
-                                    <td>
-                                        <span class="day-surcharge">{{ number_format($day->day_surcharge) }}</span>
+                                    <td class="text-center">{{ $day->id }}</td>
+                                    <td class="text-center">{{ $day->name }}</td>
+                                    <td class="text-center">
+                                        <span class="day-surcharge">{{ number_format($day->day_surcharge) }} VNĐ</span>
                                         <input type="number" class="form-control day-input d-none" value="{{ $day->day_surcharge }}">
                                     </td>
-                                    <td>
+                                    <td class="text-center">
                                         <a class="btn btn-outline-secondary btn-sm edit" title="Edit">
                                             <i class="fas fa-pencil-alt"></i> Sửa
                                         </a>

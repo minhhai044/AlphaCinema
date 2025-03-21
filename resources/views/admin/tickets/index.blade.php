@@ -40,9 +40,9 @@
             <!-- Chi nhánh (Chỉ hiển thị dropdown cho System Admin) -->
             @if (auth()->user()->hasRole('System Admin'))
                 <div class="form-group col-md-2">
-                    <label for="branch_id" class="form-label fw-bold">
+                    {{-- <label for="branch_id" class="form-label fw-bold">
                         <i class="bi bi-geo-alt me-1"></i> Chi nhánh
-                    </label>
+                    </label> --}}
                     <select name="branch_id" class="form-select" id="branch_id">
                         <option value="" {{ request('branch_id') ? '' : 'selected' }}>Chọn chi nhánh</option>
                         @if ($branches && $branches->isNotEmpty())
@@ -70,9 +70,9 @@
             <!-- Rạp (Hiển thị dropdown cho System Admin hoặc Quản lý chi nhánh) -->
             @if (auth()->user()->hasRole('System Admin') || auth()->user()->branch_id)
                 <div class="form-group col-md-2">
-                    <label for="cinema_id" class="form-label fw-bold">
+                    {{-- <label for="cinema_id" class="form-label fw-bold">
                         <i class="bi bi-camera-reels me-1"></i> Rạp
-                    </label>
+                    </label> --}}
                     <select name="cinema_id" class="form-select" id="cinema_id">
                         <option value="" {{ request('cinema_id') ? '' : 'selected' }}>Chọn rạp</option>
                         @if (auth()->user()->hasRole('System Admin') && request('branch_id') && isset($branchesRelation[request('branch_id')]))
@@ -106,17 +106,17 @@
 
             <!-- Ngày -->
             <div class="form-group col-md-2">
-                <label for="date" class="form-label fw-bold">
+                {{-- <label for="date" class="form-label fw-bold">
                     <i class="bi bi-calendar me-1"></i> Ngày
-                </label>
+                </label> --}}
                 <input type="date" name="date" id="date" class="form-control" value="{{ request('date') }}">
             </div>
 
             <!-- Phim -->
             <div class="form-group col-md-2">
-                <label for="movie_id" class="form-label fw-bold">
+                {{-- <label for="movie_id" class="form-label fw-bold">
                     <i class="bi bi-film me-1"></i> Phim
-                </label>
+                </label> --}}
                 <select name="movie_id" class="form-select" id="movie_id">
                     <option value="" {{ request('movie_id') ? '' : 'selected' }}>Chọn phim</option>
                     @if ($movies && $movies->isNotEmpty())
@@ -130,10 +130,10 @@
             </div>
 
             <!-- Trạng thái -->
-            <div class="form-group col-md-2">
-                <label for="status_id" class="form-label fw-bold">
+            <div class="form-group col-md-2 ">
+                {{-- <label for="status_id" class="form-label fw-bold">
                     <i class="bi bi-check-circle me-1"></i> Trạng thái
-                </label>
+                </label> --}}
                 <select name="status_id" class="form-select" id="status_id">
                     <option value="" {{ request('status_id') ? '' : 'selected' }}>Tất cả</option>
                     <option value="confirmed" {{ request('status_id') == 'confirmed' ? 'selected' : '' }}>Đã xác nhận
@@ -144,8 +144,8 @@
 
             <!-- Nút Lọc -->
             <div class="form-group col-md-1 d-flex align-items-end">
-                <button type="submit" class="btn btn-primary w-100">
-                    <i class="bi bi-funnel me-1"></i> Lọc
+                <button type="submit" class="btn btn-primary w-50">
+                    <i class="bx bx-search-alt-2"></i>
                 </button>
             </div>
         </form>
@@ -224,7 +224,7 @@
                                     {{ $ticket->showtime->start_time ?? 'N/A' }} -
                                     {{ $ticket->showtime->end_time ?? 'N/A' }}
                                 </div>
-                                <div><span class="fw-bold">Ngày chiếu:</span> {{ $ticket->showtime->date ?? 'N/A' }}</div>
+                                <div><span class="fw-bold">Ngày chiếu:</span> {{  \Carbon\Carbon::parse($ticket->showtime->date)->format('d/m/Y') ?? 'N/A' }}</div>
                                 <div>
                                     <span class="fw-bold">Thời hạn sử dụng:</span>
                                     {{ \Carbon\Carbon::parse($ticket->showtime->end_time ?? '')->format('H:i') }},
@@ -232,7 +232,7 @@
                                 </div>
                             </td>
                             <td>
-                                <div class="form-check form-switch form-switch-success"
+                                <div class="form-check form-switch form-switch-md  form-switch-success"
                                     style="display: flex; justify-content: center;">
                                     <input class="form-check-input switch-is-active changeStatus" type="checkbox"
                                         data-ticket-id="{{ $ticket->id }}"

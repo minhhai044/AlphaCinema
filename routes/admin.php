@@ -273,3 +273,4 @@ Route::get('print/tickets/combo/{id}', [TicketController::class, 'getComboFoodBy
 
 
 Route::post('/tickets/change-status', [TicketController::class, 'changeStatus'])->name('admin.tickets.change-status');
+// Route::middleware('auth')->get('/dashboard', [DashBoardController::class, 'index'])->name('admin.dashboard');
