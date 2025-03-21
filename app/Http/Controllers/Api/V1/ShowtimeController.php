@@ -59,10 +59,13 @@ class ShowtimeController extends Controller
         if ($branchId && $cinemId) {
 
             $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
-                $query->where('date', '>=', Carbon::now()->toDateString());
                 $query->where('branch_id', $branchId);
                 $query->where('cinema_id', $cinemId);
-                // $query->where('start_time', '>=', Carbon::now()->toTimeString());
+                $query->where('date', '>', Carbon::now()->toDateString())
+                    ->orWhere(function ($q) {
+                        $q->where('date', Carbon::now()->toDateString())
+                            ->where('start_time', '>=', Carbon::now()->toTimeString());
+                    });
             })
                 ->with('showtime')
                 ->latest('id')
