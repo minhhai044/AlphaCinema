@@ -209,8 +209,9 @@
                                                                         <td>{{ $showtime['room']['name'] }}</td>
                                                                         <td>
                                                                             <div class="d-flex justify-content-center align-items-center">
-                                                                                <div class="form-check form-switch form-switch-success">
-                                                                                    <input @checked($showtime['is_active']) class="form-check-input switch-is-active"  id="is_active{{ $showtime['id'] }}" type="checkbox">
+                                                                                <div class="custom-switch">
+                                                                                    <input @checked($showtime['is_active']) switch="primary" class="form-check-input switch-is-active"  id="is_active{{ $showtime['id'] }}" type="checkbox">
+                                                                                    <label for="is_active{{ $showtime['id'] }}"></label>
                                                                                 </div>
                                                                             </div>
                                                                         </td>
