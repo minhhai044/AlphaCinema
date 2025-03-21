@@ -300,7 +300,7 @@
                 @method('PUT')
                 <input type="hidden" name="is_publish" value="0">
                 <input type="hidden" name="is_active" value="0">
-                <button type="submit" class="btn btn-info">Thay đổi cấu trúc ghế</button>
+                <button type="submit" class="btn btn-primary">Thay đổi cấu trúc ghế</button>
                 <a href="{{route('admin.index.seat_templates')}}"><button type="button" class="btn btn-warning">Quay lại</button></a>
             </form>
            
