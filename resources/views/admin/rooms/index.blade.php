@@ -158,10 +158,11 @@
 
                         <td>
                         <div class="d-flex justify-content-center align-items-center">
-                            <div class="form-check form-switch form-switch-success">
-                                <input @checked($room->is_active) data-publish="{{ $room->is_publish }}"
+                            <div class="custom-switch">
+                                <input @checked($room->is_active) switch="primary" data-publish="{{ $room->is_publish }}"
                                     class="form-check-input switch-is-active" id="is_active{{ $room->id }}"
                                     type="checkbox">
+                                    <label for="is_active{{ $room->id }}"></label>
                             </div>
                         </div>
                         
