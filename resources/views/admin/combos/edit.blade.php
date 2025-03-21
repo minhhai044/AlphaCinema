@@ -60,7 +60,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                <span class="text-danger small" id="food_{{ $index }}_food_error">
+                                                <span class="text-danger fw-medium small" id="food_{{ $index }}_food_error">
                                                     @if ($errors->has("combo_food.$index"))
                                                         {{ $errors->first("combo_food.$index") }}
                                                     @endif
@@ -81,7 +81,7 @@
                                                         <button type="button"
                                                             class="pluss btn btn-success px-3 py-1">+</button>
                                                     </div>
-                                                    <span class="text-danger small"
+                                                    <span class="text-danger fw-medium small"
                                                         id="food_{{ $index }}_quantity_error">
                                                         @if ($errors->has("combo_quantity.$index"))
                                                             {{ $errors->first("combo_quantity.$index") }}
@@ -112,7 +112,7 @@
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                <span class="text-danger small"
+                                                <span class="text-danger fw-medium small"
                                                     id="food_{{ $index }}_food_error"></span>
                                             </div>
                                             <div class="col-md-4 d-flex align-items-center justify-content-between">
@@ -129,7 +129,7 @@
                                                         <button type="button"
                                                             class="pluss btn btn-success px-3 py-1">+</button>
                                                     </div>
-                                                    <span class="text-danger small"
+                                                    <span class="text-danger fw-medium small"
                                                         id="food_{{ $index }}_quantity_error"></span>
                                                 </div>
                                             </div>
@@ -145,13 +145,15 @@
 
                             <div class="col-md-4 mb-3">
                                 <div class="mb-3">
-                                    <label for="name" class="form-label"><span class="text-danger">*</span>Tên
+                                    <label for="name" class="form-label"><span class="text-danger fw-medium">*</span>Tên
                                         Combo</label>
                                     <input type="text" name="name" id="name" class="form-control"
                                         value="{{ old('name', $combo->name) }}" placeholder="Nhập tên món ăn">
-                                    @if ($errors->has('name'))
-                                        <div class="text-danger">{{ $errors->first('name') }}</div>
-                                    @endif
+                                        @error('name')
+                                        <span class="text-danger fw-medium">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
 
@@ -163,14 +165,16 @@
 
                             <div class="col-md-4 mb-3">
                                 <div class="mb-3">
-                                    <label for="price_sale" class="form-label"><span class="text-danger">*</span>Giá
+                                    <label for="price_sale" class="form-label"><span class="text-danger fw-medium">*</span>Giá
                                         Sale(VNĐ)</label>
                                     <input type="text" class="form-control" name="price_sale" id="price_sale"
                                         placeholder="Nhập giá tiền"
                                         value="{{ old('price_sale', formatPrice($combo->price_sale)) }}">
-                                    @if ($errors->has('price_sale'))
-                                        <div class="text-danger">{{ $errors->first('price_sale') }}</div>
-                                    @endif
+                                    @error('price_sale')
+                                        <span class="text-danger fw-medium">
+                                            <strong>{{ $message }}</strong>
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
@@ -179,9 +183,11 @@
                             <label for="food-description" class="form-label"><span class="required">*</span> Mô
                                 tả</label>
                             <textarea class="form-control" name="description" rows="6" placeholder="Nhập mô tả">{{ old('description', $combo->description) }}</textarea>
-                            @if ($errors->has('description'))
-                                <div class="text-danger">{{ $errors->first('description') }}</div>
-                            @endif
+                            @error('description')
+                                <span class="text-danger fw-medium">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
                         </div>
                     </div>
 
@@ -221,19 +227,21 @@
                             <div class="card-body">
                                 <div class="mb-2">
                                     <label for="combo-image" class="form-label"><span
-                                            class="text-danger required">*</span>Ảnh</label>
+                                            class="text-danger fw-medium required">*</span>Ảnh</label>
                                     <input class="form-control" type="file" name="img_thumbnail" id="combo-image"
                                         onchange="previewImage(event)">
                                 </div>
                                 @if ($combo->img_thumbnail)
                                     <div class="mt-3 text-center">
                                         <img src="{{ Storage::url($combo->img_thumbnail) }}" alt="Thumbnail"
-                                            class="img-fluid" width="200">
+                                            class="img-fluid" width="200"  style="max-width: 70%; max-height: 150px;">
                                     </div>
                                 @endif
-                                @if ($errors->has('img_thumbnail'))
-                                    <div class="text-danger">{{ $errors->first('img_thumbnail') }}</div>
-                                @endif
+                                @error('img_thumbnail')
+                                    <span class="text-danger fw-medium">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
                                 <div id="image-container" class="d-none position-relative mt-3 text-center">
                                     <img id="image-preview" src="" alt="Preview"
                                         class="img-fluid mb-2 text-center" style="max-width: 70%; max-height: 150px;">
@@ -315,7 +323,7 @@
                                     <option value="{{ $food['id'] }}">{{ $food['name'] }}</option>
                                 @endforeach
                             </select>
-                            <span class="text-danger small" id="${id}_food_error"></span>
+                            <span class="text-danger fw-medium small" id="${id}_food_error"></span>
                         </div>
                         <div class="col-md-4 d-flex align-items-center justify-content-between">
                             <div class="w-100">
@@ -326,7 +334,7 @@
                                         id="${id}" value="0" min="0" max="10">
                                     <button type="button" class="pluss btn btn-success px-3 py-1">+</button>
                                 </div>
-                                <span class="text-danger small" id="${id}_quantity_error"></span>
+                                <span class="text-danger fw-medium small" id="${id}_quantity_error"></span>
                             </div>
                         </div>
                         <div class="col-md-2 d-flex align-items-end justify-content-center mt-3">
@@ -385,7 +393,7 @@
                     let $foodItem = $(this).closest('.food-item');
                     let $foodSelect = $foodItem.find('.food-select');
                     let $quantityInput = $foodItem.find('.food-quantity');
-                    let $errorSpan = $foodItem.find('.text-danger[id$="_quantity_error"]');
+                    let $errorSpan = $foodItem.find('.text-danger fw-medium[id$="_quantity_error"]');
                     if ($foodSelect.val() === '') {
                         $errorSpan.text('Vui lòng chọn món ăn trước!');
                         return;
@@ -399,7 +407,7 @@
                         updateTotalPrice();
                         $errorSpan.text('');
                     } else if (currentValue >= 10) {
-                        $errorSpan.removeClass('text-danger').addClass(
+                        $errorSpan.removeClass('text-danger fw-medium').addClass(
                             'text-warning'); // Xanh cho thành công
                         $errorSpan.text('Số lượng tối đa là 10');
                     }
@@ -409,7 +417,7 @@
                     let $foodItem = $(this).closest('.food-item');
                     let $foodSelect = $foodItem.find('.food-select');
                     let $quantityInput = $foodItem.find('.food-quantity');
-                    let $errorSpan = $foodItem.find('.text-danger[id$="_quantity_error"]');
+                    let $errorSpan = $foodItem.find('.text-danger fw-medium[id$="_quantity_error"]');
                     if ($foodSelect.val() === '') {
                         $errorSpan.text('Vui lòng chọn món ăn trước!');
                         return;
@@ -422,8 +430,8 @@
                         updateTotalPrice();
                         $errorSpan.text(''); // Xóa lỗi nếu giảm thành công
                     } else if (currentValue <= 0) {
-                        $errorSpan.removeClass('text-danger').addClass(
-                            'text-danger'); // Xanh cho thành công
+                        $errorSpan.removeClass('text-danger fw-medium').addClass(
+                            'text-danger fw-medium'); // Xanh cho thành công
                         $errorSpan.text('Số lượng phải lớn hơn 0');
                     }
                 });
@@ -452,8 +460,8 @@
                 $('.food-item').each(function() {
                     let $foodSelect = $(this).find('.food-select');
                     let $quantityInput = $(this).find('.food-quantity');
-                    let $foodError = $(this).find('.text-danger[id$="_food_error"]');
-                    let $quantityError = $(this).find('.text-danger[id$="_quantity_error"]');
+                    let $foodError = $(this).find('.text-danger fw-medium[id$="_food_error"]');
+                    let $quantityError = $(this).find('.text-danger fw-medium[id$="_quantity_error"]');
 
                     const quantityValue = parseInt($quantityInput.val().trim());
                     const selectedFood = $foodSelect.val();

@@ -19,7 +19,7 @@ class UpdateActiveController extends Controller {
             if ($food->combos_count > 0 && $request->is_active == 0) {
                 return response()->json([
                     'success' => false,
-                    'message' => 'Không thể tắt món ăn vì đang có trong combo!',
+                    'message' => 'Không thể tắt món ăn vì đang có trong Combo!',
                 ]);
             }
     

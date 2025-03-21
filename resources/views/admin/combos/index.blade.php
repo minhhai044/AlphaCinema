@@ -173,7 +173,7 @@
                     {
                         data: 'is_active',
                         render: function(data, type, row) {
-                            return `<div class="form-check form-switch form-switch-success">
+                            return `<div class="form-check form-switch form-switch-md mb-3" dir="ltr">
                                         <input class="form-check-input switch-is-active changeActive" 
                                             type="checkbox"
                                             onclick="return confirm('Bạn có chắc muốn thay đổi?')"
