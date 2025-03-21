@@ -76,9 +76,9 @@
                                 @foreach ($cinemas as $cinema)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $cinema->name }}</td>
-                                        <td>{{ $cinema->branch->name }}</td>
-                                        <td>{{ $cinema->address }}</td>
+                                        <td>{{ limitText($cinema->name, 20) }}</td>
+                                        <td>{{ limitText($cinema->branch->name, 20) }}</td>
+                                        <td>{{ limitText($cinema->address, 20) }}</td>
                                         <td>
                                             {{-- <span class="badge {{ $cinema->is_active ? 'badge-soft-success' : 'badge-soft-danger' }}">
                                                 {{ $cinema->is_active ? 'Active' : 'No Active' }}
