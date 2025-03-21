@@ -22,7 +22,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Quản lý rạp chiếu</h4>
+                <h4 class="mb-sm-0 font-size-20 fw-semibold">Quản lý rạp chiếu</h4>
 
                 <div class="page-title-right">
                     <a id="openCreateCinemaModal" class="btn btn-primary">
@@ -38,63 +38,60 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="table-responsive min-vh-100">
-                        <table id="datatable" class="table table-bordered text-center">
-                            <thead>
+
+            <div class="table-responsive min-vh-100">
+                <table id="datatable" class="table table-bordered text-center">
+                    <thead>
+                        <tr>
+                            <th class="fw-semibold text-center">STT</th>
+                            <th class="fw-semibold text-center">Tên rạp</th>
+                            <th class="fw-semibold text-center">Chi nhánh</th>
+                            <th class="fw-semibold text-center">Địa chỉ</th>
+                            <th class="fw-semibold text-center">Hoạt động</th>
+                            <th class="fw-semibold text-center">Chức năng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if ($cinemas->isNotEmpty())
+                            @foreach ($cinemas as $cinema)
                                 <tr>
-                                    <th class="fw-semibold text-center">STT</th>
-                                    <th class="fw-semibold text-center">Tên rạp</th>
-                                    <th class="fw-semibold text-center">Chi nhánh</th>
-                                    <th class="fw-semibold text-center">Địa chỉ</th>
-                                    <th class="fw-semibold text-center">Hoạt động</th>
-                                    <th class="fw-semibold text-center">Chức năng</th>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td class="fw-semibold">{{ limitText($cinema->name, 20) }}</td>
+                                    <td class="fw-semibold">{{ limitText($cinema->branch->name, 20) }}</td>
+                                    <td>{{ limitText($cinema->address, 20) }}</td>
+                                    <td>
+
+                                        <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST"
+                                            id="toggleForm{{ $cinema->id }}">
+                                            @csrf
+                                            <input type="checkbox" name="is_active" id="switch{{ $cinema->id }}"
+                                                switch="primary" {{ $cinema->is_active ? 'checked' : '' }}
+                                                onchange="confirmChange({{ $cinema->id }})">
+                                            <label for="switch{{ $cinema->id }}"></label>
+                                        </form>
+
+
+                                    </td>
+                                    <td>
+                                        <a class="dropdown-item openUpdateCinemaModal" data-edit-id="{{ $cinema->id }}"
+                                            data-branch-id="{{ $cinema->branch_id }}" data-name="{{ $cinema->name }}"
+                                            data-address="{{ $cinema->address }}"
+                                            data-description="{{ $cinema->description }}"><button
+                                                class="btn btn-warning btn-sm">
+                                                <i class="bx bx-edit"></i>
+                                            </button></a>
+                                    </td>
                                 </tr>
-                            </thead>
-                            <tbody>
-                                @if ($cinemas->isNotEmpty())
-                                    @foreach ($cinemas as $cinema)
-                                        <tr>
-                                            <td>{{ $loop->iteration }}</td>
-                                            <td>{{ limitText($cinema->name, 20) }}</td>
-                                            <td>{{ limitText($cinema->branch->name, 20) }}</td>
-                                            <td>{{ limitText($cinema->address, 20) }}</td>
-                                            <td>
+                            @endforeach
+                        @endif
 
-                                                <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}"
-                                                    method="POST" id="toggleForm{{ $cinema->id }}">
-                                                    @csrf
-                                                    <input type="checkbox" name="is_active" id="switch{{ $cinema->id }}"
-                                                        switch="primary" {{ $cinema->is_active ? 'checked' : '' }}
-                                                        onchange="confirmChange({{ $cinema->id }})">
-                                                    <label for="switch{{ $cinema->id }}"></label>
-                                                </form>
+                    </tbody>
 
+                </table>
 
-                                            </td>
-                                            <td>
-                                                <a class="dropdown-item openUpdateCinemaModal"
-                                                    data-edit-id="{{ $cinema->id }}"
-                                                    data-branch-id="{{ $cinema->branch_id }}"
-                                                    data-name="{{ $cinema->name }}" data-address="{{ $cinema->address }}"
-                                                    data-description="{{ $cinema->description }}"><button
-                                                        class="btn btn-warning btn-sm">
-                                                        <i class="bx bx-edit"></i>
-                                                    </button></a>
-                                            </td>
-                                        </tr>
-                                    @endforeach
-                                @endif
-
-                            </tbody>
-
-                        </table>
-
-                    </div>
-
-                </div>
             </div>
+
+
         </div>
     </div>
 
