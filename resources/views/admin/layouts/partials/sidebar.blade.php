@@ -26,9 +26,10 @@
             @canany(['Danh sách thống kê'])
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
-                        <i data-feather="grid"></i>
+                        <i data-feather="pie-chart"></i>
                         <span data-key="t-service-systems">Thống kê</span>
                     </a>
+                    
                     <ul class="sub-menu" aria-expanded="false">
                         <li>
                             <a href="{{ route('admin.statistical.cinemaRevenue') }}">
@@ -74,7 +75,8 @@
                 ])
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
-                        <i data-feather="grid"></i>
+                        <i data-feather="gift"></i>
+
                         <span data-key="t-service-systems">Dịch vụ và ưu đãi</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
@@ -127,7 +129,9 @@
                 ])
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
-                        <i data-feather="grid"></i>
+                        <i data-feather="map"></i>
+
+
                         <span data-key="t-service-systems">Hệ thống Rạp</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
@@ -188,7 +192,7 @@
                 ])
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
-                        <i data-feather="grid"></i>
+                        <i data-feather="film"></i>
                         <span data-key="t-service-systems">Phim & Suất chiếu</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
@@ -235,7 +239,8 @@
             @canany(['Danh sách tài khoản', 'Thêm tài khoản', 'Sửa tài khoản', 'Xóa tài khoản'])
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
-                        <i data-feather="grid"></i>
+                        <i data-feather="users"></i>
+
                         <span data-key="t-service-systems">Quản lý tài khoản</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
@@ -259,7 +264,7 @@
                 'Danh sách slideshows', 'Thêm slideshows', 'Sửa slideshows', 'Xóa slideshows'])
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
-                        <i data-feather="grid"></i>
+                        <i data-feather="settings"></i>
                         <span data-key="t-service-systems">Cấu hình</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
