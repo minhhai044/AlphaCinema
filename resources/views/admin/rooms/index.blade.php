@@ -137,13 +137,13 @@
     <table id="datatable" class="table table-bordered text-center">
         <thead>
             <tr>
-                <th class="fw-semibold">STT</th>
-                <th class="fw-semibold">Tên phòng</th>
-                <th class="fw-semibold">Chi nhánh</th>
-                <th class="fw-semibold">Rạp phim</th>
-                <th class="fw-semibold">Loại phòng</th>
-                <th class="fw-semibold">Hoạt động</th>
-                <th class="fw-semibold">Chức năng</th>
+                <th class="fw-semibold text-center">STT</th>
+                <th class="fw-semibold text-center">Tên phòng</th>
+                <th class="fw-semibold text-center">Chi nhánh</th>
+                <th class="fw-semibold text-center">Rạp phim</th>
+                <th class="fw-semibold text-center">Loại phòng</th>
+                <th class="fw-semibold text-center">Hoạt động</th>
+                <th class="fw-semibold text-center">Chức năng</th>
             </tr>
         </thead>
         <tbody>
