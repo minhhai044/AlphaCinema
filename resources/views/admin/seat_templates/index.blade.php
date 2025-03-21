@@ -19,7 +19,7 @@
 
                     <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">
-                        Thêm mẫu ghế
+                        <i class="bi bi-plus-lg"></i> Thêm mẫu ghế
                     </button>
                 </div>
 
