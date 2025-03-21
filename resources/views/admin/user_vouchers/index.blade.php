@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('title', 'Quản lý User Vouchers')
+@section('title', 'Áp mã giảm giá')
 
 @section('style')
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
@@ -18,6 +18,10 @@
     <style>
         #datatable_length select {
             width: 60px;
+        }
+        #datatable thead th {
+            text-align: center;
+            vertical-align: middle;
         }
     </style>
 @endsection
@@ -40,47 +44,28 @@
         </div>
     @endif
 
-    <!-- Start Page Title -->
-    <div class="row">
-        <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Quản lý User Vouchers</h4>
-                <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="#">User Vouchers</a></li>
-                        <li class="breadcrumb-item active">Danh sách</li>
-                    </ol>
-                </div>
-            </div>
-        </div>
-    </div>
+
     <!-- End Page Title -->
 
     <div class="row">
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Áp mã giảm giá</h4>
-                    <div class="row align-items-center mb-3">
-                        <div class="col-md-6">
-                            {{-- <div class="d-flex align-items-center">
-                                <span class="me-2">Hiển thị:</span>
-                                <select id="pageLength" class="form-select w-auto">
-                                    <option value="5" selected>5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                    <option value="20">20</option>
-                                    <option value="1000">Tất cả</option>
-                                </select>
-                            </div> --}}
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="mb-4">
+                                <h6 class="mb-sm-0 font-size-16">Áp mã giảm giá</h6>
+                            </div>
                         </div>
-                        <div class="col-md-6 text-end">
-                            <a href="{{ route('admin.user-vouchers.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                        <div class="col-sm-auto">
+                            <div class="mb-4">
+                                <a href="{{ route('admin.user-vouchers.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                            </div>
                         </div>
                     </div>
 
                     <div class="table-responsive">
-                        <table id="datatable" class="table table-bordered w-100">
+                        <table id="datatable" class="table table-bordered w-100 text-center">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -99,7 +84,7 @@
                                         <td>{{ $User_voucher->voucher->code }}</td>
                                         <td>{{ $User_voucher->voucher->title }}</td>
                                         <td>{{ $User_voucher->usage_count }}</td>
-                                        <td>
+                                        <td class="text-center">
                                             <a href="{{ route('admin.user-vouchers.edit', $User_voucher) }}" class="btn btn-warning btn-sm">
                                                 <i class="fas fa-edit"></i> 
                                             </a>

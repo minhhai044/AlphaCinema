@@ -2,8 +2,8 @@
 @section('title', 'Danh sách mã giảm giá')
 
 @section('style')
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
@@ -19,6 +19,10 @@
         #datatable_length select {
             width: 60px;
         }
+        #datatable thead th {
+            text-align: center;
+            vertical-align: middle;
+        }
     </style>
 @endsection
 @section('style-libs')
@@ -33,28 +37,21 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Danh sách mã giảm giá</h4>
-
-                    <div class="row align-items-center mb-3">
-                        <div class="col-md-6">
-                            {{-- <div class="d-flex align-items-center">
-                                <span class="me-2">Hiển thị:</span>
-                                <select id="pageLength" class="form-select w-auto">
-                                    <option value="5" selected>5</option>
-                                    <option value="10">10</option>
-                                    <option value="15">15</option>
-                                    <option value="20">20</option>
-                                    <option value="1000">Tất cả</option>
-                                </select>
-                            </div> --}}
+                    <div class="row">
+                        <div class="col-sm">
+                            <div class="mb-4">
+                                <h6 class="mb-sm-0 font-size-16">Danh sách mã giảm giá</h6>
+                            </div>
                         </div>
-                        <div class="col-md-6 text-end">
-                            <a href="{{ route('admin.vouchers.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                        <div class="col-sm-auto">
+                            <div class="mb-4">
+                                <a href="{{ route('admin.vouchers.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                            </div>
                         </div>
                     </div>
 
                     <div class="table-responsive">
-                        <table id="datatable" class="table table-bordered w-100">
+                        <table id="datatable" class="table table-bordered w-100 text-center">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -72,34 +69,40 @@
                                         <td>{{ $voucher->id }}</td>
                                         <td>{{ $voucher->code }}</td>
                                         <td>{{ number_format($voucher->discount, 0, ',', '.') }} VNĐ</td>
-                                        <td>{{ $voucher->start_date_time }}</td>
-                                        <td>{{ $voucher->end_date_time }}</td>
+                                        <td>{{ \Carbon\Carbon::parse($voucher->start_date_time)->format('d/m/Y H:i:s') }}
+                                        </td>
+                                        <td>{{ \Carbon\Carbon::parse($voucher->end_date_time)->format('d/m/Y H:i:s') }}
+                                        </td>
 
-                                        <td class="d-flex justify-content-center align-items-center">
-                                            <form action="{{ route('admin.vouchers.toggle', $voucher->id) }}" class="form-check form-switch form-switch-success" method="POST" id="toggleForm{{ $voucher->id }}">
+
+                                        <td class="d-flex justify-content-center align-items-center" >
+                                            <form action="{{ route('admin.vouchers.toggle', $voucher->id) }}"
+                                                class="form-check form-switch form-switch-success" method="POST"
+                                                id="toggleForm{{ $voucher->id }}">
                                                 @csrf
-                                                <input type="checkbox" name="is_active" id="switch{{ $voucher->id }}"  class="form-check-input switch-is-active changeActive"
-                                                       {{ $voucher->is_active ? 'checked' : '' }}
-                                                       onchange="confirmChange({{ $voucher->id }})">
-                                                <label for="switch{{ $voucher->id }}" data-on-label="Yes" data-off-label="No"></label>
+                                                <input type="checkbox" name="is_active" id="switch{{ $voucher->id }}"
+                                                    class="form-check-input switch-is-active changeActive" style="width: 55px; height: 25px;"
+                                                    {{ $voucher->is_active ? 'checked' : '' }}
+                                                    onchange="confirmChange({{ $voucher->id }})">
+                                                <label for="switch{{ $voucher->id }}" data-on-label="Yes"
+                                                    data-off-label="No"></label>
                                             </form>
 
-                                            
+
                                         </td>
-                                        
-                                        <td>
+
+                                        <td class="text-center">
                                             <a href="{{ route('admin.vouchers.show', $voucher) }}">
-                                                <button title="xem" class="btn btn-success btn-sm "
-                                                    type="button"><i class="bi bi-eye"></i></button>
+                                                <button title="xem" class="btn btn-success btn-sm " type="button"><i
+                                                        class="bi bi-eye"></i></button>
                                             </a>
 
                                             <a href="{{ route('admin.vouchers.edit', $voucher) }}">
-                                                <button title="xem" class="btn btn-warning btn-sm "
-                                                    type="button"><i class="fas fa-edit"></i></button>
+                                                <button title="xem" class="btn btn-warning btn-sm " type="button"><i
+                                                        class="fas fa-edit"></i></button>
                                             </a>
 
-                                            <form method="POST"
-                                                action="{{ route('admin.vouchers.destroy', $voucher) }}"
+                                            <form method="POST" action="{{ route('admin.vouchers.destroy', $voucher) }}"
                                                 class="d-inline-block">
                                                 @csrf
                                                 @method('DELETE')
@@ -148,12 +151,14 @@
 
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
-    <script>function confirmChange(voucherId) {
-        if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
-            document.getElementById('toggleForm' + voucherId).submit();
-        } else {
-            return false;
+    <script>
+        function confirmChange(voucherId) {
+            if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
+                document.getElementById('toggleForm' + voucherId).submit();
+            } else {
+                return false;
+            }
         }
-    }</script>
-   
+    </script>
+
 @endsection

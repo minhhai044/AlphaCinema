@@ -188,13 +188,11 @@
 
                         <div class="card-footer">
                             <button class="btn btn-primary">
-                                Submit
-                                <i class="bx bx-chevron-right ms-1"></i>
+                               + Thêm mới
                             </button>
-                            <button class="btn btn-danger" type="button">
-                                Cancel
-                                <i class="bx bx-chevron-right ms-1"></i>
-                            </button>
+                            <a href="{{ route('admin.vouchers.index') }}" class="btn btn-danger">
+                                Hủy
+                            </a>
                         </div>
                     </div>
                 </div>

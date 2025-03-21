@@ -145,10 +145,10 @@
 
                     <div class="card-footer">
                         <button class="btn btn-primary">
-                            Submit
+                            + Thêm mới
                         </button>
                         <button class="btn btn-danger" type="button" onclick="window.history.back();">
-                            Cancel
+                            Hủy
                         </button>
                     </div>
                 </div>

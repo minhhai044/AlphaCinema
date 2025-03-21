@@ -19,6 +19,11 @@
         #datatable_length select {
             width: 60px;
         }
+
+        #datatable thead th {
+            text-align: center;
+            vertical-align: middle;
+        }
     </style>
 @endsection
 @section('style-libs')
@@ -56,7 +61,7 @@
 
 
                             <div class="text-end mt-2">
-                                <button type="submit" class="btn btn-primary mx-1">Thêm mới</button>
+                                <button type="submit" class="btn btn-primary mx-1">+ Thêm mới</button>
                             </div>
                         </div>
                     </form>
@@ -69,7 +74,7 @@
                 <div class="card-body">
                     <h4 class="card-title">Danh sách chi nhánh</h4>
                     <div class="table-responsive">
-                        <table id="datatable" class="table table-bordered w-100">
+                        <table id="datatable" class="table table-bordered w-100 text-center">
                             <thead>
                                 <tr>
                                     <th>ID</th>
@@ -92,6 +97,7 @@
                                                 @csrf
                                                 <input type="checkbox" name="is_active" id="switch{{ $branch->id }}"
                                                     class="form-check-input switch-is-active changeActive"
+                                                    style="width: 55px; height: 25px;"
                                                     {{ $branch->is_active ? 'checked' : '' }}
                                                     onchange="confirmChange({{ $branch->id }})">
                                                 <label for="switch{{ $branch->id }}" data-on-label="Yes"
@@ -101,7 +107,7 @@
 
                                         <td>{{ $branch->created_at->format('d/m/Y H:i') }}</td>
                                         <td>{{ $branch->updated_at->format('d/m/Y H:i') }}</td>
-                                        <td>
+                                        <td class="text-center">
                                             <button class="btn btn-warning btn-sm editBranch" data-id="{{ $branch->id }}"
                                                 data-name="{{ $branch->name }}" data-active="{{ $branch->is_active }}">
                                                 <i class="fas fa-edit"></i>
