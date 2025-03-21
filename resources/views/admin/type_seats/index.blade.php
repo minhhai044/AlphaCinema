@@ -30,7 +30,7 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0">Loại ghế</h4>
+                <h4 class="mb-sm-0 font-size-20">Quản lý loại ghế </h4>
                 
             </div>
         </div>
@@ -39,22 +39,21 @@
 
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <table id="datatable" class="table table-bordered dt-responsive nowrap table-striped align-middle"
+            
+                    <table id="datatable" class="table table-bordered  text-center"
                         style="width:100%">
                         <thead  >
                             <tr>
-                                <th>#</th>
-                                <th>Tên loại ghế</th>
-                                <th>Giá</th>
-                                <th>Chức năng</th>
+                                <th class="text-center">STT</th>
+                                <th class="text-center">Tên loại ghế</th>
+                                <th class="text-center">Giá</th>
+                                <th class="text-center">Chức năng</th>
                             </tr>
                         </thead>
                         <tbody  >
                             @foreach ($typeSeats as $item)
                                 <tr>
-                                    <td>{{ $item->id }}</td>
+                                    <td>{{ $loop->iteration  }}</td>
                                     <td>{{ $item->name }}</td>
                                     <td>{{ number_format($item->price) }} VNĐ</td>
                                     <td>
@@ -70,8 +69,6 @@
                             @endforeach
                         </tbody>
                     </table>
-                </div>
-            </div>
         </div><!--end col-->
     </div><!--end row-->
     

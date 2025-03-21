@@ -25,8 +25,8 @@
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
-            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Quản lí danh sách phòng </h4>
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between ">
+                <h4 class="mb-sm-0 font-size-20">Quản lí danh sách phòng </h4>
 
                 <div class="col-sm-auto">
                     <div class="mb-4">
@@ -43,31 +43,20 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="mb-4">
-                                
-                            </div>
-                        </div>
-                        <div class="col-sm-auto">
-
-                        </div>
-                        
-                    </div>
+            
+                 
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="table-responsive">
-                                <table class="table align-middle table-nowrap dt-responsive nowrap w-100"
+                                <table class="table table-bordered text-center"
                                     id="datatable">
-                                    <thead class="table-light">
+                                    <thead >
                                         <tr >
-                                            <th>#</th>
-                                            <th>Loại phòng</th>
-                                            <th>Phụ Phí</th>
-                                            <th>Thời gian tạo</th>
-                                            <th>Hành động</th>
+                                            <th class="text-center">STT</th>
+                                            <th class="text-center">Loại phòng</th>
+                                            <th class="text-center">Phụ Phí</th>
+                                            <th class="text-center">Thời gian tạo</th>
+                                            <th class="text-center">Hành động</th>
                                         </tr>
                                     </thead>
                                     <tbody class="roomList">
@@ -87,17 +76,7 @@
                                                         data-surcharge="{{ $item->surcharge }}">
                                                         <i class="fas fa-edit"></i>
                                                     </button>
-                                                    <!-- Nút xóa -->
-                                                    {{-- <form method="POST"
-                                                        action="{{ route('admin.typerooms.destroy', $item) }}"
-                                                        class="d-inline-block">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="edit-list btn btn-danger btn-sm"
-                                                            onclick="return confirm('Bạn có muốn xóa không')">
-                                                            <i class="bi bi-trash"></i>
-                                                        </button>
-                                                    </form> --}}
+                                                   
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -107,13 +86,6 @@
                             </div>
                         </div>
                     </div>
-
-
-
-
-
-                </div>
-            </div>
         </div>
     </div>
     {{--  end index --}}
