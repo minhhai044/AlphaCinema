@@ -22,15 +22,15 @@
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Cinemas Managers</h4>
+                <h4 class="mb-sm-0 font-size-18">Quản lý rạp chiếu</h4>
 
                 <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item">
-                            <a href="javascript: void(0);">Cinemas</a>
-                        </li>
-                        <li class="breadcrumb-item active">Cinema List</li>
-                    </ol>
+                    <a id="openCreateCinemaModal" class="btn btn-primary">
+                        <i class="bx bx-plus me-1"></i> Thêm Mới
+                    </a>
+                    <a href="{{ route('admin.export', 'cinemas') }}" class="btn btn-warning">
+                        <i class="bx bx-download me-1"></i> Xuất Excel
+                    </a>
                 </div>
             </div>
         </div>
@@ -40,18 +40,6 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h6 class="font-size-16"></h6>
-                        <div class="d-flex gap-2">
-                            <a id="openCreateCinemaModal" class="btn btn-light">
-                                <i class="bx bx-plus me-1"></i> Thêm Mới
-                            </a>
-                            <a href="{{ route('admin.export', 'cinemas') }}" class="btn btn-warning">
-                                <i class="bx bx-download me-1"></i> Xuất Excel
-                            </a>
-                        </div>
-                    </div>
-
                     <div class="table-responsive min-vh-100">
                         <table id="datatable" class="table table-bordered text-center">
                             <thead>
@@ -65,58 +53,40 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($cinemas as $cinema)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ limitText($cinema->name, 20) }}</td>
-                                        <td>{{ limitText($cinema->branch->name, 20) }}</td>
-                                        <td>{{ limitText($cinema->address, 20) }}</td>
-                                        <td>
+                                @if ($cinemas->isNotEmpty())
+                                    @foreach ($cinemas as $cinema)
+                                        <tr>
+                                            <td>{{ $loop->iteration }}</td>
+                                            <td>{{ limitText($cinema->name, 20) }}</td>
+                                            <td>{{ limitText($cinema->branch->name, 20) }}</td>
+                                            <td>{{ limitText($cinema->address, 20) }}</td>
+                                            <td>
 
-                                            <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST"
-                                                id="toggleForm{{ $cinema->id }}">
-                                                @csrf
-                                                <input type="checkbox" name="is_active" id="switch{{ $cinema->id }}"
-                                                    switch="success" {{ $cinema->is_active ? 'checked' : '' }}
-                                                    onchange="confirmChange({{ $cinema->id }})">
-                                                <label for="switch{{ $cinema->id }}" data-on-label="Yes"
-                                                    data-off-label="No"></label>
-                                            </form>
+                                                <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}"
+                                                    method="POST" id="toggleForm{{ $cinema->id }}">
+                                                    @csrf
+                                                    <input type="checkbox" name="is_active" id="switch{{ $cinema->id }}"
+                                                        switch="primary" {{ $cinema->is_active ? 'checked' : '' }}
+                                                        onchange="confirmChange({{ $cinema->id }})">
+                                                    <label for="switch{{ $cinema->id }}"></label>
+                                                </form>
 
 
-                                        </td>
-                                        <td>
-                                            <div class="dropdown">
-                                                <a href="#" class="dropdown-toggle" data-bs-toggle="dropdown">
-                                                    <i class="mdi mdi-dots-horizontal"></i>
-                                                </a>
-                                                <ul class="dropdown-menu">
-                                                    <li>
-                                                        <a class="dropdown-item openUpdateCinemaModal"
-                                                            data-edit-id="{{ $cinema->id }}"
-                                                            data-branch-id="{{ $cinema->branch_id }}"
-                                                            data-name="{{ $cinema->name }}"
-                                                            data-address="{{ $cinema->address }}"
-                                                            data-description="{{ $cinema->description }}">
-                                                            <i class="mdi mdi-pencil text-success me-1"></i> Edit
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <form id="delete-cinema-{{ $cinema->id }}" method="POST"
-                                                            action="{{ route('admin.cinemas.destroy', $cinema) }}">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="button" class="dropdown-item text-danger"
-                                                                onclick="handleDelete({{ $cinema->id }})">
-                                                                <i class="mdi mdi-trash-can me-1"></i> Delete
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                @endforeach
+                                            </td>
+                                            <td>
+                                                <a class="dropdown-item openUpdateCinemaModal"
+                                                    data-edit-id="{{ $cinema->id }}"
+                                                    data-branch-id="{{ $cinema->branch_id }}"
+                                                    data-name="{{ $cinema->name }}" data-address="{{ $cinema->address }}"
+                                                    data-description="{{ $cinema->description }}"><button
+                                                        class="btn btn-warning btn-sm">
+                                                        <i class="bx bx-edit"></i>
+                                                    </button></a>
+                                            </td>
+                                        </tr>
+                                    @endforeach
+                                @endif
+
                             </tbody>
 
                         </table>
@@ -129,7 +99,7 @@
     </div>
 
     <div class="modal fade" id="createCinemaModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="createCinemaModalLabel">
@@ -145,8 +115,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="updateName" class="form-label">
-                                    <span class="text-danger">*</span>
-                                    Tên rạp chiếu:
+
+                                    Tên rạp chiếu <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control create-name" id="createName" name="name"
                                     required placeholder="Nhập tên cấp bậc">
@@ -155,12 +125,12 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="cinema-branch" class="form-label">
-                                    <span class="text-danger">*</span>
-                                    Chi nhánh
+
+                                    Chi nhánh <span class="text-danger">*</span>
                                 </label>
-                                <select id="createBranch" class="form-control create-branch_id"
-                                    placeholder="Chọn chi nhánh" name="branch_id">
-                                    <option selected value="" class="text-secondary">Select branch</option>
+                                <select id="createBranch" class="form-control create-branch_id" placeholder="Chọn chi nhánh"
+                                    name="branch_id">
+                                    <option selected value="" class="text-secondary">Chọn chi nhánh</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">
                                             {{ $branch->name }}
@@ -172,11 +142,11 @@
 
                             <div class="col-md-12 mb-3">
                                 <label for="createAddress" class="form-label">
-                                    <span class="text-danger">*</span>
-                                    Địa chỉ
+
+                                    Địa chỉ <span class="text-danger">*</span>
                                 </label>
-                                <input class="form-control create-address" type="text" name="address"
-                                    id="createAddress" placeholder="Địa chỉ rạp chiếu">
+                                <input class="form-control create-address" type="text" name="address" id="createAddress"
+                                    placeholder="Địa chỉ rạp chiếu">
                                 <small class="fst-italic text-danger mt-3 address-error" id="createAddressError"></small>
                             </div>
 
@@ -201,7 +171,7 @@
     </div>
 
     <div class="modal fade" id="updateCinemaModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog">
+        <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="updateCinemaModalLabel">
@@ -219,8 +189,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="updateName" class="form-label">
-                                    <span class="text-danger">*</span>
-                                    Tên rạp chiếu:
+
+                                    Tên rạp chiếu <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control update-name" id="updateName" name="name"
                                     required placeholder="Nhập tên cấp bậc">
@@ -229,8 +199,8 @@
 
                             <div class="col-md-6 mb-3">
                                 <label for="cinema-branch" class="form-label">
-                                    <span class="text-danger">*</span>
-                                    Chi nhánh
+
+                                    Chi nhánh <span class="text-danger">*</span>
                                 </label>
                                 <select id="updateBranch" class="form-control update-branch_id"
                                     placeholder="Chọn chi nhánh" name="branch_id">
@@ -246,8 +216,8 @@
 
                             <div class="col-md-12 mb-3">
                                 <label for="updateAddress" class="form-label">
-                                    <span class="text-danger">*</span>
-                                    Địa chỉ
+
+                                    Địa chỉ <span class="text-danger">*</span>
                                 </label>
                                 <input class="form-control update-address" type="text" name="address"
                                     id="updateAddress" placeholder="Địa chỉ rạp chiếu">
@@ -292,7 +262,8 @@
     </script>
 
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
-
+    <script src="{{ asset('assets/js/common.js') }}"></script>
+    <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
     <script>
         function confirmChange(voucherId) {
             if (confirm("Bạn có muốn thay đổi trạng thái không?")) {

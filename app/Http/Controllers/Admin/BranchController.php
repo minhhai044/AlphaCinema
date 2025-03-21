@@ -82,6 +82,6 @@ class BranchController extends Controller
         $branch->is_active = $request->has('is_active');
         $branch->save();
 
-        return back();
+        return back()->with('success','Thao tác thành công !!!');
     }
 }
