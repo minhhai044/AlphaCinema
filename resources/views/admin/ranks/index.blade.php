@@ -1,6 +1,18 @@
 @extends('admin.layouts.master')
 @section('title', 'Quản lý rạp')
-
+@section('style')
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
+        rel="stylesheet" type="text/css" />
+    <style>
+        .table {
+            vertical-align: middle !important;
+        }
+    </style>
+@endsection
 @section('content')
     <!-- start page title -->
     <div class="row">
@@ -26,97 +38,53 @@
             <div class="row">
                 <div class="col-sm-12">
                     <div class="table-responsive min-vh-100">
-                        <table class="table align-middle table-nowrap dt-responsive nowrap w-100" id="customerList-table">
-                            <thead class="table-light">
+                        <table class="table table-bordered text-center" id="datatable">
+                            <thead>
                                 <tr>
-                                    <th>#</th>
-                                    <th>Cấp bậc</th>
-                                    <th>Tổng chi tiêu</th>
-                                    <th>% vé</th>
-                                    <th>% combo</th>
-                                    <th>Ngày tạo</th>
-                                    <th>Ngày cập nhật</th>
-                                    <th>Action</th>
+                                    <th class="fw-semibold text-center">STT</th>
+                                    <th class="fw-semibold text-center">Cấp bậc</th>
+                                    <th class="fw-semibold text-center">Tổng chi tiêu</th>
+                                    <th class="fw-semibold text-center">% vé</th>
+                                    <th class="fw-semibold text-center">% combo</th>
+                                    <th class="fw-semibold text-center">Chức năng</th>
                                 </tr>
                             </thead>
                             <tbody>
+
                                 @foreach ($ranks as $rank)
-                                    <td class="sorting_1 dtr-control">
-                                        <div class="d-none">{{ $rank->id }}
-                                        </div>
-                                        <div class="form-check font-size-{{ $rank->id }}">
-                                            <input class="form-check-input" type="checkbox"
-                                                id="customerlistcheck-{{ $rank->id }}">
-                                            <label class="form-check-label"
-                                                for="customerlistcheck-{{ $rank->id }}"></label>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        {{ $rank->name }}
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td>
+                                        <td>
+                                            {{ $rank->name }}
 
-                                        @if ($rank->is_default)
-                                            <span class="text-black-50 small">(Mặc định)</span>
-                                        @endif
+                                            @if ($rank->is_default)
+                                                <span class="text-black-50 small">(Mặc định)</span>
+                                            @endif
 
-                                    </td>
-                                    <td>
-                                        {{ formatPrice($rank->total_spent) }}đ
-                                    </td>
-                                    <td>
-                                        {{ $rank->ticket_percentage }}%
-                                    </td>
-                                    <td>
-                                        {{ $rank->combo_percentage }}%
-                                    </td>
-                                    <td>
-                                        {{ $rank->created_at }}
-                                        <br>
-                                        {{ $rank->created_at }}
-                                    </td>
-                                    <td>
-                                        {{ $rank->updated_at }}
-                                        <br>
-                                        {{ $rank->updated_at }}
-                                    </td>
-                                    <td>
-                                        <div class="dropdown">
-                                            <a href="#" class="dropdown-toggle card-drop" data-bs-toggle="dropdown"
-                                                aria-expanded="false">
-                                                <i class="mdi mdi-dots-horizontal font-size-18"></i>
+                                        </td>
+                                        <td>
+                                            {{ formatPrice($rank->total_spent) }}đ
+                                        </td>
+                                        <td>
+                                            {{ $rank->ticket_percentage }}%
+                                        </td>
+                                        <td>
+                                            {{ $rank->combo_percentage }}%
+                                        </td>
+
+                                        <td>
+                                            <a class="dropdown-item edit-list cursor-pointer openUpdateRankModal"
+                                                data-rank-id="{{ $rank->id }}" data-rank-name="{{ $rank->name }}"
+                                                data-rank-total-spent="{{ $rank->total_spent }}"
+                                                data-rank-ticket-percentage="{{ $rank->ticket_percentage }}"
+                                                data-rank-combo-percentage={{ $rank->combo_percentage }}
+                                                data-rank-default="{{ $rank->is_default }}">
+                                                <button class="btn btn-warning btn-sm">
+                                                    <i class="bx bx-edit"></i>
+                                                </button>
+
                                             </a>
-                                            <ul class="dropdown-menu dropdown-menu-end" style="">
-                                                <li>
-                                                    <a class="dropdown-item edit-list cursor-pointer openUpdateRankModal"
-                                                        data-rank-id="{{ $rank->id }}"
-                                                        data-rank-name="{{ $rank->name }}"
-                                                        data-rank-total-spent="{{ $rank->total_spent }}"
-                                                        data-rank-ticket-percentage="{{ $rank->ticket_percentage }}"
-                                                        data-rank-combo-percentage={{ $rank->combo_percentage }}
-                                                        data-rank-default="{{ $rank->is_default }}">
-                                                        <i class="mdi mdi-pencil font-size-16 text-success me-1"></i>
-                                                        Edit
-                                                    </a>
-                                                </li>
-
-                                                @if (!$rank->is_default)
-                                                    <li>
-                                                        <form id="delete-rank-{{ $rank->id }}"
-                                                            action="{{ route('admin.ranks.destroy', $rank) }}"
-                                                            method="POST">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="button" class="dropdown-item remove-list"
-                                                                onclick="handleDelete({{ $rank->id }})">
-                                                                <i
-                                                                    class="mdi mdi-trash-can font-size-16 text-danger me-1"></i>
-                                                                Delete
-                                                            </button>
-                                                        </form>
-                                                    </li>
-                                                @endif
-                                            </ul>
-                                        </div>
-                                    </td>
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
@@ -131,8 +99,8 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="updateRankModalLabel">Cập nhật cấp bậc <span
-                            class="badge bg-primary-subtle text-primary fs-11" id="spanDefault"></span></h5>
+                    <h5 class="modal-title " id="updateRankModalLabel">Cập nhật cấp bậc <span
+                            class="badge bg-primary text-white fs-11 ms-3" id="spanDefault"></span></h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -182,5 +150,20 @@
 @endsection
 
 @section('script')
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <!-- Buttons examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+    </script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+    </script>
+
+    <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
     <script src="{{ asset('assets/js/rank/index.js') }}"></script>
 @endsection
