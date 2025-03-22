@@ -32,24 +32,25 @@
                         <!-- Cột bên trái: Hiển thị -->
                         <div class="col-md-6 text-end">
                             <div class="d-flex align-items-center">
-                                <span class="me-2">Hiển thị:</span>
+                                {{-- <span class="me-2">Hiển thị:</span>
                                 <select id="pageLength" class="form-select w-auto">
                                     <option value="5" selected>5</option>
                                     <option value="10">10</option>
                                     <option value="15">15</option>
                                     <option value="20">20</option>
                                     <option value="1000">Tất cả</option>
-                                </select>
+                                </select> --}}
                             </div>
                         </div>
                         <!-- Cột bên phải: Thêm mới và Bộ lọc -->
                         <div class="col-md-6 text-end">
                             <a href="{{ route('admin.combos.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
-                            <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
+                            <button class="btn btn-outline-primary me-2" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#searchForm">
-                                <i class="fas fa-filter"></i> Bộ lọc
+                                <i class="fas fa-filter"></i>
                             </button>
-                            <a href="{{ route('admin.export', 'combos') }}" class="btn btn-warning waves-effect waves-light">
+                            <a href="{{ route('admin.export', 'combos') }}"
+                                class="btn btn-warning waves-effect waves-light">
                                 <i class="bx bx-download me-1"></i>
                                 Xuất Excel
                             </a>
@@ -88,8 +89,6 @@
                         </div>
                     </div>
 
-
-
                     <div class="table-responsive">
                         <table class="table table-striped table-bordered" id="comboTable">
                             <thead>
@@ -120,7 +119,7 @@
     <script>
         var appURL = @json($appUrl);
         var table;
-        $(document).ready(function () {
+        $(document).ready(function() {
             table = $('#comboTable').DataTable({
                 processing: false,
                 serverSide: true,
@@ -129,7 +128,7 @@
                 ajax: {
                     url: "{{ route('api.combos.index') }}",
                     type: "GET",
-                    data: function (d) {
+                    data: function(d) {
                         d.id = $('input[name="id"]').val();
                         d.name = $('input[name="name"]').val();
                         d.price_min = $('input[name="price_min"]').val();
@@ -137,12 +136,17 @@
                         d.food_name = $('#foodSelect').val(); // gửi tên món ăn từ select
                     }
                 },
-                columns: [
-                    { data: 'id', name: 'id' },
-                    { data: 'name', name: 'name' },
+                columns: [{
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'name',
+                        name: 'name'
+                    },
                     {
                         data: 'img_thumbnail',
-                        render: function (data) {
+                        render: function(data) {
                             return `<img src="/storage/${data}" style="max-width: 100px; height: auto; display: block; margin: 0 auto;">`;
                         }
                     },
@@ -150,23 +154,26 @@
                         data: 'info',
                         name: 'info',
                         orderable: false,
-                        render: function (data) {
+                        render: function(data) {
                             return data ? data : "Không có thông tin";
                         }
                     },
                     {
                         data: 'price_sale',
                         name: 'price_sale',
-                        render: function (data, type, row) {
+                        render: function(data, type, row) {
                             let priceToShow = row.price_sale > 0 ? row.price_sale : row.price;
                             return `<strong class="text-red-500">${new Intl.NumberFormat('en-US').format(priceToShow)} VNĐ</strong>`;
                         }
                     },
-                    { data: 'description', name: 'description' },
+                    {
+                        data: 'description',
+                        name: 'description'
+                    },
                     {
                         data: 'is_active',
-                        render: function (data, type, row) {
-                            return `<div class="form-check form-switch form-switch-success">
+                        render: function(data, type, row) {
+                            return `<div class="form-check form-switch form-switch-md mb-3" dir="ltr">
                                         <input class="form-check-input switch-is-active changeActive" 
                                             type="checkbox"
                                             onclick="return confirm('Bạn có chắc muốn thay đổi?')"
@@ -178,7 +185,7 @@
                     },
                     {
                         data: 'id',
-                        render: function (data, type, row) {
+                        render: function(data, type, row) {
                             let deleteButton = "";
 
                             // Kiểm tra nếu combo chưa active (is_active == 0) thì cho phép xóa
@@ -196,7 +203,7 @@
                             return `
                                         <div class="d-flex align-items-center gap-2">
                                             <a href="/admin/combos/${data}/edit" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i> Sửa
+                                                <i class="fas fa-edit"></i>
                                              </a>
                                             ${deleteButton}
                                         </div>`;
@@ -205,28 +212,29 @@
                     },
                 ],
                 pageLength: 5,
-                lengthChange: false,
+                lengthChange: true,
+                lengthMenu: [5, 10, 20, 50, 100],
                 language: {
                     search: "Tìm kiếm:",
                     paginate: {
                         next: ">",
                         previous: "<"
                     },
-                    lengthMenu: "Hiển thị _MENU_ mục",
                     info: "Hiển thị từ _START_ đến _END_ trong tổng số _TOTAL_ mục",
                     emptyTable: "Không có dữ liệu để hiển thị",
-                    zeroRecords: "Không tìm thấy kết quả phù hợp"
+                    zeroRecords: "Không tìm thấy kết quả phù hợp",
+                    "lengthMenu": "Hiển thị _MENU_ mục"
                 }
             });
-            $('#pageLength').on('change', function () {
+            $('#pageLength').on('change', function() {
                 table.page.len($(this).val()).draw();
             });
-            $('#filterForm').on('submit', function (e) {
+            $('#filterForm').on('submit', function(e) {
                 e.preventDefault();
                 table.ajax.reload();
             });
-            $('#resetFilter').on('click', function () {
-                setTimeout(function () {
+            $('#resetFilter').on('click', function() {
+                setTimeout(function() {
                     table.ajax.reload();
                 }, 50);
             });
@@ -258,7 +266,7 @@
 
 
         // Xử lý xóa
-        window.handleDelete = function (comboId) {
+        window.handleDelete = function(comboId) {
             Swal.fire({
                 title: 'Bạn có chắc chắn?',
                 text: "Hành động này không thể hoàn tác!",
@@ -274,7 +282,7 @@
         };
 
         // sự kiện change-active
-        $(document).on("change", ".changeActive", function () {
+        $(document).on("change", ".changeActive", function() {
             let comboId = $(this).data("combo-id"); // Lấy ID của combo
             let is_active = $(this).is(":checked") ? 1 : 0;
 
@@ -287,17 +295,17 @@
                     id: comboId,
                     is_active: is_active
                 },
-                success: function (response) {
+                success: function(response) {
                     if (response.success) {
                         // Hiển thị thông báo thành công
-                        Swal.fire({
-                            icon: "success",
-                            title: "Thành công!",
-                            text: "Trạng thái hoạt động đã được cập nhật.",
-                            timer: 3000,
-                            timerProgressBar: true,
-                        });
-
+                        // Swal.fire({
+                        //     icon: "success",
+                        //     title: "Thành công!",
+                        //     text: "Trạng thái hoạt động đã được cập nhật.",
+                        //     timer: 3000,
+                        //     timerProgressBar: true,
+                        // });
+                        toastr.success('Trạng thái hoạt động đã được cập nhật.');
                         // Cập nhật lại bảng DataTable để thay đổi trạng thái nút "Xóa"
                         let row = table.row($(`[data-combo-id="${comboId}"]`).closest("tr"));
                         let rowData = row.data();
@@ -305,36 +313,37 @@
                         row.data(rowData).draw(false); // Vẽ lại hàng mà không cần load lại toàn bộ
 
                         // Cập nhật lại nút Xóa (chỉ hiển thị nếu is_active == 0)
-                        let deleteButton = is_active == 0
-                            ? `<form method="POST" action="foods/${comboId}/destroy" class="d-inline-block" id="delete-food-${comboId}">
+                        let deleteButton = is_active == 0 ?
+                            `<form method="POST" action="foods/${comboId}/destroy" class="d-inline-block" id="delete-food-${comboId}">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="button" class="btn btn-danger btn-sm" onclick="handleDelete(${comboId})">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
-                                            </form>`
-                            : "";
+                                            </form>` :
+                            "";
 
                         // Cập nhật lại nội dung cột hành động
                         let actionCell = row.node().querySelector(".d-flex");
                         if (actionCell) {
                             actionCell.innerHTML = `
                                                 <a href="/admin/combos/${comboId}/edit" class="btn btn-warning btn-sm">
-                                                    <i class="fas fa-edit"></i> Sửa
+                                                    <i class="fas fa-edit"></i>
                                                 </a>
                                                 ${deleteButton}`;
                         }
                     } else {
                         // Nếu có lỗi, hiển thị thông báo và hoàn nguyên checkbox
-                        Swal.fire({
-                            icon: "error",
-                            title: "Lỗi!",
-                            text: response.message || "Có lỗi xảy ra.",
-                        });
+                        // Swal.fire({
+                        //     icon: "error",
+                        //     title: "Lỗi!",
+                        //     text: response.message || "Có lỗi xảy ra.",
+                        // });
+                        toastr.error(response.message || 'Có lỗi xảy ra.');
                         $(`[data-combo-id="${comboId}"]`).prop("checked", !is_active);
                     }
                 },
-                error: function () {
+                error: function() {
                     Swal.fire({
                         icon: "error",
                         title: "Lỗi!",
@@ -346,6 +355,5 @@
 
             console.log("Đã thay đổi trạng thái active của combo");
         });
-
     </script>
 @endsection

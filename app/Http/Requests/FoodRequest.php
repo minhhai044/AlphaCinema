@@ -9,7 +9,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class FoodRequest extends FormRequest
 {
-    use ApiRequestJsonTrait;
+    // use ApiRequestJsonTrait;
     /**
      * Determine if the user is authorized to make this request.
      */

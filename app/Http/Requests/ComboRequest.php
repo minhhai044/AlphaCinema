@@ -51,7 +51,7 @@ class ComboRequest extends FormRequest
             'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'combo_food.*' => 'required|exists:food,id',  // Đảm bảo đồ ăn được chọn có tồn tại trong DB
-            'combo_quantity.*' => 'required|integer|min:1|max:9'
+            'combo_quantity.*' => 'required|integer|min:1|max:10'
         ];
     }
 
@@ -70,7 +70,7 @@ class ComboRequest extends FormRequest
             'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'combo_food.*' => 'required|exists:food,id',  // Đảm bảo đồ ăn được chọn có tồn tại trong DB
-            'combo_quantity.*' => 'required|integer|min:1|max:9'
+            'combo_quantity.*' => 'required|integer|min:1|max:10'
         ];
     }
 
@@ -116,9 +116,9 @@ class ComboRequest extends FormRequest
 
 
             'price_sale.numeric' => 'Giá Combo Sale phải là một số.',
-            'price_sale.min' => 'Giá Combo không được nhỏ hơn 0.',
-            'price_sale.max' => 'Giá Combo không được vượt quá 99,999,999.',
-            'price_sale.lt' => 'Giá bán phải nhỏ hơn giá gốc.',
+            'price_sale.min' => 'Giá Sale không được nhỏ hơn 0.',
+            'price_sale.max' => 'Giá Sale không được vượt quá 99,999,999.',
+            'price_sale.lt' => 'Giá Sale phải nhỏ hơn giá gốc.',
 
             'description.required' => 'Vui lòng nhập mô tả Combo.',
             'description.string' => 'Mô tả Combo phải là chuỗi ký tự.',
@@ -126,10 +126,11 @@ class ComboRequest extends FormRequest
             'is_active.boolean' => 'Trạng thái kích hoạt phải là hoạt động hoặc không hoạt động.',
 
 
-            'combo_food.*.exists' => 'Món ăn bạn chọn không tồn tại.',
-            'combo_quantity.*.integer' => 'Số lượng phải là số nguyên.',
+            'combo_food.*.required' => 'Vui lòng chọn món ăn cho combo.',
+            'combo_food.*.exists' => 'Món ăn đã chọn không tồn tại.',
+            'combo_quantity.*.required' => 'Vui lòng nhập số lượng cho món ăn.',
             'combo_quantity.*.min' => 'Số lượng phải lớn hơn 0.',
-            'combo_quantity.*.max' => 'Số lượng phải nhỏ hơn 9.',
+            'combo_quantity.*.max' => 'Số lượng tối đa là 10.',
         ];
     }
 }

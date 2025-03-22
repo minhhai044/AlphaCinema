@@ -3,23 +3,17 @@
 namespace App\Http\Controllers\Admin;
 
 
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-
 use App\Models\Food;
 use App\Helpers\Alert;
 use App\Helpers\Toastr;
-
 use App\Services\FoodService;
-use Illuminate\Http\Response;
-use App\Traits\ApiResponseTrait;
 use App\Http\Requests\FoodRequest;
 use App\Http\Controllers\Controller;
-
+use Illuminate\Support\Facades\Log;
 
 class FoodController extends Controller
 {
-    use ApiResponseTrait;
     /**
      * Display a listing of the resource.
      */
@@ -36,17 +30,17 @@ class FoodController extends Controller
     // 1. Hiển thị danh sách Food
     public function index()
     {
-        $data = $this->foodService->getAllFoodService();
+        $foods = $this->foodService->getAllFoodService();
         // dd($data->toArray());
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('foods'));
     }
 
     // 2. Hiển thị form thêm mới đồ ăn
     public function create()
     {
         $typeFoods = Food::TYPE_FOOD;
-        // dd($typeFoods);
+        // var_dump($typeFoods);
         return view(self::PATH_VIEW . __FUNCTION__, compact('typeFoods'));
     }
 
@@ -55,15 +49,17 @@ class FoodController extends Controller
     {
         // dd($foodRequest->toArray());
         try {
-            $data = $foodRequest->validated();
-
-            $this->foodService->createFoodService($data);
+            // $data = $foodRequest->validated();
+            // dd($data);
+            $this->foodService->createFoodService($foodRequest->validated());
 
             Toastr::success(null, 'Thêm mới đồ ăn thành công!');
 
-            return $this->successResponse($data, 'Thêm mới đồ ăn thành công!', Response::HTTP_OK);
+            return redirect()->route('admin.foods.index');
         } catch (\Throwable $th) {
-            return $this->errorResponse($th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            Log::error($th->getMessage());
+            Toastr::error(null, 'Thêm mới không thành công!');  // thông báo lỗi
+            return back();
         }
     }
 
@@ -78,9 +74,9 @@ class FoodController extends Controller
     public function edit($id)
     {
         $typeFoods = Food::TYPE_FOOD;
-        $data = $this->foodService->getFoodByIdService($id);
-        // dd($data->toArray());
-        return view(self::PATH_VIEW . __FUNCTION__, compact('data', 'typeFoods'));
+        $foods = $this->foodService->getFoodByIdService($id);
+        // dd($foods->toArray());
+        return view(self::PATH_VIEW . __FUNCTION__, compact('foods', 'typeFoods'));
     }
 
     // 6. Cập nhật đồ ăn
@@ -88,15 +84,15 @@ class FoodController extends Controller
     {
         // dd($foodRequest->toArray());
         try {
-            $data = $foodRequest->validated();
-
-
-            $this->foodService->updateFoodService($id, $data);
+            // $data = $foodRequest->validated();
+            $this->foodService->updateFoodService($id, $foodRequest->validated());
             Toastr::success(null, 'Cập nhật đồ ăn thành công!');
 
-            return $this->successResponse($data, 'Cập nhật đồ ăn', Response::HTTP_OK);
+            return redirect()->route('admin.foods.index');
         } catch (\Throwable $th) {
-            return $this->errorResponse($th->getMessage(), Response::HTTP_INTERNAL_SERVER_ERROR);
+            Log::error($th->getMessage());
+            Toastr::error(null, 'Cập nhật không thành công!');  // thông báo lỗi
+            return back();
         }
     }
 
