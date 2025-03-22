@@ -311,7 +311,7 @@
             
                 <input type="hidden" name="seat_structure" id="seatStructure">
                 <input type="hidden" name="is_publish" value="1">
-                <button type="submit" class="btn btn-info">Cập nhật sơ đồ ghế</button>
+                <button type="submit" class="btn btn-primary">Cập nhật sơ đồ ghế</button>
                
                
                 <a href="{{route('admin.index.seat_templates')}}"><button type="button" class="btn btn-warning">Quay lại</button></a>
