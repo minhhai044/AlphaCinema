@@ -249,7 +249,13 @@ class ShowtimeController extends Controller
             $cinemId = $request->cinemId;
             $showtime = Showtime::with('branch', 'movie', 'cinema', 'room')
                 ->where('slug', $slug)
-                // ->where('start_time', '>=', Carbon::now()->toTimeString())
+                ->where(function ($query) {
+                    $query->where('date', '>', Carbon::now()->toDateString())
+                        ->orWhere(function ($q) {
+                            $q->where('date', Carbon::now()->toDateString())
+                                ->where('start_time', '>=', Carbon::now()->toTimeString());
+                        });
+                })
                 ->where('branch_id', $branchId)
                 ->where('cinema_id', $cinemId)
                 ->first();
