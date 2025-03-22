@@ -37,6 +37,7 @@ class BranchRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:branches,name',
+            'surcharge' => 'required|numeric|min:1000'
         ];
     }
 
@@ -47,6 +48,7 @@ class BranchRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:branches,name,' . $this->route('branch'),
+            'surcharge' => 'nullable|numeric|min:1000', 
         ];
     }
 
@@ -59,6 +61,9 @@ class BranchRequest extends FormRequest
             'name.required' => 'Vui lòng điền tên chi nhánh.',
             'name.unique' => 'Tên chi nhánh đã tồn tại.',
             'name.max' => 'Tên chi nhánh không được vượt quá 255 ký tự.',
+            'surcharge.required' => 'Vui lòng điền phụ phí.',
+            'surcharge.numeric' => 'Phụ phí phải là một số.',
+            'surcharge.min' => 'Phụ phí phải lớn hơn hoặc bằng 1000.',
         ];
     }
 }
