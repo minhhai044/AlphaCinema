@@ -34,8 +34,12 @@ class BranchController extends Controller
         $data = $request->validated(); // Lấy dữ liệu đã validate
         try {
             $data['is_active'] = 1;
-            $data['surcharge'] ??= 0;  // Thêm giá trị mặc định cho surcharge
+            $data['surcharge'] ??= 0;  
 
+            if ($data['surcharge'] < 1000) {
+                return redirect()->back()->with('error', 'Phụ phí phải lớn hơn hoặc bằng 1000.');
+            }
+            
             if (!empty($data['name'])) {
                 $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
             }
@@ -56,6 +60,7 @@ class BranchController extends Controller
 
         $branch->update([
             'name' => $data['name'],
+            'surcharge' => $data['surcharge'],
             
         ]);
 
