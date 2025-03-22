@@ -222,7 +222,6 @@ class DatabaseSeeder extends Seeder
                 'total_amount' => 0,
                 'branch_id' => 1,
                 'cinema_id' => null,
-                'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
             ],
