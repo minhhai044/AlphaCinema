@@ -128,6 +128,10 @@
                                     <input class="form-control" type="file" name="img_thumbnail" id="combo-image"
                                         onchange="previewImage(event)">
                             </div>
+                            @if (old('img_thumbnail'))
+                                <img src="{{ Storage::url(old('img_thumbnail')) }}" alt="Thumbnail" class="img-fluid"
+                                    width="200" style="max-width: 70%; max-height: 150px;">
+                            @endif
                             @error('img_thumbnail')
                                 <span class="text-danger fw-medium">
                                     {{ $message }}

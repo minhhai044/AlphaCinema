@@ -1,5 +1,5 @@
 @extends('admin.layouts.master')
-@section('title', 'Quản lý Combo')
+@section('title', 'Cập nhật Combo')
 
 @section('style')
     <style>
@@ -446,6 +446,7 @@
                 $('.food-select').off('change').on('change', function() {
                     updateSelectOptions();
                     updateTotalPrice();
+                    
                 });
 
                 $('.remove-food').off('click').on('click', function() {
@@ -478,6 +479,34 @@
                         $quantityError.text('Số lượng phải lớn hơn 0');
                     } else {
                         $quantityError.text('');
+                    }
+ 
+                    // Kiểm tra price_sale so với price
+                    const price = parseInt($('#price_hidden').val() || 0); // Giá gốc từ input ẩn
+                    const priceSaleInput = $('#price_sale');
+                    const priceSale = parseInt(priceSaleInput.val().replace(/\D/g, '')) ||
+                        0; // Giá bán, bỏ dấu phẩy
+                    // Chỉ kiểm tra khi priceSale > 0
+                    if (priceSale > 0) {
+                        if (priceSale >= price) {
+                            isValid = false;
+                            if ($priceSaleError.length) {
+                                $priceSaleError.text('Giá bán phải nhỏ hơn giá gốc');
+                            } else {
+                                priceSaleInput.after(
+                                    '<span id="price_sale_error" class="text-danger fw-medium small">Giá bán phải nhỏ hơn giá gốc</span>'
+                                );
+                            }
+                        } else {
+                            if ($priceSaleError.length) {
+                                $priceSaleError.text('');
+                            }
+                        }
+                    } else {
+                        // Nếu priceSale chưa nhập hoặc bằng 0, không hiển thị lỗi
+                        if ($priceSaleError.length) {
+                            $priceSaleError.text('');
+                        }
                     }
                 });
 
