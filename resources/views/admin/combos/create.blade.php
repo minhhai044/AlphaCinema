@@ -441,13 +441,13 @@
                         $foodError.text('');
                     }
 
-                    const quantity = parseInt($quantityInput.val());
-                    if (isNaN(quantity) || quantity <= 0) {
-                        isValid = false;
-                        $quantityError.text('Số lượng phải lớn hơn 0');
-                    } else {
-                        $quantityError.text('');
-                    }
+                    // const quantity = parseInt($quantityInput.val());
+                    // if (isNaN(quantity) || quantity <= 0) {
+                    //     isValid = false;
+                    //     $quantityError.text('Số lượng phải lớn hơn 0');
+                    // } else {
+                    //     $quantityError.text('');
+                    // }
 
                     // Kiểm tra price_sale so với price
                     const price = parseInt($('#price_hidden').val() || 0); // Giá gốc từ input ẩn
