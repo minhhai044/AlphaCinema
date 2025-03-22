@@ -58,7 +58,20 @@
                                     @endif
                                 </div>
                             </div>
-
+                            <div class="mb-2">
+                                <label for="surcharge" class="form-label">
+                                    <span class="text-danger">*</span>Phụ phí:
+                                </label>
+                                <input type="number"
+                                    class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
+                                    name="surcharge" value="{{ old('surcharge') }}" placeholder="Nhập phụ phí">
+                                <div class="form-text">Số tiền phụ phí cho chi nhánh.</div>
+                                <div class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                    @if ($errors->has('surcharge'))
+                                        {{ $errors->first('surcharge') }}
+                                    @endif
+                                </div>
+                            </div>
 
                             <div class="text-end mt-2">
                                 <button type="submit" class="btn btn-primary mx-1">+ Thêm mới</button>
@@ -79,6 +92,7 @@
                                 <tr>
                                     <th>ID</th>
                                     <th>Tên chi nhánh</th>
+                                    <th>Phụ phí</th>
                                     <th>Hoạt động</th>
                                     <th>Ngày tạo</th>
                                     <th>Ngày cập nhật</th>
@@ -90,6 +104,7 @@
                                     <tr>
                                         <td>{{ $branch->id }}</td>
                                         <td>{{ $branch->name }}</td>
+                                        <td>{{ $branch->surcharge }}</td>
                                         <td class="d-flex justify-content-center align-items-center">
                                             <form action="{{ route('admin.branches.toggle', $branch->id) }}"
                                                 class="form-check form-switch form-switch-success" method="POST"
@@ -109,7 +124,7 @@
                                         <td>{{ $branch->updated_at->format('d/m/Y H:i') }}</td>
                                         <td class="text-center">
                                             <button class="btn btn-warning btn-sm editBranch" data-id="{{ $branch->id }}"
-                                                data-name="{{ $branch->name }}" data-active="{{ $branch->is_active }}">
+                                                data-name="{{ $branch->name }}" data-surcharge="{{ $branch->surcharge }}">
                                                 <i class="fas fa-edit"></i>
                                             </button>
                                         </td>
@@ -139,6 +154,13 @@
                             <label for="branchName" class="form-label">Tên chi nhánh</label>
                             <input type="text" class="form-control" id="branchName" name="name"
                                 placeholder="Nhập tên chi nhánh" required>
+                        </div>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-3">
+                            <label for="branchSurcharge" class="form-label">Phụ phí</label>
+                            <input type="number" class="form-control" id="branchSurcharge" name="surcharge"
+                                placeholder="Nhập phụ phí" required>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -184,11 +206,15 @@
             button.addEventListener('click', function() {
                 const id = this.dataset.id;
                 const name = this.dataset.name;
+                const surcharge = this.dataset.surcharge;
 
                 // Cập nhật form trong modal
                 const form = document.getElementById('editBranchForm');
                 form.action = `/admin/branches/${id}`;
                 document.getElementById('branchName').value = name;
+                document.getElementById('branchSurcharge').value = surcharge; 
+
+
 
                 // Hiển thị modal
                 const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
