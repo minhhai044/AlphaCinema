@@ -1,18 +1,18 @@
 @extends('admin.layouts.master')
-@section('title', 'Thêm mới Đồ ăn')
+@section('title', 'Thêm mới đồ ăn')
 
 @section('content')
     <!-- start page title -->
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                <h4 class="mb-sm-0 font-size-18">Thêm mới Đồ ăn</h4>
+                <h4 class="mb-sm-0 font-size-18">Thêm mới đồ ăn</h4>
                 <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item">
                             <a href="{{ route('admin.foods.index') }}">Đồ ăn</a>
                         </li>
-                        <li class="breadcrumb-item active">Thêm mới Đồ ăn</li>
+                        <li class="breadcrumb-item active">Thêm mới đồ ăn</li>
                     </ol>
                 </div>
             </div>
@@ -22,6 +22,7 @@
 
     <form action="{{ route('admin.foods.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
+        <input type="hidden" name="is_active" value="1">
         <div class="row">
             <div class="col-lg-9">
                 <div class="card">
@@ -98,59 +99,38 @@
                 </div>
             </div>
 
-            <div class="col-lg-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class=" d-flex gap-2">
-                                        <label for="cinema-description" class="form-label">
-                                            Hoạt động
-                                        </label>
-                                        <div class="round-switch">
-                                            <input type="checkbox" id="switch6" switch="primary" value="1"
-                                                name="is_active" {{ old('is_active', 1) ? 'checked' : '' }}>
-                                            <label for="switch6" data-on-label="Yes" data-off-label="No"></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label for="combo-image" class="form-label">
+                                <span class=" text-danger fw-medium required">*</span> Ảnh
+                                <input class="form-control" type="file" name="img_thumbnail" id="combo-image"
+                                    onchange="previewImage(event)">
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="mb-2">
-                                <label for="combo-image" class="form-label">
-                                    <span class=" text-danger fw-medium required">*</span>Ảnh
-                                    <input class="form-control" type="file" name="img_thumbnail" id="combo-image"
-                                        onchange="previewImage(event)">
-                            </div>
-                            @if (old('img_thumbnail'))
-                                <img src="{{ Storage::url(old('img_thumbnail')) }}" alt="Thumbnail" class="img-fluid"
-                                    width="200" style="max-width: 70%; max-height: 150px;">
-                            @endif
-                            @error('img_thumbnail')
-                                <span class="text-danger fw-medium">
-                                    {{ $message }}
-                                </span>
-                            @enderror
-                            <!-- Display selected image and delete button -->
-                            <div id="image-container" class="d-none position-relative text-center">
-                                <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2"
-                                    style="max-width: 70%; max-height: 100px;">
-                                <!-- Icon thùng rác ở góc phải -->
-                                <button type="button" id="delete-image"
-                                    class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
+                        @if (old('img_thumbnail'))
+                            <img src="{{ Storage::url(old('img_thumbnail')) }}" alt="Thumbnail" class="img-fluid"
+                                width="200" style="max-width: 70%; max-height: 150px;">
+                        @endif
+                        @error('img_thumbnail')
+                            <span class="text-danger fw-medium">
+                                {{ $message }}
+                            </span>
+                        @enderror
+                        <!-- Display selected image and delete button -->
+                        <div id="image-container" class="d-none position-relative text-center">
+                            <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2"
+                                style="max-width: 70%; max-height: 100px;">
+                            <!-- Icon thùng rác ở góc phải -->
+                            <button type="button" id="delete-image"
+                                class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
     </form>
 @endsection

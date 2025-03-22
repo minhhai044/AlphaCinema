@@ -97,63 +97,40 @@
                     </div>
                 </div>
             </div>
-
-            <div class="col-lg-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class=" d-flex gap-2">
-                                        <label for="cinema-description" class="form-label">
-                                            Hoạt động
-                                        </label>
-                                        <div class="round-switch">
-                                            <input type="checkbox" id="switch6" switch="primary" value="1"
-                                                name="is_active"
-                                                {{ old('is_active', $foods->is_active) ? 'checked' : '' }}>
-                                            <label for="switch6" data-on-label="Yes" data-off-label="No"></label>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label for="foods-image" class="form-label">
+                                <span class=" text-danger fw-medium required">*</span> Ảnh
+                                <input class="form-control" type="file" name="img_thumbnail" id="foods-image"
+                                    onchange="previewImage(event)">
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-12">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="mb-2">
-                                <label for="foods-image" class="form-label">
-                                    <span class=" text-danger fw-medium required">*</span>Ảnh
-                                    <input class="form-control" type="file" name="img_thumbnail" id="foods-image"
-                                        onchange="previewImage(event)">
-                            </div>
-                            @if ($foods->img_thumbnail)
+                        @if ($foods->img_thumbnail)
                             <div class="mt-3 text-center mb-3">
                                 <img src="{{ Storage::url($foods->img_thumbnail) }}" alt="Thumbnail"
                                     class="img-fluid"style="max-width: 70%; max-height: 100px;">
                             </div>
                         @endif
-                            @error('img_thumbnail')
-                                <span class="text-danger fw-medium">
-                                    {{ $message }}
-                                </span>
-                            @enderror
-                            <!-- Display selected image and delete button -->
-                            <div id="image-container" class="d-none position-relative text-center">
-                                <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2"
-                               style="max-width: 70%; max-height: 100px;">
-                                <!-- Icon thùng rác ở góc phải -->
-                                <button type="button" id="delete-image"
-                                    class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
+                        @error('img_thumbnail')
+                            <span class="text-danger fw-medium">
+                                {{ $message }}
+                            </span>
+                        @enderror
+                        <!-- Display selected image and delete button -->
+                        <div id="image-container" class="d-none position-relative text-center">
+                            <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2"
+                                style="max-width: 70%; max-height: 100px;">
+                            <!-- Icon thùng rác ở góc phải -->
+                            <button type="button" id="delete-image"
+                                class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
         </div>
     </form>

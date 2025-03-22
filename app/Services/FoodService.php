@@ -12,7 +12,7 @@ class FoodService
 
     public function getAllFoodService()
     {
-        return Food::latest('id')->paginate(10);
+        return Food::latest('id')->get();
     }
     // $query = Food::query();
     //     $totalRecords = $query->count(); // Tổng số phim
