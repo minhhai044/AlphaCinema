@@ -7,6 +7,10 @@
             color: red;
             font-style: italic !important;
         }
+
+        .choices {
+            margin-bottom: 0 !important;
+        }
     </style>
 @endsection
 
@@ -29,7 +33,7 @@
         </div>
     </div>
     <!-- end page title -->
-    <form action="{{ route('admin.users.update', $user) }}" method="POST" enctype="multipart/form-data">
+    <form id="userForm" action="{{ route('admin.users.update', $user) }}" method="POST" enctype="multipart/form-data">
         @csrf
         @method('PUT')
         <div class="row">
@@ -47,8 +51,8 @@
                                         value="{{ old('name', $user->name) }}" placeholder="Nhập tên">
 
                                     @error('name')
-                                        <span class="text-danger">
-                                            <strong>{{ $message }}</strong>
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
@@ -66,12 +70,13 @@
                                         value="{{ old('phone', $user->phone) }}" placeholder="Nhập số điện thoại">
 
                                     @error('phone')
-                                        <span class="text-danger">
-                                            <strong>{{ $message }}</strong>
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
                             </div>
+
 
                             <div class="col-lg-6">
                                 <div class="mb-3">
@@ -82,8 +87,8 @@
                                         id="account-birthday" />
 
                                     @error('birthday')
-                                        <span class="text-danger">
-                                            <strong>{{ $message }}</strong>
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
@@ -99,8 +104,8 @@
                                         value="{{ old('email', $user->email) }}" placeholder="Nhập email">
 
                                     @error('email')
-                                        <span class="text-danger">
-                                            <strong>{{ $message }}</strong>
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
@@ -115,8 +120,8 @@
                                         placeholder="Nhập mật khẩu">
 
                                     @error('password')
-                                        <span class="text-danger">
-                                            <strong>{{ $message }}</strong>
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
@@ -131,8 +136,8 @@
                                         id="confirm-password" placeholder="Nhập lại mật khẩu">
 
                                     @error('password_confirmation')
-                                        <span class="text-danger">
-                                            <strong>{{ $message }}</strong>
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
@@ -162,8 +167,8 @@
                                             </label>
                                         </div>
                                         @error('gender')
-                                            <span class="text-danger">
-                                                <strong>{{ $message }}</strong>
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
                                             </span>
                                         @enderror
                                     </div>
@@ -179,74 +184,18 @@
                                         value="{{ old('address', $user->address) }}" placeholder="Nhập địa chỉ">
 
                                     @error('address')
-                                        <span class="text-danger">
-                                            <strong>{{ $message }}</strong>
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
                                         </span>
                                     @enderror
                                 </div>
                             </div>
 
-                            <div
-                                class="col-lg-6 {{ auth()->user()->hasRole(['Quản lý chi nhánh', 'Quản lý cơ sở']) && $user->hasRole(['Quản lý cơ sở', 'Nhân viên'])? 'd-none': '' }}">
-                                <div class="mb-3">
-                                    <label for="account-cinema" class="form-label">Chi nhánh <span
-                                            class="required">*</span></label>
-                                    <select class="form-select disabled" id="simpleSelect" name="branch_id">
-                                        <option value="">Chọn chi nhánh</option>
-                                        @foreach ($branches as $branch)
-                                            <option value="{{ $branch->id }}"
-                                                {{ old('branch_id', $user->branch_id) == $branch->id ? 'selected' : '' }}>
-                                                {{ $branch->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('branch_id')
-                                        <div class="text-danger"><strong>{{ $message }}</strong></div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <div class="mb-3">
-                                    <label for="account-cinema" class="form-label">
-                                        Cơ sở
-                                        <span class="required">*</span>
-                                    </label>
-                                    <select class="form-select" id="simpleSelect" name="cinema_id" {{ auth()->user()->hasRole('Quản lý cơ sở') ? 'disabled' : ''}}>
-                                        <option value="">Chọn rạp làm việc</option>
-                                        @foreach ($cinemas as $cinema)
-                                            <option value="{{ $cinema->id }}" {{auth()->user()->hasRole('Quản lý cơ sở') &&  auth()->user()->cinema_id ==$cinema->id   ? 'selected'  : '' }}
-                                                {{ old('cinema_id') == $cinema->id ? 'selected' : '' }}>
-                                                {{ $cinema->name }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('cinema_id')
-                                        <div class="text-danger">
-                                            <strong>{{ $message }}</strong>
-                                        </div>
-                                    @enderror
-                                </div>
-                            </div>
-
-
                             <div class="col-lg-6">
                                 <label for="account-role" class="form-label">
                                     Vai trò
                                     <span class="required">*</span> </label>
-                                {{-- <select class="form-select select2" name="role_id[]" id="multiSelect"
-                                    multiple="multiple">
-                                    @foreach ($roles as $role)
-                                        @if ($role->name != 'System Admin')
-                                            <option value="{{ $role->id }}"
-                                                {{ $user->roles->contains($role) ? 'selected' : '' }}> {{ $role->name }}
-                                            </option>
-                                        @endif
-                                    @endforeach
-                                </select> --}}
-
-                                <select class="form-control" name="role_id[]" id="choices-multiple-remove-button"
-                                    multiple="multiple">
+                                <select class="form-control" name="role_id" id="choices-multiple-remove-button">
                                     @foreach ($roles as $role)
                                         @if ($role->name != 'System Admin')
                                             @if (auth()->user()->hasRole('System Admin'))
@@ -276,13 +225,53 @@
                                     @endforeach
                                 </select>
 
-                                <div class="text-danger"> <strong id="errorSelect2"></strong> </div>
+                                <span id="errorRole" class="text-danger fw-medium"></span>
+                            </div>
 
-                                @error('role')
-                                    <span class="text-danger">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
+                            <div id="box-branch"
+                                class="col-lg-6 {{ auth()->user()->hasRole(['Quản lý chi nhánh', 'Quản lý cơ sở']) && $user->hasRole(['Quản lý cơ sở', 'Nhân viên'])? 'd-none': '' }}">
+                                <div class="mb-3">
+                                    <label for="account-branch" class="form-label">Chi nhánh <span
+                                            class="required">*</span></label>
+                                    <select class="form-select disabled" id="branch_select" name="branch_id">
+                                        <option value="">Chọn chi nhánh</option>
+                                        @foreach ($branches as $branch)
+                                            <option value="{{ $branch->id }}"
+                                                {{ old('branch_id', $user->branch_id) == $branch->id ? 'selected' : '' }}>
+                                                {{ $branch->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('branch_id')
+                                        <div class="text-danger fw-medium">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+
+                            <div class="col-lg-6 {{ $user->hasRole('Quản lý chi nhánh') ? 'd-none' : '' }}"
+                                id="box-cinema">
+                                <div class="mb-3">
+                                    <label for="account-cinema" class="form-label">
+                                        Cơ sở
+                                        <span class="required">*</span>
+                                    </label>
+                                    <select class="form-select" id="cinema_select" name="cinema_id"
+                                        {{ auth()->user()->hasRole('Quản lý cơ sở') ? 'disabled' : '' }}>
+                                        <option value="">Chọn rạp làm việc</option>
+                                        @foreach ($cinemas as $cinema)
+                                            <option value="{{ $cinema->id }}"
+                                                {{ auth()->user()->hasRole('Quản lý cơ sở') && auth()->user()->cinema_id == $cinema->id ? 'selected' : '' }}
+                                                {{ $user->cinema_id == $cinema->id ? 'selected' : '' }}>
+                                                {{ $cinema->name }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('cinema_id')
+                                        <div class="text-danger fw-medium">
+                                            {{ $message }}
+                                        </div>
+                                    @enderror
+                                </div>
                             </div>
 
                         </div>
@@ -342,6 +331,10 @@
         </div>
     </form>
 
+    @php
+        $roleAdmin = auth()->user()->hasRole('System Admin');
+    @endphp
+
 @endsection
 
 @section('script')
@@ -349,13 +342,96 @@
     <script>
         // Function to display selected image
         // Hàm xem trước ảnh khi chọn
-        $(document).ready(function() {
-            new Choices("#choices-multiple-remove-button", {
-                removeItemButton: true, // Enable remove item button for each selected option
-                searchEnabled: true, // Enable search in the dropdown
-                placeholderValue: 'Select roles', // Set placeholder text
-            });
+        // $(document).ready(function() {
+        //     new Choices("#choices-multiple-remove-button", {
+        //         removeItemButton: true, // Enable remove item button for each selected option
+        //         searchEnabled: true, // Enable search in the dropdown
+        //         placeholderValue: 'Select roles', // Set placeholder text
+        //     });
 
+        // });
+        const roleAdmin = @json($roleAdmin);
+
+        $("#account-phone").on("keypress", function(event) {
+            if (!/^[0-9]$/.test(String.fromCharCode(event.which || event.keyCode))) {
+                event.preventDefault();
+            }
+        });
+
+        $('#branch_select').on('change', function() {
+            var branchId = $(this).val(); // Lấy giá trị của chi nhánh đã chọn
+
+            // Reset dropdown "Cơ sở" trước khi thêm các rạp mới
+            $('#cinema_select').html('<option value="">Chọn rạp làm việc</option>');
+
+            if (branchId) {
+                getCinemasByBranch(branchId);
+            }
+        });
+
+        $('#userForm').on('submit', function(e) {
+            let isValid = true;
+            const selectedRoles = $('#choices-multiple-remove-button').val();
+
+            $('#error-cinema').remove();
+            $('#error-branch').remove();
+            $('#errorRole').text('');
+
+            // Kiểm tra dropdown cinema_id (Cơ sở)
+            if ($('#cinema_select[name="cinema_id"]').val() === '' && !$("#box-cinema").hasClass('d-none')) {
+                isValid = false;
+
+                $('<div id="error-cinema" class="text-danger fw-medium fw-medium mt-1">Vui lòng chọn cơ sở làm việc.</div>')
+                    .insertAfter($('#cinema_select[name="cinema_id"]'));
+            }
+
+            if ($('#branch_select[name="branch_id"]').val() === '' && !$("#box-branch").hasClass('d-none')) {
+                isValid = false;
+
+                $('<div id="error-branch" class="text-danger fw-medium fw-medium mt-1">Vui lòng chọn chi nhánh làm việc.</div>')
+                    .insertAfter($('#branch_select[name="branch_id"]'));
+            }
+
+            if (!selectedRoles || selectedRoles.length === 0) {
+                isValid = false;
+
+                $('#errorRole').text('Vui lòng chọn vai trò');
+            }
+
+            // Nếu có lỗi thì ngăn không cho submit
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        if (roleAdmin == true) {
+            $("#choices-multiple-remove-button").on("change", function() {
+                const value = $(this).val(); // Lấy giá trị của select
+                console.log(value);
+
+                // if (Array.isArray(value) && value.includes("2")) {
+                if (value==2) {
+                    $("#box-cinema").addClass('d-none'); // Ẩn box-cinema
+                    $("#box-branch").removeClass('d-none'); // Hiển thị box-branch
+                // } else if (Array.isArray(value) && value.includes("4") || value.includes("3")) {
+                } else if (value == 4 || value == 3) {
+                    $("#box-cinema").removeClass('d-none'); // Hiển thị box-cinema
+                    const branchId = $('#branch_select').val();
+                    if (branchId) {
+                        getCinemasByBranch(branchId);
+                    }
+                } else {
+                    $("#box-cinema").removeClass('d-none'); // Ẩn box-cinema
+                    $("#box-branch").removeClass('d-none'); // Ẩn box-branch
+                }
+            });
+        }
+
+        $("#cinema_select").on("change", function(e) {
+            console.log($(this).val());
+            if ($(this).val()) {
+                $('#error-cinema').remove(); // Xóa thông báo lỗi nếu đã chọn
+            }
         });
 
         $('#change-image').click(function() {
@@ -381,5 +457,28 @@
             $('#image-container').addClass('d-none');
             $('#account-image').val('');
         });
+
+        function getCinemasByBranch(branchId) {
+            $.ajax({
+                url: '/admin/get-cinemas/' + branchId, // Đảm bảo URL này đúng
+                method: 'GET',
+                success: function(response) {
+                    $('#cinema_select').html('<option value="">Chọn rạp làm việc</option>'); // Reset dropdown
+                    if (response.cinemas.length > 0) {
+                        // Lặp qua các rạp và thêm vào dropdown
+                        response.cinemas.forEach(function(cinema) {
+                            $('#cinema_select').append(
+                                '<option value="' + cinema.id + '">' + cinema.name + '</option>'
+                            );
+                        });
+                    } else {
+                        $('#cinema_select').html('<option value="">Không có rạp cho chi nhánh này</option>');
+                    }
+                },
+                error: function(error) {
+                    console.log("Có lỗi xảy ra khi lấy danh sách rạp:", error);
+                }
+            });
+        }
     </script>
 @endsection

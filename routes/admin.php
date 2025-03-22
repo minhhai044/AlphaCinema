@@ -54,6 +54,8 @@ Route::post("/logout", [AuthController::class, "logout"])->name("logout");
 
 Route::resource('cinemas', CinemaController::class);
 Route::post('/cinemas/{id}/toggle', [CinemaController::class, 'toggleStatus'])->name('cinemas.toggle');
+Route::get('/get-cinemas/{branch_id}', [CinemaController::class, 'getCinemasByBranch']);
+
 Route::resource('ranks', RankController::class);
 
 Route::resource('slideshows', SlideShowController::class);
@@ -154,9 +156,8 @@ Route::prefix('showtimes')->as('showtimes.')->group(function () {
     Route::get('/copys',            [ShowtimeController::class, 'getCopys'])->name('getCopys');
     Route::post('/storeCopies',     [ShowtimeController::class, 'storeCopies'])->name('storeCopies');
     Route::get('{id}/createList',   [ShowtimeController::class, 'createList'])->name('createList');
-    Route::post('{id}/multipleSelect',[ShowtimeController::class, 'multipleSelect'])->name('multipleSelect');
-    Route::post('{id}/storePremium',[ShowtimeController::class, 'storePremium'])->name('storePremium');
-
+    Route::post('{id}/multipleSelect', [ShowtimeController::class, 'multipleSelect'])->name('multipleSelect');
+    Route::post('{id}/storePremium', [ShowtimeController::class, 'storePremium'])->name('storePremium');
 });
 
 
@@ -270,4 +271,3 @@ Route::get('/tickets/{ticket}/detail', [TicketController::class, 'show'])->name(
 Route::get('print/tickets/{id}', [TicketController::class, 'getTicketByID']);
 Route::get('print/tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
 Route::post('/tickets/change-status', [TicketController::class, 'changeStatus']);
-

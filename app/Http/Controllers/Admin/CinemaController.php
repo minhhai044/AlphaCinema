@@ -10,6 +10,7 @@ use App\Http\Requests\CinemaRequest;
 use App\Models\Branch;
 use App\Services\CinemaService;
 use App\Traits\ApiResponseTrait;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
@@ -102,7 +103,7 @@ class CinemaController extends Controller
     public function destroy(Cinema $cinema)
     {
         try {
-            /** 
+            /**
              * Nếu rạp chiếu đã có phòng không cho xóa
              */
             // $cinema->delete();
@@ -121,5 +122,15 @@ class CinemaController extends Controller
         $cinema->save();
 
         return back();
+    }
+    public function getCinemasByBranch($branch_id)
+    {
+
+        try {
+            $cinemas = Cinema::where('branch_id', $branch_id)->where('is_active', 1)->get();
+            return response()->json(['cinemas' => $cinemas]);
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 }
