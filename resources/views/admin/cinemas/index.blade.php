@@ -33,7 +33,6 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-lg-12">
-
             <div class="table-responsive min-vh-100">
                 <table id="datatable" class="table table-bordered text-center">
                     <thead>

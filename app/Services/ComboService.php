@@ -15,7 +15,7 @@ class ComboService
 
     public function getAllComboService($perPage = 10, string $latest = 'id')
     {
-        return Combo::query()->with('comboFood')->latest($latest)->paginate($perPage);
+        return Combo::query()->with('comboFood.food')->latest($latest)->get();
     }
 
     public function getComboByIdService($id)

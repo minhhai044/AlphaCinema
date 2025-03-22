@@ -30,12 +30,12 @@ class ComboController extends Controller
     public function index()
     {
         $data = $this->comboService->getAllComboService();
-        $food = Food::query()->select('id', 'name', 'type')->get();
+        // $food = Food::query()->select('id', 'name', 'type')->get();
 
         // dd($data->toArray());
 
 
-        return view(self::PATH_VIEW . __FUNCTION__, compact('data', 'food'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('data'));
     }
 
     // 2. Hiển thị form thêm mới đồ ăn
