@@ -7,6 +7,10 @@
             color: red;
             font-style: italic !important;
         }
+
+        .choices {
+            margin-bottom: 0 !important;
+        }
     </style>
 @endsection
 
@@ -30,7 +34,7 @@
         </div>
     </div>
     <!-- end page title -->
-    <form action="{{ route('admin.users.store') }}" method="POST" enctype="multipart/form-data">
+    <form action="{{ route('admin.users.store') }}" id="userForm" method="POST" enctype="multipart/form-data">
         @csrf
         <div class="row">
             <div class="col-lg-9">
@@ -176,6 +180,7 @@
                                         </div>
                                     </div>
                                 </div>
+
                             </div>
                             <div class="col-lg-6">
                                 <div>
@@ -196,12 +201,52 @@
                             </div>
 
                             <div class="col-lg-6">
+                                <label for="account-role" class="form-label">
+                                    Vai trò
+                                    <span class="required">*</span> </label>
+
+                                <select class="form-control" name="role_id" id="choices-multiple-remove-button">
+                                    <option value="">Chọn vai trò</option>
+                                    @foreach ($roles as $role)
+                                        @if ($role['name'] != 'System Admin')
+                                            @if (auth()->user()->hasRole('System Admin'))
+                                                <!-- Admin can select all roles -->
+                                                <option id="{{ $role['name'] }}" {{-- {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}> --}}
+                                                    {{ old('role_id') == $role['name'] ? 'selected' : '' }}>
+                                                    {{ $role['name'] }}
+                                                </option>
+                                            @elseif (auth()->user()->hasRole('Quản lý chi nhánh'))
+                                                <!-- Branch Manager can assign 'Quản lý chi nhánh' and 'Nhân viên' roles -->
+                                                @if ($role['name'] == 'Quản lý cơ sở' || $role['name'] == 'Nhân viên')
+                                                    <option id="{{ $role['name'] }}" {{-- {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}> --}}
+                                                        {{ old('role_id') == $role['name'] ? 'selected' : '' }}>
+                                                        {{ $role['name'] }}
+                                                    </option>
+                                                @endif
+                                            @elseif (auth()->user()->hasRole('Quản lý cơ sở'))
+                                                <!-- Facility Manager can only assign 'Nhân viên' role -->
+                                                @if ($role['name'] == 'Nhân viên')
+                                                    <option id="{{ $role['name'] }}" {{-- {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}> --}}
+                                                        {{ old('role_id') ? 'selected' : '' }}>
+                                                        {{ $role['name'] }}
+                                                    </option>
+                                                @endif
+                                            @endif
+                                        @endif
+                                    @endforeach
+                                </select>
+
+                                <span id="errorRole" class="text-danger fw-medium"></span>
+                            </div>
+
+                            <div id="box-branch"
+                                class="col-lg-6 {{ auth()->user()->hasRole('Quản lý chi nhánh') || auth()->user()->hasRole('Quản lý cơ sở') ? 'd-none' : '' }}">
                                 <div class="mb-3">
                                     <label for="account-cinema" class="form-label">
                                         Chi nhánh
                                         <span class="required">*</span>
                                     </label>
-                                    <select class="form-select" id="simpleSelect" name="branch_id">
+                                    <select class="form-select" id="branch_select" name="branch_id">
                                         <option value="">Chọn chi nhánh làm việc</option>
                                         @foreach ($branches as $branch)
                                             <option value="{{ $branch->id }}"
@@ -218,16 +263,18 @@
                                 </div>
                             </div>
 
-                            <div class="col-lg-6">
+                            <div class="col-lg-6" id="box-cinema">
                                 <div class="mb-3">
                                     <label for="account-cinema" class="form-label">
                                         Cơ sở
                                         <span class="required">*</span>
                                     </label>
-                                    <select class="form-select" id="simpleSelect" name="cinema_id">
+                                    <select class="form-select" id="cinema_select" name="cinema_id"
+                                        {{ auth()->user()->hasRole('Quản lý cơ sở') ? 'disabled' : '' }}>
                                         <option value="">Chọn rạp làm việc</option>
                                         @foreach ($cinemas as $cinema)
                                             <option value="{{ $cinema->id }}"
+                                                {{ auth()->user()->hasRole('Quản lý cơ sở') && auth()->user()->cinema_id == $cinema->id ? 'selected' : '' }}
                                                 {{ old('cinema_id') == $cinema->id ? 'selected' : '' }}>
                                                 {{ $cinema->name }}
                                             </option>
@@ -235,46 +282,10 @@
                                     </select>
                                     @error('cinema_id')
                                         <div class="text-danger">
-                                            <strong>{{ $message }}</strong>
+                                            {{ $message }}
                                         </div>
                                     @enderror
                                 </div>
-                            </div>
-
-                            <div class="col-lg-6">
-                                <label for="account-gender" class="form-label">
-                                    Vai trò
-                                    <span class="required">*</span> </label>
-                                {{-- <select class="form-select select2" name="role_id[]" id="multiSelect"
-                                    multiple="multiple">
-                                        @foreach ($roles as $role)
-                                            @if ($role->name != 'System Admin')
-                                            <option value="{{ $role->name }}"
-                                                {{ in_array($role->name, old('role_id', []))  ? 'selected' : '' }}>
-                                                {{ $role->name }}</option>
-                                        @endif
-                                    @endforeach
-                                </select> --}}
-
-                                <select class="form-control" name="role_id[]" id="choices-multiple-remove-button"
-                                    placeholder="Chọn một hoặc nhiều mục" multiple>
-                                    @foreach ($roles as $role)
-                                        @if ($role['name'] != 'System Admin')
-                                            <option id="{{ $role['name'] }}"
-                                                {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}>
-                                                {{ $role['name'] }}</option>
-                                        @endif
-                                    @endforeach
-                                </select>
-
-
-                                <div class="text-danger"> <strong id="errorSelect2"></strong> </div>
-
-                                @error('role')
-                                    <span class="text-danger">
-                                        <strong>{{ $message }}</strong>
-                                    </span>
-                                @enderror
                             </div>
 
                         </div>
@@ -331,17 +342,37 @@
 
     </form>
 
+    @php
+        $roleAdmin = auth()->user()->hasRole('System Admin');
+    @endphp
 
 @endsection
 
 @section('script')
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script>
-        $(document).ready(function() {
-            new Choices("#choices-multiple-remove-button", {
-                removeItemButton: true,
-            })
+        // $(document).ready(function() {
+        //     new Choices("#choices-multiple-remove-button", {
+        //         removeItemButton: true,
+        //     })
+        // });
+
+        const roleAdmin = @json($roleAdmin);
+
+        const selectedValue = $("#choices-multiple-remove-button").val(); // Lấy giá trị của lựa chọn
+
+        if (selectedValue == "Quản lý chi nhánh") {
+            $("#box-cinema").addClass("d-none"); // Ẩn box-cinema nếu chọn "Quản lý chi nhánh"
+        } else {
+            $("#box-cinema").removeClass("d-none"); // Hiển thị lại box-cinema nếu không chọn "Quản lý chi nhánh"
+        }
+
+        $("#account-phone").on("keypress", function(event) {
+            if (!/^[0-9]$/.test(String.fromCharCode(event.which || event.keyCode))) {
+                event.preventDefault();
+            }
         });
+
         let flagSubmit = false;
         let btnSubmit = $('#btnSubmit');
 
@@ -353,7 +384,7 @@
         let accountConfirmPasswordId = $('#confirm-password');
         let accountGenderId = $('#account-gender');
         let accountAddressId = $('#account-address');
-        let accountCinemaId = $('#simpleSelect');
+        let accountCinemaId = $('#branch_select');
         let accountRoleId = $('#multiSelect');
 
 
@@ -380,6 +411,87 @@
                 $('#image-preview').attr('src', '');
             });
         }
+
+        $('#branch_select').on('change', function() {
+            var branchId = $(this).val(); // Lấy giá trị của chi nhánh đã chọn
+
+            // Reset dropdown "Cơ sở" trước khi thêm các rạp mới
+            $('#cinema_select').html('<option value="">Chọn rạp làm việc</option>');
+
+            if (branchId) {
+                getCinemasByBranch(branchId);
+            }
+        });
+
+        $('#userForm').on('submit', function(e) {
+            let isValid = true;
+            const selectedRoles = $('#choices-multiple-remove-button').val();
+
+            $('#error-cinema').remove();
+            $('#error-branch').remove();
+            $('#errorRole').text('');
+
+            // Kiểm tra dropdown cinema_id (Cơ sở)
+            if ($('#cinema_select[name="cinema_id"]').val() === '' && !$("#box-cinema").hasClass('d-none')) {
+                isValid = false;
+
+                $('<div id="error-cinema" class="text-danger fw-medium fw-medium mt-1">Vui lòng chọn cơ sở làm việc.</div>')
+                    .insertAfter($('#cinema_select[name="cinema_id"]'));
+            }
+            if ($('#branch_select[name="branch_id"]').val() === '' && !$("#box-branch").hasClass('d-none')) {
+                isValid = false;
+
+                $('<div id="error-branch" class="text-danger fw-medium fw-medium mt-1">Vui lòng chọn chi nhánh làm việc.</div>')
+                    .insertAfter($('#branch_select[name="branch_id"]'));
+            }
+
+            if (!selectedRoles || selectedRoles.length === 0) {
+                isValid = false;
+
+                $('#errorRole').text('Vui lòng chọn vai trò');
+            }
+
+            if (!isValid) {
+                e.preventDefault();
+            }
+        });
+
+        if (roleAdmin == true) {
+            $("#choices-multiple-remove-button").on("change", function() {
+                const value = $(this).val(); // Lấy giá trị của select
+                console.log(value);
+
+                // Kiểm tra nếu chọn "Quản lý chi nhánh", ẩn cinema và hiển thị box-branch
+                // if (Array.isArray(value) && value.includes("Quản lý chi nhánh")) {
+                if (value == "Quản lý chi nhánh") {
+                    $("#box-cinema").addClass('d-none'); // Ẩn box-cinema
+                    $("#box-branch").removeClass('d-none'); // Hiển thị box-branch
+                    // } else if (Array.isArray(value) && value.includes("Nhân viên") || value.includes("Quản lý cơ sở")) {
+                } else if (value == "Nhân viên" || value == "Quản lý cơ sở") {
+                    // Kiểm tra nếu chọn "Nhân viên" hoặc "Quản lý cơ sở", hiển thị cinema và ẩn branch
+                    $("#box-cinema").removeClass('d-none'); // Hiển thị box-cinema
+                    const branchId = $('#branch_select').val();
+                    if (branchId) {
+                        getCinemasByBranch(branchId);
+                    }
+                } else {
+                    // Nếu không chọn "Nhân viên" hoặc "Quản lý cơ sở" hoặc "Quản lý chi nhánh", ẩn cinema và branch
+                    $("#box-cinema").removeClass('d-none'); // Ẩn box-cinema
+                    $("#box-branch").removeClass('d-none'); // Ẩn box-branch
+                }
+            });
+        }
+
+        $("#cinema_select").on("change", function(e) {
+            if ($(this).val()) {
+                $('#error-cinema').remove(); // Xóa thông báo lỗi nếu đã chọn
+            }
+        });
+        $("#branch_select").on("change", function(e) {
+            if ($(this).val()) {
+                $('#error-branch').remove(); // Xóa thông báo lỗi nếu đã chọn
+            }
+        });
 
         accountNameId.on('blur', function() {
             let errorMessage = accountNameId.closest(".mb-3").find(".text-danger");
@@ -525,6 +637,29 @@
                 $('#errorSelect2').text('');
             }
         });
+
+        function getCinemasByBranch(branchId) {
+            $.ajax({
+                url: '/admin/get-cinemas/' + branchId, // Đảm bảo URL này đúng
+                method: 'GET',
+                success: function(response) {
+                    $('#cinema_select').html('<option value="">Chọn rạp làm việc</option>'); // Reset dropdown
+                    if (response.cinemas.length > 0) {
+                        // Lặp qua các rạp và thêm vào dropdown
+                        response.cinemas.forEach(function(cinema) {
+                            $('#cinema_select').append(
+                                '<option value="' + cinema.id + '">' + cinema.name + '</option>'
+                            );
+                        });
+                    } else {
+                        $('#cinema_select').html('<option value="">Không có rạp cho chi nhánh này</option>');
+                    }
+                },
+                error: function(error) {
+                    console.log("Có lỗi xảy ra khi lấy danh sách rạp:", error);
+                }
+            });
+        }
     </script>
 
 @endsection

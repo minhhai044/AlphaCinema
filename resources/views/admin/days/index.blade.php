@@ -21,7 +21,7 @@
 
                     <h4 class="card-title">Danh sách phim</h4>
 
-                    <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
+                    <table id="datatable" class="table align-middle  dt-responsive nowrap w-100 table-bordered w-100 text-center">
                         <thead>
                             <tr>
                                 <th class="text-center">ID</th>
