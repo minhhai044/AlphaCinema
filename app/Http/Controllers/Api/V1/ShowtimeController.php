@@ -58,23 +58,10 @@ class ShowtimeController extends Controller
 
         if ($branchId && $cinemId) {
 
-            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
-            //     $query->where('branch_id', $branchId);
-            //     $query->where('cinema_id', $cinemId);
-            //     $query->where('date', '>', Carbon::now()->toDateString())
-            //         ->orWhere(function ($q) {
-            //             $q->where('date', Carbon::now()->toDateString())
-            //                 ->where('start_time', '>=', Carbon::now()->toTimeString());
-            //         });
-            // })
-            //     ->with('showtime')
-            //     ->latest('id')
-            //     ->get();
-
             $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
-                $query->where('branch_id', $branchId)
-                    ->where('cinema_id', $cinemId)
-                    ->where('date', '>', Carbon::now()->toDateString())
+                $query->where('branch_id', $branchId);
+                $query->where('cinema_id', $cinemId);
+                $query->where('date', '>', Carbon::now()->toDateString())
                     ->orWhere(function ($q) {
                         $q->where('date', Carbon::now()->toDateString())
                             ->where('start_time', '>=', Carbon::now()->toTimeString());
@@ -84,6 +71,77 @@ class ShowtimeController extends Controller
                 ->latest('id')
                 ->get();
 
+            ###########################
+
+            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
+            //     $query->where('branch_id', $branchId)
+            //         ->where('cinema_id', $cinemId)
+            //         ->where('date', '>=', Carbon::now()->toDateString())
+            //         ->orWhere(function ($q) {
+            //             $q->where('date', Carbon::now()->toDateString())
+            //                 ->where('start_time', '>=', Carbon::now()->toTimeString());
+            //         });
+            // })
+            //     ->with('showtime')
+            //     ->latest('id')
+            //     ->get();
+
+            ############################
+
+            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
+            //     $query->where('branch_id', $branchId)
+            //         ->where('cinema_id', $cinemId)
+            //         ->where(function ($q) {
+            //             $q->where('date', '>', Carbon::now()->toDateString()) // Lấy tất cả các ngày sau hôm nay
+            //                 ->orWhere(function ($subQuery) {
+            //                     $subQuery->where('date', '=', Carbon::now()->toDateString()) // Hôm nay chỉ lấy suất có start_time <= giờ hiện tại
+            //                         ->where('start_time', '<=', Carbon::now()->toTimeString());
+            //                 });
+            //         });
+            // })
+            //     ->with(['showtime' => function ($query) {
+            //         $query->orderBy('date')->orderBy('start_time'); // Sắp xếp theo ngày và giờ suất chiếu
+            //     }])
+            //     ->latest('id')
+            //     ->get();
+
+            ##########################
+
+            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
+            //     $query->where('branch_id', $branchId);
+            //     $query->where('cinema_id', $cinemId);
+            //     $query->where(function ($q) {
+            //         $q->where('date', '>=', Carbon::now()->toDateString());
+            //         $q->where('start_time', '>=', Carbon::now()->toTimeString());
+            //     });
+            // })
+            //     ->with('showtime')
+            //     ->latest('id')
+            //     ->get();
+
+            // return $this->successResponse(
+            //     $movies,
+            //     'Thao tác thành công'
+            // );
+
+            #######################
+
+            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
+            //     $query->where('branch_id', $branchId)
+            //         ->where('cinema_id', $cinemId)
+            //         ->where(function ($q) {
+            //             $q->where('date', '>', Carbon::now()->toDateString()) // Lấy tất cả suất chiếu của ngày mai trở đi
+            //                 ->orWhere(function ($subQuery) {
+            //                     $subQuery->where('date', '=', Carbon::now()->toDateString()) // Hôm nay chỉ lấy suất có start_time <= giờ hiện tại
+            //                         ->where('start_time', '<=', Carbon::now()->toTimeString());
+            //                 });
+            //         });
+            // })
+            //     ->with(['showtime' => function ($query) {
+            //         $query->orderBy('date')->orderBy('start_time'); // Sắp xếp theo ngày và giờ suất chiếu
+            //     }])
+            //     ->latest('id')
+            //     ->get();
 
             return $this->successResponse(
                 $movies,
@@ -146,11 +204,13 @@ class ShowtimeController extends Controller
         if ($branchId && $cinemId) {
             $movie = Movie::with([
                 'showtime' => function ($query) use ($branchId, $cinemId) {
-                    $query->where('date', '>=', Carbon::now()->toDateString())
-                        ->where('is_active', 1)
-                        ->where('branch_id', $branchId)
-                        ->where('cinema_id', $cinemId)
-                        ->where('start_time', '>=', Carbon::now()->toTimeString());
+                    $query->where('branch_id', $branchId);
+                    $query->where('cinema_id', $cinemId);
+                    $query->where('date', '>', Carbon::now()->toDateString())
+                        ->orWhere(function ($q) {
+                            $q->where('date', Carbon::now()->toDateString())
+                                ->where('start_time', '>=', Carbon::now()->toTimeString());
+                        });
                 },
                 'showtime.room'
             ])->where('slug', $slug)->first();
