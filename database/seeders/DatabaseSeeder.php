@@ -6,6 +6,7 @@ namespace Database\Seeders;
 
 use App\Models\Branch;
 use App\Models\Cinema;
+use App\Models\Day;
 use App\Models\Rank;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -26,7 +27,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-
+        /**
+         * Seeder Branch
+         */
         $branches = [
             'Hà nội',
             'Thanh Hóa',
@@ -42,7 +45,9 @@ class DatabaseSeeder extends Seeder
                 'is_active' => 1,
             ]);
         }
-
+        /**
+         * Seeder Cinema
+         */
         $cinemas = [
             'Hà Đông',
             'Mỹ Đình',
@@ -70,7 +75,9 @@ class DatabaseSeeder extends Seeder
                 $branchId++;
             }
         }
-
+        /**
+         * Seeder Users
+         */
         $users = [
             [
                 'name' => 'System Admin',
@@ -446,7 +453,7 @@ class DatabaseSeeder extends Seeder
         $user->assignRole('System Admin');
 
         $user = User::find(7);
-        $user->assignRole('Quản lý cơ sở', 'Nhân viên', );
+        $user->assignRole('Quản lý cơ sở', 'Nhân viên',);
         $user = User::find(8);
         $user->assignRole('Quản lý cơ sở', 'Nhân viên');
         $user = User::find(9);
@@ -523,20 +530,20 @@ class DatabaseSeeder extends Seeder
 
         DB::table('type_rooms')->insert([
             [
-                'name' => 'Phòng 2D',
-                'surcharge' => 50000, // Giá mặc định 50k50k
+                'name' => '2D',
+                'surcharge' => 2000,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Phòng 3D ',
-                'surcharge' => 100000, // Giá mặc định 100k
+                'name' => '3D ',
+                'surcharge' => 4000,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'name' => 'Phòng 4D ',
-                'surcharge' => 150000, // Giá mặc định 150k
+                'name' => '4D ',
+                'surcharge' => 6000,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -545,19 +552,19 @@ class DatabaseSeeder extends Seeder
         DB::table('type_seats')->insert([
             [
                 'name' => 'Ghế thường',
-                'price' => 5000, // Giá mặc định 50k50k
+                'price' => 5000,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Ghế VIP',
-                'price' => 10000, // Giá mặc định 100k
+                'price' => 10000,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'name' => 'Ghế đôi',
-                'price' => 15000, // Giá mặc định 150k
+                'price' => 15000,
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
@@ -574,7 +581,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Gold',
-                'total_spent' => 1000000,
+                'total_spent' => 3000000,
                 'ticket_percentage' => 7,
                 'combo_percentage' => 5,
                 'feedback_percentage' => 3,
@@ -582,7 +589,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Platinum',
-                'total_spent' => 3000000,
+                'total_spent' => 7000000,
                 'ticket_percentage' => 10,
                 'feedback_percentage' => 5,
                 'combo_percentage' => 7,
@@ -590,7 +597,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Diamond',
-                'total_spent' => 5000000,
+                'total_spent' => 10000000,
                 'ticket_percentage' => 15,
                 'feedback_percentage' => 7,
                 'combo_percentage' => 10,
@@ -600,6 +607,20 @@ class DatabaseSeeder extends Seeder
 
         foreach ($ranks as $rank) {
             Rank::create($rank);
+        }
+        /**
+         * @var mixed
+         */
+        $days = [
+            ['Ngày thường', 0],
+            ['Ngày cuối tuần', 3000],
+            ['Ngày đặc biệt', 5000]
+        ];
+        foreach ($days as $day) {
+            Day::create([
+                'name' => $day[0],
+                'surcharge' => $day[1],
+            ]);
         }
     }
 }
