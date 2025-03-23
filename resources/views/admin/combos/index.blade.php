@@ -51,7 +51,7 @@
                         @foreach ($data as $item)
                             <tr>
                                 <td>{{ $loop->iteration }}</td>
-                                <td class="fw-semibold">{{ $item->name }}</td>
+                                <td class="fw-semibold">{{ limitText($item->name, 20) }}</td>
                                 <td>
                                     @if ($item->img_thumbnail && Storage::exists($item->img_thumbnail))
                                         <img src="{{ Storage::url($item->img_thumbnail) }}" width="70" height="70"
@@ -79,7 +79,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{ $item->description }}
+                                    {{  limitText($item->description, 15) }}
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-center align-items-center">

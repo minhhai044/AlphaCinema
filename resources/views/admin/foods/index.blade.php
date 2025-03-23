@@ -54,7 +54,7 @@
                     @foreach ($foods as $food)
                         <tr>
                             <td>{{ $loop->iteration }}</td>
-                            <td>{{ $food->name }}</td>
+                            <td class="fw-semibold">{{ limitText($food->name, 20) }}</td>
                             <td>{{ $food->type }}</td>
                             <td>
                                 @if ($food->img_thumbnail && Storage::exists($food->img_thumbnail))

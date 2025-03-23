@@ -132,8 +132,8 @@
                     <tr>
                         <input type="hidden" name="id" id="dataId" value="{{ $data->id }}">
                         <td id="dataId">{{ $loop->iteration }}</td>
-                        <td class="fw-semibold">{{ $data->name }}</td>
-                        <td>{{ $data->description }}</td>
+                        <td class="fw-semibold">{{ limitText($data->name, 20) }}</td>
+                        <td>{{ limitText($data->description, 20)  }}</td>
                         <td>{{ $dataMatrix['name'] }}</td>
                         <td>
                             @if ($data->is_publish)

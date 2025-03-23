@@ -7,6 +7,11 @@
     <link rel="stylesheet" href="{{ asset('theme/admin/assets/libs/@simonwep/pickr/themes/nano.min.css') }}" />
     <!-- 'nano' theme -->
     <link rel="stylesheet" href="{{ asset('theme/admin/assets/libs/flatpickr/flatpickr.min.css') }}">
+    <style>
+        .table {
+            vertical-align: middle !important;
+        }
+    </style>
 @endsection
 @section('content')
 
@@ -82,16 +87,21 @@
                 </div>
             </div>
         </div>
+        @php
+            $colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark', 'muted'];
+            $roomColors = [];
+        @endphp
         @if ($listShowtimesByDates->isNotEmpty())
 
             <div class="accordion " id="accordionExample">
                 @foreach ($listShowtimesByDates as $key => $listShowtimesByDate)
                     <div class="accordion-item ">
                         <h2 class="accordion-header">
-                            <button class="accordion-button fw-bold text-dark bg-white" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#collapseOne{{ $key }}" aria-expanded="true"
-                                aria-controls="collapseOne">
-                                <span class="text-secondary">Danh sách suất chiếu ngày : </span><span class="text-dark ms-1">{{ \Carbon\Carbon::parse($key)->format('d/m/Y') }}</span>
+                            <button class="accordion-button fw-bold text-dark bg-white" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#collapseOne{{ $key }}"
+                                aria-expanded="true" aria-controls="collapseOne">
+                                <span class="text-secondary">Danh sách suất chiếu ngày : </span><span
+                                    class="text-dark ms-1">{{ \Carbon\Carbon::parse($key)->format('d/m/Y') }}</span>
 
                             </button>
                         </h2>
@@ -101,16 +111,15 @@
                                 <table class="table table-bordered table-hover dt-responsive nowrap w-100 text-center">
                                     <thead class="table text-light text-center rounded-top-2">
                                         <tr>
-                                            <th class="fw-semibold">STT</th>
-                                            <th class="fw-semibold">Phim</th>
-                                            <th class="fw-semibold">Ảnh</th>
-                                            <th class="fw-semibold">Thể loại phim</th>
-                                            <th class="fw-semibold">Thời lượng</th>
-                                            <th class="fw-semibold">Thao tác</th>
+                                            <th class="fw-semibold text-center">STT</th>
+                                            <th class="fw-semibold text-center">Phim</th>
+                                            <th class="fw-semibold text-center">Ảnh</th>
+                                            <th class="fw-semibold text-center">Thể loại phim</th>
+                                            <th class="fw-semibold text-center">Thời lượng</th>
+                                            <th class="fw-semibold text-center">Thao tác</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-
                                         @foreach ($listShowtimesByDate['movies'] as $movie)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
@@ -124,15 +133,16 @@
                                                 <td>
                                                     <button class="btn btn-success btn-sm" type="button"
                                                         data-bs-toggle="collapse"
-                                                        data-bs-target="#collapse-{{ $movie['movie']->id }}{{$key}}"
+                                                        data-bs-target="#collapse-{{ $movie['movie']->id }}{{ $key }}"
                                                         aria-expanded="false"
-                                                        aria-controls="collapse-{{ $movie['movie']->id }}{{$key}}">
+                                                        aria-controls="collapse-{{ $movie['movie']->id }}{{ $key }}">
                                                         <i class="bx bx-show"></i>
                                                     </button>
                                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                                                        data-bs-target="#movieModalXXX{{ $movie['movie']->id }}{{$key}}"><i
+                                                        data-bs-target="#movieModalXXX{{ $movie['movie']->id }}{{ $key }}"><i
                                                             class="bx bxs-copy"></i></button>
-                                                    <div class="modal fade" id="movieModalXXX{{ $movie['movie']->id }}{{$key}}"
+                                                    <div class="modal fade"
+                                                        id="movieModalXXX{{ $movie['movie']->id }}{{ $key }}"
                                                         tabindex="-1" aria-labelledby="movieModalLabel"
                                                         aria-hidden="true">
                                                         <div class="modal-dialog modal-dialog-centered">
@@ -187,31 +197,47 @@
                                             </tr>
                                             <tr>
                                                 <td colspan="6">
-                                                    <div class="collapse" id="collapse-{{ $movie['movie']->id }}{{$key}}">
+                                                    <div class="collapse"
+                                                        id="collapse-{{ $movie['movie']->id }}{{ $key }}">
 
                                                         <table class="table table-bordered text-center">
                                                             <thead class="table-light">
                                                                 <tr>
-                                                                    <th>Thời gian</th>
-                                                                    <th>Phòng</th>
-                                                                    <th>Hoạt động</th>
-                                                                    <th>Chức năng</th>
+                                                                    <th class="text-center fw-semibold">Thời gian</th>
+                                                                    <th class="text-center fw-semibold">Phòng</th>
+                                                                    <th class="text-center fw-semibold">Hoạt động</th>
+                                                                    <th class="text-center fw-semibold">Chức năng</th>
                                                                 </tr>
                                                             </thead>
                                                             <tbody>
                                                                 @foreach ($movie['showtimes'] as $showtime)
+                                                                    @php
+                                                                        $roomName = $showtime['room']['name'];
+                                                                        if (!isset($roomColors[$roomName])) {
+                                                                            $roomColors[$roomName] =
+                                                                                $colors[array_rand($colors)];
+                                                                        }
+                                                                        $color = $roomColors[$roomName];
+                                                                    @endphp
                                                                     <tr>
                                                                         <td>{{ \Carbon\Carbon::parse($showtime['start_time'])->format('H:i') }}
                                                                             -
                                                                             {{ \Carbon\Carbon::parse($showtime['end_time'])->format('H:i') }}
                                                                         </td>
 
-                                                                        <td>{{ $showtime['room']['name'] }}</td>
+                                                                        <td class="text-{{ $color }} fw-semibold">
+                                                                            {{ $showtime['room']['name'] }}</td>
                                                                         <td>
-                                                                            <div class="d-flex justify-content-center align-items-center">
+                                                                            <div
+                                                                                class="d-flex justify-content-center align-items-center mt-2">
                                                                                 <div class="custom-switch">
-                                                                                    <input @checked($showtime['is_active']) switch="primary" class="form-check-input switch-is-active"  id="is_active{{ $showtime['id'] }}" type="checkbox">
-                                                                                    <label for="is_active{{ $showtime['id'] }}"></label>
+                                                                                    <input @checked($showtime['is_active'])
+                                                                                        switch="primary"
+                                                                                        class="form-check-input switch-is-active"
+                                                                                        id="is_active{{ $showtime['id'] }}"
+                                                                                        type="checkbox">
+                                                                                    <label
+                                                                                        for="is_active{{ $showtime['id'] }}"></label>
                                                                                 </div>
                                                                             </div>
                                                                         </td>
@@ -253,12 +279,12 @@
             <table class="table table-bordered table-hover dt-responsive nowrap w-100 text-center">
                 <thead class="table text-light text-center rounded-top-2">
                     <tr>
-                        <th class="fw-semibold">STT</th>
-                        <th class="fw-semibold">Phim</th>
-                        <th class="fw-semibold">Ảnh</th>
-                        <th class="fw-semibold">Thể loại phim</th>
-                        <th class="fw-semibold">Thời lượng</th>
-                        <th class="fw-semibold">Thao tác</th>
+                        <th class="fw-semibold text-center">STT</th>
+                        <th class="fw-semibold text-center">Phim</th>
+                        <th class="fw-semibold text-center">Ảnh</th>
+                        <th class="fw-semibold text-center">Thể loại phim</th>
+                        <th class="fw-semibold text-center">Thời lượng</th>
+                        <th class="fw-semibold text-center">Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -345,17 +371,28 @@
                                             </thead>
                                             <tbody>
                                                 @foreach ($showtimes['showtimes'] as $showtime)
+                                                    @php
+                                                        $roomName = $showtime['room']['name'];
+                                                        if (!isset($roomColors[$roomName])) {
+                                                            $roomColors[$roomName] = $colors[array_rand($colors)];
+                                                        }
+                                                        $color = $roomColors[$roomName];
+                                                    @endphp
                                                     <tr>
                                                         <td>{{ \Carbon\Carbon::parse($showtime['start_time'])->format('H:i') }}
                                                             -
                                                             {{ \Carbon\Carbon::parse($showtime['end_time'])->format('H:i') }}
                                                         </td>
 
-                                                        <td>{{ $showtime['room']['name'] }}</td>
+                                                        <td class="fw-semibold text-{{ $color }}">
+                                                            {{ $showtime['room']['name'] }}</td>
                                                         <td>
-                                                            <input type="checkbox" id="is_active{{ $showtime['id'] }}"
-                                                                @checked($showtime['is_active']) switch="success" />
-                                                            <label for="is_active{{ $showtime['id'] }}"></label>
+                                                            <div class="mt-2">
+                                                                <input type="checkbox"
+                                                                    id="is_active{{ $showtime['id'] }}"
+                                                                    @checked($showtime['is_active']) switch="primary" />
+                                                                <label for="is_active{{ $showtime['id'] }}"></label>
+                                                            </div>
                                                         </td>
                                                         <td>
                                                             <form action="{{ route('admin.showtimes.delete') }}"
