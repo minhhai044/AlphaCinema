@@ -167,7 +167,6 @@
                 tableBody.appendChild(newRow);
                 rowCount++;
             });
-
             window.previewImg = function (input, index) {
                 if (input.files && input.files[0]) {
                     const reader = new FileReader();

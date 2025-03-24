@@ -39,6 +39,7 @@
                                 <th style="width: 155px;">Chức năng</th>
                             </tr>
                         </thead>
+                        
                         <tbody>
                             @foreach ($slideshows as $slideshow)
                                 <tr>

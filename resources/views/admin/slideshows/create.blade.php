@@ -42,6 +42,7 @@
                         </div>
                         <!-- end card body -->
                     </div>
+                    
                     <!-- end card -->
                 </div> <!-- end col -->
                 <div class="col-lg-5">
