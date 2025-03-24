@@ -119,6 +119,7 @@
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
 
+
     <script>
         $(document).on("change", ".changeActive", function() {
             let foodId = $(this).data("food-id");
