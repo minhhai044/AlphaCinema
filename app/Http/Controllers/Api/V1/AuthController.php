@@ -7,6 +7,7 @@ use App\Http\Controllers\Filters\Filter;
 use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
+use App\Http\Requests\SendOtpRequest;
 use App\Http\Requests\UserRequest;
 use App\Mail\SendOtpMail;
 use App\Models\Point_history;
@@ -352,13 +353,9 @@ class AuthController extends Controller
      * 
      * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function sendOtp(Request $request)
+    public function sendOtp(SendOtpRequest $request)
     {
         try {
-            $request->validate([
-                'email' => 'required|email'
-            ]);
-
             $user = User::where('email', $request->email)->first();
 
             if (!$user) {
