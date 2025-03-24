@@ -24,7 +24,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 */
 
 Route::get("/", function () {
-    return view("admin.index");
+    return redirect('/admin');
 })->middleware('checkLogin');
 
 Route::get("/login", function () {
