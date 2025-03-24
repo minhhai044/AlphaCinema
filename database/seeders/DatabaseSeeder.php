@@ -709,27 +709,66 @@ class DatabaseSeeder extends Seeder
 
         // Seed food table
         $foods = [
-            ['name' => 'Burger', 'img_thumbnail' => 'images/burger.jpg', 'type' => 'Đồ ăn', 'price' => 50000, 'description' => 'Burger bò thơm ngon', 'is_active' => 1],
-            ['name' => 'Pizza', 'img_thumbnail' => 'images/pizza.jpg', 'type' => 'Đồ ăn', 'price' => 120000, 'description' => 'Pizza hải sản', 'is_active' => 1],
-            ['name' => 'Coca Cola', 'img_thumbnail' => 'images/coca.jpg', 'type' => 'Đồ uống', 'price' => 15000, 'description' => 'Nước giải khát có ga', 'is_active' => 1],
-            ['name' => 'Pepsi', 'img_thumbnail' => 'images/pepsi.jpg', 'type' => 'Đồ uống', 'price' => 15000, 'description' => 'Nước ngọt Pepsi', 'is_active' => 1],
-            ['name' => 'Khoai tây chiên', 'img_thumbnail' => 'images/fries.jpg', 'type' => 'Đồ ăn', 'price' => 30000, 'description' => 'Khoai tây chiên giòn rụm', 'is_active' => 1],
-            ['name' => 'Trà sữa', 'img_thumbnail' => 'images/milktea.jpg', 'type' => 'Đồ uống', 'price' => 40000, 'description' => 'Trà sữa trân châu', 'is_active' => 1],
-            ['name' => 'Nước lọc', 'img_thumbnail' => 'images/water.jpg', 'type' => 'Đồ uống', 'price' => 10000, 'description' => 'Nước suối tinh khiết', 'is_active' => 1],
-            ['name' => 'Xúc xích', 'img_thumbnail' => 'images/sausage.jpg', 'type' => 'Đồ ăn', 'price' => 20000, 'description' => 'Xúc xích chiên giòn', 'is_active' => 1],
-            ['name' => 'Bánh ngọt', 'img_thumbnail' => 'images/cake.jpg', 'type' => 'Khác', 'price' => 25000, 'description' => 'Bánh kem ngọt ngào', 'is_active' => 1],
-            ['name' => 'Sinh tố bơ', 'img_thumbnail' => 'images/avocado_smoothie.jpg', 'type' => 'Đồ uống', 'price' => 50000, 'description' => 'Sinh tố bơ béo ngậy', 'is_active' => 1],
+            ['name' => 'Bỏng ngô thường', 'img_thumbnail' => 'foodImages/ExZZzbTWCffHEbC9hreNjbxgMJlc0WS1zPZXkDsK.png', 'type' => 'Đồ ăn', 'price' => 80000, 'description' => 'Bắp rang bơ thường', 'is_active' => 1],
+            ['name' => 'Nước Cocacola', 'img_thumbnail' => 'foodImages/0DDHnitdJcLWaqn30DggqUYQkZZtrjGoWmnFioP7.png', 'type' => 'Đồ uống', 'price' => 30000, 'description' => 'Nước giải khát có ga', 'is_active' => 1],
+            ['name' => 'Snack vị bí đỏ ', 'img_thumbnail' => 'foodImages/eBbuAnLlHAeqrlORz6nWUe1eNAplcaVMjDXvliFo.png', 'type' => 'Đồ ăn', 'price' => 15000, 'description' => 'Đồ ăn vặt', 'is_active' => 1],
+            ['name' => 'Cốc uống nước', 'img_thumbnail' => 'foodImages/XeLClFZXZzzxHVel8OphU2wI8uXeKyI4XSXkN8Ng.png', 'type' => 'Khác', 'price' => 90000, 'description' => 'Ly Cầu vồng', 'is_active' => 1],
+            ['name' => 'Khoai tây chiên', 'img_thumbnail' => 'foodImages/4cc6B1xM2cR0cPcdRZPbNODeHpENe1zJka26ODbU.png', 'type' => 'Đồ ăn', 'price' => 30000, 'description' => 'Khoai tây chiên giòn rụm', 'is_active' => 1],
+            ['name' => 'Trà sữa', 'img_thumbnail' => 'foodImages/w3J9NRrcc0HSGrEwXigQ0vyK3LzmdBpF9YO6Q3Em.png', 'type' => 'Đồ uống', 'price' => 40000, 'description' => 'Trà sữa trân châu', 'is_active' => 1],
+            ['name' => 'Nước lọc', 'img_thumbnail' => 'foodImages/3Tyn0ao42FNo4op6VyyDWaZzyI8JwizwiG1kKlAc.png', 'type' => 'Đồ uống', 'price' => 10000, 'description' => 'Nước suối tinh khiết', 'is_active' => 1],
+            ['name' => 'Xúc xích', 'img_thumbnail' => 'foodImages/9VSxWJuIkw0YGNqdY8qpdUaGs4PAHs5AlaOGadpG.png', 'type' => 'Đồ ăn', 'price' => 20000, 'description' => 'Xúc xích chiên giòn', 'is_active' => 1],
+            ['name' => 'Bánh ngọt', 'img_thumbnail' => 'foodImages/Hpy6jIoYMX6pFVL41N5L5e20y081dmx1fQyZJhuY.png', 'type' => 'Khác', 'price' => 25000, 'description' => 'Bánh kem ngọt ngào', 'is_active' => 1],
+            ['name' => 'Sinh tố bơ', 'img_thumbnail' => 'foodImages/9rx7OY31Z4rXHkeBRxnvDEaoco9sGZtOLtG45a6L.png', 'type' => 'Đồ uống', 'price' => 50000, 'description' => 'Sinh tố bơ béo ngậy', 'is_active' => 1],
         ];
 
         DB::table('food')->insert($foods);
 
         // Seed combos table
         $combos = [
-            ['name' => 'Combo 1', 'img_thumbnail' => 'comboImages/combo1.png', 'price' => 500000, 'price_sale' => 450000, 'description' => 'Combo tiết kiệm 1', 'is_active' => 1, 'combo_food' => [['food_id' => 1, 'quantity' => 2], ['food_id' => 2, 'quantity' => 3]]],
-            ['name' => 'Combo 2', 'img_thumbnail' => 'comboImages/combo2.png', 'price' => 600000, 'price_sale' => 550000, 'description' => 'Combo tiết kiệm 2', 'is_active' => 1, 'combo_food' => [['food_id' => 2, 'quantity' => 2], ['food_id' => 3, 'quantity' => 1]]],
-            ['name' => 'Combo 3', 'img_thumbnail' => 'comboImages/combo3.png', 'price' => 700000, 'price_sale' => 650000, 'description' => 'Combo tiết kiệm 3', 'is_active' => 1, 'combo_food' => [['food_id' => 3, 'quantity' => 4], ['food_id' => 4, 'quantity' => 2]]],
-            ['name' => 'Combo 4', 'img_thumbnail' => 'comboImages/combo4.png', 'price' => 800000, 'price_sale' => 750000, 'description' => 'Combo tiết kiệm 4', 'is_active' => 1, 'combo_food' => [['food_id' => 4, 'quantity' => 3], ['food_id' => 5, 'quantity' => 1]]],
-            ['name' => 'Combo 5', 'img_thumbnail' => 'comboImages/combo5.png', 'price' => 900000, 'price_sale' => 850000, 'description' => 'Combo tiết kiệm 5', 'is_active' => 1, 'combo_food' => [['food_id' => 1, 'quantity' => 5], ['food_id' => 5, 'quantity' => 2]]],
+            [
+                'name' => 'Combo ngọt ngào',
+                'img_thumbnail' => 'comboImages/QpaY6X34CWEZuhn1danLRsxUe0wgIDHExU2OHvqb.png',
+                'price' => 140000,
+                'price_sale' => 90000,
+                'description' => 'TIẾT KIỆM 50K!!! Gồm: 1 Bắp + 2 Nước có gaz',
+                'is_active' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'combo_food' => [
+                    ['food_id' => 1, 'quantity' => 1],
+                    ['food_id' => 2, 'quantity' => 2],
+                ],
+            ],
+            [
+                'name' => 'Combo Gia đình',
+                'img_thumbnail' => 'comboImages/RQ8UPqOcPraPy4F4fSG3T4kD6GmXSan2cR6V9Ety.png',
+                'price' => 310000,
+                'price_sale' => 210000,
+                'description' => 'TIẾT KIỆM 100K!!! Gồm: 2 Bắp  + 4 Nước có gaz  + 1 khoai tây chiên',
+                'is_active' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'combo_food' => [
+                    ['food_id' => 1, 'quantity' => 2],
+                    ['food_id' => 2, 'quantity' => 4],
+                    ['food_id' => 5, 'quantity' => 1],
+                ],
+            ],
+            [
+                'name' => 'Combo See Mê - Cầu Vồng',
+                'img_thumbnail' => 'comboImages/27VjNN6H1jLK5xmU9Km7fl7IUj0xLI579M8Q8YH1.png',
+                'price' => 170000,
+                'price_sale' => 114000,
+                'description' => 'TIẾT KIỆM 56K!!! Sỡ hữu ngay: 1 Ly Cầu Vồng kèm nước + 1 Bắp (69oz)',
+                'is_active' => 1,
+                'created_at' => now(),
+                'updated_at' => now(),
+                'combo_food' => [
+                    ['food_id' => 1, 'quantity' => 1],
+                    ['food_id' => 4, 'quantity' => 1],
+                ],
+            ],
+            
         ];
 
         foreach ($combos as $combo) {
@@ -740,8 +779,8 @@ class DatabaseSeeder extends Seeder
                 'price_sale' => $combo['price_sale'],
                 'description' => $combo['description'],
                 'is_active' => $combo['is_active'],
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => $combo['created_at'],
+                'updated_at' => $combo['updated_at'],
             ]);
 
             foreach ($combo['combo_food'] as $food) {

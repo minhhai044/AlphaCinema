@@ -37,6 +37,7 @@ class UserController extends Controller
 
         $roles = Role::all();
 
+
         return view(self::PATH_VIEW . __FUNCTION__, compact('users', 'roles'));
     }
 
@@ -46,20 +47,34 @@ class UserController extends Controller
         $roles = Role::all();
         $branches = Branch::where('is_active', 1)->get();
 
-        $cinemas = Cinema::where('is_active', '1')->first('branch_id')->get();
 
+        if (auth()->user()->hasRole("Quản lý chi nhánh")) {
+            $cinemas = Cinema::where('is_active', '1')
+                ->where('branch_id', auth()->user()->branch_id)
+                ->get();
+        } else {
+            $cinemas = Cinema::where('is_active', '1')->get();
+        }
+
+        // Trả về view cùng dữ liệu đã lấy
         return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas', 'branches']));
     }
+
 
     public function store(UserRequest $userRequest)
     {
         $data = $userRequest->validated();
+
         $data['type_user'] = 1;
+        if (auth()->user()->hasRole('Quản lý cơ sở')) {
+            $data['cinema_id'] = auth()->user()->cinema_id;
+        }
+
         // dd($data);
         $user =  $this->userService->storeUser($data);
 
         if ($userRequest->has('role_id')) {
-            dd($userRequest->role_id);
+            // dd($userRequest->role_id);
             $user->assignRole($userRequest->role_id);
         }
 
@@ -90,10 +105,19 @@ class UserController extends Controller
         $typeAdmin = User::TYPE_ADMIN;
         $roles = Role::all();
 
-        $cinemas = Cinema::where('is_active', '1')->first('branch_id')->get();
         $branches = Branch::where('is_active', 1)->get();
-
         $user =  $this->userRepository->findByIdUserRepository($id);
+
+        if (auth()->user()->hasRole("Quản lý chi nhánh")) {
+            $cinemas = Cinema::where('is_active', '1')
+                ->where('branch_id', '=', auth()->user()->branch_id)
+                ->get();
+        } else {
+            $cinemas = Cinema::where('is_active', '1')
+                ->first('branch_id')
+                ->get();
+        }
+
         // dd($user);
         return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas', 'user', 'branches']));
     }
@@ -104,6 +128,8 @@ class UserController extends Controller
         $data = $userRequest->validated();
         // dd($data);
         $data['type_user'] = 1;
+
+        // dd($data);
 
         $result = $this->userService->updateUser($id, $data);
 

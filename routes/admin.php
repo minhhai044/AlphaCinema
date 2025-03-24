@@ -54,6 +54,8 @@ Route::post("/logout", [AuthController::class, "logout"])->name("logout");
 
 Route::resource('cinemas', CinemaController::class);
 Route::post('/cinemas/{id}/toggle', [CinemaController::class, 'toggleStatus'])->name('cinemas.toggle');
+Route::get('/get-cinemas/{branch_id}', [CinemaController::class, 'getCinemasByBranch']);
+
 Route::resource('ranks', RankController::class);
 
 Route::resource('slideshows', SlideShowController::class);
@@ -268,8 +270,11 @@ Route::get('/export/{table}', [ExportController::class, 'export'])->name('export
 Route::get('/tickets/{ticket}/detail', [TicketController::class, 'show'])->name('tickets.show');
 Route::get('print/tickets/{id}', [TicketController::class, 'getTicketByID']);
 Route::get('print/tickets/combo/{id}', [TicketController::class, 'getComboFoodById']);
+
 // Route::post('/tickets/change-status', [TicketController::class, 'changeStatus']);
 
 
 Route::post('/tickets/change-status', [TicketController::class, 'changeStatus'])->name('admin.tickets.change-status');
 // Route::middleware('auth')->get('/dashboard', [DashBoardController::class, 'index'])->name('admin.dashboard');
+
+

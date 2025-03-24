@@ -11,6 +11,8 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use PhpOffice\PhpSpreadsheet\Calculation\Statistical\Distributions\F;
 
+use function Laravel\Prompts\error;
+
 class AuthController extends Controller
 {
     private const PATH_VIEW = "admin.auth.";
@@ -45,7 +47,10 @@ class AuthController extends Controller
                     Auth::login($user);
 
                     return redirect()->route('admin.index');
+                }else{
+                    return back()->with('error', 'Bạn không có quyền đăng nhập vào hệ thống');
                 }
+
             } else {
 
                 return back()->withErrors(['password' => 'Mật khẩu không chính xác.']);
