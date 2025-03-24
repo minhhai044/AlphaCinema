@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AuthController as AdminAuthController;
 use App\Http\Controllers\Admin\MovieController;
 use App\Http\Controllers\Admin\RankController;
 use App\Http\Controllers\Admin\TicketController as AdminTicketController;
@@ -49,9 +50,9 @@ Route::prefix('branchs')->group(function () {
 Route::get('/get-cinemas', [TicketController::class, 'getCinemas']);
 
 
-Route::get('/ranksJson',[RankController::class,'getRanksJson']);
+Route::get('/ranksJson', [RankController::class, 'getRanksJson']);
 Route::middleware('auth:sanctum')->group(function () {
-    
+
     Route::post('tickets', [TicketController::class, 'createTicket']);
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/getRank', [AuthController::class, 'getUserRank']);
@@ -59,9 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/update-profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::get('/pointhistory', [AuthController::class, 'getUserPointHistory']);
-    
-    Route::get('/ticket-by-user',[TicketController::class,'getTicketByUser']);
-    Route::get('/voucher',[AuthController::class,'getUserVoucher']);
+
+    Route::get('/ticket-by-user', [TicketController::class, 'getTicketByUser']);
+    Route::get('/voucher', [AuthController::class, 'getUserVoucher']);
     // Route::prefix('point_histories')->group(function () {
     //     Route::get('/', [PointHistoryController::class, 'index']);
     //     Route::get('{id}', [PointHistoryController::class, 'show']);
@@ -85,5 +86,8 @@ Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTi
 
 Route::get('/settings', [SiteSettingController::class, 'index']);
 
-Route::post('{payment}/payment',[PaymentController::class,'payment']);
-Route::get('/checkout',[PaymentController::class,'checkout']);
+Route::post('{payment}/payment', [PaymentController::class, 'payment']);
+Route::get('/checkout', [PaymentController::class, 'checkout']);
+
+// route forget password
+Route::post('send-otp', [AuthController::class, 'sendOtp']);

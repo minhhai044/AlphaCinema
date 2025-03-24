@@ -8,6 +8,7 @@ use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\UserRequest;
+use App\Mail\SendOtpMail;
 use App\Models\Point_history;
 use App\Models\Rank;
 use App\Models\User;
@@ -15,13 +16,16 @@ use App\Models\User_voucher;
 use App\Services\UserService;
 use App\Traits\ApiRequestJsonTrait;
 use App\Traits\ApiResponseTrait;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
@@ -232,7 +236,7 @@ class AuthController extends Controller
 
     public function getUserRank()
     {
-       
+
 
 
         try {
@@ -240,25 +244,25 @@ class AuthController extends Controller
             if (!$user) {
                 return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
             }
-    
+
             $totalTransaction = $user->total_amount;
             $point = $user->point;
-            $created_at =$user->created_at;
-    
+            $created_at = $user->created_at;
+
             // Lấy rank hiện tại
             $currentRank = Rank::where("total_spent", "<=", $totalTransaction)
                 ->orderBy("total_spent", "desc")
                 ->first();
-    
+
             if (!$currentRank) {
                 $currentRank = Rank::where("is_default", true)->first();
             }
-    
+
             // Lấy rank tiếp theo (rank cao hơn)
             $nextRank = Rank::where("total_spent", ">", $totalTransaction)
                 ->orderBy("total_spent", "asc")
                 ->first();
-    
+
             return response()->json([
                 "status" => "success",
                 "user" => [
@@ -266,7 +270,7 @@ class AuthController extends Controller
                     "name" => $user->name,
                     "total_amount" => $totalTransaction,
                     "point" => $point, // point hiện có
-                    "created_at"=>$created_at
+                    "created_at" => $created_at
                 ],
                 "rank" => $currentRank,
                 "next_rank" => $nextRank
@@ -279,7 +283,8 @@ class AuthController extends Controller
             ], 500);
         }
     }
-    public function getUserVoucher(){
+    public function getUserVoucher()
+    {
         try {
             // Lấy ID người dùng đang đăng nhập
             $userId = Auth::id();
@@ -324,7 +329,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-               "user" => [
+                "user" => [
                     "id" => $user->id,
                     "name" => $user->name,
                     "point" => $point,
@@ -339,4 +344,34 @@ class AuthController extends Controller
             ], 500);
         }
     }
+
+    public function sendOtp(Request $request)
+    {
+        try {
+            $request->validate([
+                'email' => 'required|email'
+            ]);
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return $this->errorResponse('Email không tồn tại', Response::HTTP_NOT_FOUND);
+            }
+
+            $otp = rand(100000, 999999);
+            $expiresAt = Carbon::now()->addMinutes(2);
+
+            DB::table('password_reset_tokens')->updateOrInsert(
+                ['email' => $request->email],
+                ['token' => Hash::make($otp), 'created_at' => now()]
+            );
+
+            Mail::to($request->email)->queue(new SendOtpMail($otp, $user->name));
+
+            return $this->successResponse([], 'Vui lòng kiểm tra email của bạn', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
+}
