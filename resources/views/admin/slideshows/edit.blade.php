@@ -86,7 +86,6 @@
                                 </table>
                             </div>
                         </div>
-
                         <!-- end card -->
                     </div>
                 </div> 
@@ -108,16 +107,13 @@
                             @enderror
                         </div>
                         <!-- end card body -->
-
                         <input type="hidden" name="is_active" value="0">
                     </div>
 
                 </div> <!-- end col -->
             </div>
             <!-- end row -->
-
         </div>
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -128,7 +124,6 @@
             </div>
             <!--end col-->
         </div>
-
     </form>
 @endsection
 
@@ -176,7 +171,6 @@
                     reader.readAsDataURL(input.files[0]);
                 }
             };
-
             window.removeRow = function (item) {
                 const row = item.closest('tr');
                 row.remove();
