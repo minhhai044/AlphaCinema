@@ -404,7 +404,13 @@ class AuthController extends Controller
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
-
+    /**
+     * Thay đổi password dựa vào mã otp và email người dùng yêu cầu reset
+     * 
+     * @param \Illuminate\Http\Request $request
+     * 
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function resetPassword(Request $request)
     {
         try {
