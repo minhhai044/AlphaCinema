@@ -20,6 +20,7 @@
     </div>
     <!-- end page title -->
 
+    
     <form action="{{ route('admin.foods.store') }}" method="POST" enctype="multipart/form-data">
         @csrf
         <input type="hidden" name="is_active" value="1">
