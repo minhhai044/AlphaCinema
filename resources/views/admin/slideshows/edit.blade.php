@@ -21,7 +21,6 @@
         </div>
         <div class="container-fluid">
             <!-- end page title -->
-
             <div class="row">
                 <div class="col-lg-7">
                     <div class="card">
@@ -109,7 +108,6 @@
                         <!-- end card body -->
                         <input type="hidden" name="is_active" value="0">
                     </div>
-
                 </div> <!-- end col -->
             </div>
             <!-- end row -->
