@@ -26,6 +26,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
@@ -344,7 +345,13 @@ class AuthController extends Controller
             ], 500);
         }
     }
-
+    /**
+     * Gửi mail kèm mã otp dựa vào email người dùng nhập vào
+     * 
+     * @param \Illuminate\Http\Request $request
+     * 
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function sendOtp(Request $request)
     {
         try {
@@ -361,14 +368,67 @@ class AuthController extends Controller
             $otp = rand(100000, 999999);
             $expiresAt = Carbon::now()->addMinutes(2);
 
-            DB::table('password_reset_tokens')->updateOrInsert(
-                ['email' => $request->email],
-                ['token' => Hash::make($otp), 'created_at' => now()]
-            );
+            Redis::setex("otp_{$request->email}", 120, Hash::make($otp));
 
             Mail::to($request->email)->queue(new SendOtpMail($otp, $user->name));
 
             return $this->successResponse([], 'Vui lòng kiểm tra email của bạn', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+     * Kiểm tra otp người dùng nhập vào có đúng không
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function verifyOtp(Request $request)
+    {
+        try {
+            $otpRedis = Redis::get("otp_{$request->email}");
+
+            if (!$otpRedis) {
+                return $this->errorResponse('OTP không tồn tại hoặc đã hết hạn', Response::HTTP_BAD_REQUEST);
+            }
+
+            if (!Hash::check($request->otp, $otpRedis)) {
+                return $this->errorResponse('OTP không đúng', Response::HTTP_BAD_REQUEST);
+            }
+
+            return $this->successResponse([
+                'otp' => $otpRedis
+            ], 'Chúc mừng bạn', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function resetPassword(Request $request)
+    {
+        try {
+            $otpRedis = Redis::get("otp_{$request->email}");
+
+            if (!$otpRedis) {
+                return $this->errorResponse('OTP không tồn tại hoặc đã hết hạn', Response::HTTP_BAD_REQUEST);
+            }
+
+            if (!Hash::check($request->otp, $otpRedis)) {
+                return $this->errorResponse('OTP không đúng', Response::HTTP_BAD_REQUEST);
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return $this->errorResponse('Email không tồn tại', Response::HTTP_NOT_FOUND);
+            }
+
+            $user->update(['password' => Hash::make($request->password)]);
+
+            Redis::del("otp_{$request->email}");
+
+            return $this->successResponse([$user], 'Thay đổi mật khẩu thành công', Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
