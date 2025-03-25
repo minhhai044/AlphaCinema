@@ -210,16 +210,30 @@ class AuthController extends Controller
     {
         $googleUser = Socialite::driver('google')->user();
 
-        $user = User::updateOrCreate(
-            ['google_id' => $googleUser->id],
+        // $user = User::updateOrCreate(
+        //     ['google_id' => $googleUser->id],
+        //     [
+        //         'name' => $googleUser->name,
+        //         'email' => $googleUser->email,
+        //         'password' => Str::password(12),
+        //         'avatar' => $googleUser->avatar,
+        //         'type_user' => 0,
+        //     ]
+        // );
+        $user = User::firstOrCreate(
+            ['email' => $googleUser->email], // Tìm theo email trước
             [
+                'google_id' => $googleUser->id,
                 'name' => $googleUser->name,
-                'email' => $googleUser->email,
-                'password' => Str::password(12),
+                'password' => Hash::make(Str::password(12)), // Chỉ tạo mật khẩu nếu user chưa có
                 'avatar' => $googleUser->avatar,
                 'type_user' => 0,
             ]
         );
+
+        if (!$user->google_id) {
+            $user->update(['google_id' => $googleUser->id, 'avatar' => $googleUser->avatar]);
+        }
 
         // Auth::login($user);
 
@@ -363,9 +377,9 @@ class AuthController extends Controller
             }
 
             $otp = rand(100000, 999999);
-            $expiresAt = Carbon::now()->addMinutes(2);
+            // $expiresAt = Carbon::now()->addMinutes(2);
 
-            Redis::setex("otp_{$request->email}", 120, Hash::make($otp));
+            Redis::setex("otp_{$request->email}", 300, Hash::make($otp));
 
             Mail::to($request->email)->queue(new SendOtpMail($otp, $user->name));
 
@@ -386,6 +400,7 @@ class AuthController extends Controller
             $otpRedis = Redis::get("otp_{$request->email}");
 
             if (!$otpRedis) {
+                Redis::del("otp_{$request->email}");
                 return $this->errorResponse('OTP không tồn tại hoặc đã hết hạn', Response::HTTP_BAD_REQUEST);
             }
 
@@ -394,8 +409,9 @@ class AuthController extends Controller
             }
 
             return $this->successResponse([
-                'otp' => $otpRedis
-            ], 'Chúc mừng bạn', Response::HTTP_OK);
+                'otp' => $otpRedis,
+                'verify_otp' => true
+            ], 'OTP hợp lệ, bạn có thể nhập mật khẩu mới', Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -431,7 +447,7 @@ class AuthController extends Controller
 
             Redis::del("otp_{$request->email}");
 
-            return $this->successResponse([$user], 'Thay đổi mật khẩu thành công', Response::HTTP_OK);
+            return $this->successResponse($user, 'Thay đổi mật khẩu thành công', Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);

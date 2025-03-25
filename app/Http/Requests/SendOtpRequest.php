@@ -32,6 +32,7 @@ class SendOtpRequest extends FormRequest
     {
         return [
             'email.required' => "Email không được để trống",
+            'email.email' => "Email không hợp lệ",
             'email.exists' => "Email không tồn tại",
         ];
     }

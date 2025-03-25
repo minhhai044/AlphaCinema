@@ -88,8 +88,8 @@
 
             <div class="ticket-info">
                 <p><strong>Mã OTP:</strong> {{ $otp }}</p>
-                <p><strong>❗Chú ý:</strong> Mã otp này sẽ hết hạn sau 2 phút</p>
-                <p><strong>❗Chú ý:</strong>Nếu bạn không yêu cầu thay đổi mật khẩu, vui lòng bỏ qua email này.</p>
+                <p><strong>❗Chú ý:</strong> Mã otp này sẽ hết hạn sau 5 phút</p>
+                <p><strong>❗Chú ý:</strong> Nếu bạn không yêu cầu thay đổi mật khẩu, vui lòng bỏ qua email này.</p>
             </div>
 
             <p>Trân trọng,</p>
