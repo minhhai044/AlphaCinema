@@ -72,8 +72,18 @@
         }
 
         .qr-code img {
-            width: 120px;
-            height: 120px;
+            width: 180px;
+            height: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 10px;
+        }
+
+        .qr-code p {
+            font-size: 14px;
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -92,20 +102,27 @@
                 <p><strong>📅 Ngày chiếu:</strong> {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</p>
                 <p><strong>⏰ Giờ chiếu:</strong> {{ $start_time }}</p>
                 <p><strong>🏢 Rạp:</strong> {{ $cinema_name }} - Chi Nhánh {{ $branch_name }}</p>
-                <p><strong>🪑 Ghế:</strong> 
+                <p><strong>🪑 Ghế:</strong>
                     {{ implode(', ', $seat_name) }}
                 </p>
-                
-                <p><strong>🛍 Combo:</strong> 
+
+                <p><strong>🛍 Combo:</strong>
                     {{ implode(', ', array_map(fn($combo) => "{$combo['name']} (x{$combo['quantity']})", $combo_name)) }}
                 </p>
-                
-                <p><strong>🍿 Đồ ăn:</strong> 
+
+                <p><strong>🍿 Đồ ăn:</strong>
                     {{ implode(', ', array_map(fn($food) => "{$food['name']} (x{$food['quantity']})", $food_name)) }}
                 </p>
-                
+
                 <p><strong>💰 Tổng tiền:</strong> {{ number_format($total_price) }} VNĐ</p>
             </div>
+
+            <div class="qr-code">
+                <p><strong>Mã vé của bạn:</strong></p>
+                <img src="{{ $barcodeUrl }}" alt="Barcode vé của bạn">
+                <p><code>{{ $code }}</code></p>
+            </div>
+            
 
 
             <p>Chúng tôi mong chờ được chào đón bạn tại rạp!</p>
