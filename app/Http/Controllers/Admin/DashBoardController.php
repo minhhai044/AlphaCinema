@@ -98,7 +98,10 @@ class DashBoardController extends Controller
 
         // Doanh thu hôm nay
         $revenueToday = $this->getRevenue($today, $todayEnd, $branchId, $cinemaId, $movieId, $statusId);
+        // dd($revenueToday);
+
         $formattedRevenueToday = number_format($revenueToday, 0, ',', '.');
+        // dd($formattedRevenueToday);
 
         // Số vé bán ra hôm nay
         $ticketsToday = $this->getTicketCountToday($today, $todayEnd, $branchId, $cinemaId, $movieId, $statusId);
@@ -200,7 +203,7 @@ class DashBoardController extends Controller
         $ticketCount = 0;
         $seatTypes = [];
         foreach ($tickets as $ticket) {
-            $seats = json_decode($ticket->ticket_seats, true);
+            $seats = $ticket->ticket_seats;
             if (is_array($seats)) {
                 $ticketCount += count($seats);
                 foreach ($seats as $seat) {
@@ -246,7 +249,7 @@ class DashBoardController extends Controller
 
         $ticketCount = 0;
         foreach ($tickets as $ticket) {
-            $seats = json_decode($ticket->ticket_seats, true);
+            $seats = $ticket->ticket_seats;
             if (is_array($seats)) {
                 $ticketCount += count($seats);
             }
