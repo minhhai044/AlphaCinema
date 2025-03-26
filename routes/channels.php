@@ -20,6 +20,6 @@ Broadcast::channel('showtime', function () {
     return true; 
 });
 
-Broadcast::channel('voucher', function () {
-    return true; 
+Broadcast::channel('voucher.{id}', function ($user, $id) {
+    return (int)$user->id === (int)$id;
 });

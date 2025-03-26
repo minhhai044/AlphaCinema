@@ -57,7 +57,7 @@ class VoucherController extends Controller
     
             session()->forget('voucher_code');
 
-            broadcast(new RealTimeVouCherEvent($vouchers))->toOthers();
+            // broadcast(new RealTimeVouCherEvent($vouchers))->toOthers();
 
             return redirect()->route('admin.vouchers.index')->with('success', 'Thêm mới mã giảm giá thành công!');
         } catch (\Throwable $th) {
