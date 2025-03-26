@@ -5,14 +5,17 @@
 @section('content')
     <div class="container-fluid mt-4">
         <h3 class="mb-4">Thống kê Combo</h3>
-
+{{-- @dd() --}}
         {{-- Form lọc --}}
-        <form method="GET" action="{{ route('admin.statistical.comboRevenue') }}" class="mb-4">
-            <div class="row align-items-end g-3">
-                <div class="col-md-2 col-sm-6">
-                    <label class="form-label">Chi nhánh:</label>
-                    <select name="branch_id" class="form-control">
-                        <option value="">Tất cả</option>
+        <form method="GET" action="" class="d-flex align-items-center gap-2" id="filterForm">
+            <!-- Bộ lọc chi nhánh -->
+            {{-- @if (auth()->user()->hasRole('System Admin')) --}}
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light text-muted border-0">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </span>
+                    <select name="branch_id" class="form-select border-0 shadow-sm">
+                        <option value="" {{ !$branchId ? 'selected' : '' }}>Tất cả chi nhánh</option>
                         @foreach ($branches as $branch)
                             <option value="{{ $branch->id }}" {{ $branchId == $branch->id ? 'selected' : '' }}>
                                 {{ $branch->name }}
@@ -20,20 +23,125 @@
                         @endforeach
                     </select>
                 </div>
-                <div class="col-md-2 col-sm-6">
-                    <label class="form-label">Ngày bắt đầu:</label>
-                    <input type="date" name="start_date" value="{{ $startDate }}" class="form-control">
+            {{-- @elseif (auth()->user()->branch_id && !auth()->user()->cinema_id)
+                <input type="hidden" name="branch_id" value="{{ auth()->user()->branch_id }}">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light text-muted border-0">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </span>
+                    <span class="form-control border-0 shadow-sm">{{ auth()->user()->branch->name ?? 'N/A' }}</span>
                 </div>
-                <div class="col-md-2 col-sm-6">
-                    <label class="form-label">Ngày kết thúc:</label>
-                    <input type="date" name="end_date" value="{{ $endDate }}" class="form-control">
+            @elseif (auth()->user()->cinema_id)
+                @php
+                    $cinema = $cinemas->firstWhere('id', auth()->user()->cinema_id);
+                @endphp --}}
+                {{-- <input type="hidden" name="branch_id" value="{{ $cinema->branch_id ?? '' }}"> --}}
+                <!-- Không hiển thị bất kỳ giao diện nào cho chi nhánh -->
+            {{-- @endif --}}
+
+            <!-- Bộ lọc rạp -->
+            {{-- @if (auth()->user()->hasRole('System Admin') || auth()->user()->branch_id)
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light text-muted border-0">
+                        <i class="bi bi-camera-reels"></i>
+                    </span> --}}
+                    <select name="cinema_id" class="form-select border-0 shadow-sm">
+                        <option value="" {{ !$cinemaId ? 'selected' : '' }}>Tất cả rạp</option>
+                        @if ($branchId && isset($branchesRelation[$branchId]))
+                            @foreach ($branchesRelation[$branchId] as $id => $name)
+                                <option value="{{ $id }}" {{ $cinemaId == $id ? 'selected' : '' }}>
+                                    {{ $name }}
+                                </option>
+                            @endforeach
+                        @elseif (isset($branchesRelation[auth()->user()->branch_id]))
+                            @foreach ($branchesRelation[auth()->user()->branch_id] as $id => $name)
+                                <option value="{{ $id }}" {{ $cinemaId == $id ? 'selected' : '' }}>
+                                    {{ $name }}
+                                </option>
+                            @endforeach
+                        @else 
+                            <option value="" disabled>Không có rạp nào</option>
+                        @endif 
+                    </select>
+                {{-- </div>
+            @elseif (auth()->user()->cinema_id)
+                @php
+                    $cinema = $cinemas->firstWhere('id', auth()->user()->cinema_id);
+                @endphp
+                <input type="hidden" name="cinema_id" value="{{ $cinema->id ?? '' }}">
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light text-muted border-0">
+                        <i class="bi bi-camera-reels"></i>
+                    </span>
+                    <span class="form-control border-0 shadow-sm">{{ $cinema->name ?? 'Không xác định' }}</span>
                 </div>
-                <div class="col-md-2 col-sm-6">
-                    <button class="btn btn-success w-100" type="submit">
-                        <i class="bi bi-sliders2"></i> Lọc
-                    </button>
-                </div>
+            @endif --}}
+
+            <!-- Các trường lọc còn lại không thay đổi -->
+            <!-- Bộ lọc ngày -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-calendar"></i>
+                </span>
+                <input type="date" name="date" class="form-control border-0 shadow-sm" value="{{ $date }}">
             </div>
+
+            <!-- Bộ lọc phim -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-film"></i>
+                </span>
+                <select name="movie_id" class="form-select border-0 shadow-sm">
+                    <option value="" {{ !$movieId ? 'selected' : '' }}>Tất cả phim</option>
+                    @foreach ($movies as $movie)
+                        <option value="{{ $movie->id }}" {{ $movieId == $movie->id ? 'selected' : '' }}>
+                            {{ $movie->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+
+            <!-- Bộ lọc tháng -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-calendar-month"></i>
+                </span>
+                <select name="month" class="form-select border-0 shadow-sm">
+                    <option value="" {{ !$selectedMonth ? 'selected' : '' }}>Chưa chọn</option>
+                    @for ($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng
+                            {{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <!-- Bộ lọc năm -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-calendar4"></i>
+                </span>
+                <select name="year" class="form-select border-0 shadow-sm">
+                    @for ($i = 2020; $i <= Carbon\Carbon::now()->year; $i++)
+                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm
+                            {{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <!-- Nút lọc -->
+            <button type="submit"
+                class="btn btn-sm btn-success rounded-circle p-2 d-flex align-items-center justify-content-center"
+                title="Lọc dữ liệu" style="width: 36px; height: 36px;">
+                <i class="bi bi-funnel fs-5"></i>
+            </button>
+
+            <!-- Nút reset -->
+            <button type="button"
+                class="btn btn-sm btn-primary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                onclick="resetFilters()" title="Reset bộ lọc" style="width: 36px; height: 36px;">
+                <i class="bi bi-arrow-counterclockwise fs-5"></i>
+            </button>
         </form>
         <!-- Hàng 1: Tổng doanh thu và Tỷ lệ combo -->
         <div class="row g-4 mb-4 mt-2">
@@ -83,14 +191,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($comboStatistics as $index => $combo)
+                                {{-- @foreach ($comboStatistics as $index => $combo)
                                     <tr>
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $combo->combo_name }}</td>
                                         <td>{{ $combo->total_quantity }}</td>
                                         <td>{{ number_format($combo->total_price, 0) }} VND</td>
                                     </tr>
-                                @endforeach
+                                @endforeach --}}
                             </tbody>
                         </table>
                     </div>
@@ -191,11 +299,10 @@
             data: {
                 labels: ['11:42', '13:42', '16:42', '18:42'],
                 datasets: [{
-                        label: 'Combo',
-                        data: [360000, 0, 390000, 744000],
-                        backgroundColor: '#36A2EB'
-                    },
-                ]
+                    label: 'Combo',
+                    data: [360000, 0, 390000, 744000],
+                    backgroundColor: '#36A2EB'
+                }, ]
             },
             options: {
                 scales: {
@@ -215,6 +322,40 @@
                     }
                 }
             }
+        });
+
+        function resetFilters() {
+            document.getElementById('filterForm').reset();
+            window.location.href = "{{ route('admin.index') }}";
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const branchSelect = document.querySelector('select[name="branch_id"]');
+            const cinemaSelect = document.querySelector('select[name="cinema_id"]');
+            const branchesRelation = @json($branchesRelation);
+
+            @if (auth()->user()->hasRole('System Admin'))
+                if (branchSelect && cinemaSelect) {
+                    branchSelect.addEventListener('change', function() {
+                        const branchId = this.value;
+                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') +
+                            '>Tất cả rạp</option>';
+
+                        if (branchId && branchesRelation[branchId]) {
+                            const cinemas = branchesRelation[branchId];
+                            for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
+                                const isSelected = cinemaId == "{{ $cinemaId }}" ? 'selected' : '';
+                                cinemaSelect.innerHTML +=
+                                    `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
+                            }
+                        }
+                    });
+
+                    if (branchSelect.value) {
+                        branchSelect.dispatchEvent(new Event('change'));
+                    }
+                }
+            @endif
         });
     </script>
 
