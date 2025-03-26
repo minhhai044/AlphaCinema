@@ -59,6 +59,7 @@ class MailService
         $start_time  = $data['showtime']['start_time'] ?? 'Chưa có';
         $cinema_name = $data['cinema']['name'] ?? 'Không rõ';
         $branch_name = $data['branch']['name'] ?? 'Không rõ';
+        $code        = $data['code'];
 
         $seat_name = [];
         if (!empty($data['ticket_seats']) && is_array($data['ticket_seats'])) {
@@ -97,7 +98,8 @@ class MailService
             $branch_name,
             $seat_name,
             $combo_name,
-            $food_name
+            $food_name,
+            $code
         ));
 
         return true;
