@@ -102,91 +102,191 @@ class StatisticalController extends Controller
     }
     public function comboRevenue(Request $request)
     {
-        // Tái sử dụng bộ lọc từ TicketService
-        [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
+        $user = Auth::user();
 
-        // Lấy danh sách cinemas từ branchesRelation
-        $cinemas = array_reduce($branchesRelation ?? [], fn($carry, $branchCinemas) => array_merge($carry, array_values($branchCinemas)), []);
-        
-        // Lấy các tham số lọc từ request
-        $branchId = $request->input('branch_id');
-        $cinemaId = $request->input('cinema_id');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $defaultStartDate = Carbon::now()->subDays(30);
-        
+        // Validation input
+        $branchId = $request->input('branch_id', $user->branch_id ?? '');
+        $cinemaId = $request->input('cinema_id', $user->cinema_id ?? '');
+        $date = $request->input('date');
+        $movieId = $request->input('movie_id');
+        $selectedMonth = $request->input('month', Carbon::now()->month) ?: Carbon::now()->month;
+        $selectedYear = $request->input('year', Carbon::now()->year) ?: Carbon::now()->year;
 
-        // Xây dựng query cơ bản với Eloquent
-        $query = Ticket::whereNotNull('ticket_combos')
-            ->where('ticket_combos', '!=', '[]')
-            ->whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
+        // Validate month/year
+        $selectedMonth = $selectedMonth ? max(1, min(12, (int) $selectedMonth)) : null;
+        $selectedYear = max(2020, min(Carbon::now()->year, (int) $selectedYear));
 
-        // Áp dụng bộ lọc chi nhánh và rạp
+        // Date handling
+        $today = $date ? Carbon::parse($date) : Carbon::today();
+        $todayStart = $today->startOfDay()->toDateTimeString();
+        $todayEnd = $today->endOfDay()->toDateTimeString();
+        $thisMonthStart = $selectedMonth ? Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth()->toDateTimeString() : Carbon::now()->startOfMonth()->toDateTimeString();
+        $thisMonthEnd = $selectedMonth ? Carbon::create($selectedYear, $selectedMonth, 1)->endOfMonth()->toDateTimeString() : Carbon::now()->endOfMonth()->toDateTimeString();
+
+        // Phân quyền mặc định
+        if (!$user->hasRole('System Admin')) {
+            $branchId = $user->branch_id ?: null;
+            $cinemaId = $user->cinema_id ?: null;
+        }
+
+        // Lấy danh sách chi nhánh, rạp, và phim
+        $branchesQuery = DB::table('branches')->select('id', 'name')->where('is_active', 1);
+        $cinemasQuery = DB::table('cinemas')->select('id', 'name')->where('is_active', 1);
+
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchesQuery->where('id', $user->branch_id);
+                $cinemasQuery->where('branch_id', $user->branch_id);
+            } elseif ($user->cinema_id) {
+                $cinemasQuery->where('id', $user->cinema_id);
+                $branchesQuery->whereIn('id', DB::table('cinemas')->where('id', $user->cinema_id)->pluck('branch_id'));
+            } else {
+                $branchesQuery->where('id', 0);
+                $cinemasQuery->where('id', 0);
+            }
+        }
+
+        $branches = $branchesQuery->get();
+        $cinemas = $cinemasQuery->get();
+        $movies = DB::table('movies')->select('id', 'name')->where('is_active', 1)->get();
+
+        // Quan hệ chi nhánh - rạp
+        $branchesRelationQuery = DB::table('cinemas')
+            ->select('branch_id', 'id', 'name')
+            ->where('is_active', 1);
+
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchesRelationQuery->where('branch_id', $user->branch_id);
+            } elseif ($user->cinema_id) {
+                $branchesRelationQuery->where('id', $user->cinema_id);
+            } else {
+                $branchesRelationQuery->where('id', 0);
+            }
+        }
+
+        $branchesRelation = $branchesRelationQuery->get()
+            ->groupBy('branch_id')
+            ->map(fn($group) => $group->pluck('name', 'id')->toArray())
+            ->toArray();
+
+        // Điều kiện lọc chi nhánh/rạp
+        $whereClause = '';
         if ($branchId) {
-            $query->whereIn('cinema_id', Cinema::where('branch_id', $branchId)->pluck('id'));
+            $whereClause .= " AND cinemas.branch_id = " . (int)$branchId;
         }
         if ($cinemaId) {
-            $query->where('cinema_id', $cinemaId);
+            $whereClause .= " AND tickets.cinema_id = " . (int)$cinemaId;
+        }
+        if ($movieId) {
+            $whereClause .= " AND tickets.movie_id = " . (int)$movieId;
         }
 
-        // Lấy dữ liệu tickets
-        $tickets = $query->get();
+        // Truy vấn thống kê combo
+        $comboQuery = "
+            SELECT
+                JSON_UNQUOTE(JSON_EXTRACT(tc.combo_item, '$.name')) AS combo_name,
+                CAST(FLOOR(SUM(JSON_EXTRACT(tc.combo_item, '$.quantity'))) AS UNSIGNED) AS total_quantity,
+                SUM(JSON_EXTRACT(tc.combo_item, '$.price_sale') * JSON_EXTRACT(tc.combo_item, '$.quantity')) AS total_price,
+                CONCAT(
+                    CAST(FLOOR(SUM(JSON_EXTRACT(tc.combo_item, '$.quantity'))) AS UNSIGNED), ' lượt - ',
+                    FORMAT(SUM(JSON_EXTRACT(tc.combo_item, '$.price_sale') * JSON_EXTRACT(tc.combo_item, '$.quantity')), 0), ' VND'
+                ) AS summary
+            FROM tickets
+            JOIN showtimes ON tickets.showtime_id = showtimes.id
+            JOIN cinemas ON tickets.cinema_id = cinemas.id
+            JOIN branches ON cinemas.branch_id = branches.id
+            JOIN JSON_TABLE(
+                ticket_combos,
+                '$[*]' COLUMNS (
+                    combo_item JSON PATH '$'
+                )
+            ) AS tc ON 1=1
+            WHERE ticket_combos IS NOT NULL
+            AND tickets.created_at BETWEEN ? AND ?
+            $whereClause
+            GROUP BY combo_name
+            ORDER BY total_price DESC
+        ";
 
-        // 1. Tổng doanh thu combo
-        $comboRevenue = $tickets->sum(function ($ticket) {
-            $combos = is_string($ticket->ticket_combos) ? json_decode($ticket->ticket_combos, true) : $ticket->ticket_combos;
-            return collect($combos)->sum(fn($combo) => $combo['price_sale'] * $combo['quantity']);
-        });
+        $startDate = $date ? $todayStart : $thisMonthStart;
+        $endDate = $date ? $todayEnd : $thisMonthEnd;
+        $comboStatistics = DB::select($comboQuery, [$startDate, $endDate]);
 
-        // 2. Top 5 combo bán chạy (theo doanh thu)
-        $comboStats = $tickets->flatMap(function ($ticket) {
-            $combos = is_string($ticket->ticket_combos) ? json_decode($ticket->ticket_combos, true) : $ticket->ticket_combos;
-            return collect($combos)->map(fn($combo) => [
-                'combo_name' => $combo['name'],
-                'total_quantity' => (int) $combo['quantity'],
-                'total_price' => $combo['price_sale'] * $combo['quantity'],
-            ]);
-        })->groupBy('combo_name')->map(function ($group) {
-            return (object) [
-                'combo_name' => $group->first()['combo_name'],
-                'total_quantity' => $group->sum('total_quantity'),
-                'total_price' => $group->sum('total_price'),
-            ];
-        })->sortByDesc('total_price')->take(5)->values();
+        // Chuẩn bị dữ liệu cho biểu đồ
+        $comboNames = array_column($comboStatistics, 'combo_name');
+        $comboQuantities = array_column($comboStatistics, 'total_quantity');
+        $comboRevenues = array_column($comboStatistics, 'total_price');
+        $comboSummaries = array_column($comboStatistics, 'summary');
 
-        $comboStatistics = $comboStats->all();
-        $comboNames = $comboStats->pluck('combo_name')->all();
-        $comboQuantities = $comboStats->pluck('total_quantity')->all();
-        $comboRevenues = $comboStats->pluck('total_price')->all();
+        // Tỷ lệ đơn hàng có combo
+        $totalTicketsQuery = "
+            SELECT COUNT(*) as total
+            FROM tickets
+            JOIN showtimes ON tickets.showtime_id = showtimes.id
+            JOIN cinemas ON tickets.cinema_id = cinemas.id
+            JOIN branches ON cinemas.branch_id = branches.id
+            WHERE tickets.created_at BETWEEN ? AND ?
+            $whereClause
+        ";
+        $totalTicketsResult = DB::selectOne($totalTicketsQuery, [$startDate, $endDate]);
+        $totalTickets = $totalTicketsResult->total;
 
-        // 3. Xu hướng doanh thu combo theo ngày
-        $trendData = $tickets->groupBy(fn($ticket) => Carbon::parse($ticket->created_at)->toDateString())
-            ->map(function ($group) {
-                return $group->sum(function ($ticket) {
-                    $combos = is_string($ticket->ticket_combos) ? json_decode($ticket->ticket_combos, true) : $ticket->ticket_combos;
-                    return collect($combos)->sum(fn($combo) => $combo['price_sale'] * $combo['quantity']);
-                });
-            })->sortKeys();
+        $comboTicketsQuery = "
+            SELECT COUNT(*) as total
+            FROM tickets
+            JOIN showtimes ON tickets.showtime_id = showtimes.id
+            JOIN cinemas ON tickets.cinema_id = cinemas.id
+            JOIN branches ON cinemas.branch_id = branches.id
+            WHERE ticket_combos IS NOT NULL
+            AND tickets.created_at BETWEEN ? AND ?
+            $whereClause
+        ";
+        $comboTicketsResult = DB::selectOne($comboTicketsQuery, [$startDate, $endDate]);
+        $comboTickets = $comboTicketsResult->total;
 
-        $trendDates = $trendData->keys()->all();
-        $trendRevenues = $trendData->values()->all();
+        $comboUsage = $totalTickets > 0 ? round(($comboTickets / $totalTickets) * 100, 2) : 0;
 
-        // 4. Tỷ lệ đơn hàng có combo
-        $totalTickets = Ticket::whereBetween('created_at', [$startDate . ' 00:00:00', $endDate . ' 23:59:59'])
-            ->when($branchId, fn($q) => $q->whereIn('cinema_id', Cinema::where('branch_id', $branchId)->pluck('id')))
-            ->when($cinemaId, fn($q) => $q->where('cinema_id', $cinemaId))
-            ->count();
+        // Doanh thu combo theo khung giờ
+        $timeFrameQuery = "
+            SELECT
+                DATE_FORMAT(showtimes.start_time, '%H:%i') AS time_frame,
+                SUM(JSON_EXTRACT(tc.combo_item, '$.price_sale') * JSON_EXTRACT(tc.combo_item, '$.quantity')) AS revenue
+            FROM tickets
+            JOIN showtimes ON tickets.showtime_id = showtimes.id
+            JOIN cinemas ON tickets.cinema_id = cinemas.id
+            JOIN branches ON cinemas.branch_id = branches.id
+            JOIN JSON_TABLE(
+                ticket_combos,
+                '$[*]' COLUMNS (
+                    combo_item JSON PATH '$'
+                )
+            ) AS tc ON 1=1
+            WHERE ticket_combos IS NOT NULL
+            AND tickets.created_at BETWEEN ? AND ?
+            $whereClause
+            GROUP BY time_frame
+            ORDER BY time_frame ASC
+        ";
+        $timeFrames = DB::select($timeFrameQuery, [$startDate, $endDate]);
+        $trendDates = array_column($timeFrames, 'time_frame');
+        $trendRevenues = array_column($timeFrames, 'revenue');
 
-        $comboUsage = $totalTickets > 0 ? round(($tickets->count() / $totalTickets) * 100, 2) : 0;
+        // Tổng doanh thu combo
+        $comboRevenue = array_sum($comboRevenues);
 
-        $comboSummaries = null;
         // Trả về view với dữ liệu
         return view('admin.statistical.ComboStatistical', compact(
             'branches',
+            'cinemas',
+            'branchesRelation',
+            'movies',
+            'movieId',
+            'selectedMonth',
+            'selectedYear',
             'branchId',
             'cinemaId',
-            'startDate',
-            'endDate',
+            'date',
             'comboRevenue',
             'comboNames',
             'comboQuantities',
@@ -194,8 +294,8 @@ class StatisticalController extends Controller
             'trendDates',
             'trendRevenues',
             'comboUsage',
-            'comboStatistics',
-            'comboSummaries'  
+            'comboSummaries',
+            'comboStatistics'
         ));
     }
     public function foodRevenue(Request $request)
@@ -226,7 +326,7 @@ class StatisticalController extends Controller
             }
         }
         if ($cinemaId) {
-            $conditions[] = "cinema_id = " . (int)$cinemaId;
+            $conditions[] = "cinema_id = " . (int) $cinemaId;
         }
         $whereClause = !empty($conditions) ? " AND " . implode(' AND ', $conditions) : "";
 
