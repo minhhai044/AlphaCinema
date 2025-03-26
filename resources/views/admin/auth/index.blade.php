@@ -45,21 +45,23 @@
                                     <form class="mt-4 pt-2" action="{{ route('login') }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
-                                            <label class="form-label">Username</label>
+                                            <label class="form-label">Email</label>
                                             <input type="text" class="form-control" name="email" id="email"
                                                 placeholder="Enter username">
+                                            <div class="text-danger mt-1 fw-medium" id="email-error"> </div>
+
                                         </div>
                                         <div class="mb-3">
                                             <div class="d-flex align-items-start">
                                                 <div class="flex-grow-1">
-                                                    <label class="form-label">Password</label>
+                                                    <label class="form-label">Mật khẩu</label>
                                                 </div>
-                                                <div class="flex-shrink-0">
+                                                {{-- <div class="flex-shrink-0">
                                                     <div class="">
                                                         <a href="auth-recoverpw.html" class="text-muted">Forgot
                                                             password?</a>
                                                     </div>
-                                                </div>
+                                                </div> --}}
                                             </div>
 
                                             <div class="input-group auth-pass-inputgroup">
@@ -69,8 +71,9 @@
                                                 <button class="btn btn-light shadow-none ms-0" type="button"
                                                     id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
                                             </div>
+                                            <div class="text-danger mt-1 fw-medium" id="password-error"></div>
                                         </div>
-                                        <div class="row mb-4">
+                                        {{-- <div class="row mb-4">
                                             <div class="col">
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="checkbox" id="remember-check">
@@ -80,17 +83,17 @@
                                                 </div>
                                             </div>
 
-                                        </div>
+                                        </div> --}}
                                         <div class="mb-3">
                                             <button class="btn btn-primary w-100 waves-effect waves-light"
-                                                type="submit">Log In</button>
+                                                type="submit">Đăng nhập</button>
                                         </div>
                                     </form>
 
-                                    <div class="mt-5 text-center">
+                                    {{-- <div class="mt-5 text-center">
                                         <p class="text-muted mb-0">Don't have an account ? <a href="auth-register.html"
                                                 class="text-primary fw-semibold"> Signup now </a> </p>
-                                    </div>
+                                    </div> --}}
                                 </div>
 
                             </div>
@@ -120,22 +123,52 @@
     <!-- password addon init -->
     <script src="{{ asset('theme/admin/assets/js/pages/pass-addon.init.js') }}"></script>
 
-    {{-- <script>
-        document.querySelector('#password-addon').addEventListener('click', function() {
-            var passwordField = document.querySelector('#password');
-            var icon = this.querySelector('i');
+    <script>
+        // document.querySelector('#password-addon').addEventListener('click', function() {
+        //     var passwordField = document.querySelector('#password');
+        //     var icon = this.querySelector('i');
 
-            if (passwordField.type === 'password') {
-                passwordField.type = 'text';
-                icon.classList.remove('mdi-eye-outline');
-                icon.classList.add('mdi-eye-off-outline');
-            } else {
-                passwordField.type = 'password';
-                icon.classList.remove('mdi-eye-off-outline');
-                icon.classList.add('mdi-eye-outline');
-            }
+        //     if (passwordField.type === 'password') {
+        //         passwordField.type = 'text';
+        //         icon.classList.remove('mdi-eye-outline');
+        //         icon.classList.add('mdi-eye-off-outline');
+        //     } else {
+        //         passwordField.type = 'password';
+        //         icon.classList.remove('mdi-eye-off-outline');
+        //         icon.classList.add('mdi-eye-outline');
+        //     }
+        // });
+
+        $(document).ready(function() {
+            $("form").submit(function(event) {
+                var email = $("#email").val();
+                var password = $("#password").val();
+                var emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                var isValid = true;
+
+                // Xóa thông báo lỗi trước khi kiểm tra
+                $("#email-error").text("");
+                $("#password-error").text("");
+
+                // Kiểm tra email hợp lệ
+                if (!emailPattern.test(email)) {
+                    $("#email-error").text("Email không hợp lệ và phải đúng định dạng.");
+                    isValid = false;
+                }
+
+                // Kiểm tra mật khẩu không để trống
+                if (password.trim() === "") {
+                    $("#password-error").text("Mật khẩu không được để trống.");
+                    isValid = false;
+                }
+
+                // Nếu có lỗi, ngừng submit form
+                if (!isValid) {
+                    event.preventDefault();
+                }
+            });
         });
-    </script> --}}
+    </script>
 
 
 </body>

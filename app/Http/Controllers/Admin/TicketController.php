@@ -36,9 +36,9 @@ class TicketController extends Controller
 
     }
 
-    public function show(Ticket $ticket)
+    public function show(string $code)
     {
-        $ticketData = $this->ticketService->getTicketDetail($ticket->id);
+        $ticketData = $this->ticketService->getTicketDetail($code);
         return view(self::PATH_VIEW . 'detail', compact('ticketData'));
     }
     public function print()
@@ -169,4 +169,13 @@ class TicketController extends Controller
 
         return response()->json(['message' => 'Cập nhật trạng thái thành công']);
     }
+    public function checkExists(string $code)
+    {
+        $exists = Ticket::where('code', $code)->exists();
+
+        return response()->json([
+            'exists' => $exists
+        ]);
+    }
+
 }

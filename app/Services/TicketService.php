@@ -27,7 +27,7 @@ class TicketService
         $user = auth()->user();
         $date = $request->query('date', '');
         $branch_id = $request->query('branch_id', $user->branch_id ?? '');
-        $cinema_id = $request->query('cinema_id', $user->cinema_id ?? ''); 
+        $cinema_id = $request->query('cinema_id', $user->cinema_id ?? '');
         $movie_id = $request->query('movie_id', '');
         $status = $request->query('status_id', '');
 
@@ -77,9 +77,9 @@ class TicketService
 
         return [$tickets, $branches, $branchesRelation, $movies];
     }
-    public function getTicketDetail($id)
+    public function getTicketDetail($code)
     {
-        $ticketDetail = $this->ticketRepository->findTicket($id);
+        $ticketDetail = $this->ticketRepository->findTicket($code);
 
 
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);

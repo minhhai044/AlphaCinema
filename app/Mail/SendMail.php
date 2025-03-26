@@ -2,6 +2,9 @@
 
 namespace App\Mail;
 
+use Cloudinary\Cloudinary;
+use Endroid\QrCode\QrCode;
+use Endroid\QrCode\Writer\PngWriter;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -9,14 +12,13 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Support\Facades\Storage;
+use Milon\Barcode\DNS1D;
 
 class SendMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Create a new message instance.
-     */
     private $user_name;
     private $total_price;
     private $movie_name;
@@ -27,6 +29,8 @@ class SendMail extends Mailable implements ShouldQueue
     private $seat_name;
     private $combo_name;
     private $food_name;
+    private $code;
+
     public function __construct(
         $user_name,
         $total_price,
@@ -37,7 +41,8 @@ class SendMail extends Mailable implements ShouldQueue
         $branch_name,
         $seat_name = [],
         $combo_name = [],
-        $food_name = []
+        $food_name = [],
+        $code
     ) {
         $this->user_name = $user_name;
         $this->total_price = $total_price;
@@ -49,30 +54,33 @@ class SendMail extends Mailable implements ShouldQueue
         $this->seat_name = is_array($seat_name) ? $seat_name : [];
         $this->combo_name = is_array($combo_name) ? $combo_name : [];
         $this->food_name = is_array($food_name) ? $food_name : [];
+        $this->code = $code;
     }
-    
 
-    /**
-     * Get the message envelope.
-     */
+
     public function envelope(): Envelope
     {
         return new Envelope(
-
             from: new Address('tmhai2004@gmail.com', 'AlphaCinema'),
-            replyTo: [
-                new Address('tmhai2004@gmail.com', 'AlphaCinema')
-            ],
-
+            replyTo: [new Address('tmhai2004@gmail.com', 'AlphaCinema')],
             subject: "AlphaCinema thông báo : Đặt vé thành công !!!",
+            tags: ['transactional']
         );
     }
 
-    /**
-     * Get the message content definition.
-     */
     public function content(): Content
     {
+        // Tạo barcode base64
+        $qrCode = new QrCode($this->code);
+        $writer = new PngWriter();
+        $result = $writer->write($qrCode);
+
+        // Lưu mã QR vào thư mục public
+        $imagePath = 'qr_codes/qrcode.png';
+        $result->saveToFile(public_path($imagePath));
+
+
+        // Storage::put('barcode/' . $this->code . '.png', $barcodeData);
         return new Content(
             view: 'mail.sendMailOrder',
             with: [
@@ -86,15 +94,25 @@ class SendMail extends Mailable implements ShouldQueue
                 'seat_name'   => $this->seat_name,
                 'combo_name'  => $this->combo_name,
                 'food_name'   => $this->food_name,
+                // 'QrCodeUrl'  => $imagePath,
+                'code'        => $this->code
             ],
         );
     }
 
-    /**
-     * Get the attachments for the message.
-     *
-     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
-     */
+    public function build()
+    {
+        // Sửa lỗi đường dẫn và đính kèm QR code vào email
+        $imagePath = 'qr_codes/qrcode.png';
+
+        // Sử dụng embed() để nhúng ảnh vào email
+        return $this
+            ->view('mail.sendMailOrder')
+            ->attach(public_path($imagePath), [
+                'as' => 'qrcode.png',  // Đặt tên file trong email
+                'mime' => 'image/png',  // Chỉ định loại MIME cho hình ảnh
+            ]);
+    }
     public function attachments(): array
     {
         return [];
