@@ -10,6 +10,7 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
+use Illuminate\Support\Facades\Storage;
 use Milon\Barcode\DNS1D;
 
 class SendMail extends Mailable implements ShouldQueue
@@ -77,7 +78,7 @@ class SendMail extends Mailable implements ShouldQueue
         ]);
 
         $barcodeUrl = $uploadResult['secure_url'];
-
+        // Storage::put('barcode/' . $this->code . '.png', $barcodeData);
         return new Content(
             view: 'mail.sendMailOrder',
             with: [

@@ -313,7 +313,7 @@
                         </td>
                         <td class="text-center">
                             <div class="btn-group justify-content-center align-items-center">
-                                <a href="{{ route('admin.tickets.show', $ticket) }}" class="btn btn-sm btn-success me-2"><i class="fas fa-eye"></i></a>
+                                <a href="{{ route('admin.tickets.show', $ticket->code) }}" class="btn btn-sm btn-success me-2"><i class="fas fa-eye"></i></a>
                                 <button class="btn btn-sm btn-primary me-2 btn-print-ticket {{ $ticket->status !== 'confirmed' ? 'd-none' : '' }} printTicket" data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Vé</button>
                                 <button class="btn btn-sm btn-warning btn-print-combo {{ $ticket->status !== 'confirmed' ? 'd-none' : '' }} printCombo" data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Combo</button>
                             </div>

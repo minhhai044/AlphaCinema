@@ -1,104 +1,195 @@
 <!DOCTYPE html>
-<html>
+<html lang="vi">
+
 <head>
-    <meta charset="UTF-8">
-    <title>Xác nhận đặt vé - AlphaCinema</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            padding: 20px;
-        }
-        .container {
-            max-width: 600px;
-            margin: auto;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
-        }
-        .header {
-            background: #ff5733;
-            color: white;
-            padding: 15px;
-            text-align: center;
-            font-size: 22px;
-            font-weight: bold;
-            border-radius: 8px 8px 0 0;
-        }
-        .content {
-            padding: 20px;
-            text-align: left;
-        }
-        .ticket-info {
-            background: #f9f9f9;
-            padding: 15px;
-            border-radius: 5px;
-            margin-top: 10px;
-        }
-        .ticket-info p {
-            margin: 5px 0;
-        }
-        .button {
-            display: inline-block;
-            padding: 12px 20px;
-            margin-top: 20px;
-            background: #ff5733;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            font-weight: bold;
-            text-align: center;
-        }
-        .footer {
-            text-align: center;
-            padding: 10px;
-            font-size: 12px;
-            color: #777;
-            margin-top: 20px;
-        }
-        .qr-code {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .qr-code img {
-            width: 120px;
-            height: 120px;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quét mã QR đẹp</title>
+
+  <!-- Bootstrap 5 -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+
+  <!-- html5-qrcode -->
+  <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
+
+  <style>
+    body {
+      background-color: #f1f3f5;
+    }
+  
+    #reader {
+      border-radius: 16px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.1);
+      background-color: #fff;
+      padding: 16px;
+      position: relative;
+      overflow: hidden;
+    }
+  
+    #reader__scan_region {
+      border-radius: 12px !important;
+      position: relative;
+      animation: glow 1.5s infinite ease-in-out;
+    }
+  
+    /* Viền phát sáng */
+    @keyframes glow {
+      0% {
+        box-shadow: 0 0 5px #00c853;
+      }
+  
+      50% {
+        box-shadow: 0 0 15px #00c853;
+      }
+  
+      100% {
+        box-shadow: 0 0 5px #00c853;
+      }
+    }
+  
+    /* Tạo góc viền giả lập máy quét */
+    .qr-corner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid #00c853;
+      position: absolute;
+    }
+  
+    .corner-tl {
+      top: 0;
+      left: 0;
+      border-right: none;
+      border-bottom: none;
+    }
+  
+    .corner-tr {
+      top: 0;
+      right: 0;
+      border-left: none;
+      border-bottom: none;
+    }
+  
+    .corner-bl {
+      bottom: 0;
+      left: 0;
+      border-right: none;
+      border-top: none;
+    }
+  
+    .corner-br {
+      bottom: 0;
+      right: 0;
+      border-left: none;
+      border-top: none;
+    }
+  
+    #result {
+      font-size: 18px;
+    }
+  </style>
 </head>
+
 <body>
-    <div class="container">
-        <div class="header">
-            🎟 Xác Nhận Đặt Vé - AlphaCinema
+  <div class="container py-5 text-center">
+    <h2 class="mb-4">✨ Quét mã QR</h2>
+    <button class="btn btn-success btn-lg" data-bs-toggle="modal" data-bs-target="#qrModal">
+      📷 Mở trình quét
+    </button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Quét mã QR</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
         </div>
-        <div class="content">
-            <p>Xin chào <strong>Nguyễn Văn A</strong>,</p>
-            <p>Cảm ơn bạn đã đặt vé tại <strong>AlphaCinema</strong>. Dưới đây là thông tin chi tiết về vé của bạn:</p>
-
-            <div class="ticket-info">
-                <p><strong>🎬 Phim:</strong> Avengers: Endgame</p>
-                <p><strong>📅 Ngày chiếu:</strong> 15/03/2025</p>
-                <p><strong>⏰ Giờ chiếu:</strong> 19:30</p>
-                <p><strong>🏢 Rạp:</strong> AlphaCinema - Chi Nhánh Hà Nội</p>
-                <p><strong>🪑 Ghế:</strong> H12, H13</p>
-                <p><strong>💰 Giá vé:</strong> 180.000 VNĐ</p>
-            </div>
-
-            <div class="qr-code">
-                <p>📲 Vui lòng quét mã QR dưới đây để nhận vé:</p>
-                <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=123456789" alt="QR Code">
-            </div>
-
-            <p><a href="https://yourwebsite.com" class="button">Xem chi tiết vé</a></p>
-
-            <p>Chúng tôi mong chờ được chào đón bạn tại rạp!</p>
-            <p>Trân trọng,</p>
-            <p><strong>Đội ngũ AlphaCinema</strong></p>
+        <div class="modal-body text-center">
+          <div id="reader" style="width: 500px; margin: auto; position: relative;">
+            <!-- Góc bo -->
+            <div class="qr-corner corner-tl"></div>
+            <div class="qr-corner corner-tr"></div>
+            <div class="qr-corner corner-bl"></div>
+            <div class="qr-corner corner-br"></div>
+          </div>
+          
+          <div id="result" class="mt-3 text-success fw-bold"></div>
+          <button id="scan-again-btn" class="btn btn-outline-success mt-3 d-none">🔄 Quét lại</button>
         </div>
-        <div class="footer">
-            &copy; 2025 AlphaCinema. Mọi quyền được bảo lưu.
-        </div>
+      </div>
     </div>
+  </div>
+
+  <script>
+    let html5QrCode;
+    let currentCameraId = null;
+
+    function startScanner() {
+      $("#result").text('');
+      $("#scan-again-btn").addClass('d-none');
+      html5QrCode = new Html5Qrcode("reader");
+
+      Html5Qrcode.getCameras().then(function (devices) {
+        if (devices && devices.length) {
+          currentCameraId = devices[0].id;
+
+          html5QrCode.start(
+            currentCameraId,
+            {
+              fps: 10,
+              qrbox: { width: 300, height: 300 }
+            },
+            onScanSuccess
+          ).catch(function (err) {
+            $("#result").text("Lỗi khi khởi động camera.");
+            console.error(err);
+          });
+        } else {
+          $("#result").text("Không tìm thấy camera nào.");
+        }
+      }).catch(function (err) {
+        $("#result").text("Không thể truy cập camera.");
+        console.error(err);
+      });
+    }
+
+    function stopScanner() {
+      if (html5QrCode) {
+        html5QrCode.stop().then(function () {
+          html5QrCode.clear();
+        }).catch(function (err) {
+          console.error("Lỗi khi dừng camera:", err);
+        });
+      }
+    }
+
+    function onScanSuccess(decodedText, decodedResult) {
+      $("#result").text("✅ Kết quả: " + decodedText);
+
+      html5QrCode.stop().then(function () {
+        $("#scan-again-btn").removeClass('d-none');
+      }).catch(function (err) {
+        console.error("Lỗi khi dừng camera:", err);
+      });
+    }
+
+    $("#scan-again-btn").on("click", function () {
+      startScanner();
+    });
+
+    $('#qrModal').on('shown.bs.modal', function () {
+      startScanner();
+    });
+
+    $('#qrModal').on('hidden.bs.modal', function () {
+      stopScanner();
+    });
+  </script>
 </body>
+
 </html>
