@@ -25,15 +25,20 @@ class StatisticalController extends Controller
     {
         $user = Auth::user();
 
+        // Tái sử dụng bộ lọc từ TicketService
         [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
+
+        // Lấy danh sách cinemas từ branchesRelation
         $cinemas = array_reduce($branchesRelation ?? [], fn($carry, $branchCinemas) => array_merge($carry, array_values($branchCinemas)), []);
 
+        // Xác định giá trị lọc dựa trên quyền
         $branchId = $user->hasRole('System Admin') ? $request->input('branch_id') : $user->branch_id;
         $cinemaId = $user->hasRole('System Admin') ? $request->input('cinema_id') : $user->cinema_id;
         $startDate = $request->input('start_date');
         $endDate = $request->input('end_date');
         $defaultStartDate = Carbon::now()->subDays(30);
 
+        // Truy vấn doanh thu và số vé theo phim
         $revenueQuery = Ticket::query()
             ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
             ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
@@ -46,6 +51,7 @@ class StatisticalController extends Controller
             )
             ->groupBy('movies.name');
 
+        // Truy vấn số lượng suất chiếu theo phim
         $showtimeQuery = DB::table('showtimes')
             ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
             ->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
@@ -56,6 +62,7 @@ class StatisticalController extends Controller
             )
             ->groupBy('movies.name');
 
+        // Bộ lọc ngày
         $filterClosure = function ($q) use ($startDate, $endDate, $defaultStartDate) {
             $q->when($startDate || $endDate, function ($q) use ($startDate, $endDate) {
                 if ($startDate && $endDate && $startDate === $endDate) {
@@ -78,12 +85,15 @@ class StatisticalController extends Controller
             }, fn($q) => $q->where('showtimes.date', '>=', $defaultStartDate));
         };
 
+        // Áp dụng phân quyền và bộ lọc
         $revenueQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))->tap($filterClosure);
         $showtimeQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))->tap($showtimeFilterClosure);
 
+        // Lấy dữ liệu
         $revenues = $revenueQuery->orderBy('revenue', 'desc')->get()->toArray();
         $showtimes = $showtimeQuery->orderBy('movie_name')->get()->toArray();
 
+        // Thông báo
         $message = null;
         if (empty($revenues) && empty($showtimes)) {
             if ($user->hasRole('System Admin')) {
@@ -119,21 +129,9 @@ class StatisticalController extends Controller
         } elseif ($user->cinema_id) {
             $query->where('cinemas.id', $user->cinema_id);
         } else {
-            $query->where('tickets.id', 0);
+            $query->where('tickets.id', 0); // Không có quyền
         }
         return $query;
-    }
-
-    public function getCinemasByBranch(Request $request)
-    {
-        $branchId = $request->input('branch_id');
-        $branchesRelation = $this->ticketService->getService($request)[2];
-
-        $cinemas = $branchId && isset($branchesRelation[$branchId])
-            ? $branchesRelation[$branchId]
-            : [];
-
-        return response()->json(array_map(fn($id, $name) => ['id' => $id, 'name' => $name], array_keys($cinemas), $cinemas));
     }
     public function comboRevenue(Request $request)
     {
