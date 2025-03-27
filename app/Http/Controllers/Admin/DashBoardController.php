@@ -98,7 +98,7 @@ class DashBoardController extends Controller
 
         // Doanh thu hôm nay
         $revenueToday = $this->getRevenue($today, $todayEnd, $branchId, $cinemaId, $movieId, $statusId);
-        // dd($revenueToday);
+        // dd($revenueToday)
 
         $formattedRevenueToday = number_format($revenueToday, 0, ',', '.');
         // dd($formattedRevenueToday);

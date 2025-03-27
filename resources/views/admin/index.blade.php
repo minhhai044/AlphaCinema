@@ -150,12 +150,12 @@
                         </button>
                     </form>
                 </div>
-                <div class="page-title-right">
+                {{-- <div class="page-title-right">
                     <ol class="breadcrumb m-0">
                         <li class="breadcrumb-item"><a href="javascript:void(0);">Thống kê</a></li>
                         <li class="breadcrumb-item active">Dashboard</li>
                     </ol>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -171,16 +171,14 @@
                 </div>
                 <div class="card-body-custom">
                     <div class="row align-items-center">
-                        <div class="col-7">
+                        <div class="col-12">
                             <h4 class="mb-3">
-                                <span class="counter-value"
-                                    data-target="{{ $revenueToday }}">{{ $formattedRevenueToday }}</span> VNĐ
+                                <span class="counter-value" data-target="{{ $revenueToday }}">{{ $formattedRevenueToday }}</span> VNĐ
                             </h4>
                         </div>
                     </div>
                     <div class="text-nowrap">
-                        <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
-                            0%</span>
+                        <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>0%</span>
                         <span class="ms-1 text-muted">So với hôm qua</span>
                     </div>
                 </div>
@@ -258,7 +256,7 @@
                     <div class="text-nowrap">
                         <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
                             0%</span>
-                        <span class="ms-1 text-muted">So với hôm qua</span>
+                        <span class="ms-1 text-muted">So với tháng trước</span>
                     </div>
                 </div>
             </div>
@@ -510,7 +508,7 @@
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
         }
 
-        
+
 
         .card-header-custom {
             background: linear-gradient(135deg, #5156be 0%, #34c38f 100%);
