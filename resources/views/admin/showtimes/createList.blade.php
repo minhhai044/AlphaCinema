@@ -30,9 +30,9 @@
                                                                                                                                                                                                         border-color: #48e7cf;
                                                                                                                                                                                                     } */
     </style>
-    {{-- <link href="{{ asset('theme/admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" /> --}}
-    {{-- <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" /> --}}
-    {{-- <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" rel="stylesheet" /> --}}
+    {{-- <link href="{{ asset('theme/admin/assets/css/bootstrap.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" rel="stylesheet" /> --}}
     <link href="{{ asset('theme/admin/assets/libs/bootstrap-select/bootstrap-select.min.css') }}" rel="stylesheet">
 @endsection
 

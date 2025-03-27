@@ -5,6 +5,7 @@ namespace App\Events;
 use App\Models\Voucher;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
+use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
@@ -14,14 +15,19 @@ class RealTimeVouCherEvent implements ShouldBroadcastNow
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     public $voucher;
-    public function __construct($voucher)
+    public $userIds;
+    public function __construct($voucher,$userIds)
     {
         $this->voucher = $voucher;
+        $this->userIds = $userIds;
     }
 
     public function broadcastOn()
     {
-        return new Channel('voucher');
+        // return new Channel('voucher');
+        return collect($this->userIds)
+        ->map(fn ($id) => new PrivateChannel('voucher.' . $id))
+        ->all();
     }
     public function broadcastWith()
     {

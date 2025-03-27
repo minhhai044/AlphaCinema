@@ -33,29 +33,6 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
-
-                    <div class="modal fade" id="barcodeModal" tabindex="-1" aria-labelledby="barcodeModalLabel"
-                        aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Quét mã Barcode</h5>
-                                    
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Đóng"></button>
-                                </div>
-                                <div class="modal-body text-center">
-                                    <div id="reader" style="width: 500px; margin: auto;"></div>
-                                    <input type="file" id="barcode-file" accept="image/*" hidden>
-                                    <button class="btn btn-success mt-3" onclick="$('#barcode-file').click();">
-                                        <i class="mdi mdi-upload"></i>Tải ảnh lên
-                                    </button>
-                                </div>
-
-                            </div>
-                        </div>
-                    </div>
-
                     @yield('content')
                 </div>
                 <!-- container-fluid -->

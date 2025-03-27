@@ -42,9 +42,9 @@ class TicketRepository
      * @param mixed $id
      * @return Ticket
      */
-    public function findTicket($code)
+    public function findTicket($id)
     {
-        $query = $this->ticket->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch')->where('code',$code);
+        $query = $this->ticket->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch');
         $user = Auth::user();
 
         if ($user->hasRole('Quản lý chi nhánh')) {
@@ -55,7 +55,7 @@ class TicketRepository
             $query->where('cinema_id', $user->cinema_id);
         }
 
-        return $query->first();
+        return $query->findOrFail($id);
     }
 
     /**

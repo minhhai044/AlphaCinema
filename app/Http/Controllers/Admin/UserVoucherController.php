@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Events\RealTimeVouCherEvent;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserVoucherRequest;
 use App\Models\User_voucher;
@@ -45,12 +46,12 @@ class UserVoucherController extends Controller
             // Kiểm tra nếu có nhiều người dùng được chọn
             if (!empty($data['user_ids']) && is_array($data['user_ids'])) {
                 $insertData = [];
-
+                $userIds = [];
                 foreach ($data['user_ids'] as $userId) {
                     if (!User_voucher::where('user_id', $userId)
                         ->where('voucher_id', $data['voucher_id'])
                         ->exists()) {
-
+                        $userIds[] = $userId;
                         $insertData[] = [
                             'user_id' => $userId,
                             'voucher_id' => $data['voucher_id'],
@@ -60,9 +61,10 @@ class UserVoucherController extends Controller
                         ];
                     }
                 }
-
                 if (!empty($insertData)) {
-                    User_voucher::insert($insertData);
+                    $vouchers = User_voucher::insert($insertData);
+                    broadcast(new RealTimeVouCherEvent($vouchers,$userIds))->toOthers();
+
                     return redirect()->route('admin.user-vouchers.index')->with('success', 'Thêm mới User Voucher thành công!');
                 } else {
                     return redirect()->back()->with('error', 'Tất cả người dùng đã nhận voucher này.');
@@ -117,6 +119,4 @@ class UserVoucherController extends Controller
             return back()->with('error', $th->getMessage());
         }
     }
-
-    
 }

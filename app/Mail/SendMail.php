@@ -2,7 +2,6 @@
 
 namespace App\Mail;
 
-use Cloudinary\Cloudinary;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Mail\Mailable;
@@ -10,13 +9,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Mail\Mailables\Address;
-use Illuminate\Support\Facades\Storage;
-use Milon\Barcode\DNS1D;
 
 class SendMail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
+    /**
+     * Create a new message instance.
+     */
     private $user_name;
     private $total_price;
     private $movie_name;
@@ -27,8 +27,6 @@ class SendMail extends Mailable implements ShouldQueue
     private $seat_name;
     private $combo_name;
     private $food_name;
-    private $code;
-
     public function __construct(
         $user_name,
         $total_price,
@@ -39,8 +37,7 @@ class SendMail extends Mailable implements ShouldQueue
         $branch_name,
         $seat_name = [],
         $combo_name = [],
-        $food_name = [],
-        $code
+        $food_name = []
     ) {
         $this->user_name = $user_name;
         $this->total_price = $total_price;
@@ -52,33 +49,30 @@ class SendMail extends Mailable implements ShouldQueue
         $this->seat_name = is_array($seat_name) ? $seat_name : [];
         $this->combo_name = is_array($combo_name) ? $combo_name : [];
         $this->food_name = is_array($food_name) ? $food_name : [];
-        $this->code = $code;
     }
+    
 
+    /**
+     * Get the message envelope.
+     */
     public function envelope(): Envelope
     {
         return new Envelope(
+
             from: new Address('tmhai2004@gmail.com', 'AlphaCinema'),
-            replyTo: [new Address('tmhai2004@gmail.com', 'AlphaCinema')],
+            replyTo: [
+                new Address('tmhai2004@gmail.com', 'AlphaCinema')
+            ],
+
             subject: "AlphaCinema thông báo : Đặt vé thành công !!!",
-            tags: ['transactional']
         );
     }
 
+    /**
+     * Get the message content definition.
+     */
     public function content(): Content
     {
-        // Tạo barcode base64
-        $barcodeData = (new DNS1D())->getBarcodePNG($this->code, 'C128', 1.5, 50);
-
-        // Upload trực tiếp barcode lên Cloudinary
-        $cloudinary = new Cloudinary(env('CLOUDINARY_URL'));
-
-        $uploadResult = $cloudinary->uploadApi()->upload('data:image/png;base64,' . $barcodeData, [
-            'folder' => 'barcode'
-        ]);
-
-        $barcodeUrl = $uploadResult['secure_url'];
-        // Storage::put('barcode/' . $this->code . '.png', $barcodeData);
         return new Content(
             view: 'mail.sendMailOrder',
             with: [
@@ -92,12 +86,15 @@ class SendMail extends Mailable implements ShouldQueue
                 'seat_name'   => $this->seat_name,
                 'combo_name'  => $this->combo_name,
                 'food_name'   => $this->food_name,
-                'barcodeUrl'  => $barcodeUrl,
-                'code'        => $this->code
             ],
         );
     }
 
+    /**
+     * Get the attachments for the message.
+     *
+     * @return array<int, \Illuminate\Mail\Mailables\Attachment>
+     */
     public function attachments(): array
     {
         return [];

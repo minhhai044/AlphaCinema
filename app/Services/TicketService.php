@@ -77,9 +77,10 @@ class TicketService
 
         return [$tickets, $branches, $branchesRelation, $movies];
     }
-    public function getTicketDetail(string $code)
+    public function getTicketDetail($id)
     {
-        $ticketDetail = $this->ticketRepository->findTicket($code);
+        $ticketDetail = $this->ticketRepository->findTicket($id);
+
 
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);
         $totalSeatPrice = $seatData['total_price'] ?? 0;

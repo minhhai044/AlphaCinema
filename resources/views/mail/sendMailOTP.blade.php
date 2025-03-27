@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Xác nhận đặt vé - AlphaCinema</title>
+    <title>Xác nhận quên mật khẩu - AlphaCinema</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,34 +81,17 @@
 <body>
     <div class="container">
         <div class="header">
-            🎟 Xác Nhận Đặt Vé - AlphaCinema
+            🎟 Xác nhận quên mật khẩu - AlphaCinema
         </div>
         <div class="content">
             <p>Xin chào <strong>{{ $user_name }}</strong>,</p>
-            <p>Cảm ơn bạn đã đặt vé tại <strong>AlphaCinema</strong>. Dưới đây là thông tin chi tiết về vé của bạn:</p>
 
             <div class="ticket-info">
-                <p><strong>🎬 Phim:</strong> {{ $movie_name }}</p>
-                <p><strong>📅 Ngày chiếu:</strong> {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</p>
-                <p><strong>⏰ Giờ chiếu:</strong> {{ $start_time }}</p>
-                <p><strong>🏢 Rạp:</strong> {{ $cinema_name }} - Chi Nhánh {{ $branch_name }}</p>
-                <p><strong>🪑 Ghế:</strong> 
-                    {{ implode(', ', $seat_name) }}
-                </p>
-                
-                <p><strong>🛍 Combo:</strong> 
-                    {{ implode(', ', array_map(fn($combo) => "{$combo['name']} (x{$combo['quantity']})", $combo_name)) }}
-                </p>
-                
-                <p><strong>🍿 Đồ ăn:</strong> 
-                    {{ implode(', ', array_map(fn($food) => "{$food['name']} (x{$food['quantity']})", $food_name)) }}
-                </p>
-                
-                <p><strong>💰 Tổng tiền:</strong> {{ number_format($total_price) }} VNĐ</p>
+                <p><strong>Mã OTP:</strong> {{ $otp }}</p>
+                <p><strong>❗Chú ý:</strong> Mã otp này sẽ hết hạn sau 5 phút</p>
+                <p><strong>❗Chú ý:</strong> Nếu bạn không yêu cầu thay đổi mật khẩu, vui lòng bỏ qua email này.</p>
             </div>
 
-
-            <p>Chúng tôi mong chờ được chào đón bạn tại rạp!</p>
             <p>Trân trọng,</p>
             <p><strong>Đội ngũ AlphaCinema</strong></p>
         </div>

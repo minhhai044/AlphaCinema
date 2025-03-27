@@ -33,12 +33,12 @@ class TicketController extends Controller
         $cinemas = Cinema::pluck('id', 'name');
 
         return view(self::PATH_VIEW . 'index', compact('tickets', 'branches', 'branchesRelation', 'movies', 'cinemas'));
+
     }
 
-    public function show(string $ticket)
+    public function show(Ticket $ticket)
     {
-
-        $ticketData = $this->ticketService->getTicketDetail($ticket);
+        $ticketData = $this->ticketService->getTicketDetail($ticket->id);
         return view(self::PATH_VIEW . 'detail', compact('ticketData'));
     }
     public function print()
@@ -168,14 +168,5 @@ class TicketController extends Controller
         $ticket->save();
 
         return response()->json(['message' => 'Cập nhật trạng thái thành công']);
-    }
-    
-    public function checkExists(string $code)
-    {
-        $exists = Ticket::where('code', $code)->exists();
-
-        return response()->json([
-            'exists' => $exists
-        ]);
     }
 }

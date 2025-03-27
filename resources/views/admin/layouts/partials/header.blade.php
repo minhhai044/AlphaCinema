@@ -11,7 +11,7 @@
         <div class="navbar-brand-box">
             <a href="{{ route('admin.index') }}" class="logo logo-dark">
                 <span class="logo-sm">
-                    <img src="{{ asset('logo/Icon Alpha cinema.svg') }}" alt="" style="width: 140%">
+                    <img src="{{ asset('logo/Icon Alpha cinema.svg') }}" alt=""  style="width: 140%">
                 </span>
                 <span class="logo-lg">
                     <img src="{{ asset('logo/Logo Alpha cinema.svg') }}" alt="" style="width: 52%">
@@ -63,11 +63,8 @@
             </div>
         </div>
 
-        <div class="dropdown d-none d-sm-inline-block">
-            <button type="button" class="btn header-item" data-bs-toggle="modal" data-bs-target="#barcodeModal">
-                <i data-feather="maximize"></i>
-            </button>
-        </div>
+
+
         <div class="dropdown d-none d-sm-inline-block">
             <button type="button" class="btn header-item" id="mode-setting-btn">
                 <i data-feather="moon" class="icon-lg layout-mode-dark"></i>
