@@ -5,93 +5,96 @@
     <div class="container-fluid mt-4">
         <h3 class="mb-4">Thống kê phim</h3>
 
-        <form method="GET" action="{{ route('admin.statistical.cinemaRevenue') }}" id="filterForm">
-            <div class="row g-3 align-items-end mb-4">
-                <!-- Chi nhánh -->
-                <div class="col-md-3 col-sm-6">
-                    <label for="branch_id" class="form-label fw-bold text-muted">
-                        <i class="bi bi-geo-alt-fill me-1"></i> Chi nhánh
-                    </label>
-                    @if (auth()->user()->hasRole('System Admin'))
-                        <select name="branch_id" id="branch_id" class="form-select shadow-sm">
-                            <option value="" {{ !$branchId ? 'selected' : '' }}>Tất cả chi nhánh</option>
-                            @foreach ($branches as $branch)
-                                <option value="{{ $branch->id }}" {{ $branchId == $branch->id ? 'selected' : '' }}>
-                                    {{ $branch->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                    @else
-                        @php
-                            $branchName = auth()->user()->branch->name ?? ($cinemas[array_search(auth()->user()->cinema_id, array_keys($cinemas))]->branch->name ?? 'ahuy');
-                        @endphp
-                        <input type="text" class="form-control shadow-sm" value="{{ $branchName }}" readonly>
-                        <input type="hidden" name="branch_id" value="{{ auth()->user()->branch_id ?? ($cinemas[array_search(auth()->user()->cinema_id, array_keys($cinemas))]->branch_id ?? '') }}">
-                    @endif
-                </div>
-
-                <!-- Rạp -->
-                <div class="col-md-3 col-sm-6">
-                    <label for="cinema_id" class="form-label fw-bold text-muted">
-                        <i class="bi bi-camera-reels me-1"></i> Rạp
-                    </label>
-                    @if (auth()->user()->hasRole('System Admin'))
-                        <select name="cinema_id" id="cinema_id" class="form-select shadow-sm">
-                            <option value="" {{ !$cinemaId ? 'selected' : '' }}>Tất cả rạp</option>
-                            @if ($branchId && isset($branchesRelation[$branchId]))
-                                @foreach ($branchesRelation[$branchId] as $id => $name)
-                                    <option value="{{ $id }}" {{ $cinemaId == $id ? 'selected' : '' }}>{{ $name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                    @elseif (auth()->user()->branch_id)
-                        <select name="cinema_id" id="cinema_id" class="form-select shadow-sm">
-                            <option value="" {{ !$cinemaId ? 'selected' : '' }}>Tất cả rạp trong chi nhánh</option>
-                            @if (isset($branchesRelation[auth()->user()->branch_id]))
-                                @foreach ($branchesRelation[auth()->user()->branch_id] as $id => $name)
-                                    <option value="{{ $id }}" {{ $cinemaId == $id ? 'selected' : '' }}>{{ $name }}</option>
-                                @endforeach
-                            @endif
-                        </select>
-                    @elseif (auth()->user()->cinema_id)
-                        <input type="text" class="form-control shadow-sm" value="{{ auth()->user()->cinema->name ?? 'N/A' }}" readonly>
-                        <input type="hidden" name="cinema_id" value="{{ auth()->user()->cinema_id }}">
-                    @endif
-                </div>
-
-                <!-- Ngày bắt đầu -->
-                <div class="col-md-2 col-sm-6">
-                    <label for="start_date" class="form-label fw-bold text-muted">
-                        <i class="bi bi-calendar-range me-1"></i> Ngày bắt đầu
-                    </label>
-                    <input type="date" name="start_date" id="start_date" value="{{ $startDate }}"
-                           class="form-control shadow-sm">
-                </div>
-
-                <!-- Ngày kết thúc -->
-                <div class="col-md-2 col-sm-6">
-                    <label for="end_date" class="form-label fw-bold text-muted">
-                        <i class="bi bi-calendar-check me-1"></i> Ngày kết thúc
-                    </label>
-                    <input type="date" name="end_date" id="end_date" value="{{ $endDate }}"
-                           class="form-control shadow-sm">
-                </div>
-
-                <!-- Nút Lọc -->
-                <div class="col-md-2 col-sm-6">
-                    <button type="submit" class="btn btn-success w-100 shadow-sm">
-                        <i class="bi bi-funnel-fill me-1"></i> Lọc dữ liệu
-                    </button>
-                </div>
-
-                <!-- Nút Reset -->
-                <div class="col-md-2 col-sm-6">
-                    <a href="{{ route('admin.statistical.cinemaRevenue') }}" class="btn btn-outline-secondary w-100 shadow-sm">
-                        <i class="bi bi-arrow-repeat me-1"></i> Reset
-                    </a>
-                </div>
+        <form method="GET" action="{{ route('admin.statistical.cinemaRevenue') }}"
+      class="filter-row d-flex align-items-end gap-3 mb-4">
+    <!-- Chi nhánh (Chỉ hiển thị dropdown cho System Admin) -->
+    @if (auth()->user()->hasRole('System Admin'))
+        <div class="form-group col-md-2">
+            <select name="branch_id" class="form-select" id="branch_id">
+                <option value="" {{ !$branchId ? 'selected' : '' }}>Chọn chi nhánh</option>
+                @if ($branches && $branches->isNotEmpty())
+                    @foreach ($branches as $branch)
+                        <option value="{{ $branch->id }}"
+                            {{ $branchId == $branch->id ? 'selected' : '' }}>
+                            {{ $branch->name }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+    @else
+        @if (auth()->user()->branch_id)
+            <input type="hidden" name="branch_id" value="{{ auth()->user()->branch_id }}">
+            <div class="form-group col-md-2">
+                <label class="form-label fw-bold">
+                    <i class="bi bi-geo-alt me-1"></i> Chi nhánh
+                </label>
+                <p class="form-control-static">{{ auth()->user()->branch->name ?? 'N/A' }}</p>
             </div>
-        </form>
+        @endif
+    @endif
+
+    <!-- Rạp (Hiển thị dropdown cho System Admin hoặc Quản lý chi nhánh) -->
+    @if (auth()->user()->hasRole('System Admin') || auth()->user()->branch_id)
+        <div class="form-group col-md-2">
+            <select name="cinema_id" class="form-select" id="cinema_id">
+                <option value="" {{ !$cinemaId ? 'selected' : '' }}>Chọn rạp</option>
+                @if (auth()->user()->hasRole('System Admin') && $branchId && isset($branchesRelation[$branchId]))
+                    @foreach ($branchesRelation[$branchId] as $id => $name)
+                        <option value="{{ $id }}"
+                            {{ $cinemaId == $id ? 'selected' : '' }}>
+                            {{ $name }}
+                        </option>
+                    @endforeach
+                @elseif(auth()->user()->branch_id && isset($branchesRelation[auth()->user()->branch_id]))
+                    @foreach ($branchesRelation[auth()->user()->branch_id] as $id => $name)
+                        <option value="{{ $id }}"
+                            {{ $cinemaId == $id ? 'selected' : '' }}>
+                            {{ $name }}
+                        </option>
+                    @endforeach
+                @endif
+            </select>
+        </div>
+    @else
+        @if (auth()->user()->cinema_id)
+            <input type="hidden" name="cinema_id" value="{{ auth()->user()->cinema_id }}">
+            <div class="form-group col-md-2">
+                <label class="form-label fw-bold">
+                    <i class="bi bi-camera-reels me-1"></i> Rạp
+                </label>
+                <p class="form-control-static">{{ auth()->user()->cinema->name ?? 'N/A' }}</p>
+            </div>
+        @endif
+    @endif
+
+    <!-- Ngày bắt đầu -->
+    <div class="form-group col-md-2">
+        <input type="date" name="start_date" id="start_date"
+               class="form-control" value="{{ $startDate }}">
+    </div>
+
+    <!-- Ngày kết thúc -->
+    <div class="form-group col-md-2">
+        <input type="date" name="end_date" id="end_date"
+               class="form-control" value="{{ $endDate }}">
+    </div>
+
+    <!-- Nút Lọc -->
+    <div class="form-group col-md-1 d-flex align-items-end">
+        <button type="submit" class="btn btn-primary w-50">
+            <i class="bx bx-search-alt-2"></i>
+        </button>
+    </div>
+
+    <!-- Nút Reset -->
+    <div class="form-group col-md-1 d-flex align-items-end">
+        <a href="{{ route('admin.statistical.cinemaRevenue') }}"
+           class="btn btn-outline-secondary w-50">
+            <i class="bi bi-arrow-repeat"></i>
+        </a>
+    </div>
+</form>
 
         @if ($message)
             <div class="alert alert-info text-center my-4">
