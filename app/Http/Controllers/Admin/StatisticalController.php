@@ -5,8 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Branch;
 use App\Models\Cinema;
-use App\Models\Ticket;
+
 use App\Models\Movie;
+use App\Models\Ticket;
 use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -25,82 +26,181 @@ class StatisticalController extends Controller
 
     public function cinemaRevenue(Request $request)
     {
+        $user = Auth::user();
+
         // Tái sử dụng bộ lọc từ TicketService
         [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
 
-        // Lấy danh sách cinemas từ branchesRelation
-        $cinemas = array_reduce($branchesRelation ?? [], fn($carry, $branchCinemas) => array_merge($carry, array_values($branchCinemas)), []);
+        // Xác định giá trị lọc dựa trên quyền
+        $branchId = $request->input('branch_id', $user->branch_id ?? '');
+        $cinemaId = $request->input('cinema_id', $user->cinema_id ?? '');
+        $date = $request->input('date');
+        $selectedMonth = $request->input('month', Carbon::now()->month) ?: Carbon::now()->month;
+        $selectedYear = $request->input('year', Carbon::now()->year) ?: Carbon::now()->year;
 
-        // Lấy các tham số lọc từ request
-        $branchId = $request->input('branch_id');
-        $cinemaId = $request->input('cinema_id');
-        $startDate = $request->input('start_date');
-        $endDate = $request->input('end_date');
-        $defaultStartDate = Carbon::now()->subDays(30);
+        // Validate month/year
+        $selectedMonth = $selectedMonth ? max(1, min(12, (int) $selectedMonth)) : null;
+        $selectedYear = max(2020, min(Carbon::now()->year, (int) $selectedYear));
+
+        // Date handling
+        $today = $date ? Carbon::parse($date) : Carbon::today();
+
+        // Phân quyền mặc định
+        if (!$user->hasRole('System Admin')) {
+            $branchId = $user->branch_id ?: null;
+        }
+
+        // Lấy danh sách chi nhánh và rạp
+        $branchesQuery = DB::table('branches')->select('id', 'name')->where('is_active', 1);
+        $cinemasQuery = DB::table('cinemas')->select('id', 'name')->where('is_active', 1);
+
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchesQuery->where('id', $user->branch_id);
+                $cinemasQuery->where('branch_id', $user->branch_id);
+            } elseif ($user->cinema_id) {
+                $cinemasQuery->where('id', $user->cinema_id);
+                $branchesQuery->whereIn('id', DB::table('cinemas')->where('id', $user->cinema_id)->pluck('branch_id'));
+            } else {
+                $branchesQuery->where('id', 0);
+                $cinemasQuery->where('id', 0);
+            }
+        }
+
+        $branches = $branchesQuery->get();
+        $cinemas = $cinemasQuery->get();
+
+        // Quan hệ chi nhánh - rạp
+        $branchesRelationQuery = DB::table('cinemas')
+            ->select('branch_id', 'id', 'name')
+            ->where('is_active', 1);
+
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchesRelationQuery->where('branch_id', $user->branch_id);
+            } elseif ($user->cinema_id) {
+                $branchesRelationQuery->where('id', $user->cinema_id);
+            } else {
+                $branchesRelationQuery->where('id', 0);
+            }
+        }
+
+        $branchesRelation = $branchesRelationQuery->get()
+            ->groupBy('branch_id')
+            ->map(fn($group) => $group->pluck('name', 'id')->toArray())
+            ->toArray();
 
         // Truy vấn doanh thu và số vé theo phim
-        $revenueQuery = DB::table('tickets')
+        $revenueQuery = Ticket::query()
             ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
             ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
             ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
             ->join('movies', 'tickets.movie_id', '=', 'movies.id')
             ->select(
                 'movies.name as movie_name',
-                DB::raw('SUM(tickets.total_price) as revenue'), // Tổng doanh thu
-                DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as ticket_count') // Tổng số ghế (vé)
+                DB::raw('SUM(tickets.total_price) as revenue'),
+                DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as ticket_count')
             )
             ->groupBy('movies.name');
 
-        // Truy vấn số lượng suất chiếu của từng phim theo tháng
+        // Truy vấn số lượng suất chiếu theo phim
         $showtimeQuery = DB::table('showtimes')
             ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
             ->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
             ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
             ->select(
                 'movies.name as movie_name',
-                DB::raw('DATE_FORMAT(showtimes.date, "%Y-%m") as month'),
                 DB::raw('COUNT(*) as showtime_count')
             )
-            ->groupBy('movies.name', DB::raw('DATE_FORMAT(showtimes.date, "%Y-%m")'));
+            ->groupBy('movies.name');
 
-        // Áp dụng các điều kiện lọc cho cả hai truy vấn
-        $filterClosure = function ($q) use ($startDate, $endDate, $defaultStartDate) {
-            $q->when($startDate || $endDate, function ($q) use ($startDate, $endDate, $defaultStartDate) {
-                if ($startDate && $endDate && $startDate === $endDate) {
-                    $q->whereDate('tickets.created_at', $startDate);
-                } else {
-                    $q->when($startDate, fn($q) => $q->whereDate('tickets.created_at', '>=', $startDate))
-                        ->when($endDate, fn($q) => $q->whereDate('tickets.created_at', '<=', $endDate));
-                }
-            }, fn($q) => $q->whereDate('tickets.created_at', '>=', $defaultStartDate));
+        // Bộ lọc ngày, tháng, năm
+        $filterClosure = function ($q) use ($date, $selectedMonth, $selectedYear, $today) {
+            $q->when($date, function ($q) use ($date) {
+                $q->whereDate('tickets.created_at', $date);
+            }, function ($q) use ($selectedMonth, $selectedYear) {
+                $q->when($selectedMonth && $selectedYear, function ($q) use ($selectedMonth, $selectedYear) {
+                    $q->whereMonth('tickets.created_at', $selectedMonth)
+                        ->whereYear('tickets.created_at', $selectedYear);
+                }, fn($q) => $q->whereDate('tickets.created_at', $today));
+            });
         };
 
-        $showtimeFilterClosure = function ($q) use ($startDate, $endDate, $defaultStartDate) {
-            $q->when($startDate || $endDate, function ($q) use ($startDate, $endDate, $defaultStartDate) {
-                if ($startDate && $endDate && $startDate === $endDate) {
-                    $q->where('showtimes.date', $startDate);
-                } else {
-                    $q->when($startDate, fn($q) => $q->where('showtimes.date', '>=', $startDate))
-                        ->when($endDate, fn($q) => $q->where('showtimes.date', '<=', $endDate));
-                }
-            }, fn($q) => $q->where('showtimes.date', '>=', $defaultStartDate));
+        $showtimeFilterClosure = function ($q) use ($date, $selectedMonth, $selectedYear, $today) {
+            $q->when($date, function ($q) use ($date) {
+                $q->where('showtimes.date', $date);
+            }, function ($q) use ($selectedMonth, $selectedYear) {
+                $q->when($selectedMonth && $selectedYear, function ($q) use ($selectedMonth, $selectedYear) {
+                    $q->whereMonth('showtimes.date', $selectedMonth)
+                        ->whereYear('showtimes.date', $selectedYear);
+                }, fn($q) => $q->where('showtimes.date', $today));
+            });
         };
 
-        $revenueQuery->when($branchId, fn($q) => $q->where('branches.id', $branchId))
-            ->tap($filterClosure);
+        // Áp dụng phân quyền và bộ lọc
+        $revenueQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))->tap($filterClosure);
+        $showtimeQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))->tap($showtimeFilterClosure);
 
-        $showtimeQuery->when($branchId, fn($q) => $q->where('branches.id', $branchId))
-            ->tap($showtimeFilterClosure);
-
-        // Lấy dữ liệu từ database
+        // Lấy dữ liệu
         $revenues = $revenueQuery->orderBy('revenue', 'desc')->get()->toArray();
-        $showtimes = $showtimeQuery->orderBy('month', 'asc')->get()->toArray();
+        $showtimes = $showtimeQuery->orderBy('movie_name')->get()->toArray();
 
-        // Kiểm tra nếu không có dữ liệu
-        $message = empty($revenues) && empty($showtimes) ? 'Không có dữ liệu để hiển thị.' : null;
+        // Thông báo
+        $message = null;
+        if (empty($revenues) && empty($showtimes)) {
+            if ($user->hasRole('System Admin')) {
+                $message = "Không có dữ liệu" .
+                    ($date ? " cho ngày $date" :
+                        ($selectedMonth && $selectedYear ? " cho tháng $selectedMonth năm $selectedYear" : " hôm nay"));
+            } elseif ($user->branch_id) {
+                $message = "Không có dữ liệu cho chi nhánh này" .
+                    ($date ? " cho ngày $date" :
+                        ($selectedMonth && $selectedYear ? " trong tháng $selectedMonth năm $selectedYear" : " hôm nay"));
+            } elseif ($user->cinema_id) {
+                $message = "Không có dữ liệu cho rạp này" .
+                    ($date ? " cho ngày $date" :
+                        ($selectedMonth && $selectedYear ? " trong tháng $selectedMonth năm $selectedYear" : " hôm nay"));
+            }
+        }
 
-        // Trả về view với dữ liệu
-        return view('admin.statistical.cinema_revenue', compact('branches', 'cinemas', 'revenues', 'showtimes', 'message'));
+        $revenueQuery = Ticket::query()
+            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
+            ->select(
+                'movies.name as movie_name',
+                'movies.img_thumbnail', // Lấy hình ảnh từ bảng movies
+                DB::raw('SUM(tickets.total_price) as revenue'),
+                DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as ticket_count')
+            )
+            ->groupBy('movies.name', 'movies.img_thumbnail'); // Nhóm theo name và img_thumbnail
+
+        // Áp dụng phân quyền và bộ lọc
+        $revenueQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))->tap($filterClosure);
+
+        // Lấy top 6 phim
+        $top6Movies = $revenueQuery->orderBy('revenue', 'desc')->limit(6)->get();
+
+        $totalRevenue = array_sum(array_column($revenues, 'revenue'));
+
+        return view('admin.statistical.cinema_revenue', compact(
+            'branches',
+            'cinemas',
+            'top6Movies',
+            'revenues',
+            'showtimes',
+            'message',
+            'branchId',
+            'cinemaId',
+            'date',
+            'selectedMonth',
+            'selectedYear',
+            'movies',
+            'today',
+            'branchesRelation',
+            'totalRevenue'
+        ));
     }
 
 

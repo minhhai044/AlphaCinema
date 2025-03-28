@@ -175,35 +175,26 @@
         <div class="row">
             <div class="col-12">
                 <div class="container mt-5">
-                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">
-                        Top 3 Đồ Ăn Doanh Thu Cao Nhất
-                    </h3>
+                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">Top 6 Food Doanh Thu Cao Nhất</h3>
                     <div class="row justify-content-center">
                         @forelse ($top6Foods as $index => $food)
                             <div class="col-md-4 col-lg-3 mb-4">
-                                <div class="card top6-card shadow-sm h-100 d-flex flex-column"
-                                    style="border: none; border-radius: 10px; overflow: hidden;">
-                                    <div class="position-relative flex-grow-1" style="height: 60%;">
-                                        <img src="{{ Storage::url($food->img_thumbnail) }}"
-                                            class="card-img-top w-100 h-100" style="object-fit: cover;"
-                                            alt="{{ $food->food_name }}">
-                                        <span class="top6-rank"
-                                            style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
+                                <div class="card top6-card shadow-sm h-100" style="border: none; border-radius: 10px; overflow: hidden;">
+                                    <div class="position-relative">
+                                        <img src="{{ Storage::url($food->img_thumbnail) }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ $food->food_name }}">
+                                        <span class="top6-rank" style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
                                             #{{ $index + 1 }}
                                         </span>
                                     </div>
-                                    <div class="card-body text-center d-flex flex-column justify-content-center"
-                                        style="height: 40%; padding: 15px;">
+                                    <div class="card-body text-center" style="padding: 15px;">
                                         <h5 class="card-title" style="font-size: 18px; color: #333; margin-bottom: 10px;">
                                             {{ $food->food_name }}
                                         </h5>
                                         <p class="mb-2" style="font-size: 14px; color: #6c757d;">
-                                            <strong>Doanh thu:</strong> <span
-                                                style="color: #5156be;">{{ number_format($food->total_price) }} đ</span>
+                                            <strong>Doanh thu:</strong> <span style="color: #5156be;">{{ number_format($food->total_price) }} đ</span>
                                         </p>
                                         <p class="mb-0" style="font-size: 14px; color: #6c757d;">
-                                            <strong>Lượt bán:</strong> <span
-                                                style="color: #5156be;">{{ $food->total_quantity }}</span>
+                                            <strong>Lượt bán:</strong> <span style="color: #5156be;">{{ $food->total_quantity }}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -262,10 +253,7 @@
                             }
                         },
                         plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            },
+                            legend: { display: true, position: 'top' },
                             tooltip: {
                                 callbacks: {
                                     label: function(tooltipItem) {

@@ -54,7 +54,7 @@ Route::post("/logout", [AuthController::class, "logout"])->name("logout");
 
 Route::resource('cinemas', CinemaController::class);
 Route::post('/cinemas/{id}/toggle', [CinemaController::class, 'toggleStatus'])->name('cinemas.toggle');
-Route::get('/get-cinemas/{branch_id}', [CinemaController::class, 'getCinemasByBranch']);
+// Route::get('/get-cinemas/{branch_id}', [CinemaController::class, 'getCinemasByBranch']);
 
 Route::resource('ranks', RankController::class);
 
@@ -265,6 +265,8 @@ Route::group([
 });
 Route::get('/combo-revenue', [StatisticalController::class, 'comboRevenue'])->name('combo.revenue');
 Route::get('/food-revenue', [StatisticalController::class, 'foodRevenue'])->name('food.revenue');
+
+Route::get('/statistical/cinemas', [StatisticalController::class, 'getCinemasByBranch'])->name('statistical.cinemas');
 // Route::get('/admin/statistical/cinemaRevenue', [App\Http\Controllers\Admin\StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
 
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');

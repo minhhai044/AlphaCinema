@@ -19,8 +19,7 @@
         </div>
 
         <!-- Form lọc -->
-        <form method="GET" action="{{ route('admin.combo.revenue') }}" class="d-flex align-items-center gap-2"
-            id="filterForm">
+        <form method="GET" action="{{ route('admin.combo.revenue') }}" class="d-flex align-items-center gap-2" id="filterForm">
             <!-- Bộ lọc chi nhánh -->
             @if (auth()->user()->hasRole('System Admin'))
                 <div class="input-group input-group-sm">
@@ -106,8 +105,7 @@
                 <select name="month" class="form-select border-0 shadow-sm">
                     <option value="" {{ !$selectedMonth ? 'selected' : '' }}>Chưa chọn</option>
                     @for ($i = 1; $i <= 12; $i++)
-                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng
-                            {{ $i }}</option>
+                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng {{ $i }}</option>
                     @endfor
                 </select>
             </div>
@@ -119,26 +117,20 @@
                 </span>
                 <select name="year" class="form-select border-0 shadow-sm">
                     @for ($i = 2020; $i <= Carbon\Carbon::now()->year; $i++)
-                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm
-                            {{ $i }}</option>
+                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm {{ $i }}</option>
                     @endfor
                 </select>
             </div>
 
-            <!-- Nút lọc dữ liệu -->
-            <button type="submit"
-                class="btn btn-sm btn-success rounded-circle d-flex align-items-center justify-content-center"
-                title="Lọc dữ liệu" style="width: 36px; height: 36px;">
-                <i class="bi bi-funnel" style="font-size: 20px;"></i>
+            <!-- Nút lọc -->
+            <button type="submit" class="btn btn-sm btn-success rounded-circle p-2 d-flex align-items-center justify-content-center" title="Lọc dữ liệu" style="width: 36px; height: 36px;">
+                <i class="bi bi-funnel fs-5"></i>
             </button>
 
             <!-- Nút reset -->
-            <button type="button"
-                class="btn btn-sm btn-primary rounded-circle d-flex align-items-center justify-content-center"
-                onclick="resetFilters()" title="Reset bộ lọc" style="width: 36px; height: 36px;">
-                <i class="bi bi-arrow-counterclockwise" style="font-size: 20px;"></i>
+            <button type="button" class="btn btn-sm btn-primary rounded-circle p-2 d-flex align-items-center justify-content-center" onclick="resetFilters()" title="Reset bộ lọc" style="width: 36px; height: 36px;">
+                <i class="bi bi-arrow-counterclockwise fs-5"></i>
             </button>
-
         </form>
 
         <!-- Hàng 1: Tổng doanh thu và Tỷ lệ combo -->
@@ -174,39 +166,30 @@
             </div>
         </div>
 
-        <!-- Hàng 4: Top 4 doanh thu -->
+        <!-- Hàng 4: Top 6 doanh thu -->
         <div class="row">
             <div class="col-12">
                 <div class="container mt-5">
-                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">
-                        Top 3 Combo Doanh Thu Cao Nhất
-                    </h3>
+                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">Top 6 Combo Doanh Thu Cao Nhất</h3>
                     <div class="row justify-content-center">
                         @forelse ($top6Combos as $index => $combo)
                             <div class="col-md-4 col-lg-3 mb-4">
-                                <div class="card top6-card shadow-sm h-100 d-flex flex-column"
-                                    style="border: none; border-radius: 10px; overflow: hidden;">
-                                    <div class="position-relative flex-grow-1" style="height: 60%;">
-                                        <img src="{{ Storage::url($combo->img_thumbnail) }}"
-                                            class="card-img-top w-100 h-100" style="object-fit: cover;"
-                                            alt="{{ $combo->combo_name }}">
-                                        <span class="top6-rank"
-                                            style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
+                                <div class="card top6-card shadow-sm h-100" style="border: none; border-radius: 10px; overflow: hidden;">
+                                    <div class="position-relative">
+                                        <img src="{{ Storage::url($combo->img_thumbnail) }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ $combo->combo_name }}">
+                                        <span class="top6-rank" style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
                                             #{{ $index + 1 }}
                                         </span>
                                     </div>
-                                    <div class="card-body text-center d-flex flex-column justify-content-center"
-                                        style="height: 40%; padding: 15px;">
+                                    <div class="card-body text-center" style="padding: 15px;">
                                         <h5 class="card-title" style="font-size: 18px; color: #333; margin-bottom: 10px;">
                                             {{ $combo->combo_name }}
                                         </h5>
                                         <p class="mb-2" style="font-size: 14px; color: #6c757d;">
-                                            <strong>Doanh thu:</strong> <span
-                                                style="color: #5156be;">{{ number_format($combo->total_price) }} đ</span>
+                                            <strong>Doanh thu:</strong> <span style="color: #5156be;">{{ number_format($combo->total_price) }} đ</span>
                                         </p>
                                         <p class="mb-0" style="font-size: 14px; color: #6c757d;">
-                                            <strong>Lượt bán:</strong> <span
-                                                style="color: #5156be;">{{ $combo->total_quantity }}</span>
+                                            <strong>Lượt bán:</strong> <span style="color: #5156be;">{{ $combo->total_quantity }}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -259,17 +242,11 @@
                                 }
                             },
                             x: {
-                                title: {
-                                    display: true,
-                                    text: 'Tên Combo'
-                                }
+                                title: { display: true, text: 'Tên Combo' }
                             }
                         },
                         plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            },
+                            legend: { display: true, position: 'top' },
                             tooltip: {
                                 callbacks: {
                                     label: function(tooltipItem) {
@@ -386,14 +363,12 @@
                 if (branchSelect && cinemaSelect) {
                     branchSelect.addEventListener('change', function() {
                         const branchId = this.value;
-                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') +
-                            '>Tất cả rạp</option>';
+                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') + '>Tất cả rạp</option>';
                         if (branchId && branchesRelation[branchId]) {
                             const cinemas = branchesRelation[branchId];
                             for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
                                 const isSelected = cinemaId == "{{ $cinemaId }}" ? 'selected' : '';
-                                cinemaSelect.innerHTML +=
-                                    `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
+                                cinemaSelect.innerHTML += `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
                             }
                         }
                     });
@@ -423,6 +398,12 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
+        .card-img-top {
+            border-bottom: 2px solid #5156be;
+        }
+        .top6-rank {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
         .card {
             border-radius: 10px;
             overflow: hidden;
