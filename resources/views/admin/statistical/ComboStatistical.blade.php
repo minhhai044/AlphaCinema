@@ -231,7 +231,7 @@
                         }]
                     },
                     options: {
-                        responsive: true,
+                        responsive: false,
                         maintainAspectRatio: false,
                         scales: {
                             y: {
@@ -276,7 +276,7 @@
                     }]
                 },
                 options: {
-                    responsive: true,
+                    responsive: false,
                     plugins: {
                         legend: { position: 'bottom' },
                         tooltip: {

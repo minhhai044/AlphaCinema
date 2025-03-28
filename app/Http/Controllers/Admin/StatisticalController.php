@@ -444,72 +444,137 @@ class StatisticalController extends Controller
     public function foodRevenue(Request $request)
     {
         $user = Auth::user();
-        $branches = Branch::where('is_active', 1)->get();
+
+        // Validation input
+        $validated = $request->validate([
+            'start_date' => 'nullable|date',
+            'end_date' => 'nullable|date|after_or_equal:start_date',
+            'branch_id' => 'nullable|integer|exists:branches,id',
+            'cinema_id' => 'nullable|integer|exists:cinemas,id',
+        ]);
 
         // Lấy khoảng thời gian và bộ lọc từ request hoặc session
         $startDate = $request->input('start_date', session('statistical.start_date', Carbon::now()->subDays(30)->format('Y-m-d')));
         $endDate = $request->input('end_date', session('statistical.end_date', Carbon::now()->format('Y-m-d')));
-        $branchId = $request->input('branch_id', session('statistical.branch_id'));
-        $cinemaId = $request->input('cinema_id', session('statistical.cinema_id'));
+        $branchId = $request->input('branch_id', session('statistical.branch_id', $user->branch_id ?? null));
+        $cinemaId = $request->input('cinema_id', session('statistical.cinema_id', $user->cinema_id ?? null));
+
+        // Chuyển đổi thành Carbon instance
+        $startDate = Carbon::parse($startDate)->startOfDay();
+        $endDate = Carbon::parse($endDate)->endOfDay();
 
         // Lưu vào session
         session([
-            'statistical.start_date' => $startDate,
-            'statistical.end_date' => $endDate,
+            'statistical.start_date' => $startDate->format('Y-m-d'),
+            'statistical.end_date' => $endDate->format('Y-m-d'),
             'statistical.branch_id' => $branchId,
             'statistical.cinema_id' => $cinemaId,
         ]);
+
+        // Phân quyền
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchId = $user->branch_id; // Khóa branch_id cho User Chi Nhánh
+                if ($cinemaId && !Cinema::where('id', $cinemaId)->where('branch_id', $user->branch_id)->exists()) {
+                    $cinemaId = null; // Reset nếu cinema không hợp lệ
+                }
+            } elseif ($user->cinema_id) {
+                $cinemaId = $user->cinema_id;
+                $branchId = Cinema::where('id', $user->cinema_id)->value('branch_id');
+            }
+        }
+
+        // Lấy danh sách chi nhánh và rạp
+        $branchesQuery = Branch::query()->select('id', 'name')->where('is_active', 1);
+        $cinemasQuery = Cinema::query()->select('id', 'name')->where('is_active', 1);
+
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchesQuery->where('id', $user->branch_id);
+                $cinemasQuery->where('branch_id', $user->branch_id);
+            } elseif ($user->cinema_id) {
+                $cinemasQuery->where('id', $user->cinema_id);
+                $branchesQuery->whereIn('id', Cinema::where('id', $user->cinema_id)->pluck('branch_id'));
+            } else {
+                $branchesQuery->where('id', 0);
+                $cinemasQuery->where('id', 0);
+            }
+        }
+
+        $branches = $branchesQuery->get();
+        $cinemas = $cinemasQuery->get();
+
+        // Quan hệ chi nhánh - rạp
+        $branchesRelationQuery = Cinema::query()->select('branch_id', 'id', 'name')->where('is_active', 1);
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchesRelationQuery->where('branch_id', $user->branch_id);
+            } elseif ($user->cinema_id) {
+                $branchesRelationQuery->where('id', $user->cinema_id);
+            } else {
+                $branchesRelationQuery->where('id', 0);
+            }
+        }
+
+        $branchesRelation = $branchesRelationQuery->get()
+            ->groupBy('branch_id')
+            ->map(fn($group) => $group->pluck('name', 'id')->toArray())
+            ->toArray();
 
         // Điều kiện lọc chi nhánh/rạp
         $conditions = [];
         if ($branchId) {
             $cinemaIds = Cinema::where('branch_id', $branchId)->pluck('id')->toArray();
             if (!empty($cinemaIds)) {
-                $conditions[] = "cinema_id IN (" . implode(',', $cinemaIds) . ")";
+                $conditions[] = "tickets.cinema_id IN (" . implode(',', array_map('intval', $cinemaIds)) . ")";
             }
         }
         if ($cinemaId) {
-            $conditions[] = "cinema_id = " . (int)$cinemaId;
+            $conditions[] = "tickets.cinema_id = " . (int) $cinemaId;
         }
         $whereClause = !empty($conditions) ? " AND " . implode(' AND ', $conditions) : "";
 
         // Truy vấn thống kê top 5 món ăn bán chạy
         $foodQuery = "
-        SELECT
-            JSON_UNQUOTE(JSON_EXTRACT(tf.food_item, '$.name')) AS food_name,
-            CAST(FLOOR(SUM(JSON_EXTRACT(tf.food_item, '$.quantity'))) AS UNSIGNED) AS total_quantity,
-            SUM(JSON_EXTRACT(tf.food_item, '$.price') * JSON_EXTRACT(tf.food_item, '$.quantity')) AS total_price,
-            CONCAT(
-                CAST(FLOOR(SUM(JSON_EXTRACT(tf.food_item, '$.quantity'))) AS UNSIGNED), ' lượt - ',
-                FORMAT(SUM(JSON_EXTRACT(tf.food_item, '$.price') * JSON_EXTRACT(tf.food_item, '$.quantity')), 0), ' VND'
-            ) AS summary
-        FROM tickets
-        JOIN JSON_TABLE(
-            ticket_foods,
-            '$[*]' COLUMNS (
-                food_item JSON PATH '$'
-            )
-        ) AS tf ON 1=1
-        WHERE ticket_foods IS NOT NULL
-        AND created_at BETWEEN ? AND ?
-        $whereClause
-        GROUP BY food_name
-        ORDER BY total_price DESC
+            SELECT
+                JSON_UNQUOTE(JSON_EXTRACT(tf.food_item, '$.name')) AS food_name,
+                CAST(FLOOR(SUM(JSON_EXTRACT(tf.food_item, '$.quantity'))) AS UNSIGNED) AS total_quantity,
+                SUM(CAST(JSON_EXTRACT(tf.food_item, '$.price') AS DECIMAL(15,2)) * JSON_EXTRACT(tf.food_item, '$.quantity')) AS total_price,
+                CONCAT(
+                    CAST(FLOOR(SUM(JSON_EXTRACT(tf.food_item, '$.quantity'))) AS UNSIGNED), ' lượt - ',
+                    FORMAT(SUM(CAST(JSON_EXTRACT(tf.food_item, '$.price') AS DECIMAL(15,2)) * JSON_EXTRACT(tf.food_item, '$.quantity')), 0), ' VND'
+                ) AS summary
+            FROM tickets
+            JOIN JSON_TABLE(
+                ticket_foods,
+                '$[*]' COLUMNS (
+                    food_item JSON PATH '$'
+                )
+            ) AS tf ON 1=1
+            WHERE ticket_foods IS NOT NULL
+            AND tickets.created_at BETWEEN ? AND ?
+            $whereClause
+            GROUP BY food_name
+            ORDER BY total_price DESC
             LIMIT 5
-    ";
+        ";
 
         // Thực thi truy vấn
-        $foodStatistics = DB::select($foodQuery, [$startDate . ' 00:00:00', $endDate . ' 23:59:59']);
-        // dd($foodStatistics);
+        Log::debug("Food Query: $foodQuery with params: " . $startDate->toDateTimeString() . ", " . $endDate->toDateTimeString());
+        $foodStatistics = DB::select($foodQuery, [$startDate->toDateTimeString(), $endDate->toDateTimeString()]);
+
         // Chuẩn bị dữ liệu cho view
-        $foodQuantities = array_column($foodStatistics, 'total_quantity');
         $foodNames = array_column($foodStatistics, 'food_name');
+        $foodQuantities = array_column($foodStatistics, 'total_quantity');
+        $foodRevenues = array_column($foodStatistics, 'total_price');
         $foodSummaries = array_column($foodStatistics, 'summary');
-        $foodRevenue = array_column($foodStatistics, 'total_price');
+        $totalFoodRevenue = array_sum($foodRevenues);
 
         // Trả về view
         return view('admin.statistical.FoodStatistical', compact(
             'branches',
+            'cinemas',
+            'branchesRelation',
             'branchId',
             'cinemaId',
             'startDate',
@@ -518,7 +583,8 @@ class StatisticalController extends Controller
             'foodQuantities',
             'foodNames',
             'foodSummaries',
-            'foodRevenue'
+            'foodRevenues',
+            'totalFoodRevenue'
         ));
     }
 }

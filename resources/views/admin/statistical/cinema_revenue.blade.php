@@ -4,7 +4,17 @@
 @section('content')
     <div class="container-fluid mt-4">
         <h3 class="mb-4">Thống kê phim</h3>
-
+<!-- Hiển thị vai trò người dùng -->
+        <div class="alert alert-info mb-4">
+            Bạn đang xem dữ liệu với vai trò:
+            @if (auth()->user()->hasRole('System Admin'))
+                System Admin (Tất cả chi nhánh và rạp)
+            @elseif (auth()->user()->branch_id)
+                Quản lý chi nhánh {{ auth()->user()->branch->name ?? 'N/A' }}
+            @elseif (auth()->user()->cinema_id)
+                Quản lý rạp {{ $cinemas->firstWhere('id', auth()->user()->cinema_id)->name ?? 'N/A' }}
+            @endif
+        </div>
         <form method="GET" action="{{ route('admin.statistical.cinemaRevenue') }}"
             class="d-flex align-items-center gap-2 mb-4" id="filterForm">
             <!-- Chi nhánh -->
