@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class StatisticalController extends Controller
 {
@@ -164,7 +165,7 @@ class StatisticalController extends Controller
         // Lấy input với giá trị mặc định
         $branchId = $validated['branch_id'] ?? $user->branch_id ?? null;
         $cinemaId = $validated['cinema_id'] ?? $user->cinema_id ?? null;
-        $date = $request->input('date');
+        $date = $request->input('date') ? Carbon::parse($request->input('date')) : null;
         $movieId = $validated['movie_id'] ?? null;
         $selectedMonth = $validated['month'] ?? Carbon::now()->month;
         $selectedYear = $validated['year'] ?? Carbon::now()->year;
@@ -175,8 +176,16 @@ class StatisticalController extends Controller
 
         // Phân quyền
         if (!$user->hasRole('System Admin')) {
-            $branchId = $user->branch_id ?? null;
-            $cinemaId = $user->cinema_id ?? null;
+            if ($user->branch_id) {
+                $branchId = $user->branch_id; // Khóa branch_id cho User Chi Nhánh
+                // Kiểm tra cinema_id thuộc branch của user
+                if ($cinemaId && !Cinema::where('id', $cinemaId)->where('branch_id', $user->branch_id)->exists()) {
+                    $cinemaId = null; // Reset nếu cinema không hợp lệ
+                }
+            } elseif ($user->cinema_id) {
+                $cinemaId = $user->cinema_id;
+                $branchId = Cinema::where('id', $user->cinema_id)->value('branch_id');
+            }
         }
 
         // Lấy danh sách chi nhánh, rạp, và phim
@@ -202,7 +211,6 @@ class StatisticalController extends Controller
 
         // Quan hệ chi nhánh - rạp
         $branchesRelationQuery = Cinema::query()->select('branch_id', 'id', 'name')->where('is_active', 1);
-
         if (!$user->hasRole('System Admin')) {
             if ($user->branch_id) {
                 $branchesRelationQuery->where('branch_id', $user->branch_id);
@@ -260,7 +268,7 @@ class StatisticalController extends Controller
             AND (? IS NULL OR tickets.movie_id = ?)
             GROUP BY combo_name
             ORDER BY total_price DESC
-            ", [$startDate, $endDate, $branchId, $branchId, $cinemaId, $cinemaId, $movieId, $movieId]);
+        ", [$startDate, $endDate, $branchId, $branchId, $cinemaId, $cinemaId, $movieId, $movieId]);
 
         $comboNames = array_column($comboStatistics, 'combo_name');
         $comboQuantities = array_column($comboStatistics, 'total_quantity');
@@ -268,8 +276,8 @@ class StatisticalController extends Controller
         $comboSummaries = array_column($comboStatistics, 'summary');
 
         // Top 6 combo doanh thu cao nhất
-        $top6Combos = array_slice($comboStatistics, 0, 6);
-        // dd($top6Combos);
+        $top6Combos = array_slice($comboStatistics, 0, 3);
+
         // Tỷ lệ đơn hàng có combo
         $ticketStats = $ticketQuery->selectRaw("
             COUNT(*) as total_tickets,
@@ -310,6 +318,9 @@ class StatisticalController extends Controller
         // Tổng doanh thu combo
         $comboRevenue = array_sum($comboRevenues);
 
+        // Debug log
+        Log::debug("Branch ID: $branchId, Cinema ID: $cinemaId, User Branch: {$user->branch_id}");
+
         // Trả về view
         return view('admin.statistical.ComboStatistical', compact(
             'branches',
@@ -334,6 +345,7 @@ class StatisticalController extends Controller
             'top6Combos'
         ));
     }
+
     public function foodRevenue(Request $request)
     {
         $user = Auth::user();
