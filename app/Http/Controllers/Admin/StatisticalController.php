@@ -102,6 +102,51 @@ class StatisticalController extends Controller
         return view('admin.statistical.cinema_revenue', compact('branches', 'cinemas', 'revenues', 'showtimes', 'message'));
     }
 
+
+    private function applyPermission($query, $user, $branchId = null, $cinemaId = null)
+    {
+        if ($user->hasRole('System Admin')) {
+            $query->when($branchId, fn($q) => $q->where('branches.id', $branchId))
+                ->when($cinemaId, fn($q) => $q->where('cinemas.id', $cinemaId));
+        } elseif ($user->branch_id) {
+            $query->where('branches.id', $user->branch_id)
+                ->when($cinemaId, fn($q) => $q->where('cinemas.id', $cinemaId));
+        } elseif ($user->cinema_id) {
+            $query->where('cinemas.id', $user->cinema_id);
+        } else {
+            $query->where('tickets.id', 0); // Không có quyền
+        }
+        return $query;
+    }
+
+    public function getCinemasByBranch(Request $request)
+    {
+        $branchId = $request->input('branch_id');
+
+        if (!$branchId) {
+            return response()->json([]);
+        }
+
+        try {
+            $cinemas = DB::table('cinemas')
+                ->select('id', 'name')
+                ->where('branch_id', $branchId)
+                ->where('is_active', 1)
+                ->get();
+
+            if ($cinemas->isEmpty()) {
+                \Log::info("No cinemas found for branch_id: {$branchId}");
+            } else {
+                \Log::info("Cinemas found for branch_id: {$branchId}", $cinemas->toArray());
+            }
+
+            return response()->json($cinemas);
+        } catch (\Exception $e) {
+            \Log::error('Error in getCinemasByBranch: ' . $e->getMessage() . ' | Stack: ' . $e->getTraceAsString());
+            return response()->json(['error' => 'Server error: ' . $e->getMessage()], 500);
+        }
+    }
+
     public function comboRevenue(Request $request)
     {
         $user = Auth::user();

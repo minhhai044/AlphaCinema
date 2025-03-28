@@ -263,6 +263,8 @@ Route::group([
     Route::get('/comboRevenue', [StatisticalController::class, 'comboRevenue'])->name('comboRevenue');
     Route::get('/foodRevenue', [StatisticalController::class, 'foodRevenue'])->name('foodRevenue');
 });
+Route::get('/combo-revenue', [StatisticalController::class, 'comboRevenue'])->name('combo.revenue');
+Route::get('/food-revenue', [StatisticalController::class, 'foodRevenue'])->name('food.revenue');
 // Route::get('/admin/statistical/cinemaRevenue', [App\Http\Controllers\Admin\StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
 
 Route::get('/export/{table}', [ExportController::class, 'export'])->name('export');
