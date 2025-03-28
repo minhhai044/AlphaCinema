@@ -28,9 +28,6 @@ class StatisticalController extends Controller
         // Tái sử dụng bộ lọc từ TicketService
         [$tickets, $branches, $branchesRelation, $movies] = $this->ticketService->getService($request);
 
-        // Lấy danh sách cinemas từ branchesRelation
-        $cinemas = array_reduce($branchesRelation ?? [], fn($carry, $branchCinemas) => array_merge($carry, array_values($branchCinemas)), []);
-
         // Xác định giá trị lọc dựa trên quyền
         $branchId = $request->input('branch_id', $user->branch_id ?? '');
         $cinemaId = $request->input('cinema_id', $user->cinema_id ?? '');
@@ -44,10 +41,8 @@ class StatisticalController extends Controller
 
         // Date handling
         $today = $date ? Carbon::parse($date) : Carbon::today();
-        $todayEnd = $today->copy()->endOfDay();
-        $thisMonthStart = $selectedMonth ? Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth() : Carbon::now()->startOfMonth();
 
-        // Phân quyền mặc định: Chỉ giới hạn branchId cho non-System Admin
+        // Phân quyền mặc định
         if (!$user->hasRole('System Admin')) {
             $branchId = $user->branch_id ?: null;
         }
@@ -59,7 +54,7 @@ class StatisticalController extends Controller
         if (!$user->hasRole('System Admin')) {
             if ($user->branch_id) {
                 $branchesQuery->where('id', $user->branch_id);
-                $cinemasQuery->where('branch_id', $user->branch_id); // Lấy tất cả rạp trong chi nhánh
+                $cinemasQuery->where('branch_id', $user->branch_id);
             } elseif ($user->cinema_id) {
                 $cinemasQuery->where('id', $user->cinema_id);
                 $branchesQuery->whereIn('id', DB::table('cinemas')->where('id', $user->cinema_id)->pluck('branch_id'));

@@ -152,8 +152,11 @@
                 const cinemaSelect = document.getElementById('cinema_id');
 
                 if (branchSelect && cinemaSelect) {
+                    // Lưu giá trị cinema_id hiện tại từ request
+                    const selectedCinemaId = '{{ $cinemaId }}';
+
                     if (branchSelect.value) {
-                        updateCinemas(branchSelect.value);
+                        updateCinemas(branchSelect.value, selectedCinemaId);
                     }
 
                     branchSelect.addEventListener('change', function() {
@@ -161,7 +164,7 @@
                         updateCinemas(branchId);
                     });
 
-                    function updateCinemas(branchId) {
+                    function updateCinemas(branchId, preselectedCinemaId = '') {
                         cinemaSelect.innerHTML = '<option value="">Chọn rạp</option>';
                         if (branchId) {
                             fetch('{{ route("admin.statistical.cinemas") }}?branch_id=' + branchId, {
@@ -185,6 +188,10 @@
                                         const option = document.createElement('option');
                                         option.value = cinema.id;
                                         option.text = cinema.name;
+                                        // Giữ giá trị đã chọn sau khi submit
+                                        if (preselectedCinemaId && cinema.id == preselectedCinemaId) {
+                                            option.selected = true;
+                                        }
                                         cinemaSelect.appendChild(option);
                                     });
                                 } else {
