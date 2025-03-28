@@ -162,9 +162,29 @@ class StatisticalController extends Controller
             }
         }
 
+        $revenueQuery = Ticket::query()
+            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
+            ->select(
+                'movies.name as movie_name',
+                'movies.img_thumbnail', // Lấy hình ảnh từ bảng movies
+                DB::raw('SUM(tickets.total_price) as revenue'),
+                DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as ticket_count')
+            )
+            ->groupBy('movies.name', 'movies.img_thumbnail'); // Nhóm theo name và img_thumbnail
+
+        // Áp dụng phân quyền và bộ lọc
+        $revenueQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))->tap($filterClosure);
+
+        // Lấy top 6 phim
+        $top6Movies = $revenueQuery->orderBy('revenue', 'desc')->limit(6)->get();
+
         return view('admin.statistical.cinema_revenue', compact(
             'branches',
             'cinemas',
+            'top6Movies',
             'revenues',
             'showtimes',
             'message',
