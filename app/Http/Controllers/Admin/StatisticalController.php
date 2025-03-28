@@ -181,6 +181,8 @@ class StatisticalController extends Controller
         // Lấy top 6 phim
         $top6Movies = $revenueQuery->orderBy('revenue', 'desc')->limit(6)->get();
 
+        $totalRevenue = array_sum(array_column($revenues, 'revenue'));
+
         return view('admin.statistical.cinema_revenue', compact(
             'branches',
             'cinemas',
@@ -195,7 +197,8 @@ class StatisticalController extends Controller
             'selectedYear',
             'movies',
             'today',
-            'branchesRelation'
+            'branchesRelation',
+            'totalRevenue'
         ));
     }
 

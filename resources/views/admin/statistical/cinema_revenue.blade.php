@@ -4,7 +4,7 @@
 @section('content')
     <div class="container-fluid mt-4">
         <h3 class="mb-4">Thống kê phim</h3>
-<!-- Hiển thị vai trò người dùng -->
+        <!-- Hiển thị vai trò người dùng -->
         <div class="alert alert-info mb-4">
             Bạn đang xem dữ liệu với vai trò:
             @if (auth()->user()->hasRole('System Admin'))
@@ -150,42 +150,48 @@
             </div>
         @endif
 
-       <div class="row">
-    <div class="col-12">
-        <div class="container mt-5">
-            <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">Top 6 Phim Doanh Thu Cao Nhất</h3>
-            <div class="row justify-content-center">
-                @forelse ($top6Movies as $index => $movie)
-                    <div class="col-md-4 col-lg-3 mb-4">
-                        <div class="card top6-card shadow-sm h-100" style="border: none; border-radius: 10px; overflow: hidden;">
-                            <div class="position-relative">
-                                <img src="{{ Storage::url($movie->img_thumbnail) }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ $movie->movie_name }}">
-                                <span class="top6-rank" style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
-                                    #{{ $index + 1 }}
-                                </span>
+        <div class="row">
+            <div class="col-12">
+                <div class="container mt-5">
+                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">Top 6 Phim Doanh Thu Cao Nhất
+                    </h3>
+                    <div class="row justify-content-center">
+                        @forelse ($top6Movies as $index => $movie)
+                            <div class="col-md-4 col-lg-3 mb-4">
+                                <div class="card top6-card shadow-sm h-100"
+                                    style="border: none; border-radius: 10px; overflow: hidden;">
+                                    <div class="position-relative">
+                                        <img src="{{ Storage::url($movie->img_thumbnail) }}" class="card-img-top"
+                                            style="height: 150px; object-fit: cover;" alt="{{ $movie->movie_name }}">
+                                        <span class="top6-rank"
+                                            style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
+                                            #{{ $index + 1 }}
+                                        </span>
+                                    </div>
+                                    <div class="card-body text-center" style="padding: 15px;">
+                                        <h5 class="card-title" style="font-size: 18px; color: #333; margin-bottom: 10px;">
+                                            {{ $movie->movie_name }}
+                                        </h5>
+                                        <p class="mb-2" style="font-size: 14px; color: #6c757d;">
+                                            <strong>Doanh thu:</strong> <span
+                                                style="color: #5156be;">{{ number_format($movie->revenue) }} đ</span>
+                                        </p>
+                                        <p class="mb-0" style="font-size: 14px; color: #6c757d;">
+                                            <strong>Số vé bán:</strong> <span
+                                                style="color: #5156be;">{{ $movie->ticket_count }}</span>
+                                        </p>
+                                    </div>
+                                </div>
                             </div>
-                            <div class="card-body text-center" style="padding: 15px;">
-                                <h5 class="card-title" style="font-size: 18px; color: #333; margin-bottom: 10px;">
-                                    {{ $movie->movie_name }}
-                                </h5>
-                                <p class="mb-2" style="font-size: 14px; color: #6c757d;">
-                                    <strong>Doanh thu:</strong> <span style="color: #5156be;">{{ number_format($movie->revenue) }} đ</span>
-                                </p>
-                                <p class="mb-0" style="font-size: 14px; color: #6c757d;">
-                                    <strong>Số vé bán:</strong> <span style="color: #5156be;">{{ $movie->ticket_count }}</span>
-                                </p>
+                        @empty
+                            <div class="col-12 text-center py-4">
+                                <p style="font-size: 16px; color: #6c757d;">Không có dữ liệu phim để hiển thị.</p>
                             </div>
-                        </div>
+                        @endforelse
                     </div>
-                @empty
-                    <div class="col-12 text-center py-4">
-                        <p style="font-size: 16px; color: #6c757d;">Không có dữ liệu phim để hiển thị.</p>
-                    </div>
-                @endforelse
+                </div>
             </div>
         </div>
-    </div>
-</div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -278,11 +284,11 @@
                                     label: 'Doanh thu (VNĐ)',
                                     data: revenueValues,
                                     type: 'bar',
-                                    backgroundColor: 'rgba(54, 162, 235, 0.7)',
+                                    backgroundColor: 'rgba(37, 44, 194,1)',
                                     borderColor: 'rgba(54, 162, 235, 1)',
-                                    borderWidth: 1,
+                                    borderWidth: 0.3,
                                     yAxisID: 'y-revenue',
-                                    barThickness: 20,
+                                    barThickness: 100,
                                     borderRadius: 5
                                 },
                                 {
@@ -412,10 +418,10 @@
                             datasets: [{
                                 label: 'Số suất chiếu',
                                 data: showtimeValues,
-                                backgroundColor: 'rgba(75, 192, 192, 0.7)',
+                                backgroundColor: 'rgba(37, 44, 194,1)',
                                 borderColor: 'rgba(75, 192, 192, 1)',
                                 borderWidth: 1,
-                                barThickness: 20,
+                                barThickness: 100,
                                 borderRadius: 5
                             }]
                         },
@@ -500,31 +506,42 @@
         });
     </script>
 
-     <style>
+    <style>
         .top6-card {
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
+
         .top6-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
         }
+
         .card-img-top {
             border-bottom: 2px solid #5156be;
         }
+
         .top6-rank {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .card {
             border-radius: 10px;
             overflow: hidden;
         }
+
         .card-title {
             font-size: 1.25rem;
             margin-bottom: 1rem;
         }
+
         @media (max-width: 768px) {
-            .card-body { padding: 1rem; }
-            canvas { height: 150px !important; }
+            .card-body {
+                padding: 1rem;
+            }
+
+            canvas {
+                height: 150px !important;
+            }
         }
     </style>
 @endsection
