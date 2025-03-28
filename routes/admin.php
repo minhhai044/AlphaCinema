@@ -54,7 +54,7 @@ Route::post("/logout", [AuthController::class, "logout"])->name("logout");
 
 Route::resource('cinemas', CinemaController::class);
 Route::post('/cinemas/{id}/toggle', [CinemaController::class, 'toggleStatus'])->name('cinemas.toggle');
-Route::get('/get-cinemas/{branch_id}', [CinemaController::class, 'getCinemasByBranch']);
+// Route::get('/get-cinemas/{branch_id}', [CinemaController::class, 'getCinemasByBranch']);
 
 Route::resource('ranks', RankController::class);
 

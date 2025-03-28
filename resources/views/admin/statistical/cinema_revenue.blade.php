@@ -6,95 +6,122 @@
         <h3 class="mb-4">Thống kê phim</h3>
 
         <form method="GET" action="{{ route('admin.statistical.cinemaRevenue') }}"
-      class="filter-row d-flex align-items-end gap-3 mb-4">
-    <!-- Chi nhánh (Chỉ hiển thị dropdown cho System Admin) -->
-    @if (auth()->user()->hasRole('System Admin'))
-        <div class="form-group col-md-2">
-            <select name="branch_id" class="form-select" id="branch_id">
-                <option value="" {{ !$branchId ? 'selected' : '' }}>Chọn chi nhánh</option>
-                @if ($branches && $branches->isNotEmpty())
-                    @foreach ($branches as $branch)
-                        <option value="{{ $branch->id }}"
-                            {{ $branchId == $branch->id ? 'selected' : '' }}>
-                            {{ $branch->name }}
-                        </option>
-                    @endforeach
+              class="d-flex align-items-center gap-2 mb-4" id="filterForm">
+            <!-- Chi nhánh -->
+            @if (auth()->user()->hasRole('System Admin'))
+                <div class="input-group input-group-sm">
+                    <span class="input-group-text bg-light text-muted border-0">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </span>
+                    <select name="branch_id" class="form-select border-0 shadow-sm" id="branch_id">
+                        <option value="" {{ !$branchId ? 'selected' : '' }}>Chọn chi nhánh</option>
+                        @if ($branches && $branches->isNotEmpty())
+                            @foreach ($branches as $branch)
+                                <option value="{{ $branch->id }}"
+                                    {{ $branchId == $branch->id ? 'selected' : '' }}>
+                                    {{ $branch->name }}
+                                </option>
+                            @endforeach
+                        @endif
+                    </select>
+                </div>
+            @else
+                @if (auth()->user()->branch_id)
+                    <input type="hidden" name="branch_id" value="{{ auth()->user()->branch_id }}">
+                    <div class="input-group input-group-sm">
+                        <span class="input-group-text bg-light text-muted border-0">
+                            <i class="bi bi-geo-alt-fill"></i>
+                        </span>
+                        <span class="form-control border-0 shadow-sm">
+                            {{ auth()->user()->branch->name ?? 'N/A' }}
+                        </span>
+                    </div>
                 @endif
-            </select>
-        </div>
-    @else
-        @if (auth()->user()->branch_id)
-            <input type="hidden" name="branch_id" value="{{ auth()->user()->branch_id }}">
-            <div class="form-group col-md-2">
-                <label class="form-label fw-bold">
-                    <i class="bi bi-geo-alt me-1"></i> Chi nhánh
-                </label>
-                <p class="form-control-static">{{ auth()->user()->branch->name ?? 'N/A' }}</p>
-            </div>
-        @endif
-    @endif
+            @endif
 
-    <!-- Rạp (Hiển thị dropdown cho System Admin hoặc Quản lý chi nhánh) -->
-    @if (auth()->user()->hasRole('System Admin') || auth()->user()->branch_id)
-        <div class="form-group col-md-2">
-            <select name="cinema_id" class="form-select" id="cinema_id">
-                <option value="" {{ !$cinemaId ? 'selected' : '' }}>Chọn rạp</option>
-                @if (auth()->user()->hasRole('System Admin') && $branchId && isset($branchesRelation[$branchId]))
-                    @foreach ($branchesRelation[$branchId] as $id => $name)
-                        <option value="{{ $id }}"
-                            {{ $cinemaId == $id ? 'selected' : '' }}>
-                            {{ $name }}
+            <!-- Rạp -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-camera-reels"></i>
+                </span>
+                <select name="cinema_id" class="form-select border-0 shadow-sm" id="cinema_id">
+                    <option value="" {{ !$cinemaId ? 'selected' : '' }}>Chọn rạp</option>
+                    @if (auth()->user()->hasRole('System Admin') && $branchId && isset($branchesRelation[$branchId]))
+                        @foreach ($branchesRelation[$branchId] as $id => $name)
+                            <option value="{{ $id }}"
+                                {{ $cinemaId == $id ? 'selected' : '' }}>
+                                {{ $name }}
+                            </option>
+                        @endforeach
+                    @elseif(auth()->user()->branch_id && isset($branchesRelation[auth()->user()->branch_id]))
+                        @foreach ($branchesRelation[auth()->user()->branch_id] as $id => $name)
+                            <option value="{{ $id }}"
+                                {{ $cinemaId == $id ? 'selected' : '' }}>
+                                {{ $name }}
+                            </option>
+                        @endforeach
+                    @elseif(auth()->user()->cinema_id)
+                        <option value="{{ auth()->user()->cinema_id }}" selected>
+                            {{ auth()->user()->cinema->name ?? 'N/A' }}
                         </option>
-                    @endforeach
-                @elseif(auth()->user()->branch_id && isset($branchesRelation[auth()->user()->branch_id]))
-                    @foreach ($branchesRelation[auth()->user()->branch_id] as $id => $name)
-                        <option value="{{ $id }}"
-                            {{ $cinemaId == $id ? 'selected' : '' }}>
-                            {{ $name }}
-                        </option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
-    @else
-        @if (auth()->user()->cinema_id)
-            <input type="hidden" name="cinema_id" value="{{ auth()->user()->cinema_id }}">
-            <div class="form-group col-md-2">
-                <label class="form-label fw-bold">
-                    <i class="bi bi-camera-reels me-1"></i> Rạp
-                </label>
-                <p class="form-control-static">{{ auth()->user()->cinema->name ?? 'N/A' }}</p>
+                    @endif
+                </select>
             </div>
-        @endif
-    @endif
 
-    <!-- Ngày bắt đầu -->
-    <div class="form-group col-md-2">
-        <input type="date" name="start_date" id="start_date"
-               class="form-control" value="{{ $startDate }}">
-    </div>
+            <!-- Ngày -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-calendar"></i>
+                </span>
+                <input type="date" name="date" id="date"
+                       class="form-control border-0 shadow-sm" value="{{ $date ?? $today }}">
+            </div>
 
-    <!-- Ngày kết thúc -->
-    <div class="form-group col-md-2">
-        <input type="date" name="end_date" id="end_date"
-               class="form-control" value="{{ $endDate }}">
-    </div>
+            <!-- Tháng -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-calendar-month"></i>
+                </span>
+                <select name="month" class="form-select border-0 shadow-sm" id="month">
+                    <option value="" {{ !$selectedMonth ? 'selected' : '' }}>Chọn tháng</option>
+                    @for ($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>
+                            Tháng {{ $i }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
 
-    <!-- Nút Lọc -->
-    <div class="form-group col-md-1 d-flex align-items-end">
-        <button type="submit" class="btn btn-primary w-50">
-            <i class="bx bx-search-alt-2"></i>
-        </button>
-    </div>
+            <!-- Năm -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-calendar4"></i>
+                </span>
+                <select name="year" class="form-select border-0 shadow-sm" id="year">
+                    <option value="" {{ !$selectedYear ? 'selected' : '' }}>Chọn năm</option>
+                    @for ($i = 2020; $i <= Carbon\Carbon::now()->year; $i++)
+                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>
+                            Năm {{ $i }}
+                        </option>
+                    @endfor
+                </select>
+            </div>
 
-    <!-- Nút Reset -->
-    <div class="form-group col-md-1 d-flex align-items-end">
-        <a href="{{ route('admin.statistical.cinemaRevenue') }}"
-           class="btn btn-outline-secondary w-50">
-            <i class="bi bi-arrow-repeat"></i>
-        </a>
-    </div>
-</form>
+            <!-- Nút lọc -->
+            <button type="submit"
+                    class="btn btn-sm btn-success rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    title="Lọc dữ liệu" style="width: 36px; height: 36px;">
+                <i class="bi bi-funnel fs-5"></i>
+            </button>
+
+            <!-- Nút reset -->
+            <button type="button"
+                    class="btn btn-sm btn-primary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                    onclick="window.location.href='{{ route('admin.statistical.cinemaRevenue') }}'"
+                    title="Reset bộ lọc" style="width: 36px; height: 36px;">
+                <i class="bi bi-arrow-counterclockwise fs-5"></i>
+            </button>
+        </form>
 
         @if ($message)
             <div class="alert alert-info text-center my-4">
@@ -121,35 +148,69 @@
     <script>
         document.addEventListener("DOMContentLoaded", function() {
             @if (auth()->user()->hasRole('System Admin'))
-                // AJAX để cập nhật danh sách rạp khi chọn chi nhánh
-                document.getElementById('branch_id').addEventListener('change', function() {
-                    let branchId = this.value;
-                    let cinemaSelect = document.getElementById('cinema_id');
-                    cinemaSelect.innerHTML = '<option value="">Tất cả rạp</option>'; // Reset danh sách
+                const branchSelect = document.getElementById('branch_id');
+                const cinemaSelect = document.getElementById('cinema_id');
 
-                    if (branchId) {
-                        fetch('{{ route("admin.statistical.cinemas") }}?branch_id=' + branchId, {
-                            headers: {
-                                'X-Requested-With': 'XMLHttpRequest',
-                                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                            }
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            data.forEach(cinema => {
-                                let option = document.createElement('option');
-                                option.value = cinema.id;
-                                option.text = cinema.name;
+                if (branchSelect && cinemaSelect) {
+                    if (branchSelect.value) {
+                        updateCinemas(branchSelect.value);
+                    }
+
+                    branchSelect.addEventListener('change', function() {
+                        const branchId = this.value;
+                        updateCinemas(branchId);
+                    });
+
+                    function updateCinemas(branchId) {
+                        cinemaSelect.innerHTML = '<option value="">Chọn rạp</option>';
+                        if (branchId) {
+                            fetch('{{ route("admin.statistical.cinemas") }}?branch_id=' + branchId, {
+                                method: 'GET',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            })
+                            .then(response => {
+                                if (!response.ok) {
+                                    return response.json().then(err => {
+                                        throw new Error(err.error || 'Network response was not ok');
+                                    });
+                                }
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.length > 0) {
+                                    data.forEach(cinema => {
+                                        const option = document.createElement('option');
+                                        option.value = cinema.id;
+                                        option.text = cinema.name;
+                                        cinemaSelect.appendChild(option);
+                                    });
+                                } else {
+                                    const option = document.createElement('option');
+                                    option.value = '';
+                                    option.text = 'Không có rạp nào';
+                                    option.disabled = true;
+                                    cinemaSelect.appendChild(option);
+                                }
+                            })
+                            .catch(error => {
+                                console.error('Error fetching cinemas:', error);
+                                const option = document.createElement('option');
+                                option.value = '';
+                                option.text = 'Lỗi: ' + error.message;
+                                option.disabled = true;
                                 cinemaSelect.appendChild(option);
                             });
-                        })
-                        .catch(error => console.error('Error fetching cinemas:', error));
+                        }
                     }
-                });
+                } else {
+                    console.error('branch_id or cinema_id not found in DOM');
+                }
             @endif
 
             @if(!$message)
-                // Biểu đồ Doanh thu và Số vé
                 var revenueCtx = document.getElementById('revenueChart').getContext('2d');
                 var revenueData = @json($revenues);
                 if (revenueData && revenueData.length > 0) {
@@ -223,7 +284,6 @@
                     });
                 }
 
-                // Biểu đồ Số lượng suất chiếu (Bar Chart)
                 var showtimeCtx = document.getElementById('showtimeChart').getContext('2d');
                 var showtimeData = @json($showtimes);
                 if (showtimeData && showtimeData.length > 0) {
