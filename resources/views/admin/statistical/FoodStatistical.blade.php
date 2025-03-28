@@ -19,7 +19,7 @@
         </div>
 
         <!-- Form lọc -->
-        <form method="GET" action="{{ route('admin.food.revenue') }}" class="d-flex align-items-center gap-2 mb-4" id="filterForm">
+        <form method="GET" action="{{ route('admin.food.revenue') }}" class="d-flex align-items-center gap-2" id="filterForm">
             <!-- Bộ lọc chi nhánh -->
             @if (auth()->user()->hasRole('System Admin'))
                 <div class="input-group input-group-sm">
@@ -74,18 +74,52 @@
                 </div>
             @endif
 
-            <!-- Bộ lọc thời gian -->
+            <!-- Bộ lọc ngày -->
             <div class="input-group input-group-sm">
                 <span class="input-group-text bg-light text-muted border-0">
                     <i class="bi bi-calendar"></i>
                 </span>
-                <input type="date" name="start_date" class="form-control border-0 shadow-sm" value="{{ $startDate->format('Y-m-d') }}">
+                <input type="date" name="date" class="form-control border-0 shadow-sm" value="{{ $date ? $date->format('Y-m-d') : '' }}">
             </div>
+
+            <!-- Bộ lọc phim -->
             <div class="input-group input-group-sm">
                 <span class="input-group-text bg-light text-muted border-0">
-                    <i class="bi bi-calendar"></i>
+                    <i class="bi bi-film"></i>
                 </span>
-                <input type="date" name="end_date" class="form-control border-0 shadow-sm" value="{{ $endDate->format('Y-m-d') }}">
+                <select name="movie_id" class="form-select border-0 shadow-sm">
+                    <option value="" {{ !$movieId ? 'selected' : '' }}>Tất cả phim</option>
+                    @foreach ($movies as $movie)
+                        <option value="{{ $movie->id }}" {{ $movieId == $movie->id ? 'selected' : '' }}>
+                            {{ $movie->name }}
+                        </option>
+                    @endforeach
+                </select>
+            </div>
+
+            <!-- Bộ lọc tháng -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-calendar-month"></i>
+                </span>
+                <select name="month" class="form-select border-0 shadow-sm">
+                    <option value="" {{ !$selectedMonth ? 'selected' : '' }}>Chưa chọn</option>
+                    @for ($i = 1; $i <= 12; $i++)
+                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng {{ $i }}</option>
+                    @endfor
+                </select>
+            </div>
+
+            <!-- Bộ lọc năm -->
+            <div class="input-group input-group-sm">
+                <span class="input-group-text bg-light text-muted border-0">
+                    <i class="bi bi-calendar4"></i>
+                </span>
+                <select name="year" class="form-select border-0 shadow-sm">
+                    @for ($i = 2020; $i <= Carbon\Carbon::now()->year; $i++)
+                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm {{ $i }}</option>
+                    @endfor
+                </select>
             </div>
 
             <!-- Nút lọc -->
@@ -99,107 +133,231 @@
             </button>
         </form>
 
-        <!-- Tổng doanh thu -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body text-center">
-                        <h5 class="card-title">Tổng Doanh Thu Food</h5>
-                        <p class="fs-4">{{ number_format($totalFoodRevenue) }} VND</p>
+        <!-- Tổng doanh thu và biểu đồ -->
+        <div class="row g-4 mb-4 mt-2">
+            <div class="row">
+                <div class="col-xl-12">
+                    <div class="card card-h-100">
+                        <div class="card-body">
+                            <h5 class="card-title text-center">Tổng doanh thu Food</h5>
+                            <p class="text-center">{{ number_format($foodRevenue) }} VND</p>
+                            <canvas id="foodChart" style="height: 400px; width: 100%;"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Doanh thu Food theo khung giờ</h5>
+                        <canvas id="stackedBarChart" width="400" height="200"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xl-6">
+                <div class="card card-h-100">
+                    <div class="card-body">
+                        <h5 class="card-title text-center">Tỷ lệ đơn hàng có Food</h5>
+                        <canvas id="foodUsageChart" style="height: 200px; max-width: 300px; margin: 0 auto;"></canvas>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Biểu đồ -->
+        <!-- Top 6 food doanh thu -->
         <div class="row">
             <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title text-center">Top 5 Món Ăn Bán Chạy</h5>
-                        <canvas id="foodChart" style="height: 400px; width: 100%;"></canvas>
+                <div class="container mt-5">
+                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">Top 6 Food Doanh Thu Cao Nhất</h3>
+                    <div class="row justify-content-center">
+                        @forelse ($top6Foods as $index => $food)
+                            <div class="col-md-4 col-lg-3 mb-4">
+                                <div class="card top6-card shadow-sm h-100" style="border: none; border-radius: 10px; overflow: hidden;">
+                                    <div class="position-relative">
+                                        <img src="{{ Storage::url($food->img_thumbnail) }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ $food->food_name }}">
+                                        <span class="top6-rank" style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
+                                            #{{ $index + 1 }}
+                                        </span>
+                                    </div>
+                                    <div class="card-body text-center" style="padding: 15px;">
+                                        <h5 class="card-title" style="font-size: 18px; color: #333; margin-bottom: 10px;">
+                                            {{ $food->food_name }}
+                                        </h5>
+                                        <p class="mb-2" style="font-size: 14px; color: #6c757d;">
+                                            <strong>Doanh thu:</strong> <span style="color: #5156be;">{{ number_format($food->total_price) }} đ</span>
+                                        </p>
+                                        <p class="mb-0" style="font-size: 14px; color: #6c757d;">
+                                            <strong>Lượt bán:</strong> <span style="color: #5156be;">{{ $food->total_quantity }}</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        @empty
+                            <div class="col-12 text-center py-4">
+                                <p style="font-size: 16px; color: #6c757d;">Không có dữ liệu food để hiển thị.</p>
+                            </div>
+                        @endforelse
                     </div>
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Script Chart.js -->
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script>
-            document.addEventListener("DOMContentLoaded", function() {
-                var ctx = document.getElementById('foodChart').getContext('2d');
-                var foodNames = @json($foodNames);
-                var foodRevenues = @json($foodRevenues);
-                var foodSummaries = @json($foodSummaries);
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Tổng doanh thu Food
+            var ctx = document.getElementById('foodChart').getContext('2d');
+            var foodNames = @json($foodNames);
+            var foodRevenues = @json($foodRevenues);
+            var foodSummaries = @json($foodSummaries);
 
-                if (foodNames.length > 0 && foodRevenues.length > 0) {
-                    new Chart(ctx, {
-                        type: 'bar',
-                        data: {
-                            labels: foodNames,
-                            datasets: [{
-                                label: 'Doanh thu (VND)',
-                                data: foodRevenues,
-                                backgroundColor: '#5156be',
-                                borderColor: 'rgba(54, 162, 235, 1)',
-                                borderWidth: 1
-                            }]
+            if (foodNames.length > 0 && foodRevenues.length > 0) {
+                new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: foodNames,
+                        datasets: [{
+                            label: 'Doanh thu (VND)',
+                            data: foodRevenues,
+                            backgroundColor: '#5156be',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: false,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: { beginAtZero: true, title: { display: true, text: 'Doanh thu (VND)' } },
+                            x: { title: { display: true, text: 'Tên Food' } }
                         },
-                        options: {
-                            responsive: false,
-                            maintainAspectRatio: false,
-                            scales: {
-                                y: { beginAtZero: true, title: { display: true, text: 'Doanh thu (VND)' } },
-                                x: { title: { display: true, text: 'Tên Món Ăn' } }
-                            },
-                            plugins: {
-                                legend: { display: true, position: 'top' },
-                                tooltip: {
-                                    callbacks: {
-                                        label: function(tooltipItem) {
-                                            const index = tooltipItem.dataIndex;
-                                            return `${foodNames[index]}: ${foodSummaries[index]}`;
-                                        }
+                        plugins: {
+                            legend: { display: true, position: 'top' },
+                            tooltip: {
+                                callbacks: {
+                                    label: function(tooltipItem) {
+                                        const index = tooltipItem.dataIndex;
+                                        return `${foodNames[index]}: ${foodSummaries[index]}`;
                                     }
                                 }
                             }
                         }
-                    });
-                } else {
-                    ctx.font = "20px Arial";
-                    ctx.fillText("Không có dữ liệu để hiển thị", 50, 200);
-                }
-            });
-
-            function resetFilters() {
-                window.location.href = "{{ route('admin.food.revenue') }}";
+                    }
+                });
+            } else {
+                ctx.font = "20px Arial";
+                ctx.fillText("Không có dữ liệu để hiển thị", 50, 200);
             }
 
-            // JavaScript động cho System Admin
-            document.addEventListener('DOMContentLoaded', function() {
-                const branchSelect = document.querySelector('select[name="branch_id"]');
-                const cinemaSelect = document.querySelector('select[name="cinema_id"]');
-                const branchesRelation = @json($branchesRelation);
+            // Tỷ lệ đơn hàng có Food
+            var usageCtx = document.getElementById('foodUsageChart').getContext('2d');
+            var foodUsage = @json($foodUsage);
 
-                @if (auth()->user()->hasRole('System Admin'))
-                    if (branchSelect && cinemaSelect) {
-                        branchSelect.addEventListener('change', function() {
-                            const branchId = this.value;
-                            cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') + '>Tất cả rạp</option>';
-                            if (branchId && branchesRelation[branchId]) {
-                                const cinemas = branchesRelation[branchId];
-                                for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
-                                    const isSelected = cinemaId == "{{ $cinemaId }}" ? 'selected' : '';
-                                    cinemaSelect.innerHTML += `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
+            new Chart(usageCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Có Food', 'Không có Food'],
+                    datasets: [{
+                        data: [foodUsage, 100 - foodUsage],
+                        backgroundColor: ['#5156be', '#d3d3d3'],
+                        borderColor: ['#5156be', '#d3d3d3'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: false,
+                    plugins: {
+                        legend: { position: 'bottom' },
+                        tooltip: {
+                            callbacks: {
+                                label: function(tooltipItem) {
+                                    return `${tooltipItem.label}: ${tooltipItem.raw}%`;
                                 }
                             }
-                        });
-                        if (branchSelect.value) {
-                            branchSelect.dispatchEvent(new Event('change'));
+                        },
+                        datalabels: {
+                            color: '#ffffff',
+                            formatter: (value) => `${value}%`,
+                            font: { weight: 'bold' }
                         }
                     }
-                @endif
+                },
+                plugins: [ChartDataLabels]
             });
-        </script>
-    </div>
+
+            // Doanh thu Food theo khung giờ
+            var ctxStacked = document.getElementById('stackedBarChart').getContext('2d');
+            var trendDates = @json($trendDates);
+            var trendRevenues = @json($trendRevenues);
+
+            if (trendDates.length > 0 && trendRevenues.length > 0) {
+                new Chart(ctxStacked, {
+                    type: 'bar',
+                    data: {
+                        labels: trendDates,
+                        datasets: [{
+                            label: 'Doanh thu Food',
+                            data: trendRevenues,
+                            backgroundColor: '#36A2EB'
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            x: { title: { display: true, text: 'Khung giờ suất chiếu' } },
+                            y: { beginAtZero: true, title: { display: true, text: 'Doanh thu (VND)' } }
+                        },
+                        plugins: {
+                            legend: { display: true, position: 'top' }
+                        }
+                    }
+                });
+            } else {
+                ctxStacked.font = "20px Arial";
+                ctxStacked.fillText("Không có dữ liệu để hiển thị", 50, 100);
+            }
+        });
+
+        function resetFilters() {
+            window.location.href = "{{ route('admin.food.revenue') }}";
+        }
+
+        // JavaScript động cho System Admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const branchSelect = document.querySelector('select[name="branch_id"]');
+            const cinemaSelect = document.querySelector('select[name="cinema_id"]');
+            const branchesRelation = @json($branchesRelation);
+
+            @if (auth()->user()->hasRole('System Admin'))
+                if (branchSelect && cinemaSelect) {
+                    branchSelect.addEventListener('change', function() {
+                        const branchId = this.value;
+                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') + '>Tất cả rạp</option>';
+                        if (branchId && branchesRelation[branchId]) {
+                            const cinemas = branchesRelation[branchId];
+                            for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
+                                const isSelected = cinemaId == "{{ $cinemaId }}" ? 'selected' : '';
+                                cinemaSelect.innerHTML += `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
+                            }
+                        }
+                    });
+                    if (branchSelect.value) {
+                        branchSelect.dispatchEvent(new Event('change'));
+                    }
+                }
+            @endif
+        });
+    </script>
+
+    <style>
+        .top6-card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .top6-card:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important; }
+        .card-img-top { border-bottom: 2px solid #5156be; }
+        .top6-rank { box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); }
+        .card { border-radius: 10px; overflow: hidden; }
+        .card-title { font-size: 1.25rem; margin-bottom: 1rem; }
+        @media (max-width: 768px) { .card-body { padding: 1rem; } canvas { height: 150px !important; } }
+    </style>
 @endsection

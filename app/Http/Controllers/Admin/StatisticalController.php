@@ -445,38 +445,34 @@ class StatisticalController extends Controller
     {
         $user = Auth::user();
 
-        // Validation input
+        // Validation input (giống comboRevenue)
         $validated = $request->validate([
-            'start_date' => 'nullable|date',
-            'end_date' => 'nullable|date|after_or_equal:start_date',
             'branch_id' => 'nullable|integer|exists:branches,id',
             'cinema_id' => 'nullable|integer|exists:cinemas,id',
+            'date' => 'nullable|date',
+            'movie_id' => 'nullable|integer|exists:movies,id',
+            'month' => 'nullable|integer|between:1,12',
+            'year' => 'nullable|integer|min:2020|max:' . Carbon::now()->year,
         ]);
 
-        // Lấy khoảng thời gian và bộ lọc từ request hoặc session
-        $startDate = $request->input('start_date', session('statistical.start_date', Carbon::now()->subDays(30)->format('Y-m-d')));
-        $endDate = $request->input('end_date', session('statistical.end_date', Carbon::now()->format('Y-m-d')));
-        $branchId = $request->input('branch_id', session('statistical.branch_id', $user->branch_id ?? null));
-        $cinemaId = $request->input('cinema_id', session('statistical.cinema_id', $user->cinema_id ?? null));
+        // Lấy input với giá trị mặc định (giống comboRevenue)
+        $branchId = $validated['branch_id'] ?? $user->branch_id ?? null;
+        $cinemaId = $validated['cinema_id'] ?? $user->cinema_id ?? null;
+        $date = $request->input('date') ? Carbon::parse($request->input('date')) : null;
+        $movieId = $validated['movie_id'] ?? null;
+        $selectedMonth = $validated['month'] ?? Carbon::now()->month;
+        $selectedYear = $validated['year'] ?? Carbon::now()->year;
 
-        // Chuyển đổi thành Carbon instance
-        $startDate = Carbon::parse($startDate)->startOfDay();
-        $endDate = Carbon::parse($endDate)->endOfDay();
+        // Xử lý ngày tháng (giống comboRevenue)
+        $startDate = $date ? $date->startOfDay() : Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth();
+        $endDate = $date ? $date->endOfDay() : Carbon::create($selectedYear, $selectedMonth, 1)->endOfMonth();
 
-        // Lưu vào session
-        session([
-            'statistical.start_date' => $startDate->format('Y-m-d'),
-            'statistical.end_date' => $endDate->format('Y-m-d'),
-            'statistical.branch_id' => $branchId,
-            'statistical.cinema_id' => $cinemaId,
-        ]);
-
-        // Phân quyền
+        // Phân quyền (giống comboRevenue)
         if (!$user->hasRole('System Admin')) {
             if ($user->branch_id) {
-                $branchId = $user->branch_id; // Khóa branch_id cho User Chi Nhánh
+                $branchId = $user->branch_id;
                 if ($cinemaId && !Cinema::where('id', $cinemaId)->where('branch_id', $user->branch_id)->exists()) {
-                    $cinemaId = null; // Reset nếu cinema không hợp lệ
+                    $cinemaId = null;
                 }
             } elseif ($user->cinema_id) {
                 $cinemaId = $user->cinema_id;
@@ -484,7 +480,7 @@ class StatisticalController extends Controller
             }
         }
 
-        // Lấy danh sách chi nhánh và rạp
+        // Lấy danh sách chi nhánh, rạp, và phim (giống comboRevenue)
         $branchesQuery = Branch::query()->select('id', 'name')->where('is_active', 1);
         $cinemasQuery = Cinema::query()->select('id', 'name')->where('is_active', 1);
 
@@ -503,8 +499,9 @@ class StatisticalController extends Controller
 
         $branches = $branchesQuery->get();
         $cinemas = $cinemasQuery->get();
+        $movies = Movie::select('id', 'name')->where('is_active', 1)->get();
 
-        // Quan hệ chi nhánh - rạp
+        // Quan hệ chi nhánh - rạp (giống comboRevenue)
         $branchesRelationQuery = Cinema::query()->select('branch_id', 'id', 'name')->where('is_active', 1);
         if (!$user->hasRole('System Admin')) {
             if ($user->branch_id) {
@@ -521,21 +518,22 @@ class StatisticalController extends Controller
             ->map(fn($group) => $group->pluck('name', 'id')->toArray())
             ->toArray();
 
-        // Điều kiện lọc chi nhánh/rạp
-        $conditions = [];
-        if ($branchId) {
-            $cinemaIds = Cinema::where('branch_id', $branchId)->pluck('id')->toArray();
-            if (!empty($cinemaIds)) {
-                $conditions[] = "tickets.cinema_id IN (" . implode(',', array_map('intval', $cinemaIds)) . ")";
-            }
-        }
-        if ($cinemaId) {
-            $conditions[] = "tickets.cinema_id = " . (int) $cinemaId;
-        }
-        $whereClause = !empty($conditions) ? " AND " . implode(' AND ', $conditions) : "";
+        // Truy vấn cơ bản cho tickets (giống comboRevenue)
+        $ticketQuery = Ticket::query()
+            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->whereBetween('tickets.created_at', [$startDate, $endDate]);
 
-        // Truy vấn thống kê top 5 món ăn bán chạy
-        $foodQuery = "
+        if ($branchId)
+            $ticketQuery->where('cinemas.branch_id', $branchId);
+        if ($cinemaId)
+            $ticketQuery->where('tickets.cinema_id', $cinemaId);
+        if ($movieId)
+            $ticketQuery->where('tickets.movie_id', $movieId);
+
+        // Thống kê food (tương tự combo nhưng dùng ticket_foods)
+        $foodStatistics = DB::select("
             SELECT
                 JSON_UNQUOTE(JSON_EXTRACT(tf.food_item, '$.name')) AS food_name,
                 CAST(FLOOR(SUM(JSON_EXTRACT(tf.food_item, '$.quantity'))) AS UNSIGNED) AS total_quantity,
@@ -543,8 +541,12 @@ class StatisticalController extends Controller
                 CONCAT(
                     CAST(FLOOR(SUM(JSON_EXTRACT(tf.food_item, '$.quantity'))) AS UNSIGNED), ' lượt - ',
                     FORMAT(SUM(CAST(JSON_EXTRACT(tf.food_item, '$.price') AS DECIMAL(15,2)) * JSON_EXTRACT(tf.food_item, '$.quantity')), 0), ' VND'
-                ) AS summary
+                ) AS summary,
+                MAX(JSON_UNQUOTE(JSON_EXTRACT(tf.food_item, '$.img_thumbnail'))) AS img_thumbnail
             FROM tickets
+            JOIN showtimes ON tickets.showtime_id = showtimes.id
+            JOIN cinemas ON tickets.cinema_id = cinemas.id
+            JOIN branches ON cinemas.branch_id = branches.id
             JOIN JSON_TABLE(
                 ticket_foods,
                 '$[*]' COLUMNS (
@@ -553,38 +555,86 @@ class StatisticalController extends Controller
             ) AS tf ON 1=1
             WHERE ticket_foods IS NOT NULL
             AND tickets.created_at BETWEEN ? AND ?
-            $whereClause
+            AND (? IS NULL OR cinemas.branch_id = ?)
+            AND (? IS NULL OR tickets.cinema_id = ?)
+            AND (? IS NULL OR tickets.movie_id = ?)
             GROUP BY food_name
             ORDER BY total_price DESC
-            LIMIT 5
-        ";
+        ", [$startDate, $endDate, $branchId, $branchId, $cinemaId, $cinemaId, $movieId, $movieId]);
 
-        // Thực thi truy vấn
-        Log::debug("Food Query: $foodQuery with params: " . $startDate->toDateTimeString() . ", " . $endDate->toDateTimeString());
-        $foodStatistics = DB::select($foodQuery, [$startDate->toDateTimeString(), $endDate->toDateTimeString()]);
-
-        // Chuẩn bị dữ liệu cho view
         $foodNames = array_column($foodStatistics, 'food_name');
         $foodQuantities = array_column($foodStatistics, 'total_quantity');
         $foodRevenues = array_column($foodStatistics, 'total_price');
         $foodSummaries = array_column($foodStatistics, 'summary');
-        $totalFoodRevenue = array_sum($foodRevenues);
+
+        // Top 6 food doanh thu cao nhất
+        $top6Foods = array_slice($foodStatistics, 0, 6);
+
+        // Tỷ lệ đơn hàng có food
+        $ticketStats = $ticketQuery->selectRaw("
+            COUNT(*) as total_tickets,
+            SUM(CASE WHEN ticket_foods IS NOT NULL THEN 1 ELSE 0 END) as food_tickets
+        ")->first();
+
+        $foodUsage = $ticketStats->total_tickets > 0
+            ? round(($ticketStats->food_tickets / $ticketStats->total_tickets) * 100, 2)
+            : 0;
+
+        // Doanh thu food theo khung giờ
+        $timeFrames = DB::select("
+            SELECT
+                DATE_FORMAT(showtimes.start_time, '%H:%i') AS time_frame,
+                SUM(CAST(JSON_EXTRACT(tf.food_item, '$.price') AS DECIMAL(15,2)) * JSON_EXTRACT(tf.food_item, '$.quantity')) AS revenue
+            FROM tickets
+            JOIN showtimes ON tickets.showtime_id = showtimes.id
+            JOIN cinemas ON tickets.cinema_id = cinemas.id
+            JOIN branches ON cinemas.branch_id = branches.id
+            JOIN JSON_TABLE(
+                ticket_foods,
+                '$[*]' COLUMNS (
+                    food_item JSON PATH '$'
+                )
+            ) AS tf ON 1=1
+            WHERE ticket_foods IS NOT NULL
+            AND tickets.created_at BETWEEN ? AND ?
+            " . ($branchId ? "AND cinemas.branch_id = ?" : "") . "
+            " . ($cinemaId ? "AND tickets.cinema_id = ?" : "") . "
+            " . ($movieId ? "AND tickets.movie_id = ?" : "") . "
+            GROUP BY time_frame
+            ORDER BY time_frame ASC
+        ", array_filter([$startDate, $endDate, $branchId, $cinemaId, $movieId]));
+
+        $trendDates = array_column($timeFrames, 'time_frame');
+        $trendRevenues = array_column($timeFrames, 'revenue');
+
+        // Tổng doanh thu food
+        $foodRevenue = array_sum($foodRevenues);
+
+        // Debug log
+        Log::debug("Branch ID: $branchId, Cinema ID: $cinemaId, User Branch: {$user->branch_id}");
 
         // Trả về view
         return view('admin.statistical.FoodStatistical', compact(
             'branches',
             'cinemas',
             'branchesRelation',
+            'movies',
+            'movieId',
+            'selectedMonth',
+            'selectedYear',
             'branchId',
             'cinemaId',
-            'startDate',
-            'endDate',
-            'foodStatistics',
-            'foodQuantities',
+            'date',
+            'foodRevenue',
             'foodNames',
-            'foodSummaries',
+            'foodQuantities',
             'foodRevenues',
-            'totalFoodRevenue'
+            'trendDates',
+            'trendRevenues',
+            'foodUsage',
+            'foodSummaries',
+            'foodStatistics',
+            'top6Foods'
         ));
     }
 }
