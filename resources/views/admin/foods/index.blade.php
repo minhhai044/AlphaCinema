@@ -77,7 +77,6 @@
 
                             </td>
                             <td>
-
                                 <a href="{{ route('admin.foods.edit', $food) }}" class="btn btn-warning btn-sm">
                                     <i class="fas fa-edit"></i>
                                 </a>
@@ -95,6 +94,7 @@
         $appUrl = env('APP_URL');
     @endphp
 @endsection
+
 
 @section('script')
     <script>
@@ -118,6 +118,7 @@
 
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
+
 
     <script>
         $(document).on("change", ".changeActive", function() {

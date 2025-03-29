@@ -102,7 +102,7 @@
                                                         class="fas fa-edit"></i></button>
                                             </a>
 
-                                            <form method="POST" action="{{ route('admin.vouchers.destroy', $voucher) }}"
+                                            {{-- <form method="POST" action="{{ route('admin.vouchers.destroy', $voucher) }}"
                                                 class="d-inline-block">
                                                 @csrf
                                                 @method('DELETE')
@@ -110,7 +110,7 @@
                                                     onclick="return confirm('Bạn có muốn xóa không')">
                                                     <i class="bi bi-trash"></i>
                                                 </button>
-                                            </form>
+                                            </form> --}}
                                         </td>
                                     </tr>
                                 @endforeach

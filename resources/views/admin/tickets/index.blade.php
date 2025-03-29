@@ -372,94 +372,94 @@
 
     <script>
         function changeStatus(event) {
-    const checkbox = event.target;
-    const ticketId = $(checkbox).data('ticket-id');
-    const status = checkbox.checked ? 'confirmed' : 'pending';
-    const staff = $(checkbox).data('user-type') == 1 ? 'Admin' : 'Member';
+            const checkbox = event.target;
+            const ticketId = $(checkbox).data('ticket-id');
+            const status = checkbox.checked ? 'confirmed' : 'pending';
+            const staff = $(checkbox).data('user-type') == 1 ? 'Admin' : 'Member';
 
-    // Kiểm tra dữ liệu đầu vào
-    if (!ticketId) {
-        alert('Không tìm thấy ID vé!');
-        checkbox.checked = !checkbox.checked;
-        return;
-    }
-
-    if (!confirm('Bạn có chắc muốn thay đổi trạng thái vé?')) {
-        checkbox.checked = !checkbox.checked;
-        return;
-    }
-
-    $.ajax({
-        url: '/admin/tickets/change-status',
-        method: 'POST',
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-        },
-        data: {
-            ticket_id: ticketId,
-            status: status,
-            staff: staff,
-        },
-        success: function(response) {
-            alert('Trạng thái vé đã được thay đổi thành công!');
-            const row = $(checkbox).closest('tr');
-            const statusTicket = row.find('#statusTicket');
-            const newStatusText = status === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận';
-            const newBadgeClass = status === 'confirmed' ? 'bg-success' : 'bg-warning';
-
-            // Cập nhật badge trạng thái
-            statusTicket.text(newStatusText)
-                .removeClass('bg-success bg-warning')
-                .addClass(newBadgeClass);
-
-            // Cập nhật nút in và checkbox
-            if (status === 'confirmed') {
-                row.find('.btn-print-ticket, .btn-print-combo').removeClass('d-none');
-                $(checkbox).prop('disabled', true); // Vô hiệu hóa khi confirmed
-            } else {
-                row.find('.btn-print-ticket, .btn-print-combo').addClass('d-none');
-                $(checkbox).prop('disabled', false); // Bật lại khi pending
+            // Kiểm tra dữ liệu đầu vào
+            if (!ticketId) {
+                alert('Không tìm thấy ID vé!');
+                checkbox.checked = !checkbox.checked;
+                return;
             }
-        },
-        error: function(xhr) {
-            const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
-            alert(errorMessage);
-            checkbox.checked = !checkbox.checked; // Hoàn tác nếu lỗi
+
+            if (!confirm('Bạn có chắc muốn thay đổi trạng thái vé?')) {
+                checkbox.checked = !checkbox.checked;
+                return;
+            }
+
+            $.ajax({
+                url: '/admin/tickets/change-status',
+                method: 'POST',
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                data: {
+                    ticket_id: ticketId,
+                    status: status,
+                    staff: staff,
+                },
+                success: function(response) {
+                    alert('Trạng thái vé đã được thay đổi thành công!');
+                    const row = $(checkbox).closest('tr');
+                    const statusTicket = row.find('#statusTicket');
+                    const newStatusText = status === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận';
+                    const newBadgeClass = status === 'confirmed' ? 'bg-success' : 'bg-warning';
+
+                    // Cập nhật badge trạng thái
+                    statusTicket.text(newStatusText)
+                        .removeClass('bg-success bg-warning')
+                        .addClass(newBadgeClass);
+
+                    // Cập nhật nút in và checkbox
+                    if (status === 'confirmed') {
+                        row.find('.btn-print-ticket, .btn-print-combo').removeClass('d-none');
+                        $(checkbox).prop('disabled', true); // Vô hiệu hóa khi confirmed
+                    } else {
+                        row.find('.btn-print-ticket, .btn-print-combo').addClass('d-none');
+                        $(checkbox).prop('disabled', false); // Bật lại khi pending
+                    }
+                },
+                error: function(xhr) {
+                    const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
+                    alert(errorMessage);
+                    checkbox.checked = !checkbox.checked; // Hoàn tác nếu lỗi
+                }
+            });
         }
-    });
-}
     </script>
 
     <script src="{{ asset('assets/js/ticket/index.js') }}"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const branchSelect = document.getElementById('branch_id');
-        const cinemaSelect = document.getElementById('cinema_id');
-        const branchesRelation = @json($branchesRelation);
+        document.addEventListener('DOMContentLoaded', function() {
+            const branchSelect = document.getElementById('branch_id');
+            const cinemaSelect = document.getElementById('cinema_id');
+            const branchesRelation = @json($branchesRelation);
 
-        @if(auth()->user()->hasRole('System Admin')) // Sửa thành 'System Admin'
-            branchSelect.addEventListener('change', function() {
-                const branchId = this.value;
-                cinemaSelect.innerHTML = '<option value="" selected>Chọn rạp</option>';
+            @if (auth()->user()->hasRole('System Admin')) // Sửa thành 'System Admin'
+                branchSelect.addEventListener('change', function() {
+                    const branchId = this.value;
+                    cinemaSelect.innerHTML = '<option value="" selected>Chọn rạp</option>';
 
-                if (branchId && branchesRelation[branchId]) {
-                    const cinemas = branchesRelation[branchId];
-                    for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
-                        const option = document.createElement('option');
-                        option.value = cinemaId;
-                        option.text = cinemaName;
-                        cinemaSelect.appendChild(option);
+                    if (branchId && branchesRelation[branchId]) {
+                        const cinemas = branchesRelation[branchId];
+                        for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
+                            const option = document.createElement('option');
+                            option.value = cinemaId;
+                            option.text = cinemaName;
+                            cinemaSelect.appendChild(option);
+                        }
+                    } else if (branchId) {
+                        cinemaSelect.innerHTML = '<option value="" selected>Không có rạp nào</option>';
                     }
-                } else if (branchId) {
-                    cinemaSelect.innerHTML = '<option value="" selected>Không có rạp nào</option>';
-                }
-            });
+                });
 
-            if (branchSelect.value) {
-                branchSelect.dispatchEvent(new Event('change'));
-            }
-        @endif
-    });
-</script>
+                if (branchSelect.value) {
+                    branchSelect.dispatchEvent(new Event('change'));
+                }
+            @endif
+        });
+    </script>
 @endsection

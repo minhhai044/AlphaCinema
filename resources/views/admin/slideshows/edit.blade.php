@@ -21,7 +21,6 @@
         </div>
         <div class="container-fluid">
             <!-- end page title -->
-
             <div class="row">
                 <div class="col-lg-7">
                     <div class="card">
@@ -86,7 +85,6 @@
                                 </table>
                             </div>
                         </div>
-
                         <!-- end card -->
                     </div>
                 </div> 
@@ -108,16 +106,12 @@
                             @enderror
                         </div>
                         <!-- end card body -->
-
                         <input type="hidden" name="is_active" value="0">
                     </div>
-
                 </div> <!-- end col -->
             </div>
             <!-- end row -->
-
         </div>
-
         <div class="row">
             <div class="col-lg-12">
                 <div class="card">
@@ -128,7 +122,6 @@
             </div>
             <!--end col-->
         </div>
-
     </form>
 @endsection
 
@@ -167,7 +160,6 @@
                 tableBody.appendChild(newRow);
                 rowCount++;
             });
-
             window.previewImg = function (input, index) {
                 if (input.files && input.files[0]) {
                     const reader = new FileReader();
@@ -177,7 +169,6 @@
                     reader.readAsDataURL(input.files[0]);
                 }
             };
-
             window.removeRow = function (item) {
                 const row = item.closest('tr');
                 row.remove();

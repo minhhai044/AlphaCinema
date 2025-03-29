@@ -15,7 +15,6 @@
                         <li class="breadcrumb-item active">Slideshows</li>
                     </ol>
                 </div>
-
             </div>
         </div>
     </div>
@@ -39,6 +38,7 @@
                                 <th style="width: 155px;">Chức năng</th>
                             </tr>
                         </thead>
+
                         <tbody>
                             @foreach ($slideshows as $slideshow)
                                 <tr>
@@ -60,9 +60,7 @@
                                                     <p>No image !</p>
                                                 @endif
                                             </div>
-
                                         </div>
-
                                     </td>
                                     <td>{{ $slideshow->description }}</td>
                                     <td>
