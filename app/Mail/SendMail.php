@@ -61,8 +61,8 @@ class SendMail extends Mailable implements ShouldQueue
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('tmhai2004@gmail.com', 'AlphaCinema'),
-            replyTo: [new Address('tmhai2004@gmail.com', 'AlphaCinema')],
+            from: new Address('dangvanson210297@gmail.com', 'AlphaCinema'),
+            replyTo: [new Address('dangvanson210297@gmail.com', 'AlphaCinema')],
             subject: "AlphaCinema thông báo : Đặt vé thành công !!!",
             tags: ['transactional']
         );

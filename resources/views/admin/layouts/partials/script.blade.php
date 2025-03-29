@@ -43,4 +43,5 @@
 
 <script src="{{asset('assets/js/qrcode/qrcode.js')}}"></script>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 

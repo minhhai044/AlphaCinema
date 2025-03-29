@@ -3,6 +3,7 @@ let currentCameraId = null;
 
 function startScanner() {
     html5QrCode = new Html5Qrcode("reader");
+console.log(1);
 
     Html5Qrcode.getCameras().then(function (devices) {
         if (devices && devices.length) {

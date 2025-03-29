@@ -81,13 +81,16 @@ class TicketService
     {
         $ticketDetail = $this->ticketRepository->findTicket($code);
 
-
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);
         $totalSeatPrice = $seatData['total_price'] ?? 0;
 
+        $foods = $this->getFoodList($ticketDetail->ticket_foods);
         $combos = $this->getComboList($ticketDetail->ticket_combos);
         $totalComboPrice = array_reduce($combos, function ($carry, $combo) {
             return $carry + (isset($combo['total_price']) ? str_replace([' VND', ','], '', $combo['total_price']) : 0);
+        }, 0);
+        $totalFoodPrice = array_reduce($foods, function ($carry, $foods) {
+            return $carry + (isset($foods['total_price']) ? str_replace([' VND', ','], '', $foods['total_price']) : 0);
         }, 0);
 
         return [
@@ -114,7 +117,9 @@ class TicketService
             'seats' => $seatData,
             'ticket_price' => $this->formatPrice($totalSeatPrice),
             'combos' => $combos,
+            'foods' => $foods,
             'total_combo_price' => $this->formatPrice($totalComboPrice),
+            'total_food_price' => $this->formatPrice($totalFoodPrice),
             'total_amount' => $this->formatPrice($ticketDetail->total_price),
             'status' => $ticketDetail->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận',
             'user' => [
@@ -208,6 +213,33 @@ class TicketService
         }, $ticketCombos), fn($item) => $item !== null);
     }
 
+    private function getFoodList($ticketFoods)
+    {
+        if (!is_array($ticketFoods) || empty($ticketFoods)) {
+            return [];
+        }
+
+        return array_filter(array_map(function ($food) {
+            if (!is_array($food) || !isset($food['name'])) {
+                return null;
+            }
+
+            $foodName = $food['name'] ?? 'N/A';
+            $quantity = $food['quantity'] ?? 1;
+            $price =  $food['price'] ?? 0;
+            $totalPrice = $price * $quantity;
+            $imgThumbnail = $food['img_thumbnail'] ? asset('storage/' . $food['img_thumbnail']) : asset('path/to/default_food.jpg');
+
+            return [
+                'name' => $foodName,
+                'image' => $imgThumbnail,
+                'quantity' => $quantity,
+                'price' => $this->formatPrice($price),
+                'total_price' => $totalPrice,
+            ];
+        }, $ticketFoods), fn($item) => $item !== null);
+    }
+
     private function formatPrice($price, $currency = 'VND'): string
     {
         return $price ? number_format($price, 0, ',', '.') . ' ' . $currency : '0 ' . $currency;
@@ -228,5 +260,12 @@ class TicketService
     public function getTicketID($id)
     {
         return $this->ticket->findOrFail($id);
+    }
+
+    public function extractNumber($str) {
+        // Loại bỏ tất cả các ký tự không phải số và dấu chấm
+        $numberStr = preg_replace('/[^\d]/', '', $str);
+        // Chuyển đổi chuỗi thành số nguyên
+        return (int)$numberStr;
     }
 }

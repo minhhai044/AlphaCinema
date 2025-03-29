@@ -29,6 +29,20 @@
             opacity: 0.5;
             background-color: #efefff
         }
+        .dashed-double {
+            border: 1px dashed #6c757d;
+            margin: 2px 0;
+            opacity: 0.5;
+            background-color: #efefff
+        }
+
+
+        #ticketContainer {
+            width: 100%;
+            background-image: url("{{ asset('logo/backgound.svg') }}");
+            background-size: cover;
+            background-position: center;
+        }
     </style>
 @endsection
 
@@ -293,29 +307,49 @@
                         <td>{{ $ticket->code ?? 'N/A' }}</td>
                         <td>
                             <div><span class="fw-bold">Người dùng:</span> {{ $ticket->user->name ?? 'N/A' }}</div>
-                            <div><span class="fw-bold">Chức vụ:</span> <span class="badge bg-success">{{ $ticket->user->role ?? 'member' }}</span></div>
+                            <div><span class="fw-bold">Chức vụ:</span> <span
+                                    class="badge bg-success">{{ $ticket->user->role ?? 'member' }}</span></div>
                             <div><span class="fw-bold">Email:</span> {{ $ticket->user->email ?? 'N/A' }}</div>
-                            <div><span class="fw-bold">Phương thức thanh toán:</span> {{ $ticket->payment_name ?? 'N/A' }}</div>
+                            <div><span class="fw-bold">Phương thức thanh toán:</span> {{ $ticket->payment_name ?? 'N/A' }}
+                            </div>
                         </td>
                         <td>
                             <div><span class="fw-bold">Phim:</span> {{ $ticket->movie->name ?? 'N/A' }}</div>
-                            <div><span class="fw-bold">Nơi chiếu:</span> {{ $ticket->branch->name ?? 'N/A' }} - {{ $ticket->cinema->name ?? 'N/A' }}</div>
-                            <div><span class="fw-bold">Ghế:</span> {{ implode(', ', array_map(fn($seat) => $seat['seat_name'] ?? 'N/A', $ticket->ticket_seats ?? [])) ?: 'N/A' }}</div>
-                            <div><span class="fw-bold">Tổng tiền:</span> {{ number_format($ticket->total_price ?? 0, 0, ',', '.') }} VNĐ</div>
-                            <div><span class="fw-bold">Trạng thái:</span> <span id="statusTicket" class="badge {{ $ticket->status == 'confirmed' ? 'bg-success' : 'bg-warning' }}">{{ $ticket->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận' }}</span></div>
-                            <div><span class="fw-bold">Lịch chiếu:</span> {{ $ticket->showtime->start_time ?? 'N/A' }} - {{ $ticket->showtime->end_time ?? 'N/A' }}</div>
-                            <div><span class="fw-bold">Ngày chiếu:</span> {{ \Carbon\Carbon::parse($ticket->showtime->date ?? now())->format('d/m/Y') }}</div>
+                            <div><span class="fw-bold">Nơi chiếu:</span> {{ $ticket->branch->name ?? 'N/A' }} -
+                                {{ $ticket->cinema->name ?? 'N/A' }}</div>
+                            <div><span class="fw-bold">Ghế:</span>
+                                {{ implode(', ', array_map(fn($seat) => $seat['seat_name'] ?? 'N/A', $ticket->ticket_seats ?? [])) ?: 'N/A' }}
+                            </div>
+                            <div><span class="fw-bold">Tổng tiền:</span>
+                                {{ number_format($ticket->total_price ?? 0, 0, ',', '.') }} VNĐ</div>
+                            <div><span class="fw-bold">Trạng thái:</span> <span id="statusTicket"
+                                    class="badge {{ $ticket->status == 'confirmed' ? 'bg-success' : 'bg-warning' }}">{{ $ticket->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận' }}</span>
+                            </div>
+                            <div><span class="fw-bold">Lịch chiếu:</span> {{ $ticket->showtime->start_time ?? 'N/A' }} -
+                                {{ $ticket->showtime->end_time ?? 'N/A' }}</div>
+                            <div><span class="fw-bold">Ngày chiếu:</span>
+                                {{ \Carbon\Carbon::parse($ticket->showtime->date ?? now())->format('d/m/Y') }}</div>
                         </td>
                         <td>
-                            <div class="form-check form-switch form-switch-md form-switch-success" style="display: flex; justify-content: center;">
-                                <input class="form-check-input switch-is-active changeStatus" type="checkbox" data-ticket-id="{{ $ticket->id }}" data-user-type="{{ auth()->user()->type_user }}" {{ $ticket->status === 'confirmed' ? 'checked disabled' : '' }} onclick="changeStatus(event)">
+                            <div class="form-check form-switch form-switch-md form-switch-success"
+                                style="display: flex; justify-content: center;">
+                                <input class="form-check-input switch-is-active changeStatus" type="checkbox"
+                                    data-ticket-id="{{ $ticket->id }}"
+                                    data-user-type="{{ auth()->user()->type_user }}"
+                                    {{ $ticket->status === 'confirmed' ? 'checked disabled' : '' }}
+                                    onclick="changeStatus(event)">
                             </div>
                         </td>
                         <td class="text-center">
                             <div class="btn-group justify-content-center align-items-center">
-                                <a href="{{ route('admin.tickets.show', $ticket->code) }}" class="btn btn-sm btn-success me-2"><i class="fas fa-eye"></i></a>
-                                <button class="btn btn-sm btn-primary me-2 btn-print-ticket {{ $ticket->status !== 'confirmed' ? 'd-none' : '' }} printTicket" data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Vé</button>
-                                <button class="btn btn-sm btn-warning btn-print-combo {{ $ticket->status !== 'confirmed' ? 'd-none' : '' }} printCombo" data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Combo</button>
+                                <a href="{{ route('admin.tickets.show', $ticket->code) }}"
+                                    class="btn btn-sm btn-success me-2"><i class="fas fa-eye"></i></a>
+                                <button
+                                    class="btn btn-sm btn-primary me-2 btn-print-ticket {{ $ticket->status !== 'confirmed' ? 'd-none' : '' }} printTicket"
+                                    data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Vé</button>
+                                <button
+                                    class="btn btn-sm btn-warning btn-print-combo {{ $ticket->status !== 'confirmed' ? 'd-none' : '' }} printCombo"
+                                    data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Combo</button>
                             </div>
                         </td>
                     </tr>
@@ -332,7 +366,7 @@
         </table>
         <!-- Modal thông tin vé -->
         <div id="ticketModal" class="modal fade" tabindex="-1" aria-labelledby="myModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
+            <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="myModalLabel">Thông tin vé</h5>
@@ -372,94 +406,94 @@
 
     <script>
         function changeStatus(event) {
-    const checkbox = event.target;
-    const ticketId = $(checkbox).data('ticket-id');
-    const status = checkbox.checked ? 'confirmed' : 'pending';
-    const staff = $(checkbox).data('user-type') == 1 ? 'Admin' : 'Member';
+            const checkbox = event.target;
+            const ticketId = $(checkbox).data('ticket-id');
+            const status = checkbox.checked ? 'confirmed' : 'pending';
+            const staff = $(checkbox).data('user-type') == 1 ? 'Admin' : 'Member';
 
-    // Kiểm tra dữ liệu đầu vào
-    if (!ticketId) {
-        alert('Không tìm thấy ID vé!');
-        checkbox.checked = !checkbox.checked;
-        return;
-    }
-
-    if (!confirm('Bạn có chắc muốn thay đổi trạng thái vé?')) {
-        checkbox.checked = !checkbox.checked;
-        return;
-    }
-
-    $.ajax({
-        url: '/admin/tickets/change-status',
-        method: 'POST',
-        headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-        },
-        data: {
-            ticket_id: ticketId,
-            status: status,
-            staff: staff,
-        },
-        success: function(response) {
-            alert('Trạng thái vé đã được thay đổi thành công!');
-            const row = $(checkbox).closest('tr');
-            const statusTicket = row.find('#statusTicket');
-            const newStatusText = status === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận';
-            const newBadgeClass = status === 'confirmed' ? 'bg-success' : 'bg-warning';
-
-            // Cập nhật badge trạng thái
-            statusTicket.text(newStatusText)
-                .removeClass('bg-success bg-warning')
-                .addClass(newBadgeClass);
-
-            // Cập nhật nút in và checkbox
-            if (status === 'confirmed') {
-                row.find('.btn-print-ticket, .btn-print-combo').removeClass('d-none');
-                $(checkbox).prop('disabled', true); // Vô hiệu hóa khi confirmed
-            } else {
-                row.find('.btn-print-ticket, .btn-print-combo').addClass('d-none');
-                $(checkbox).prop('disabled', false); // Bật lại khi pending
+            // Kiểm tra dữ liệu đầu vào
+            if (!ticketId) {
+                alert('Không tìm thấy ID vé!');
+                checkbox.checked = !checkbox.checked;
+                return;
             }
-        },
-        error: function(xhr) {
-            const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
-            alert(errorMessage);
-            checkbox.checked = !checkbox.checked; // Hoàn tác nếu lỗi
+
+            if (!confirm('Bạn có chắc muốn thay đổi trạng thái vé?')) {
+                checkbox.checked = !checkbox.checked;
+                return;
+            }
+
+            $.ajax({
+                url: '/admin/tickets/change-status',
+                method: 'POST',
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                data: {
+                    ticket_id: ticketId,
+                    status: status,
+                    staff: staff,
+                },
+                success: function(response) {
+                    alert('Trạng thái vé đã được thay đổi thành công!');
+                    const row = $(checkbox).closest('tr');
+                    const statusTicket = row.find('#statusTicket');
+                    const newStatusText = status === 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận';
+                    const newBadgeClass = status === 'confirmed' ? 'bg-success' : 'bg-warning';
+
+                    // Cập nhật badge trạng thái
+                    statusTicket.text(newStatusText)
+                        .removeClass('bg-success bg-warning')
+                        .addClass(newBadgeClass);
+
+                    // Cập nhật nút in và checkbox
+                    if (status === 'confirmed') {
+                        row.find('.btn-print-ticket, .btn-print-combo').removeClass('d-none');
+                        $(checkbox).prop('disabled', true); // Vô hiệu hóa khi confirmed
+                    } else {
+                        row.find('.btn-print-ticket, .btn-print-combo').addClass('d-none');
+                        $(checkbox).prop('disabled', false); // Bật lại khi pending
+                    }
+                },
+                error: function(xhr) {
+                    const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
+                    alert(errorMessage);
+                    checkbox.checked = !checkbox.checked; // Hoàn tác nếu lỗi
+                }
+            });
         }
-    });
-}
     </script>
 
     <script src="{{ asset('assets/js/ticket/index.js') }}"></script>
 
     <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const branchSelect = document.getElementById('branch_id');
-        const cinemaSelect = document.getElementById('cinema_id');
-        const branchesRelation = @json($branchesRelation);
+        document.addEventListener('DOMContentLoaded', function() {
+            const branchSelect = document.getElementById('branch_id');
+            const cinemaSelect = document.getElementById('cinema_id');
+            const branchesRelation = @json($branchesRelation);
 
-        @if(auth()->user()->hasRole('System Admin')) // Sửa thành 'System Admin'
-            branchSelect.addEventListener('change', function() {
-                const branchId = this.value;
-                cinemaSelect.innerHTML = '<option value="" selected>Chọn rạp</option>';
+            @if (auth()->user()->hasRole('System Admin')) // Sửa thành 'System Admin'
+                branchSelect.addEventListener('change', function() {
+                    const branchId = this.value;
+                    cinemaSelect.innerHTML = '<option value="" selected>Chọn rạp</option>';
 
-                if (branchId && branchesRelation[branchId]) {
-                    const cinemas = branchesRelation[branchId];
-                    for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
-                        const option = document.createElement('option');
-                        option.value = cinemaId;
-                        option.text = cinemaName;
-                        cinemaSelect.appendChild(option);
+                    if (branchId && branchesRelation[branchId]) {
+                        const cinemas = branchesRelation[branchId];
+                        for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
+                            const option = document.createElement('option');
+                            option.value = cinemaId;
+                            option.text = cinemaName;
+                            cinemaSelect.appendChild(option);
+                        }
+                    } else if (branchId) {
+                        cinemaSelect.innerHTML = '<option value="" selected>Không có rạp nào</option>';
                     }
-                } else if (branchId) {
-                    cinemaSelect.innerHTML = '<option value="" selected>Không có rạp nào</option>';
-                }
-            });
+                });
 
-            if (branchSelect.value) {
-                branchSelect.dispatchEvent(new Event('change'));
-            }
-        @endif
-    });
-</script>
+                if (branchSelect.value) {
+                    branchSelect.dispatchEvent(new Event('change'));
+                }
+            @endif
+        });
+    </script>
 @endsection

@@ -39,6 +39,9 @@ class TicketController extends Controller
     public function show(string $code)
     {
         $ticketData = $this->ticketService->getTicketDetail($code);
+        $ticketData['total_combo'] = $this->ticketService->extractNumber($ticketData['total_combo_price']);
+        $ticketData['total_food'] = $this->ticketService->extractNumber($ticketData['total_food_price']);
+
         return view(self::PATH_VIEW . 'detail', compact('ticketData'));
     }
     public function print()
