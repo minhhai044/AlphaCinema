@@ -15,6 +15,28 @@
             margin-bottom: 12px
         }
 
+        .dashed-hr {
+            border: 1px dashed #6c757d;
+            margin: 10px 0;
+            opacity: 0.5;
+            background-color: #efefff
+        }
+
+        .dashed-double {
+            border: 1px dashed #6c757d;
+            margin: 2px 0;
+            opacity: 0.5;
+            background-color: #efefff
+        }
+
+        .ticket-item {
+            background-image: url("/logo/backgound.svg");
+            /* Thêm ảnh nền tại đây */
+            background-size: cover;
+            background-position: center;
+            height: 720px;
+        }
+
         @media (max-width: 768px) {
 
             .movie-section,
@@ -48,7 +70,7 @@
             </div>
         </div>
     </div>
-    <div class="container-fluid row G-5">
+    <div class="container-fluid row g-5">
 
         <!-- Movie Section (75%) -->
         <div class="col-md-9">
@@ -66,7 +88,8 @@
                                 class="badge p-2 rounded-pill   {{ $ticketData['status'] === 'Đã xác nhận' ? 'bg-success-subtle text-success' : 'bg-warning-subtle text-warning' }}">{{ $ticketData['status'] }}</span>
                         </div>
                         <div class="col-2 text-end">
-                            <button class="btn btn-primary btn-sm "><i class="bx bx-download"></i> In vé</button>
+                            <button class="btn btn-primary btn-sm " id="printAllTickets"><i class="bx bx-download"></i> In
+                                vé</button>
                         </div>
                     </div>
 
@@ -245,9 +268,285 @@
                 </div>
             </div>
         </div>
+    </div>
 
-        <!-- Bootstrap JS -->
-        {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    <div id="ticketContainer" class="d-none">
+        <div class="ticket-item mb-3">
+            <h3 class="text-center fw-bold pb-3">Hóa Đơn Đồ Ăn</h3>
+            <div class="mb-1">
+                <div class="mb-1 fs-5 fw-semibold">Chi nhánh công ty Alpha Cinema tại {{ $ticketData['branch']['name'] }}
+                </div>
+                <div class="mb-1 ">MST: 012147901412</div>
+                <div>Nhân viên in vé: {{ auth()->user()->name }} </div>
+            </div>
+            <hr class="dashed-hr">
+            <div class="mb-1">
+                <h5 class="fw-semibold">Alpha Cinema {{ $ticketData['cinema']['name'] }}</h5>
+                <div class="mb-1">{{ $ticketData['cinema']['address'] }}</div>
+            </div>
+
+            <div class="my-3">
+                <hr class="dashed-double">
+                <hr class="dashed-double">
+            </div>
+
+            @forelse ($ticketData['combos'] as $combo)
+                <div class="row">
+                    <div class="fw-semibold col-6">{{ $combo['name'] }}</div>
+                    <div class="col-2 text-center">{{ $combo['quantity'] }}</div>
+                    <div class="col-4 text-end">{{ number_format($combo['total_price'], 0, '.', '.') }} </div>
+                </div>
+
+                <div class="row mb-1">
+                    @forelse ($combo['foods'] as $item)
+                        @php
+                            preg_match('/^(.*?)\s*\(SL:\s*(\d+)\)/', $item, $matches);
+                        @endphp
+                        <div class="col-6 ps-4"> • {{ $matches[1] ?? '' }}</div>
+                        <div class="col-2 text-center">{{ $matches[2] ?? 0 }}</div>
+                    @empty
+                        <div></div>
+                    @endforelse
+                </div>
+
+            @empty
+                <div class="col-12 text-center text-muted py-3"></div>
+            @endforelse
+
+            @forelse ($ticketData['foods'] as $food)
+                <div class="row">
+                    <div class="fw-semibold col-6">{{ $food['name'] }}</div>
+                    <div class="col-2 text-center">{{ $food['quantity'] }}</div>
+                    <div class="col-4 text-end">{{ number_format($food['total_price'], 0, '.', '.') }} </div>
+                </div>
+            @empty
+                <div class="col-12 text-center text-muted py-3"></div>
+            @endforelse
+
+            <div class="my-3">
+                <hr class="dashed-double">
+                <hr class="dashed-double">
+            </div>
+
+            <div class="mb-1 row">
+                <div class="fw-medium col-6">Giảm giá</div>
+                <div class="fw-medium col-2 text-center">VNĐ</div>
+                <div class="col-4 text-end">{{ $ticketData['voucher_discount'] }}</div>
+            </div>
+
+            @php
+                $amount = $ticketData['total_amount']; // ví dụ: "290.000 VND"
+                $parts = explode(' ', $amount); // [0] => "290.000", [1] => "VND"
+            @endphp
+
+            <div class="mb-1 row">
+                <div class="fw-bold col-6 fs-5">Tổng tiền</div>
+                <div class="fw-medium col-2 text-center">VNĐ</div>
+                <div class="fw-medium fs-5 col-4 text-end">{{ $parts[0] ?? '0' }}</div>
+            </div>
+
+            <hr class="dashed-hr">
+            <div class="mb-1 d-flex flex-column align-items-center text-center">
+                <div> {!! $ticketData['barcode'] !!} </div>
+                <div class="">893 {{ $ticketData['code'] }}</div>
+            </div>
+        </div>
+
+        @forelse ($ticketData['seats']['details'] as $ticket)
+            <div class="ticket-item mb-3 py-3 ${index > 0 ? 'mt-4' : ''}">
+                <h3 class="text-center fw-bold pb-3">Vé xem phim</h3>
+                <div class="mb-1">
+                    <div class="mb-1 fs-5 fw-semibold">Chi nhánh công ty Alpha Cinema tại
+                        {{ $ticketData['branch']['name'] }}
+                    </div>
+                    <div class="mb-1 ">MST: 012147901412</div>
+                    <div>Nhân viên in vé: {{ auth()->user()->name }} </div>
+                </div>
+                <hr class="dashed-hr">
+                <div class="mb-1">
+                    <h5 class="fw-semibold">Alpha Cinema {{ $ticketData['cinema']['name'] }}</h5>
+                    <div class="mb-1">{{ $ticketData['cinema']['address'] }}</div>
+                </div>
+
+                <div class="my-3">
+                    <hr class="dashed-double">
+                    <hr class="dashed-double">
+                </div>
+
+                <div class="mb-1">
+                    <h4 class="fw-bold">{{ $ticketData['movie']['name'] }}</h4>
+                    <div class="row">
+                        <div class="col-6 fs-5 fw-medium">{{ $ticketData['showtime']['start_time'] }} -
+                            {{ $ticketData['showtime']['end_time'] }} </div>
+                        <div class= "col-6 fs-5 fw-medium"> {{ $ticketData['showtime']['date'] }}</div>
+                    </div>
+                </div>
+                <div class="mb-1 row">
+                    <div class="mb-1 col-6 fw-medium fs-5">Phòng: {{ $ticketData['cinema']['room'] }}</div>
+                    <div class="mb-1 col-6 fw-bold fs-4"> {{ $ticket['name'] }}</div>
+                </div>
+
+                <div class="my-3">
+                    <hr class="dashed-double">
+                    <hr class="dashed-double">
+                </div>
+                @php
+                    $amount = $ticket['price'];
+                    $parts = explode(' ', $amount);
+                @endphp
+
+                <div class="row me-2">
+                    <h5 class="fw-semibold col-8">Giá vé </h5>
+                    <h5 class="fw-medium col-1">VNĐ</h5>
+                    <h5 class="fw-medium fs-5 col-3 text-end"> {{ $parts[0] ?? '0' }} </h5>
+                </div>
+
+                <hr class="dashed-hr">
+
+                @php
+                    $amount = $ticketData['voucher_discount'];
+                    $parts = explode(' ', $amount);
+                @endphp
+
+                <div class="mb-1 row me-2">
+                    <div class="fw-medium col-8 ">Khuyến mãi </div>
+                    <div class="fw-medium fs-5 col-1">VNĐ</div>
+                    <div class="col-3 text-end">{{ $parts[0] ?? '0' }}</div>
+                </div>
+
+                <div class="mb-5 row me-2">
+                    <h5 class="fw-bold col-8">Tổng tiền </h5>
+                    <h5 class="fw-medium col-1">VNĐ</h5>
+                    <h5 class="fw-medium fs-5 col-3 text-end">
+                        {{ number_format($ticketData['seats']['total_price'], 0, '.', '.') }} </h5>
+                </div>
+
+                <div class="mb-1 d-flex flex-column align-items-center text-center">
+                    <div> {!! $ticketData['barcode'] !!} </div>
+                    <div class="">893 {{ $ticketData['code'] }}</div>
+                </div>
+            </div>
+        @empty
+        @endforelse
+
+
+    </div>
+
+
+    <!-- Bootstrap JS -->
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous">
     </script> --}}
-    @endsection
+
+    @php
+        $ticketId = $ticketData['id'];
+    @endphp
+@endsection
+
+@section('script')
+    <script>
+        $("#printAllTickets").on("click", function() {
+
+            changeStatus(event);
+
+            // Lưu lại nội dung và tiêu đề gốc
+            const originalContent = $("body").html();
+            const originalTitle = document.title;
+            const printContent = $("#ticketContainer").html();
+
+            // Tạo tên file có định dạng thời gian hợp lệ
+            const now = new Date();
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const year = now.getFullYear();
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+
+            // Đặt tên file với định dạng Ve_DDMMYYYY_HHMM
+            const fileName = `Ve_${day}${month}${year}_${hours}${minutes}`;
+
+            // Thiết lập tiêu đề trang - điều này sẽ ảnh hưởng đến tên file mặc định
+            document.title = fileName;
+
+            // Thêm thẻ meta để gợi ý tên file (hoạt động với một số trình duyệt)
+            $("head").append(`<meta name="filename" content="${fileName}.pdf">`);
+
+            $("body").html(`
+            <div class="print-container">
+                <style>
+                    @media print {
+                        .ticket-item {
+                            page-break-after: auto;
+                            margin-bottom: 0;
+                        }
+                        .ticket-item:not(:last-child) {
+                            page-break-after: always;
+                        }
+                        .dashed-hr {
+                            border-top: 1px dashed #000;
+                        }
+                        .no-print {
+                            display: none;
+                        }
+
+                        body {
+                            font-family: Arial, sans-serif;
+                        }
+                        .ticket-item {
+                            padding: 15px;
+                            margin-bottom: 20px;
+                        }
+                    }
+                </style>
+                <!-- Nội dung in -->
+                ${printContent}
+            </div>
+        `);
+
+
+            // Hiển thị thông báo cho người dùng
+            console.log("Khi lưu file, tên file mặc định sẽ là: " + fileName + ".pdf");
+
+            // Chờ một chút để đảm bảo tiêu đề đã được cập nhật
+            setTimeout(function() {
+                window.print();
+
+                // Khôi phục tiêu đề gốc trước khi tải lại trang
+                document.title = originalTitle;
+
+
+                window.onafterprint = function() {
+                    console.log("IN thành công");
+                };
+                window.location.reload();
+            }, 50);
+        });
+
+        function changeStatus(event) {
+            const ticketId = @json($ticketId);
+            // const status = checkbox.checked ? 'confirmed' : 'pending';
+            const staff = 1 ;
+
+            // Kiểm tra dữ liệu đầu vào
+
+            $.ajax({
+                url: '/admin/tickets/change-status',
+                method: 'POST',
+                headers: {
+                    "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                },
+                data: {
+                    ticket_id: ticketId,
+                    status: 'confirmed',
+                    staff: staff,
+                },
+                success: function(response) {
+
+                },
+                error: function(xhr) {
+                    const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
+                }
+            });
+        }
+    </script>
+@endsection

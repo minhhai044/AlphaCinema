@@ -29,13 +29,13 @@
             opacity: 0.5;
             background-color: #efefff
         }
+
         .dashed-double {
             border: 1px dashed #6c757d;
             margin: 2px 0;
             opacity: 0.5;
             background-color: #efefff
         }
-
 
         #ticketContainer {
             width: 100%;
@@ -297,7 +297,7 @@
                     <th>Mã vé</th>
                     <th>Thông tin người dùng</th>
                     <th>Thông tin vé</th>
-                    <th>Trạng thái</th>
+
                     <th>Chức năng</th>
                 </tr>
             </thead>
@@ -330,26 +330,17 @@
                             <div><span class="fw-bold">Ngày chiếu:</span>
                                 {{ \Carbon\Carbon::parse($ticket->showtime->date ?? now())->format('d/m/Y') }}</div>
                         </td>
-                        <td>
-                            <div class="form-check form-switch form-switch-md form-switch-success"
-                                style="display: flex; justify-content: center;">
-                                <input class="form-check-input switch-is-active changeStatus" type="checkbox"
-                                    data-ticket-id="{{ $ticket->id }}"
-                                    data-user-type="{{ auth()->user()->type_user }}"
-                                    {{ $ticket->status === 'confirmed' ? 'checked disabled' : '' }}
-                                    onclick="changeStatus(event)">
-                            </div>
-                        </td>
+
                         <td class="text-center">
                             <div class="btn-group justify-content-center align-items-center">
                                 <a href="{{ route('admin.tickets.show', $ticket->code) }}"
                                     class="btn btn-sm btn-success me-2"><i class="fas fa-eye"></i></a>
-                                <button
-                                    class="btn btn-sm btn-primary me-2 btn-print-ticket {{ $ticket->status !== 'confirmed' ? 'd-none' : '' }} printTicket"
+                                <button class="btn btn-sm btn-primary me-2 btn-print-ticket  printTicket"
                                     data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Vé</button>
-                                <button
-                                    class="btn btn-sm btn-warning btn-print-combo {{ $ticket->status !== 'confirmed' ? 'd-none' : '' }} printCombo"
-                                    data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Combo</button>
+                                @if (!empty($ticket->ticket_combos) || !empty($ticket->foods))
+                                    <button class="btn btn-sm btn-warning btn-print-combo  printCombo"
+                                        data-id="{{ $ticket->id }}"><i class="bi bi-printer-fill"></i> Combo</button>
+                                @endif
                             </div>
                         </td>
                     </tr>

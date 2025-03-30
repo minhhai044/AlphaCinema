@@ -7,10 +7,12 @@ $(document).ready(function () {
         }).format(number);
     };
 
+    var ticketID = null;
+
 
     // Xử lý in vé
     $(document).on("click", ".printTicket", async function () {
-        var ticketID = $(this).data("id");
+        ticketID = $(this).data("id");
 
         try {
             let response = await $.ajax({
@@ -26,6 +28,8 @@ $(document).ready(function () {
             const seatCount = data.ticket_seats ? data.ticket_seats.length : 0;
             const pricePerSeat = seatCount > 0 ? (data.ticket.total_price / seatCount) : (data
                 .ticket.total_price || 0);
+
+            const total = data.ticket_seats.reduce((sum, seat) => sum + seat.price, 0);
 
             if (data.ticket_seats && data.ticket_seats.length > 0) {
                 data.ticket_seats.forEach((seat, index) => {
@@ -84,7 +88,7 @@ $(document).ready(function () {
                                 <div class="mb-5 row me-2">
                                     <h5 class="fw-bold col-8">Tổng tiền </h5>
                                     <h5 class="fw-medium col-1">VNĐ</h5>
-                                    <h5 class="fw-medium fs-5 col-3 text-end"> 200.000 </h5>
+                                    <h5 class="fw-medium fs-5 col-3 text-end"> ${formatCurrency(total)}</h5>
                                 </div>
 
                                  <div class="mb-1 d-flex flex-column align-items-center text-center">
@@ -109,7 +113,7 @@ $(document).ready(function () {
 
     // Xử lý in combo
     $(document).on("click", ".printCombo", async function () {
-        var ticketID = $(this).data("id");
+        ticketID = $(this).data("id");
 
         try {
             let response = await $.ajax({
@@ -129,26 +133,32 @@ $(document).ready(function () {
 
             if (data.ticket_combos && data.ticket_combos.length > 0) {
                 data.ticket_combos.forEach(combo => {
-                    totalComboPrice += (combo.price || 0) * (combo.quantity || 0);
-                    if (combo.foods && combo.foods.length > 0) {
-                        combo.foods.forEach(item => {
-                            totalFoodPrice += (item.price || 0) * (item
-                                .quantity || 0);
-                        });
-                    }
+                    totalComboPrice += (combo.price_sale ? combo.price_sale : combo.price) * (combo.quantity || 0);
+                    // if (combo.foods && combo.foods.length > 0) {
+                    //     combo.foods.forEach(item => {
+                    //         totalFoodPrice += (item.price || 0) * (item
+                    //             .quantity || 0);
+                    //     });
+                    // }
                 });
             }
 
             if (data.ticket_foods && data.ticket_foods.length > 0) {
                 data.ticket_foods.forEach(food => {
-                    totalFoodPrice += (food.price || 0) * (food.quantity || 0);
+                    const price = parseInt(food.price) || 0;
+                    const quantity = parseInt(food.quantity) || 0;
+                    const subtotal = price * quantity;
+
+                    console.log(`Món: ${food.name} | Giá: ${price} | SL: ${quantity} | Tổng: ${subtotal}`);
+                    totalFoodPrice += subtotal;
                 });
             }
 
             console.log(data);
 
-            discount = (totalComboPrice + totalFoodPrice) * data?.discount;
-            totalPrice = totalComboPrice + totalFoodPrice - discount;
+            // discount = (totalComboPrice + totalFoodPrice) * data?.discount;
+            totalPrice = totalComboPrice + totalFoodPrice;
+            console.log(totalComboPrice, totalFoodPrice);
 
             const ticketHtml = `
                     <div class="ticket-item mb-3">
@@ -173,7 +183,7 @@ $(document).ready(function () {
                             <div class="row">
                                 <div class="fw-semibold col-6">${combo.name || ''}</div>
                                 <div class="col-2 text-center">${combo.quantity || 0}</div>
-                                <div class=" col-4 text-end">${formatCurrency(combo.price_sale ?  combo.price_sale : combo.price)} </div>
+                                <div class=" col-4 text-end">${formatCurrency(combo.price_sale ? combo.price_sale : combo.price)} </div>
                             </div>
 
                             <div class="row mb-1">
@@ -199,15 +209,9 @@ $(document).ready(function () {
                         </div>
 
                         <div class="mb-1 row">
-                            <div class="fw-medium col-6">Giảm giá</div>
-                            <div class="fw-medium col-2 text-center">VNĐ</div>
-                            <div class="col-4 text-end">${formatCurrency(discount)}</div>
-                        </div>
-
-                        <div class="mb-1 row">
                             <div class="fw-bold col-6 fs-5">Tổng tiền </div>
                             <div class="fw-medium  col-2 text-center">VNĐ</div>
-                            <div class="fw-medium fs-5 col-4 text-end"> ${formatCurrency(totalComboPrice + totalFoodPrice - discount)} </div>
+                            <div class="fw-medium fs-5 col-4 text-end"> ${formatCurrency(totalComboPrice + totalFoodPrice)} </div>
                         </div>
 
                          <hr class="dashed-hr">
@@ -230,6 +234,8 @@ $(document).ready(function () {
 
     // Thêm sự kiện click cho nút in
     $("#printAllTickets").on("click", function () {
+
+        changeStatus(event, ticketID);
         // Lưu lại nội dung và tiêu đề gốc
         const originalContent = $("body").html();
         const originalTitle = document.title;
@@ -306,5 +312,32 @@ $(document).ready(function () {
             window.location.reload();
         }, 50);
     });
+
+    function changeStatus(event, ticketId) {
+
+        // const status = checkbox.checked ? 'confirmed' : 'pending';
+        const staff = 1;
+
+        // Kiểm tra dữ liệu đầu vào
+
+        $.ajax({
+            url: '/admin/tickets/change-status',
+            method: 'POST',
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            data: {
+                ticket_id: ticketId,
+                status: 'confirmed',
+                staff: staff,
+            },
+            success: function (response) {
+
+            },
+            error: function (xhr) {
+                const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
+            }
+        });
+    }
 
 });

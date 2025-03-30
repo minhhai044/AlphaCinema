@@ -104,6 +104,7 @@ class TicketService
             ],
             'cinema' => [
                 'name' => optional($ticketDetail->cinema)->name ?? 'N/A',
+                'address' => optional($ticketDetail->cinema)->address ?? 'N/A',
                 'room' => optional($ticketDetail->room)->name ?? 'N/A',
             ],
             'branch' => [
@@ -168,7 +169,7 @@ class TicketService
 
         $seatNames = array_column($seatDetails, 'name');
         $totalPrice = array_reduce($seatDetails, function ($carry, $seat) {
-            return $carry + str_replace([' VND', ','], '', $seat['price']);
+            return $carry + (int) str_replace([' VND', '.'], '', $seat['price']);
         }, 0);
 
         return [
@@ -218,7 +219,7 @@ class TicketService
         if (!is_array($ticketFoods) || empty($ticketFoods)) {
             return [];
         }
-
+// dd($ticketFoods);
         return array_filter(array_map(function ($food) {
             if (!is_array($food) || !isset($food['name'])) {
                 return null;
