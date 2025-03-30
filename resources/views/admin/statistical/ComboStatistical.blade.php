@@ -173,7 +173,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="container mt-5">
-                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">Top 6 Combo Doanh Thu Cao Nhất
+                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">Top 3 Combo Doanh Thu Cao Nhất
                     </h3>
                     <div class="row justify-content-center">
                         @forelse ($top6Combos as $index => $combo)
@@ -299,7 +299,6 @@
 
             // Lấy dữ liệu từ PHP (giữ nguyên cách bạn truyền dữ liệu)
             var comboUsage = @json($comboUsage);
-
             // Tạo biểu đồ
             Highcharts.chart('comboUsageChart', {
                 chart: {
@@ -356,7 +355,7 @@
 
             // Kiểm tra nếu có dữ liệu
             if (trendDates.length > 0 && trendRevenues.length > 0) {
-                Highcharts.chart('stackedBarChart', { // Sử dụng ID 'stackedBarChart' từ mã cũ
+                Highcharts.chart('stackedBarChart', {
                     chart: {
                         type: 'column' // Biểu đồ cột trong Highcharts
                     },
@@ -370,20 +369,24 @@
                         }
                     },
                     yAxis: {
-                        min: 0, // Bắt đầu từ 0 như trong Chart.js
+                        min: 0, // Bắt đầu từ 0
                         title: {
                             text: 'Doanh thu (VNĐ)'
                         },
                         labels: {
                             formatter: function() {
                                 return Highcharts.numberFormat(this.value, 0, ',', '.') +
-                                ' VNĐ'; // Định dạng số với dấu chấm
+                                    ' VNĐ'; // Định dạng số với dấu chấm
                             }
                         }
                     },
                     tooltip: {
                         pointFormatter: function() {
-                            return `<b>${this.category}</b>: ${Highcharts.numberFormat(this.y, 0, ',', '.')} VNĐ`;
+                            var total = this.series.data.reduce((sum, point) => sum + point.y,
+                            0); // Tính tổng doanh thu
+                            var percentage = total > 0 ? (this.y / total * 100).toFixed(1) :
+                            0; // Tính tỷ lệ %
+                            return `Doanh thu: ${Highcharts.numberFormat(this.y, 0, ',', '.')} VNĐ<br>Tỷ lệ: ${percentage}%`;
                         }
                     },
                     plotOptions: {
@@ -400,7 +403,7 @@
                     legend: {
                         enabled: true, // Hiển thị chú thích
                         align: 'center',
-                        verticalAlign: 'top' // Đặt chú thích ở trên cùng như trong Chart.js
+                        verticalAlign: 'top' // Đặt chú thích ở trên cùng
                     },
                     credits: {
                         enabled: false // Tắt dòng chữ "Highcharts.com"
