@@ -38,7 +38,7 @@ class AuthController extends Controller
 
             // Kiểm tra nếu người dùng không tồn tại
             if (!$user) {
-                return back()->withErrors(['email' => 'Email không tồn tại.']);
+                return back()->with('error', ['email' => 'Email không tồn tại.']);
             }
 
             if (Hash::check($data['password'], $user->password)) {
@@ -47,13 +47,11 @@ class AuthController extends Controller
                     Auth::login($user);
 
                     return redirect()->route('admin.index');
-                }else{
+                } else {
                     return back()->with('error', 'Bạn không có quyền đăng nhập vào hệ thống');
                 }
-
             } else {
-
-                return back()->withErrors(['password' => 'Mật khẩu không chính xác.']);
+                return back()->with('error', ['password' => 'Mật khẩu không chính xác.']);
             }
         } catch (\Throwable $th) {
             Log::error($th->getMessage());

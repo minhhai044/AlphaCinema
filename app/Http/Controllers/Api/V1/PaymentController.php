@@ -190,7 +190,7 @@ class PaymentController extends Controller
         $vnp_Url = $vnp_Url . "?" . $query;
 
         if (isset($vnp_HashSecret)) {
-            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //  
+            $vnpSecureHash =   hash_hmac('sha512', $hashdata, $vnp_HashSecret); //
             $vnp_Url .= 'vnp_SecureHash=' . $vnpSecureHash;
         }
         Redis::setex("order:$vnp_TxnRef", 900, json_encode([
@@ -276,7 +276,7 @@ class PaymentController extends Controller
 
             // return redirect($frontendUrl)->withCookie(cookie('order_id', $txnRef, 10));
             return redirect($frontendUrl . '/booking-success')->withCookies([
-                cookie('order_id', $txnRef, 10),
+                // cookie('order_id', $txnRef, 10),
                 cookie('status', true),
                 cookie('message', 'Thanh toán thành công'),
             ]);

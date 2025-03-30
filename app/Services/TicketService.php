@@ -27,7 +27,7 @@ class TicketService
         $user = auth()->user();
         $date = $request->query('date', '');
         $branch_id = $request->query('branch_id', $user->branch_id ?? '');
-        $cinema_id = $request->query('cinema_id', $user->cinema_id ?? ''); 
+        $cinema_id = $request->query('cinema_id', $user->cinema_id ?? '');
         $movie_id = $request->query('movie_id', '');
         $status = $request->query('status_id', '');
 
@@ -77,17 +77,20 @@ class TicketService
 
         return [$tickets, $branches, $branchesRelation, $movies];
     }
-    public function getTicketDetail($id)
+    public function getTicketDetail($code)
     {
-        $ticketDetail = $this->ticketRepository->findTicket($id);
-
+        $ticketDetail = $this->ticketRepository->findTicket($code);
 
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);
         $totalSeatPrice = $seatData['total_price'] ?? 0;
 
+        $foods = $this->getFoodList($ticketDetail->ticket_foods);
         $combos = $this->getComboList($ticketDetail->ticket_combos);
         $totalComboPrice = array_reduce($combos, function ($carry, $combo) {
             return $carry + (isset($combo['total_price']) ? str_replace([' VND', ','], '', $combo['total_price']) : 0);
+        }, 0);
+        $totalFoodPrice = array_reduce($foods, function ($carry, $foods) {
+            return $carry + (isset($foods['total_price']) ? str_replace([' VND', ','], '', $foods['total_price']) : 0);
         }, 0);
 
         return [
@@ -101,6 +104,7 @@ class TicketService
             ],
             'cinema' => [
                 'name' => optional($ticketDetail->cinema)->name ?? 'N/A',
+                'address' => optional($ticketDetail->cinema)->address ?? 'N/A',
                 'room' => optional($ticketDetail->room)->name ?? 'N/A',
             ],
             'branch' => [
@@ -114,7 +118,9 @@ class TicketService
             'seats' => $seatData,
             'ticket_price' => $this->formatPrice($totalSeatPrice),
             'combos' => $combos,
+            'foods' => $foods,
             'total_combo_price' => $this->formatPrice($totalComboPrice),
+            'total_food_price' => $this->formatPrice($totalFoodPrice),
             'total_amount' => $this->formatPrice($ticketDetail->total_price),
             'status' => $ticketDetail->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận',
             'user' => [
@@ -163,7 +169,7 @@ class TicketService
 
         $seatNames = array_column($seatDetails, 'name');
         $totalPrice = array_reduce($seatDetails, function ($carry, $seat) {
-            return $carry + str_replace([' VND', ','], '', $seat['price']);
+            return $carry + (int) str_replace([' VND', '.'], '', $seat['price']);
         }, 0);
 
         return [
@@ -210,6 +216,33 @@ class TicketService
         }, $ticketCombos), fn($item) => $item !== null);
     }
 
+    private function getFoodList($ticketFoods)
+    {
+        if (!is_array($ticketFoods) || empty($ticketFoods)) {
+            return [];
+        }
+// dd($ticketFoods);
+        return array_filter(array_map(function ($food) {
+            if (!is_array($food) || !isset($food['name'])) {
+                return null;
+            }
+
+            $foodName = $food['name'] ?? 'N/A';
+            $quantity = $food['quantity'] ?? 1;
+            $price =  $food['price'] ?? 0;
+            $totalPrice = $price * $quantity;
+            $imgThumbnail = $food['img_thumbnail'] ? asset('storage/' . $food['img_thumbnail']) : asset('path/to/default_food.jpg');
+
+            return [
+                'name' => $foodName,
+                'image' => $imgThumbnail,
+                'quantity' => $quantity,
+                'price' => $this->formatPrice($price),
+                'total_price' => $totalPrice,
+            ];
+        }, $ticketFoods), fn($item) => $item !== null);
+    }
+
     private function formatPrice($price, $currency = 'VND'): string
     {
         return $price ? number_format($price, 0, ',', '.') . ' ' . $currency : '0 ' . $currency;
@@ -230,5 +263,12 @@ class TicketService
     public function getTicketID($id)
     {
         return $this->ticket->findOrFail($id);
+    }
+
+    public function extractNumber($str) {
+        // Loại bỏ tất cả các ký tự không phải số và dấu chấm
+        $numberStr = preg_replace('/[^\d]/', '', $str);
+        // Chuyển đổi chuỗi thành số nguyên
+        return (int)$numberStr;
     }
 }

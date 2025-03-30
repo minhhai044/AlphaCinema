@@ -185,7 +185,7 @@ class TicketController extends Controller
 
             // Lấy danh sách vé của người dùng
             $tickets = Ticket::where('user_id', $user['id'])
-            ->with(['showtime', 'movie', 'room','cinema','branch']) 
+            ->with(['showtime', 'movie', 'room','cinema','branch'])
             ->get();
 
             return response()->json(['status' => 'success', 'data' => $tickets], 200);

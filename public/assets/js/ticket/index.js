@@ -7,10 +7,12 @@ $(document).ready(function () {
         }).format(number);
     };
 
+    var ticketID = null;
+
 
     // Xử lý in vé
     $(document).on("click", ".printTicket", async function () {
-        var ticketID = $(this).data("id");
+        ticketID = $(this).data("id");
 
         try {
             let response = await $.ajax({
@@ -27,50 +29,64 @@ $(document).ready(function () {
             const pricePerSeat = seatCount > 0 ? (data.ticket.total_price / seatCount) : (data
                 .ticket.total_price || 0);
 
+            const total = data.ticket_seats.reduce((sum, seat) => sum + seat.price, 0);
+
             if (data.ticket_seats && data.ticket_seats.length > 0) {
                 data.ticket_seats.forEach((seat, index) => {
                     const ticketHtml = `
-                            <div class="ticket-item mb-3 ${index > 0 ? 'mt-4' : ''}">
-                                <h3 class="text-center fw-bold">Chi tiết vé xem phim</h3>
+                            <div class="ticket-item mb-3 py-3 ${index > 0 ? 'mt-4' : ''}">
+                                <h3 class="text-center fw-bold pb-3">Vé xem phim</h3>
                                 <div class="mb-1">
-                                    <div class="mb-1 fs-5 fw-bold">Chi nhánh công ty Alpha Cinema tại ${data.branch || 'N/A'}</div>
-                                    <div class="mb-1 fw-semibold">MST: 012147901412</div>
+                                    <div class="mb-1 fs-5 fw-semibold">Chi nhánh công ty Alpha Cinema tại ${data.branch || ''}</div>
+                                    <div class="mb-1 ">MST: 012147901412</div>
+                                    <div>Nhân viên in vé:  ${data.userPrintTicket} </div>
                                 </div>
                                 <hr class="dashed-hr">
                                 <div class="mb-1">
-                                    <h5 class="fw-bold">Thông tin rạp</h5>
-                                    <div class="mb-1"><strong>Rạp chiếu:</strong> ${data.cinema || 'N/A'}</div>
-                                    <div class="mb-1"><strong>Địa chỉ:</strong> ${data.address || 'N/A'}</div>
-                                    <div class="mb-1"><strong>Thời gian:</strong> (${data.start_time || 'N/A'} - ${data.end_time || 'N/A'}) -- ${data.showtime || 'N/A'}</div>
-                                    <div class="fw-semibold">Nhân viên in vé:  ${data.userPrintTicket} </div>
-                                </div>
-                                <hr class="dashed-hr">
-                                <div class="mb-1">
-                                    <h5 class="fw-bold">Thông tin phim</h5>
-                                    <div class="mb-1"><strong>Phim:</strong> ${data.movie || 'N/A'}</div>
-                                    <div class="mb-1"><strong>Thể loại:</strong> ${data.category_movie || 'N/A'} - ${data.type_movie || 'N/A'}</div>
-                                    <div class="mb-1"><strong>Thời lượng:</strong> ${data.duration || 'N/A'} phút</div>
-                                </div>
-                                <hr class="dashed-hr">
-                                <div class="mb-1">
-                                    <div class="mb-1"><strong>Phòng:</strong> ${data.room || 'N/A'}</div>
-                                    <div class="mb-1"><strong>Ghế:</strong> ${seat.seat_name || 'N/A'}</div>
-                                </div>
-                                <hr class="dashed-hr">
-                                <div class="mb-1">
-                                    <h5 class="fw-bold">Thanh toán</h5>
-                                    <div class="mb-1"><strong>Phương thức thanh toán:</strong> ${data.ticket?.payment_name || 'N/A'}</div>
-                                    <div class="mb-1"><strong>Giá vé:</strong> ${formatCurrency(pricePerSeat)} VND</div>
+                                    <h5 class="fw-semibold">Alpha Cinema ${data.cinema || ''}</h5>
+                                    <div class="mb-1">${data.address || ''}</div>
                                 </div>
 
+                                <div class="my-3">
+                                    <hr class="dashed-double">
+                                    <hr class="dashed-double">
+                                </div>
 
-                                <div class="my-5 d-flex flex-column align-items-center text-center">
+                                <div class="mb-1">
+                                    <h4 class="fw-bold">${data.movie || ''}</h4>
+                                    <div class="row">
+                                        <div class="col-6 fs-5 fw-medium">${data.start_time || ''} - ${data.end_time || ''} </div>
+                                        <div class= "col-6 fs-5 fw-medium"> ${data.showtime || ''}</div>
+                                    </div>
+                                </div>
+                                <div class="mb-1 row">
+                                    <div class="mb-1 col-6 fw-medium fs-5">Phòng: ${data.room || ''}</div>
+                                    <div class="mb-1 col-6 fw-bold fs-4"> ${seat.seat_name || ''}</div>
+                                </div>
+
+                                <div class="my-3">
+                                    <hr class="dashed-double">
+                                    <hr class="dashed-double">
+                                </div>
+
+                                <div class="row me-2">
+                                    <h5 class="fw-semibold col-8">Giá vé </h5>
+                                    <h5 class="fw-medium col-1">VNĐ</h5>
+                                    <h5 class="fw-medium fs-5 col-3 text-end"> ${formatCurrency(pricePerSeat)} </h5>
+
+                                </div>
+
+                                <hr class="dashed-hr">
+
+                                <div class="mb-5 row me-2">
+                                    <h5 class="fw-bold col-8">Tổng tiền </h5>
+                                    <h5 class="fw-medium col-1">VNĐ</h5>
+                                    <h5 class="fw-medium fs-5 col-3 text-end"> ${formatCurrency(total)}</h5>
+                                </div>
+
+                                 <div class="mb-1 d-flex flex-column align-items-center text-center">
                                     <div> ${data.barcode}</div>
-                                    <div class="fw-bold fs-5 text-dark">893 ${data.code}</div>
-                                </div>
-
-                                    <div class="mt-5 d-flex justify-content-center align-items-center text-center">
-                                    <div> Alpha Cinema - Cảm ơn bạn đã sử dụng dịch vụ! </div>
+                                    <div class="">893 ${data.code}</div>
                                 </div>
                             </div>
                         `;
@@ -90,7 +106,7 @@ $(document).ready(function () {
 
     // Xử lý in combo
     $(document).on("click", ".printCombo", async function () {
-        var ticketID = $(this).data("id");
+        ticketID = $(this).data("id");
 
         try {
             let response = await $.ajax({
@@ -110,76 +126,91 @@ $(document).ready(function () {
 
             if (data.ticket_combos && data.ticket_combos.length > 0) {
                 data.ticket_combos.forEach(combo => {
-                    totalComboPrice += (combo.price || 0) * (combo.quantity || 0);
-                    if (combo.foods && combo.foods.length > 0) {
-                        combo.foods.forEach(item => {
-                            totalFoodPrice += (item.price || 0) * (item
-                                .quantity || 0);
-                        });
-                    }
+                    totalComboPrice += (combo.price_sale ? combo.price_sale : combo.price) * (combo.quantity || 0);
+                    // if (combo.foods && combo.foods.length > 0) {
+                    //     combo.foods.forEach(item => {
+                    //         totalFoodPrice += (item.price || 0) * (item
+                    //             .quantity || 0);
+                    //     });
+                    // }
                 });
             }
 
             if (data.ticket_foods && data.ticket_foods.length > 0) {
                 data.ticket_foods.forEach(food => {
-                    totalFoodPrice += (food.price || 0) * (food.quantity || 0);
+                    const price = parseInt(food.price) || 0;
+                    const quantity = parseInt(food.quantity) || 0;
+                    const subtotal = price * quantity;
+
+                    console.log(`Món: ${food.name} | Giá: ${price} | SL: ${quantity} | Tổng: ${subtotal}`);
+                    totalFoodPrice += subtotal;
                 });
             }
 
             console.log(data);
 
-
-            discount = (totalComboPrice + totalFoodPrice) * 0.1;
-            totalPrice = totalComboPrice + totalFoodPrice - discount;
+            // discount = (totalComboPrice + totalFoodPrice) * data?.discount;
+            totalPrice = totalComboPrice + totalFoodPrice;
+            console.log(totalComboPrice, totalFoodPrice);
 
             const ticketHtml = `
                     <div class="ticket-item mb-3">
-                        <h3 class="text-center fw-bold">Hóa Đơn Đồ Ăn</h3>
+                        <h3 class="text-center fw-bold pb-3">Hóa Đơn Đồ Ăn</h3>
                         <div class="mb-1">
-                            <div class="mb-1 fs-5 fw-bold">Chi nhánh công ty Alpha Cinema tại ${data.branch || 'N/A'}</div>
-                            <div class="mb-1 fw-semibold">MST: 012147901412</div>
+                            <div class="mb-1 fs-5 fw-semibold">Chi nhánh công ty Alpha Cinema tại ${data.branch || ''}</div>
+                            <div class="mb-1 ">MST: 012147901412</div>
+                            <div>Nhân viên in vé:  ${data.userPrintTicket} </div>
                         </div>
                         <hr class="dashed-hr">
                         <div class="mb-1">
-                            <div class="mb-1 fw-semibold fs-5">Alpha Cinema ${data.cinema || 'N/A'} - ${data.branch || 'N/A'}</div>
-                            <div class="mb-1">Thời gian đặt vé: ${data.created_at || 'N/A'}</div>
-                            <p>Được in bởi:  ${data.userPrintTicket}</p>
+                            <h5 class="fw-semibold">Alpha Cinema ${data.cinema || ''}</h5>
+                            <div class="mb-1">${data.address || ''}</div>
                         </div>
-                        <hr class="dashed-hr">
-                        ${data.ticket_combos && data.ticket_combos.length > 0 ? data.ticket_combos.map(combo => `
-                                                        <div class="mb-1 fw-semibold">${combo.name || 'N/A'} x ${combo.quantity || 0} (${formatCurrency((combo.price || 0) * (combo.quantity || 0))} VND)</div>
-                                                        <ul>
-                                                            ${combo.foods && combo.foods.length > 0 ? combo.foods.map(item => `
-                                    <li>${item.name || 'N/A'} x ${item.quantity || 0} (${formatCurrency((item.price || 0) * (item.quantity || 0))} VND)</li>
-                                `).join('') : '<li>Không có món ăn</li>'}
-                                                        </ul>
-                                                    `).join('') : '<p>Không có combo nào.</p>'}
+
+                        <div class="my-3">
+                            <hr class="dashed-double">
+                            <hr class="dashed-double">
+                        </div>
+
+                         ${data.ticket_combos && data.ticket_combos.length > 0 ? data.ticket_combos.map(combo => `
+                            <div class="row">
+                                <div class="fw-semibold col-6">${combo.name || ''}</div>
+                                <div class="col-2 text-center">${combo.quantity || 0}</div>
+                                <div class=" col-4 text-end">${formatCurrency(combo.price_sale ? combo.price_sale : combo.price)} </div>
+                            </div>
+
+                            <div class="row mb-1">
+                            ${combo.foods && combo.foods.length > 0 ? combo.foods.map(item => `
+                                <div class="col-6 ps-4"> • ${item.name || ''}</div>
+                                 <div class="col-2 text-center">${item.quantity || 0}</div>
+                            `).join('') : ''}
+                            </div>
+                        `).join('') : ''}
                         ${data.ticket_foods && data.ticket_foods.length > 0 ? data.ticket_foods.map(food => `
-                                                        <div class="mb-1 fw-semibold">${food.name || 'N/A'} x ${food.quantity || 0} (${formatCurrency((food.price || 0) * (food.quantity || 0))} VND)</div>
-                                                    `).join('') : '<p>Không có món ăn riêng lẻ.</p>'}
-                        <hr class="dashed-hr">
-                        <div class="mb-1">
-                            <div class="mb-1 d-flex justify-content-between">
-                                <div class="fw-semibold">Tổng cộng:</div>
-                                <div class="ms-2 fw-semibold">${formatCurrency(totalComboPrice + totalFoodPrice)} VND</div>
+
+                            <div class="row">
+                                <div class="mb-1 fw-semibold col-6">${food.name || ''}</div>
+                                <div class="mb-1  col-2 text-center">${food.quantity || 0}</div>
+                                <div class="mb-1  col-4 text-end">${formatCurrency(food.price)} </div>
                             </div>
-                            <div class="mb-1 d-flex justify-content-between">
-                                <div class="fw-semibold">Giảm giá:</div>
-                                <div class="ms-2 fw-semibold">${formatCurrency(discount)} VND</div>
-                            </div>
-                            <div class="mb-1 d-flex justify-content-between">
-                                <div class="fw-semibold">Thành tiền:</div>
-                                <div class="fw-semibold">${formatCurrency(totalPrice)} VND</div>
-                            </div>
+
+                        `).join('') : ''}
+
+                        <div class="my-3">
+                            <hr class="dashed-double">
+                            <hr class="dashed-double">
                         </div>
 
-                         <div class="my-5 d-flex flex-column align-items-center text-center">
+                        <div class="mb-1 row">
+                            <div class="fw-bold col-6 fs-5">Tổng tiền </div>
+                            <div class="fw-medium  col-2 text-center">VNĐ</div>
+                            <div class="fw-medium fs-5 col-4 text-end"> ${formatCurrency(totalComboPrice + totalFoodPrice)} </div>
+                        </div>
+
+                         <hr class="dashed-hr">
+                         <div class="mb-1 d-flex flex-column align-items-center text-center">
                             <div> ${data.barcode}</div>
-                            <div class="fw-bold fs-5 text-dark">893 ${data.code}</div>
-                        </div>
-
-                        <div class="mt-5 d-flex justify-content-center align-items-center text-center">
-                            <div> Alpha Cinema - Cảm ơn bạn đã sử dụng dịch vụ! </div>
+                            <div class="">893 ${data.code}</div>
                         </div>
 
                     </div>
@@ -196,6 +227,8 @@ $(document).ready(function () {
 
     // Thêm sự kiện click cho nút in
     $("#printAllTickets").on("click", function () {
+
+        changeStatus(event, ticketID);
         // Lưu lại nội dung và tiêu đề gốc
         const originalContent = $("body").html();
         const originalTitle = document.title;
@@ -219,40 +252,41 @@ $(document).ready(function () {
         $("head").append(`<meta name="filename" content="${fileName}.pdf">`);
 
         $("body").html(`
-                <div class="print-container">
-                    <style>
-                        @media print {
-                            .ticket-item {
-                                page-break-after: auto;
-                                margin-bottom: 0;
-                            }
-                            .ticket-item:not(:last-child) {
-                                page-break-after: always;
-                            }
-                            .dashed-hr {
-                                border-top: 1px dashed #000;
-                            }
-                            .no-print {
-                                display: none;
-                            }
-                            .print-container {
-                                background-color: #efefff;
-                            }
-                            /* Các thành phần khác của bảng */
-                            body {
-                                font-family: Arial, sans-serif;
-                            }
-                            .ticket-item {
-                                padding: 15px;
-                                margin-bottom: 20px;
-                            }
+            <div class="print-container">
+                <style>
+                    @media print {
+                        .ticket-item {
+                            page-break-after: auto;
+                            margin-bottom: 0;
                         }
-                        /* Định dạng thông tin thêm nếu cần */
-                    </style>
-                    <!-- Nội dung in -->
-                    ${printContent}
-                </div>
-                `);
+                        .ticket-item:not(:last-child) {
+                            page-break-after: always;
+                        }
+                        .dashed-hr {
+                            border-top: 1px dashed #000;
+                        }
+                        .no-print {
+                            display: none;
+                        }
+                        .print-container {
+                            background-image: url("/logo/backgound.svg"); /* Thêm ảnh nền tại đây */
+                            background-size: cover;
+                            background-position: center;
+                        }
+                        body {
+                            font-family: Arial, sans-serif;
+                        }
+                        .ticket-item {
+                            padding: 15px;
+                            margin-bottom: 20px;
+                        }
+                    }
+                </style>
+                <!-- Nội dung in -->
+                ${printContent}
+            </div>
+        `);
+
 
         // Hiển thị thông báo cho người dùng
         console.log("Khi lưu file, tên file mặc định sẽ là: " + fileName + ".pdf");
@@ -264,11 +298,39 @@ $(document).ready(function () {
             // Khôi phục tiêu đề gốc trước khi tải lại trang
             document.title = originalTitle;
 
-            // Chờ hộp thoại in đóng
-            setTimeout(function () {
-                window.location.reload();
-            }, 100);
+
+            window.onafterprint = function () {
+                console.log("IN thành công");
+            };
+            window.location.reload();
         }, 50);
     });
+
+    function changeStatus(event, ticketId) {
+
+        // const status = checkbox.checked ? 'confirmed' : 'pending';
+        const staff = 1;
+
+        // Kiểm tra dữ liệu đầu vào
+
+        $.ajax({
+            url: '/admin/tickets/change-status',
+            method: 'POST',
+            headers: {
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+            },
+            data: {
+                ticket_id: ticketId,
+                status: 'confirmed',
+                staff: staff,
+            },
+            success: function (response) {
+
+            },
+            error: function (xhr) {
+                const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
+            }
+        });
+    }
 
 });

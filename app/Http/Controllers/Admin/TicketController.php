@@ -36,9 +36,14 @@ class TicketController extends Controller
 
     }
 
-    public function show(Ticket $ticket)
+    public function show(string $code)
     {
-        $ticketData = $this->ticketService->getTicketDetail($ticket->id);
+        $ticketData = $this->ticketService->getTicketDetail($code);
+        $ticketData['total_combo'] = $this->ticketService->extractNumber($ticketData['total_combo_price']);
+        $ticketData['total_food'] = $this->ticketService->extractNumber($ticketData['total_food_price']);
+        $ticketData['barcode'] = DNS1D::getBarcodeHTML($ticketData['code'], 'C128', 1.5, 50);
+
+// dd($ticketData);
         return view(self::PATH_VIEW . 'detail', compact('ticketData'));
     }
     public function print()
@@ -169,4 +174,13 @@ class TicketController extends Controller
 
         return response()->json(['message' => 'Cập nhật trạng thái thành công']);
     }
+    public function checkExists(string $code)
+    {
+        $exists = Ticket::where('code', $code)->exists();
+
+        return response()->json([
+            'exists' => $exists
+        ]);
+    }
+
 }

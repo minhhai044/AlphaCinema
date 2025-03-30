@@ -7,7 +7,9 @@ use App\Http\Controllers\Filters\Filter;
 use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
+use App\Http\Requests\SendOtpRequest;
 use App\Http\Requests\UserRequest;
+use App\Mail\SendOtpMail;
 use App\Models\Point_history;
 use App\Models\Rank;
 use App\Models\User;
@@ -15,13 +17,17 @@ use App\Models\User_voucher;
 use App\Services\UserService;
 use App\Traits\ApiRequestJsonTrait;
 use App\Traits\ApiResponseTrait;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Redis;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Socialite\Facades\Socialite;
 use Illuminate\Support\Str;
@@ -204,16 +210,30 @@ class AuthController extends Controller
     {
         $googleUser = Socialite::driver('google')->user();
 
-        $user = User::updateOrCreate(
-            ['google_id' => $googleUser->id],
+        // $user = User::updateOrCreate(
+        //     ['google_id' => $googleUser->id],
+        //     [
+        //         'name' => $googleUser->name,
+        //         'email' => $googleUser->email,
+        //         'password' => Str::password(12),
+        //         'avatar' => $googleUser->avatar,
+        //         'type_user' => 0,
+        //     ]
+        // );
+        $user = User::firstOrCreate(
+            ['email' => $googleUser->email], // Tìm theo email trước
             [
+                'google_id' => $googleUser->id,
                 'name' => $googleUser->name,
-                'email' => $googleUser->email,
-                'password' => Str::password(12),
+                'password' => Hash::make(Str::password(12)), // Chỉ tạo mật khẩu nếu user chưa có
                 'avatar' => $googleUser->avatar,
                 'type_user' => 0,
             ]
         );
+
+        if (!$user->google_id) {
+            $user->update(['google_id' => $googleUser->id, 'avatar' => $googleUser->avatar]);
+        }
 
         // Auth::login($user);
 
@@ -232,7 +252,7 @@ class AuthController extends Controller
 
     public function getUserRank()
     {
-       
+
 
 
         try {
@@ -240,25 +260,25 @@ class AuthController extends Controller
             if (!$user) {
                 return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
             }
-    
+
             $totalTransaction = $user->total_amount;
             $point = $user->point;
-            $created_at =$user->created_at;
-    
+            $created_at = $user->created_at;
+
             // Lấy rank hiện tại
             $currentRank = Rank::where("total_spent", "<=", $totalTransaction)
                 ->orderBy("total_spent", "desc")
                 ->first();
-    
+
             if (!$currentRank) {
                 $currentRank = Rank::where("is_default", true)->first();
             }
-    
+
             // Lấy rank tiếp theo (rank cao hơn)
             $nextRank = Rank::where("total_spent", ">", $totalTransaction)
                 ->orderBy("total_spent", "asc")
                 ->first();
-    
+
             return response()->json([
                 "status" => "success",
                 "user" => [
@@ -266,7 +286,7 @@ class AuthController extends Controller
                     "name" => $user->name,
                     "total_amount" => $totalTransaction,
                     "point" => $point, // point hiện có
-                    "created_at"=>$created_at
+                    "created_at" => $created_at
                 ],
                 "rank" => $currentRank,
                 "next_rank" => $nextRank
@@ -279,7 +299,8 @@ class AuthController extends Controller
             ], 500);
         }
     }
-    public function getUserVoucher(){
+    public function getUserVoucher()
+    {
         try {
             // Lấy ID người dùng đang đăng nhập
             $userId = Auth::id();
@@ -324,7 +345,7 @@ class AuthController extends Controller
 
             return response()->json([
                 'success' => true,
-               "user" => [
+                "user" => [
                     "id" => $user->id,
                     "name" => $user->name,
                     "point" => $point,
@@ -339,4 +360,97 @@ class AuthController extends Controller
             ], 500);
         }
     }
+    /**
+     * Gửi mail kèm mã otp dựa vào email người dùng nhập vào
+     * 
+     * @param \Illuminate\Http\Request $request
+     * 
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function sendOtp(SendOtpRequest $request)
+    {
+        try {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return $this->errorResponse('Email không tồn tại', Response::HTTP_NOT_FOUND);
+            }
+
+            $otp = rand(100000, 999999);
+            // $expiresAt = Carbon::now()->addMinutes(2);
+
+            Redis::setex("otp_{$request->email}", 300, Hash::make($otp));
+
+            Mail::to($request->email)->queue(new SendOtpMail($otp, $user->name));
+
+            return $this->successResponse([], 'Vui lòng kiểm tra email của bạn', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
     }
+    /**
+     * Kiểm tra otp người dùng nhập vào có đúng không
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function verifyOtp(Request $request)
+    {
+        try {
+            $otpRedis = Redis::get("otp_{$request->email}");
+
+            if (!$otpRedis) {
+                Redis::del("otp_{$request->email}");
+                return $this->errorResponse('OTP không tồn tại hoặc đã hết hạn', Response::HTTP_BAD_REQUEST);
+            }
+
+            if (!Hash::check($request->otp, $otpRedis)) {
+                return $this->errorResponse('OTP không đúng', Response::HTTP_BAD_REQUEST);
+            }
+
+            return $this->successResponse([
+                'otp' => $otpRedis,
+                'verify_otp' => true
+            ], 'OTP hợp lệ, bạn có thể nhập mật khẩu mới', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+    /**
+     * Thay đổi password dựa vào mã otp và email người dùng yêu cầu reset
+     * 
+     * @param \Illuminate\Http\Request $request
+     * 
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(Request $request)
+    {
+        try {
+            $otpRedis = Redis::get("otp_{$request->email}");
+
+            if (!$otpRedis) {
+                return $this->errorResponse('OTP không tồn tại hoặc đã hết hạn', Response::HTTP_BAD_REQUEST);
+            }
+
+            if (!Hash::check($request->otp, $otpRedis)) {
+                return $this->errorResponse('OTP không đúng', Response::HTTP_BAD_REQUEST);
+            }
+
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return $this->errorResponse('Email không tồn tại', Response::HTTP_NOT_FOUND);
+            }
+
+            $user->update(['password' => Hash::make($request->password)]);
+
+            Redis::del("otp_{$request->email}");
+
+            return $this->successResponse($user, 'Thay đổi mật khẩu thành công', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+}

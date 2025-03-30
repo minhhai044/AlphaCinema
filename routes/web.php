@@ -10,7 +10,8 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
 use Laravel\Socialite\Facades\Socialite;
 use App\Http\Controllers\Api\V1\AuthController;
-
+use App\Http\Controllers\QrCodeController;
+use App\Mail\SendQrCodeMail;
 
 /*
 |--------------------------------------------------------------------------
@@ -24,7 +25,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 */
 
 Route::get("/", function () {
-    return view("admin.index");
+    return redirect('/admin');
 })->middleware('checkLogin');
 
 Route::get("/login", function () {
@@ -39,3 +40,5 @@ Route::post("/login", [AuthAdmin::class, "login"])->name('login');
 Route::get('auth/google/redirect', [AuthController::class, 'googleRedirect']);
 
 Route::get('auth/google/callback', [AuthController::class, 'googleCallBack']);
+
+Route::get("/ahi", [QrCodeController::class, "sendQrCodeEmail"]);
