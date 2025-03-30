@@ -39,3 +39,7 @@ Route::post("/login", [AuthAdmin::class, "login"])->name('login');
 Route::get('auth/google/redirect', [AuthController::class, 'googleRedirect']);
 
 Route::get('auth/google/callback', [AuthController::class, 'googleCallBack']);
+
+Route::get('/csrf-token', function () {
+    return response()->json(['csrf' => csrf_token()]);
+});

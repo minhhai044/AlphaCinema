@@ -15,5 +15,4 @@ class VerifyCsrfToken extends Middleware
         'auth/google/callback',
         '/admin/tickets/change-status'
     ];
-
 }

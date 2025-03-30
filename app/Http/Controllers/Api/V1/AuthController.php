@@ -74,8 +74,7 @@ class AuthController extends Controller
             return $this->successResponse([
                 'user' => $user,
                 'token' => $token,
-                'cookie' => $cookie
-            ], 'Đăng nhập thành công', Response::HTTP_OK)->withCookie($cookie);
+            ], 'Đăng nhập thành công', Response::HTTP_OK);
         } catch (\Throwable $th) {
             // Ghi log chi tiết lỗi
             Log::error('Lỗi đăng nhập: ' . $th->getMessage(), [

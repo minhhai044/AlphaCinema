@@ -21,6 +21,7 @@ use App\Http\Controllers\Api\V1\SlideShowController;
 use App\Http\Controllers\Api\V1\TicketController;
 use App\Http\Controllers\Api\VoucherController;
 use Illuminate\Support\Facades\Route;
+use Laravel\Sanctum\Http\Controllers\CsrfCookieController;
 
 
 Route::prefix('users')->group(function () {
