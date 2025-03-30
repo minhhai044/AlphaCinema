@@ -159,7 +159,7 @@
                                 @endif
                             @else
                                 {{-- Hiển thị ảnh mặc định nếu không có ảnh nào --}}
-                                <img src="{{ asset('theme/client/images/logo.png') }}" alt="Logo Mặc định"
+                                <img src="{{ asset('theme/client/images/logo.svg') }}" alt="Logo Mặc định"
                                     style="max-width: 200px;">
                             @endif
 
@@ -208,7 +208,7 @@
                                     @endif
                                 @else
                                     {{-- Hiển thị ảnh mặc định nếu không có ảnh nào --}}
-                                    <img src="{{ asset('theme/client/images/logo.png') }}" alt="introduction_image"
+                                    <img src="{{ asset('theme/client/images/logo.svg') }}" alt="introduction_image"
                                         class="rounded-2" style="max-width: 200px;">
                                 @endif
                             </div>
@@ -360,7 +360,7 @@
                             @endif
                         @else
                             {{-- Hiển thị ảnh mặc định nếu không có ảnh nào --}}
-                            <img src="{{ asset('theme/client/images/logo.png') }}" class="rounded-2"
+                            <img src="{{ asset('theme/client/images/logo.svg') }}" class="rounded-2"
                                 alt="news_img" style="max-width: 200px;">
                         @endif
                     </div>
