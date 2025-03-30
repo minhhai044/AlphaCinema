@@ -124,10 +124,15 @@ class DashBoardController extends Controller
         // Doanh thu theo rạp
         [$revenueSeriesJson, $cinemaLabelsJson] = $this->getRevenueByCinema($selectedMonth, $selectedYear, $branchId, $cinemaId, $movieId, $statusId);
 
-        $activeMoviesCount = DB::table('movies')
-            ->where('is_active', 1)
-            ->when($movieId, fn($q) => $q->where('id', $movieId))
-            ->count();
+        $activeMoviesCount = DB::table('showtimes')
+            ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
+            ->where('movies.is_active', 1)
+            ->when($cinemaId, fn($q) => $q->where('showtimes.cinema_id', $cinemaId)) // Lọc theo rạp nếu có
+            ->when($branchId, fn($q) => $q->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
+                ->where('cinemas.branch_id', $branchId))
+            ->when($date, fn($q) => $q->whereDate('showtimes.start_time', '=', $date)) // Lọc theo ngày nếu có
+            ->distinct()
+            ->count('movies.id');
 
         return view(self::PATH_VIEW . __FUNCTION__, compact(
             'branches',
