@@ -42,6 +42,7 @@ class VoucherRequest extends FormRequest
             'start_date_time' => 'required|date',
             'end_date_time' => 'required|date|after:start_date_time',
             'description' => 'nullable|string',
+            'type_voucher' => 'required|in:0,1',
         ];
     }
 

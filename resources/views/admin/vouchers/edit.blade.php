@@ -195,10 +195,14 @@
                                     </div>
                                 </div>
                             </div>
+                            <select name="type_voucher" class="form-control" required>
+                                <option value="0" {{ $voucher->type_voucher == 0 ? 'selected' : '' }}>Áp dụng cho Ghế</option>
+                                <option value="1" {{ $voucher->type_voucher == 1 ? 'selected' : '' }}>Áp dụng cho Food/Combo</option>
+                            </select>
                         </div>
                     </div>
                 </div>
-            </div>   
+            </div>
 
 
 
