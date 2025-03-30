@@ -342,7 +342,7 @@
             <div class="mb-1 row">
                 <div class="fw-bold col-6 fs-5">Tổng tiền</div>
                 <div class="fw-medium col-2 text-center">VNĐ</div>
-                <div class="fw-medium fs-5 col-4 text-end">{{ $parts[0] ?? '0' }}</div>
+                <div class="fw-medium fs-5 col-4 text-end">{{ number_format($ticketData['total_combo'] + $ticketData['total_food'], 0 , '.', '.') }}</div>
             </div>
 
             <hr class="dashed-hr">
