@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
-
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     @include('admin.layouts.partials.css')
     @yield('style')
 </head>
@@ -33,6 +33,30 @@
         <div class="main-content">
             <div class="page-content">
                 <div class="container-fluid">
+
+                    <div class="modal fade" id="qrModal" tabindex="-1" aria-labelledby="qrModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Quét mã QR</h5>
+                              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Đóng"></button>
+                            </div>
+                            <div class="modal-body text-center">
+                              <div id="reader" style="width: 500px; margin: auto; position: relative;">
+                                <!-- Góc bo -->
+                                <div class="qr-corner corner-tl"></div>
+                                <div class="qr-corner corner-tr"></div>
+                                <div class="qr-corner corner-bl"></div>
+                                <div class="qr-corner corner-br"></div>
+                              </div>
+
+                              {{-- <div id="result" class="mt-3 text-success fw-bold"></div> --}}
+                              {{-- <button id="scan-again-btn" class="btn btn-outline-success mt-3 d-none">🔄 Quét lại</button> --}}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
                     @yield('content')
                 </div>
                 <!-- container-fluid -->

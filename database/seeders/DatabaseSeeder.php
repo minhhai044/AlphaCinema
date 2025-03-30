@@ -101,138 +101,138 @@ class DatabaseSeeder extends Seeder
                 'google_id' => null,
             ],
             [
-                'name' => 'Đặng Văn Sơn',
+                'name' => 'Quản lý chi nhánh Hà Nội',
                 'avatar' => '',
                 'phone' => '0987654322',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'dangvanson@gmail.com',
-                'password' => Hash::make('dangvanson@gmail.com'),
+                'email' => 'qlcnHN@gmail.com',
+                'password' => Hash::make('qlcnHN@gmail.com'),
                 'address' => 'Hà Nội',
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
                 'cinema_id' => null,
-                'branch_id' => null,
+                'branch_id' => 1,
                 'point' => 0,
                 'google_id' => null,
             ],
             [
-                'name' => 'Trần Minh Hải',
+                'name' => 'Quản lý chi nhánh Bắc Ninh',
                 'avatar' => '',
                 'phone' => '0987654323',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'tranminhhai@gmail.com',
-                'password' => Hash::make('tranminhhai@gmail.com'),
-                'address' => 'Hà Nội',
+                'email' => 'qlcnBN@gmail.com',
+                'password' => Hash::make('qlcnBN@gmail.com'),
+                'address' => 'Bắc Ninh',
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
                 'cinema_id' => null,
-                'branch_id' => null,
+                'branch_id' => 5,
                 'point' => 0,
                 'google_id' => null,
             ],
             [
-                'name' => 'Phùng Quang Huy',
+                'name' => 'Quản lý cơ sở Mỹ Đình',
                 'avatar' => '',
                 'phone' => '0987654324',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'phungquanghuy@gmail.com',
-                'password' => Hash::make('phungquanghuy@gmail.com'),
+                'email' => 'qlcsMD@gmail.com',
+                'password' => Hash::make('qlcsMD@gmail.com'),
                 'address' => 'Hà Nội',
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
-                'cinema_id' => null,
-                'branch_id' => null,
+                'cinema_id' => 2,
+                'branch_id' => 1,
                 'point' => 0,
                 'google_id' => null,
             ],
             [
-                'name' => 'Nguyễn Đức Tùng Lâm',
+                'name' => 'Quản lý cơ sở Từ Sơn',
                 'avatar' => '',
                 'phone' => '0987654325',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'nguyenductunglam@gmail.com',
-                'password' => Hash::make('nguyenductunglam@gmail.com'),
-                'address' => 'Hà Nội',
+                'email' => 'qlcsTS@gmail.com',
+                'password' => Hash::make('qlcsTS@gmail.com'),
+                'address' => 'Bắc Ninh',
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
-                'cinema_id' => null,
-                'branch_id' => null,
+                'cinema_id' => 7,
+                'branch_id' => 4,
                 'point' => 0,
                 'google_id' => null,
             ],
             [
-                'name' => 'Nguyễn Hoàng Anh',
+                'name' => 'Nhân viên rạp Mỹ Đình',
                 'avatar' => '',
                 'phone' => '0987654326',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'nguyenhoanganh@gmail.com',
-                'password' => Hash::make('nguyenhoanganh@gmail.com'),
+                'email' => 'nvMD@gmail.com',
+                'password' => Hash::make('nvMD@gmail.com'),
                 'address' => 'Hà Nội',
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
-                'cinema_id' => null,
-                'branch_id' => null,
+                'cinema_id' => 2,
+                'branch_id' => 1,
                 'point' => 0,
                 'google_id' => null,
             ],
             [
-                'name' => 'Vũ Nhật Quỳnh',
+                'name' => 'Nhân viên rạp Từ Sơn',
                 'avatar' => '',
                 'phone' => '0987654327',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'vunhatquynh@gmail.com',
-                'password' => Hash::make('vunhatquynh@gmail.com'),
-                'address' => 'Hà Nội',
+                'email' => 'nvTS@gmail.com',
+                'password' => Hash::make('nvTS@gmail.com'),
+                'address' => 'Bắc Ninh',
                 'gender' => 1,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
-                'cinema_id' => null,
-                'branch_id' => null,
+                'cinema_id' => 7,
+                'branch_id' => 4,
                 'point' => 0,
                 'google_id' => null,
             ],
             [
-                'name' => 'Hoa Hương Quỳnh',
+                'name' => 'Quản lý cơ sở Hà Đông',
                 'avatar' => '',
                 'phone' => '0987654328',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'hoahuongquynh@gmail.com',
-                'password' => Hash::make('hoahuongquynh@gmail.com'),
+                'email' => 'qlcsHD@gmail.com',
+                'password' => Hash::make('qlcsHD@gmail.com'),
                 'address' => 'Hà Nội',
                 'gender' => 1,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
-                'cinema_id' => null,
-                'branch_id' => null,
+                'cinema_id' => 1,
+                'branch_id' => 1,
                 'point' => 0,
                 'google_id' => null,
             ],
             [
-                'name' => 'Quản lý chi nhánh',
+                'name' => 'Nhân viên rạp Hà Đông',
                 'avatar' => '',
                 'phone' => '0987654345',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'qlcnHN@gmail.com',
-                'password' => Hash::make('qlcnHN@gmail.com'),
+                'email' => 'nvHD@gmail.com',
+                'password' => Hash::make('nvHD@gmail.com'),
                 'address' => 'Hà Nội',
                 'gender' => 1,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
                 'branch_id' => 1,
-                'cinema_id' => null,
+                'cinema_id' => 1,
                 'point' => 0,
                 'google_id' => null,
             ],
@@ -459,23 +459,23 @@ class DatabaseSeeder extends Seeder
         $user = User::find(1);
         $user->assignRole('System Admin');
 
-        $user = User::find(7);
-        $user->assignRole('Quản lý cơ sở', 'Nhân viên',);
-        $user = User::find(8);
-        $user->assignRole('Quản lý cơ sở', 'Nhân viên');
-        $user = User::find(9);
-        $user->assignRole('Quản lý chi nhánh');
-
         $user = User::find(2);
-        $user->assignRole('Quản lý cơ sở');
+        $user->assignRole('Quản lý chi nhánh');
         $user = User::find(3);
-        $user->assignRole('Quản lý cơ sở');
+        $user->assignRole('Quản lý chi nhánh');
         $user = User::find(4);
         $user->assignRole('Quản lý cơ sở');
+
         $user = User::find(5);
         $user->assignRole('Quản lý cơ sở');
         $user = User::find(6);
+        $user->assignRole('Nhân viên');
+        $user = User::find(7);
+        $user->assignRole('Nhân viên');
+        $user = User::find(8);
         $user->assignRole('Quản lý cơ sở');
+        $user = User::find(9);
+        $user->assignRole('Nhân viên');
 
 
         //Seed Movie

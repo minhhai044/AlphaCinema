@@ -282,3 +282,4 @@ Route::post('/tickets/change-status', [TicketController::class, 'changeStatus'])
 // Route::middleware('auth')->get('/dashboard', [DashBoardController::class, 'index'])->name('admin.dashboard');
 
 
+Route::get('/tickets/{code}/check-exists', [TicketController::class, 'checkExists']);

@@ -63,7 +63,11 @@
             </div>
         </div>
 
-
+        <div class="dropdown d-none d-sm-inline-block">
+            <button type="button" class="btn header-item" data-bs-toggle="modal" data-bs-target="#qrModal">
+                <i data-feather="maximize"></i>
+            </button>
+        </div>
 
         <div class="dropdown d-none d-sm-inline-block">
             <button type="button" class="btn header-item" id="mode-setting-btn">

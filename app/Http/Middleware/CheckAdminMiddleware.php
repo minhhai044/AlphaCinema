@@ -21,6 +21,6 @@ class CheckAdminMiddleware
         if (Auth::check() && Auth::user()->isAdmin()) {
             return $next($request);
         }
-        abort(403);
+        return redirect("/login");
     }
 }
