@@ -64,19 +64,34 @@ class ShowtimeController extends Controller
 
         if ($branchId && $cinemId) {
 
+            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
+            //     $query->where('branch_id', $branchId);
+            //     $query->where('cinema_id', $cinemId);
+            //     $query->where('date', '>', Carbon::now()->toDateString())
+            //         ->orWhere(function ($q) {
+            //             $q->where('date', Carbon::now()->toDateString())
+            //                 ->where('start_time', '>=', Carbon::now()->toTimeString());
+            //         });
+            // })
+            //     ->with('showtime')
+            //     ->latest('id')
+            //     ->get();
+
+
             $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
-                $query->where('branch_id', $branchId);
-                $query->where('cinema_id', $cinemId);
-                $query->where('date', '>', Carbon::now()->toDateString())
-                    ->orWhere(function ($q) {
-                        $q->where('date', Carbon::now()->toDateString())
-                            ->where('start_time', '>=', Carbon::now()->toTimeString());
+                $query->where('branch_id', $branchId)
+                    ->where('cinema_id', $cinemId)
+                    ->where(function ($q) {
+                        $q->where('date', '>', Carbon::now()->toDateString())
+                            ->orWhere(function ($q2) {
+                                $q2->where('date', Carbon::now()->toDateString())
+                                    ->where('start_time', '>=', Carbon::now()->toTimeString());
+                            });
                     });
             })
                 ->with('showtime')
                 ->latest('id')
                 ->get();
-
 
             return $this->successResponse(
                 $movies,
@@ -105,18 +120,33 @@ class ShowtimeController extends Controller
         $movie = null;
 
         if ($branchId && $cinemId) {
+            // $movie = Movie::with([
+            //     'showtime' => function ($query) use ($branchId, $cinemId) {
+            //         $query->where('branch_id', $branchId);
+            //         $query->where('cinema_id', $cinemId);
+            //         $query->where('date', '>', Carbon::now()->toDateString())
+            //             ->orWhere(function ($q) {
+            //                 $q->where('date', Carbon::now()->toDateString())
+            //                     ->where('start_time', '>=', Carbon::now()->toTimeString());
+            //             });
+            //     },
+            //     'showtime.room'
+            // ])->where('slug', $slug)->first();
+
             $movie = Movie::with([
                 'showtime' => function ($query) use ($branchId, $cinemId) {
-                    $query->where('branch_id', $branchId);
-                    $query->where('cinema_id', $cinemId);
-                    $query->where('date', '>', Carbon::now()->toDateString())
-                        ->orWhere(function ($q) {
-                            $q->where('date', Carbon::now()->toDateString())
-                                ->where('start_time', '>=', Carbon::now()->toTimeString());
+                    $query->where('branch_id', $branchId)
+                        ->where('cinema_id', $cinemId)
+                        ->where(function ($q) {
+                            $q->where('date', '>', Carbon::now()->toDateString())
+                                ->orWhere(function ($q2) {
+                                    $q2->where('date', Carbon::now()->toDateString())
+                                        ->where('start_time', '>=', Carbon::now()->toTimeString());
+                                });
                         });
                 },
                 'showtime.room'
-            ])->where('slug', $slug)->first();           
+            ])->where('slug', $slug)->first();
         }
 
         if (!$movie) {
