@@ -21,6 +21,7 @@ class Voucher extends Model
         'limit',
         'limit_by_user',
         'is_active',
+        'type_voucher',
     ];
 
     protected $dates = [
