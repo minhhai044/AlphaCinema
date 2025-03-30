@@ -51,6 +51,12 @@ class ShowtimeController extends Controller
             );
         }
     }
+
+    /**
+     * Danh sách movie có suất chiếu
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function listMovies(Request $request)
     {
         $branchId = $request->branchId;
@@ -71,77 +77,6 @@ class ShowtimeController extends Controller
                 ->latest('id')
                 ->get();
 
-            ###########################
-
-            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
-            //     $query->where('branch_id', $branchId)
-            //         ->where('cinema_id', $cinemId)
-            //         ->where('date', '>=', Carbon::now()->toDateString())
-            //         ->orWhere(function ($q) {
-            //             $q->where('date', Carbon::now()->toDateString())
-            //                 ->where('start_time', '>=', Carbon::now()->toTimeString());
-            //         });
-            // })
-            //     ->with('showtime')
-            //     ->latest('id')
-            //     ->get();
-
-            ############################
-
-            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
-            //     $query->where('branch_id', $branchId)
-            //         ->where('cinema_id', $cinemId)
-            //         ->where(function ($q) {
-            //             $q->where('date', '>', Carbon::now()->toDateString()) // Lấy tất cả các ngày sau hôm nay
-            //                 ->orWhere(function ($subQuery) {
-            //                     $subQuery->where('date', '=', Carbon::now()->toDateString()) // Hôm nay chỉ lấy suất có start_time <= giờ hiện tại
-            //                         ->where('start_time', '<=', Carbon::now()->toTimeString());
-            //                 });
-            //         });
-            // })
-            //     ->with(['showtime' => function ($query) {
-            //         $query->orderBy('date')->orderBy('start_time'); // Sắp xếp theo ngày và giờ suất chiếu
-            //     }])
-            //     ->latest('id')
-            //     ->get();
-
-            ##########################
-
-            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
-            //     $query->where('branch_id', $branchId);
-            //     $query->where('cinema_id', $cinemId);
-            //     $query->where(function ($q) {
-            //         $q->where('date', '>=', Carbon::now()->toDateString());
-            //         $q->where('start_time', '>=', Carbon::now()->toTimeString());
-            //     });
-            // })
-            //     ->with('showtime')
-            //     ->latest('id')
-            //     ->get();
-
-            // return $this->successResponse(
-            //     $movies,
-            //     'Thao tác thành công'
-            // );
-
-            #######################
-
-            // $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
-            //     $query->where('branch_id', $branchId)
-            //         ->where('cinema_id', $cinemId)
-            //         ->where(function ($q) {
-            //             $q->where('date', '>', Carbon::now()->toDateString()) // Lấy tất cả suất chiếu của ngày mai trở đi
-            //                 ->orWhere(function ($subQuery) {
-            //                     $subQuery->where('date', '=', Carbon::now()->toDateString()) // Hôm nay chỉ lấy suất có start_time <= giờ hiện tại
-            //                         ->where('start_time', '<=', Carbon::now()->toTimeString());
-            //                 });
-            //         });
-            // })
-            //     ->with(['showtime' => function ($query) {
-            //         $query->orderBy('date')->orderBy('start_time'); // Sắp xếp theo ngày và giờ suất chiếu
-            //     }])
-            //     ->latest('id')
-            //     ->get();
 
             return $this->successResponse(
                 $movies,
@@ -157,44 +92,12 @@ class ShowtimeController extends Controller
         );
     }
 
-
-    // public function movieShowTimes(string $slug,Request $request)
-    // {
-    //     $branchId = $request->branchId;
-    //     $cinemId = $request->cinemId;
-    //     $movie = Movie::with([
-    //         'showtime' => function ($query) {
-    //             $query->where('date', '>=', Carbon::now())
-    //                 ->where('is_active', 1);
-    //         },
-    //         'room'
-    //     ])->where('slug', $slug)->first();
-
-    //     $data = [];
-
-    //     $showtimes = [];
-
-    //     foreach ($movie->showtime as $showtime) {
-    //         $showtimes[$showtime['date']][] = [
-    //             'id' => $showtime['id'],
-    //             'start_time' => $showtime['start_time'],
-    //             'slug' => $showtime['slug'],
-    //             'name_room' => $showtime['room']['name']
-    //         ];
-    //     }
-
-    //     $data = [
-    //         'showtimes' => $showtimes, // Lịch chiếu theo ngày
-    //         'movie' => $movie, // Thông tin phim
-    //     ];
-
-    //     return $this->successResponse(
-    //         $data,
-    //         'Thao tác thành công'
-    //     );
-    // }
-
-
+    /**
+     * Trả về các showtime trong movie và chi tiết showtime
+     * @param string $slug
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function movieShowTimes(string $slug, Request $request)
     {
         $branchId = $request->branchId;
@@ -213,7 +116,7 @@ class ShowtimeController extends Controller
                         });
                 },
                 'showtime.room'
-            ])->where('slug', $slug)->first();
+            ])->where('slug', $slug)->first();           
         }
 
         if (!$movie) {
@@ -241,7 +144,12 @@ class ShowtimeController extends Controller
             'Thao tác thành công'
         );
     }
-
+    /**
+     * Trang Detail showtime
+     * @param string $slug
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function showtimeDetail(string $slug, Request $request)
     {
         try {
@@ -308,125 +216,6 @@ class ShowtimeController extends Controller
             );
         }
     }
-
-    /*** */
-
-    /**
-     * Code ban đầu
-     */
-
-    // public function changeSeatStatus(ShowtimeRequest $showtimeRequest, string $id)
-    // {
-    //     try {
-    //         // Khóa bản ghi showtime để tránh race condition
-    //         $showtime = Showtime::query()->where('id', $id)->firstOrFail();
-
-    //         // $seat_structures = json_decode($showtime->seat_structure, true);
-    //         $seat_structures = $showtime->seat_structure;
-
-    //         if (empty($seat_structures)) {
-    //             return response()->json(['error' => 'Không tìm thấy danh sách ghế'], 400);
-    //         }
-    //         // Minh Hải Check 1 user chỉ được 10 ghế
-    //         $checkTotalSeatUser = count(array_keys(array_column($seat_structures, 'user_id'), $showtimeRequest->user_id));
-
-    //         if ($checkTotalSeatUser >= 10 && $showtimeRequest->status === 'hold') {
-    //             return response()->json(['error' => 'Bạn chỉ có thể chọn tối đa 10 ghế !!!'], 409);
-    //         }
-
-    //         // Kiểm tra trạng thái ghế trước khi cập nhật
-    //         foreach ($seat_structures as &$seat_structure) {
-    //             if ($seat_structure['id'] == $showtimeRequest->seat_id) {
-    //                 // Nếu ghế đã được đặt hoặc giữ chỗ, từ chối cập nhật
-    //                 if ($seat_structure['status'] !== 'available' && $seat_structure['status'] !== 'hold') {
-    //                     return response()->json(['error' => 'Ghế này đã được đặt hoặc không khả dụng'], 409);
-    //                 }
-
-    //                 // Cập nhật trạng thái ghế
-    //                 $seat_structure['user_id'] = $showtimeRequest->user_id;
-    //                 $seat_structure['status'] = $showtimeRequest->status;
-    //                 break;
-    //             }
-    //         }
-
-    //         $showtime->update([
-    //             'seat_structure' => $seat_structures,
-    //         ]);
-
-    //         $seatId = $showtimeRequest->seat_id;
-    //         $status = $showtimeRequest->status;
-    //         $userId = $showtimeRequest->user_id;
-
-    //         // broadcast(new RealTimeSeatEvent($seatId, $status, $userId))->toOthers();
-    //         broadcast(new RealTimeSeatEvent($seatId, $status, $userId));
-
-    //         return response()->json([
-    //             'message' => 'Thao tác thành công',
-    //             'data' => $seat_structures,
-    //         ], 200);
-    //     } catch (\Throwable $th) {
-    //         Log::error($th->getMessage());
-    //         return response()->json([
-    //             'error' => 'Thao tác không thành công',
-    //             'message' => $th->getMessage()
-    //         ], 500);
-    //     }
-    // }
-
-    /** 
-     * Code queue redis
-     */
-
-    // public function changeSeatStatus(ShowtimeRequest $showtimeRequest, string $id)
-    // {
-    //     try {
-    //         $showtime = Showtime::query()->where('id', $id)->firstOrFail();
-
-    //         $seat_structures = $showtime->seat_structure;
-
-    //         if (empty($seat_structures)) {
-    //             return response()->json(['error' => 'Không tìm thấy danh sách ghế'], 400);
-    //         }
-
-    //         $checkTotalSeatUser = count(array_keys(array_column($seat_structures, 'user_id'), $showtimeRequest->user_id));
-
-    //         if ($checkTotalSeatUser >= 10 && $showtimeRequest->status === 'hold') {
-    //             return response()->json(['error' => 'Bạn chỉ có thể chọn tối đa 10 ghế !!!'], 409);
-    //         }
-
-    //         foreach ($seat_structures as &$seat_structure) {
-    //             if ($seat_structure['id'] == $showtimeRequest->seat_id) {
-    //                 // Nếu ghế đã được đặt hoặc giữ chỗ, từ chối cập nhật
-    //                 if ($seat_structure['status'] !== 'available' && $seat_structure['status'] !== 'hold') {
-    //                     return response()->json(['error' => 'Ghế này đã được đặt hoặc không khả dụng'], 409);
-    //                 }
-
-    //                 // Cập nhật trạng thái ghế
-    //                 $seat_structure['user_id'] = $showtimeRequest->user_id;
-    //                 $seat_structure['status'] = $showtimeRequest->status;
-    //                 break;
-    //             }
-    //         }
-
-    //         $showtime->update([
-    //             'seat_structure' => $seat_structures,
-    //         ]);
-
-    //         broadcast(new RealTimeSeatEvent($showtimeRequest->seat_id, $showtimeRequest->status, $showtimeRequest->user_id))->toOthers();
-
-    //         return response()->json([
-    //             'message' => 'Thao tác thành công',
-    //             'data' => $seat_structures,
-    //         ], 200);
-    //     } catch (\Throwable $th) {
-    //         Log::error($th->getMessage());
-    //         return response()->json([
-    //             'error' => 'Thao tác không thành công',
-    //             'message' => $th->getMessage()
-    //         ], 500);
-    //     }
-    // }
-
 
     public function changeSeatStatus(ShowtimeRequest $showtimeRequest, string $id)
     {
