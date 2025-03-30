@@ -35,10 +35,11 @@ class ComboFoodController extends Controller
             $Combo[$combo_id]['foods'][] = $foodData;
         }
         foreach ($Combo as $value) {
-            if (!Storage::exists($value->img_thumbnail)) {
+            if (!Storage::exists($value['img_thumbnail'])) {
                 $value['img_thumbnail'] = 'images/foods/foods.png';
             }
         }
+        
         return $this->successResponse(array_values($Combo), 'Thao tác thành công !!!');
     }
 }
