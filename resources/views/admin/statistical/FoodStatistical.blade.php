@@ -1,10 +1,10 @@
 @extends('admin.layouts.master')
 
-@section('title', 'Thống kê Doanh Thu Đồ Ăn')
+@section('title', 'Thống kê đồ ăn')
 
 @section('content')
     <div class="container-fluid mt-4">
-        <h3 class="mb-4">Thống kê Doanh Thu Đồ Ăn</h3>
+        <h3 class="mb-4">Thống kê đồ ăn</h3>
 
         <!-- Hiển thị vai trò người dùng -->
         <div class="alert alert-info mb-4">
@@ -142,13 +142,12 @@
 
         <!-- Tổng doanh thu và biểu đồ -->
         <div class="row g-4 mb-4 mt-2">
+            <!-- Tổng doanh thu food -->
             <div class="row">
                 <div class="col-xl-12">
                     <div class="card card-h-100">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Tổng doanh thu đồ ăn</h5>
-                            <p class="text-center">{{ number_format($foodRevenue) }} VND</p>
-                            <canvas id="foodChart" style="height: 400px; width: 100%;"></canvas>
+                            <div id="foodChart" style="width: 100%; height: 400px;"></div>
                         </div>
                     </div>
                 </div>
@@ -156,19 +155,19 @@
             <div class="col-md-6">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title text-center">Doanh thu đồ ăn theo khung giờ</h5>
-                        <canvas id="stackedBarChart" width="400" height="200"></canvas>
+                        <div id="stackedBarChart" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
             </div>
+            <!-- Tỷ lệ đơn hàng có food -->
             <div class="col-xl-6">
                 <div class="card card-h-100">
                     <div class="card-body">
-                        <h5 class="card-title text-center">Tỷ lệ đồ ăn bán ra theo vé</h5>
-                        <canvas id="foodUsageChart" style="height: 200px; max-width: 300px; margin: 0 auto;"></canvas>
+                        <div id="foodUsageChart" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
             </div>
+        </div>
         </div>
 
         <!-- Top 3 food doanh thu -->
@@ -176,7 +175,7 @@
             <div class="col-12">
                 <div class="container mt-5">
                     <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">
-                        Top 3 Combo Doanh Thu Cao Nhất
+                        Top 3 food Doanh Thu Cao Nhất
                     </h3>
                     <div class="row justify-content-center">
                         @forelse ($top6Foods as $index => $food)
@@ -213,150 +212,202 @@
     </div>
 
     <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            // Tổng doanh thu Food
-            var ctx = document.getElementById('foodChart').getContext('2d');
-            var foodNames = @json($foodNames);
-            var foodRevenues = @json($foodRevenues);
-            var foodSummaries = @json($foodSummaries);
+       document.addEventListener("DOMContentLoaded", function() {
+    // 1. Tổng doanh thu Food
+    var foodNames = @json($foodNames);
+    var foodRevenues = @json($foodRevenues);
+    var foodSummaries = @json($foodSummaries);
 
-            if (foodNames.length > 0 && foodRevenues.length > 0) {
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: foodNames,
-                        datasets: [{
-                            label: 'Doanh thu (VND)',
-                            data: foodRevenues,
-                            backgroundColor: '#5156be',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
-                    },
-                    options: {
-                        responsive: false,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Doanh thu (VND)'
-                                }
-                            },
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Tên Đồ Ăn'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: { display: true, position: 'top' },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        const index = tooltipItem.dataIndex;
-                                        return `${foodNames[index]}: ${foodSummaries[index]}`;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-            } else {
-                ctx.font = "20px Arial";
-                ctx.fillText("Không có dữ liệu để hiển thị", 50, 200);
-            }
-
-            // Tỷ lệ đơn hàng có Food
-            var usageCtx = document.getElementById('foodUsageChart').getContext('2d');
-            var foodUsage = @json($foodUsage);
-
-            new Chart(usageCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Có đồ ăn', 'Không có đồ ăn'],
-                    datasets: [{
-                        data: [foodUsage, 100 - foodUsage],
-                        backgroundColor: ['#5156be', '#d3d3d3'],
-                        borderColor: ['#5156be', '#d3d3d3'],
-                        borderWidth: 1
-                    }]
+    if (foodNames.length > 0 && foodRevenues.length > 0) {
+        Highcharts.chart('foodChart', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Doanh thu theo Đồ Ăn'
+            },
+            xAxis: {
+                categories: foodNames, // Sử dụng tên đồ ăn làm danh mục trục X
+                crosshair: true,
+                title: {
+                    text: 'Tên Đồ Ăn'
                 },
-                options: {
-                    responsive: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(tooltipItem) {
-                                    return `${tooltipItem.label}: ${tooltipItem.raw}%`;
-                                }
-                            }
-                        },
-                        datalabels: {
-                            color: '#ffffff',
-                            formatter: (value) => `${value}%`,
-                            font: {
-                                weight: 'bold'
-                            }
-                        }
-                    }
-                },
-                plugins: [ChartDataLabels]
-            });
-
-            // Doanh thu Food theo khung giờ
-            var ctxStacked = document.getElementById('stackedBarChart').getContext('2d');
-            var trendDates = @json($trendDates);
-            var trendRevenues = @json($trendRevenues);
-
-            if (trendDates.length > 0 && trendRevenues.length > 0) {
-                new Chart(ctxStacked, {
-                    type: 'bar',
-                    data: {
-                        labels: trendDates,
-                        datasets: [{
-                            label: 'Doanh thu Food',
-                            data: trendRevenues,
-                            backgroundColor: '#36A2EB'
-                        }]
-                    },
-                    options: {
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Khung giờ suất chiếu'
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Doanh thu (VND)'
-                                }
-                            }
-                        },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
-                            }
-                        }
-                    }
-                });
-            } else {
-                ctxStacked.font = "20px Arial";
-                ctxStacked.fillText("Không có dữ liệu để hiển thị", 50, 100);
+                accessibility: {
+                    description: 'Tên Đồ Ăn'
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Doanh thu (VNĐ)' // Tiêu đề trục Y
+                }
+            },
+            tooltip: {
+                pointFormatter: function() {
+                    var index = this.index; // Lấy chỉ số của điểm dữ liệu
+                    return `${foodSummaries[index]}`; // Chỉ hiển thị tóm tắt, không lặp tên đồ ăn
+                }
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0,
+                    color: '#5156be' // Giữ màu nền từ Chart.js
+                }
+            },
+            series: [{
+                name: 'Doanh thu (VNĐ)',
+                data: foodRevenues // Dữ liệu doanh thu từ PHP
+            }],
+            credits: {
+                enabled: false // Tắt dòng chữ "Highcharts.com"
             }
         });
+    } else {
+        // Nếu không có dữ liệu, hiển thị thông báo trên container
+        var container = document.getElementById('foodChart');
+        container.innerHTML =
+            '<p style="font: 20px Arial; text-align: center; margin-top: 200px;">Không có dữ liệu để hiển thị</p>';
+    }
+
+    // 2. Tỷ lệ đơn hàng có Food
+    Highcharts.setOptions({
+        colors: Highcharts.getOptions().colors.map(function(color) {
+            return {
+                radialGradient: {
+                    cx: 0.5,
+                    cy: 0.3,
+                    r: 0.7
+                },
+                stops: [
+                    [0, color],
+                    [1, Highcharts.color(color).brighten(-0.3).get('rgb')] // Làm tối màu
+                ]
+            };
+        })
+    });
+
+    var foodUsage = @json($foodUsage);
+
+    Highcharts.chart('foodUsageChart', {
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false,
+            type: 'pie'
+        },
+        title: {
+            text: 'Tỷ lệ đơn hàng có Đồ Ăn'
+        },
+        tooltip: {
+            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' // Hiển thị % trong tooltip
+        },
+        accessibility: {
+            point: {
+                valueSuffix: '%'
+            }
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<span style="font-size: 1.2em"><b>{point.name}</b></span><br>' +
+                            '<span style="opacity: 0.6">{point.percentage:.1f} %</span>',
+                    connectorColor: 'rgba(128,128,128,0.5)'
+                }
+            }
+        },
+        credits: {
+            enabled: false // Tắt dòng chữ "Highcharts.com"
+        },
+        series: [{
+            name: 'Tỷ lệ',
+            data: [{
+                    name: 'Có Đồ Ăn',
+                    y: foodUsage
+                },
+                {
+                    name: 'Không có Đồ Ăn',
+                    y: 100 - foodUsage
+                }
+            ],
+            colors: ['#5156be', '#ff0000'] // Màu xanh tím và đỏ (thay #d3d3d3 thành #ff0000 để giống combo)
+        }]
+    });
+
+    // 3. Doanh thu Food theo khung giờ
+    var trendDates = @json($trendDates); // Khung giờ suất chiếu
+    var trendRevenues = @json($trendRevenues); // Doanh thu tương ứng
+
+    if (trendDates.length > 0 && trendRevenues.length > 0) {
+        Highcharts.chart('stackedBarChart', {
+            chart: {
+                type: 'column' // Biểu đồ cột trong Highcharts
+            },
+            title: {
+                text: 'Doanh thu Đồ Ăn theo khung giờ' // Tiêu đề biểu đồ
+            },
+            xAxis: {
+                categories: trendDates, // Khung giờ suất chiếu trên trục X
+                title: {
+                    text: 'Khung giờ suất chiếu'
+                }
+            },
+            yAxis: {
+                min: 0, // Bắt đầu từ 0
+                title: {
+                    text: 'Doanh thu (VNĐ)'
+                },
+                labels: {
+                    formatter: function() {
+                        return Highcharts.numberFormat(this.value, 0, ',', '.') + ' VNĐ'; // Định dạng số với dấu chấm
+                    }
+                }
+            },
+            tooltip: {
+                pointFormatter: function() {
+                    var total = this.series.data.reduce((sum, point) => sum + point.y, 0); // Tính tổng doanh thu
+                    var percentage = total > 0 ? (this.y / total * 100).toFixed(1) : 0; // Tính tỷ lệ %
+                    return `Doanh thu: ${Highcharts.numberFormat(this.y, 0, ',', '.')} VNĐ<br>Tỷ lệ: ${percentage}%`;
+                }
+            },
+            plotOptions: {
+                column: {
+                    color: '#36A2EB', // Giữ màu từ Chart.js
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Doanh thu Đồ Ăn', // Nhãn của dữ liệu
+                data: trendRevenues // Dữ liệu doanh thu
+            }],
+            legend: {
+                enabled: true, // Hiển thị chú thích
+                align: 'center',
+                verticalAlign: 'top' // Đặt chú thích ở trên cùng
+            },
+            credits: {
+                enabled: false // Tắt dòng chữ "Highcharts.com"
+            }
+        });
+    } else {
+        // Nếu không có dữ liệu, hiển thị thông báo
+        var container = document.getElementById('stackedBarChart');
+        container.innerHTML =
+            '<p style="font: 20px Arial; text-align: center; margin-top: 100px;">Không có dữ liệu để hiển thị</p>';
+    }
+});
+
+
+
+    
+
 
         function resetFilters() {
             window.location.href = "{{ route('admin.food.revenue') }}";

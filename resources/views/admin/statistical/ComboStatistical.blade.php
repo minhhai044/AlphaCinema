@@ -211,7 +211,6 @@
     </div>
 
     <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <!-- Biểu đồ doanh thu -->
