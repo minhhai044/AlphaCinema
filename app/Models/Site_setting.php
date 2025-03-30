@@ -38,7 +38,7 @@ class Site_setting extends Model
     {
         return [
 
-            'website_logo' => 'theme/client/images/logo1.jpg',
+            'website_logo' => 'theme/client/images/logo.svg',
             'site_name' => 'AlphaCinema',
             'brand_name' => 'FPT Poly ',
             'slogan' => 'Phim hay giá tốt!! ',
@@ -50,7 +50,7 @@ class Site_setting extends Model
             'facebook_link' => 'https://www.facebook.com/',
             'youtube_link' => 'https://www.youtube.com/',
             'instagram_link' => 'https://www.instagram.com/',
-            'privacy_policy_image' => 'theme/client/images/logo.png',
+            'privacy_policy_image' => 'theme/client/images/logo.svg',
             // Chính sách bảo mậtmật
             'privacy_policy' => '
                 <h1>Chính Sách Bảo Mật</h1>
@@ -76,7 +76,7 @@ class Site_setting extends Model
                 <h2>5. Liên Hệ</h2>
                 <p>Nếu bạn có bất kỳ câu hỏi nào về chính sách bảo mật, vui lòng liên hệ với chúng tôi qua email: support@alphacinema.vn</p>
             ',
-            'terms_of_service_image' => 'theme/client/images/logo.png',
+            'terms_of_service_image' => 'theme/client/images/logo.svg',
             // Điều khoản dịch vụ 
             'terms_of_service' => ' 
             <h2>1. Giới thiệu</h2>
@@ -135,7 +135,7 @@ class Site_setting extends Model
 
             <p><strong>Cảm ơn bạn đã sử dụng dịch vụ của AlphaCinema!</strong></p>',
             // Ảnh Giới thiệuthiệu
-            'introduction_image' => 'theme/client/images/logo.png',
+            'introduction_image' => 'theme/client/images/logo.svg',
             // Giới thiệu 
             'introduction' => '
             <h1>Chào mừng đến với AlphaCinema</h1>
@@ -152,7 +152,7 @@ class Site_setting extends Model
             <p>Hotline: 1900 1234</p>
             <p>Đặt vé ngay</p>',
             // Ảnh Tin túc 
-            'news_img' => 'theme/client/images/logo.png',
+            'news_img' => 'theme/client/images/logo.svg',
             // Giới thiệu 
             'news' => '
             <section>
