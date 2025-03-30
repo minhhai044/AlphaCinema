@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ComboFood;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ComboFoodController extends Controller
 {
@@ -21,7 +22,7 @@ class ComboFoodController extends Controller
 
             if (!isset($Combo[$combo_id])) {
                 $Combo[$combo_id] = array_merge(
-                    $ComboFood->combo->toArray(), 
+                    $ComboFood->combo->toArray(),
                     ['foods' => []]
                 );
             }
@@ -33,7 +34,11 @@ class ComboFoodController extends Controller
 
             $Combo[$combo_id]['foods'][] = $foodData;
         }
-
+        foreach ($Combo as $value) {
+            if (!Storage::exists($value->img_thumbnail)) {
+                $value['img_thumbnail'] = 'images/foods/foods.png';
+            }
+        }
         return $this->successResponse(array_values($Combo), 'Thao tác thành công !!!');
     }
 }
