@@ -135,31 +135,18 @@ class AuthController extends Controller
             ->withCookie(cookie()->forget('auth'));
     }
 
-    public function updateProfile(Request $request)
+    public function updateProfile(UserRequest $userRequest,string $id)
     {
         try {
-            $user = Auth::user();
+            
+            $user = $this->userService->updateInfo($userRequest->validated(), $id);
 
-            // Validate request data
-            $data = $request->validate([
-                'name'    => 'nullable|string|max:255',
-                'phone'   => 'nullable|string|max:15|regex:/^[0-9]+$/',
-                'gender'  => 'nullable|in:0,1',
-                'address' => 'nullable|string|max:255',
-                'avatar'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            ]);
-
-            // Update user info
-            $user = $this->userService->updateInfo($data, $user);
-
-            // Return success response
             return $this->successResponse([
                 'message' => "Update thành công",
                 'data' => $user
             ]);
+
         } catch (Exception $e) {
-            // Handle any exceptions
-            Log($e->getMessage());
             return $this->errorResponse([
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
                 'error'   => $e->getTraceAsString()
