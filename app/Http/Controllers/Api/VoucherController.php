@@ -83,6 +83,7 @@ class VoucherController extends Controller
                 'usage_count'       => $userVoucher->usage_count,
                 'discount'          => $voucher->discount,
                 'limit'             => $voucher->limit,
+                'type_voucher'      => $voucher->type_voucher
             ];
         }
 

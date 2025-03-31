@@ -216,6 +216,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <select name="type_voucher" class="form-control select2" required>
+                                <option value="0" selected>Áp dụng cho Ghế</option>
+                                <option value="1">Áp dụng cho Food/Combo</option>
+                            </select>
                         </div>
                     </div>
                 </div>
@@ -230,9 +234,9 @@
             const hiddenInput = document.getElementById("discount_hidden");
 
             formattedInput.addEventListener("input", function(e) {
-                let value = e.target.value.replace(/\D/g, ""); 
+                let value = e.target.value.replace(/\D/g, "");
                 if (value !== "") {
-                    formattedInput.value = Number(value).toLocaleString('en-US'); 
+                    formattedInput.value = Number(value).toLocaleString('en-US');
                     hiddenInput.value = value;
                 } else {
                     hiddenInput.value = "0";
