@@ -390,9 +390,9 @@
                     tooltip: {
                         pointFormatter: function() {
                             var total = this.series.data.reduce((sum, point) => sum + point.y,
-                            0); // Tính tổng doanh thu
+                                0); // Tính tổng doanh thu
                             var percentage = total > 0 ? (this.y / total * 100).toFixed(1) :
-                            0; // Tính tỷ lệ %
+                                0; // Tính tỷ lệ %
                             return `Doanh thu: ${Highcharts.numberFormat(this.y, 0, ',', '.')} VNĐ<br>Tỷ lệ: ${percentage}%`;
                         }
                     },
