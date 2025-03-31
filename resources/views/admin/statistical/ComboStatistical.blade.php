@@ -179,22 +179,29 @@
                     <div class="row justify-content-center">
                         @forelse ($top6Combos as $index => $combo)
                             <div class="col-md-4 col-lg-3 mb-4">
-                                <div class="card top6-card shadow-sm h-100 d-flex flex-column" style="border: none; border-radius: 10px; overflow: hidden;">
+                                <div class="card top6-card shadow-sm h-100 d-flex flex-column"
+                                    style="border: none; border-radius: 10px; overflow: hidden;">
                                     <div class="position-relative flex-grow-1" style="height: 60%;">
-                                        <img src="{{ Storage::url($combo->img_thumbnail) }}" class="card-img-top w-100 h-100" style="object-fit: cover;" alt="{{ $combo->combo_name }}">
-                                        <span class="top6-rank" style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
+                                        <img src="{{ Storage::url($combo->img_thumbnail) }}"
+                                            class="card-img-top w-100 h-100" style="object-fit: cover;"
+                                            alt="{{ $combo->combo_name }}">
+                                        <span class="top6-rank"
+                                            style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
                                             #{{ $index + 1 }}
                                         </span>
                                     </div>
-                                    <div class="card-body text-center d-flex flex-column justify-content-center" style="height: 40%; padding: 15px;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-center"
+                                        style="height: 40%; padding: 15px;">
                                         <h5 class="card-title" style="font-size: 18px; color: #333; margin-bottom: 10px;">
                                             {{ $combo->combo_name }}
                                         </h5>
                                         <p class="mb-2" style="font-size: 14px; color: #6c757d;">
-                                            <strong>Doanh thu:</strong> <span style="color: #5156be;">{{ number_format($combo->total_price) }} đ</span>
+                                            <strong>Doanh thu:</strong> <span
+                                                style="color: #5156be;">{{ number_format($combo->total_price) }} đ</span>
                                         </p>
                                         <p class="mb-0" style="font-size: 14px; color: #6c757d;">
-                                            <strong>Lượt bán:</strong> <span style="color: #5156be;">{{ $combo->total_quantity }}</span>
+                                            <strong>Lượt bán:</strong> <span
+                                                style="color: #5156be;">{{ $combo->total_quantity }}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -339,7 +346,7 @@
                             y: 100 - comboUsage
                         }
                     ],
-                    colors: ['#5156be', '#ff0000'] // Màu xanh tím và đỏ
+                    colors: ['#5156be', '#8ECae6'] // Màu xanh tím và đỏ
                 }]
             });
 
@@ -352,26 +359,31 @@
             if (trendDates.length > 0 && trendRevenues.length > 0) {
                 Highcharts.chart('stackedBarChart', {
                     chart: {
-                        type: 'column' // Biểu đồ cột trong Highcharts
+                        type: 'line' // Thay column thành line
                     },
                     title: {
-                        text: 'Doanh thu Combo theo khung giờ' // Tiêu đề biểu đồ
+                        text: 'Doanh thu Combo theo khung giờ'
                     },
-                    xAxis: {
-                        categories: trendDates, // Khung giờ suất chiếu trên trục X
-                        title: {
-                            text: 'Khung giờ suất chiếu'
+                    accessibility: {
+                        point: {
+                            valueDescriptionFormat: '{xDescription}{separator}{value} VNĐ'
                         }
                     },
+                    xAxis: {
+                        title: {
+                            text: 'Khung giờ suất chiếu'
+                        },
+                        categories: trendDates
+                    },
                     yAxis: {
-                        min: 0, // Bắt đầu từ 0
+                        type: 'logarithmic',
+                        minorTickInterval: 0.1,
                         title: {
                             text: 'Doanh thu (VNĐ)'
                         },
                         labels: {
                             formatter: function() {
-                                return Highcharts.numberFormat(this.value, 0, ',', '.') +
-                                    ' VNĐ'; // Định dạng số với dấu chấm
+                                return Highcharts.numberFormat(this.value, 0, ',', '.') + ' VNĐ';
                             }
                         }
                     },
@@ -384,28 +396,40 @@
                             return `Doanh thu: ${Highcharts.numberFormat(this.y, 0, ',', '.')} VNĐ<br>Tỷ lệ: ${percentage}%`;
                         }
                     },
-                    plotOptions: {
-                        column: {
-                            color: '#36A2EB', // Giữ màu từ Chart.js
-                            pointPadding: 0.2,
-                            borderWidth: 0
-                        }
-                    },
                     series: [{
-                        name: 'Doanh thu Combo', // Nhãn của dữ liệu
-                        data: trendRevenues // Dữ liệu doanh thu
+                        name: 'Doanh thu Combo',
+                        keys: ['y', 'color'], // Sử dụng keys để định nghĩa giá trị và màu
+                        data: trendRevenues.map((revenue, index) => {
+                            // Tính toán màu cho từng điểm
+                            const colors = ['#0000ff', '#8d0073', '#ba0046', '#d60028',
+                                '#eb0014', '#fb0004', '#ff0000'
+                            ];
+                            const colorIndex = Math.min(index, colors.length - 1);
+                            return [revenue, colors[colorIndex]];
+                        }),
+                        color: {
+                            linearGradient: {
+                                x1: 0,
+                                x2: 0,
+                                y1: 1,
+                                y2: 0
+                            },
+                            stops: [
+                                [0, '#0000ff'], // Màu xanh ở giá trị thấp
+                                [1, '#ff0000'] // Màu đỏ ở giá trị cao
+                            ]
+                        }
                     }],
                     legend: {
-                        enabled: true, // Hiển thị chú thích
+                        enabled: true,
                         align: 'center',
-                        verticalAlign: 'top' // Đặt chú thích ở trên cùng
+                        verticalAlign: 'top'
                     },
                     credits: {
-                        enabled: false // Tắt dòng chữ "Highcharts.com"
+                        enabled: false
                     }
                 });
             } else {
-                // Nếu không có dữ liệu, hiển thị thông báo
                 var container = document.getElementById('stackedBarChart');
                 container.innerHTML =
                     '<p style="font: 20px Arial; text-align: center; margin-top: 100px;">Không có dữ liệu để hiển thị</p>';
