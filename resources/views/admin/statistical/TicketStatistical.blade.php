@@ -141,7 +141,7 @@
         </form>
 
         <!-- Cards Section -->
-        <div class="row g-4 mb-4">
+        <div class="row g-4 mb-4 mt-2">
             <!-- Tổng Vé Bán Ra -->
             <div class="col-xl-3 col-md-6">
                 <div class="card shadow-sm">
@@ -259,225 +259,228 @@
     <!-- Chart Initialization -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-                    // Xu Hướng Bán Vé (Line Chart)
-                    Highcharts.chart('ticketTrendChart', {
-                        chart: {
-                            type: 'line'
-                        },
-                        title: {
-                            text: null
-                        },
-                        xAxis: {
-                            categories: ['08:03', '10:03', '12:03', '14:03', '16:03', '20:03', '22:03', '28:03']
-                        },
-                        yAxis: {
-                            title: {
-                                text: null
-                            },
-                            max: 25
-                        },
-                        series: [{
-                            name: 'Số vé',
-                            data: [15, 10, 5, 5, 5, 20, 10, 5],
-                            color: '#2C3E50'
-                        }],
-                        plotOptions: {
-                            line: {
-                                marker: {
-                                    enabled: true
-                                }
-                            }
+            // Định nghĩa bảng màu tùy chỉnh cho Highcharts (áp dụng cho toàn bộ biểu đồ)
+            Highcharts.setOptions({
+                colors: ['#483D8B', '#4682B4', '#20B2AA', '#98FB98', '#FFDAB9']
+            });
+            // Xu Hướng Đặt Vé (Line Chart)
+            Highcharts.chart('ticketTrendChart', {
+                chart: {
+                    type: 'line'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    categories: ['08:03', '10:03', '12:03', '14:03', '16:03', '20:03', '22:03', '28:03']
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    max: 25
+                },
+                series: [{
+                    name: 'Số vé',
+                    data: [15, 10, 5, 5, 5, 20, 10, 5],
+                    color: '#191970' // Màu chủ đạo
+                }],
+                plotOptions: {
+                    line: {
+                        marker: {
+                            enabled: true
                         }
-                    });
-
-                    // Top Phim Bán Chạy (Pie Chart)
-                    Highcharts.chart('topMoviesChart', {
-                        chart: {
-                            type: 'pie'
-                        },
-                        title: {
-                            text: null
-                        },
-                        series: [{
-                            name: 'Số vé',
-                            data: [{
-                                    name: 'Nhí Gái Tiên',
-                                    y: 44.3,
-                                    color: '#2C3E50'
-                                },
-                                {
-                                    name: 'Nghi Trước Quy',
-                                    y: 28.6,
-                                    color: '#27AE60'
-                                },
-                                {
-                                    name: 'Cậu Nhí Phiêu Lưu',
-                                    y: 14,
-                                    color: '#F1C40F'
-                                },
-                                {
-                                    name: 'Sát Thủ Vùng Cực Hạn',
-                                    y: 7.7,
-                                    color: '#E74C3C'
-                                },
-                                {
-                                    name: 'Lạc Trí',
-                                    y: 5.4,
-                                    color: '#7F8C8D'
-                                }
-                            ]
-                        }],
-                        plotOptions: {
-                            pie: {
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '{point.name}: {point.percentage:.1f}%'
-                                }
-                            }
-                        }
-                    });
-
-                    // Phân Loại Vé (Donut Chart)
-                    Highcharts.chart('ticketTypeChart', {
-                        chart: {
-                            type: 'pie'
-                        },
-                        title: {
-                            text: null
-                        },
-                        plotOptions: {
-                            pie: {
-                                innerSize: '50%',
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '{point.name}: {point.percentage:.1f}%'
-                                }
-                            }
-                        },
-                        series: [{
-                            name: 'Số vé',
-                            data: [{
-                                    name: 'GH VIP',
-                                    y: 69.2,
-                                    color: '#2C3E50'
-                                },
-                                {
-                                    name: 'GH Thường',
-                                    y: 27.7,
-                                    color: '#27AE60'
-                                },
-                                {
-                                    name: 'GH Đôi',
-                                    y: 3.1,
-                                    color: '#F1C40F'
-                                }
-                            ]
-                        }]
-                    });
-
-                    // Giờ Cao Điểm (Bar Chart)
-                    Highcharts.chart('peakHoursChart', {
-                        chart: {
-                            type: 'column'
-                        },
-                        title: {
-                            text: null
-                        },
-                        xAxis: {
-                            categories: ['07:00', '10:00', '08:00', '12:00', '11:00']
-                        },
-                        yAxis: {
-                            title: {
-                                text: null
-                            },
-                            max: 60
-                        },
-                        series: [{
-                            name: 'Số vé',
-                            data: [50, 15, 10, 5, 3],
-                            color: '#2C3E50'
-                        }],
-                        plotOptions: {
-                            column: {
-                                dataLabels: {
-                                    enabled: false
-                                }
-                            }
-                        }
-                    });
-
-                    // Tỷ Lệ Lấp Đầy Rạp (Grouped Bar Chart)
-                    Highcharts.chart('fillRateChart', {
-                        chart: {
-                            type: 'column'
-                        },
-                        title: {
-                            text: null
-                        },
-                        xAxis: {
-                            categories: ['Gò Vấp', 'Mỹ Đình', 'Hà Đông']
-                        },
-                        yAxis: {
-                            title: {
-                                text: null
-                            },
-                            max: 100
-                        },
-                        series: [{
-                                name: 'GH đã đặt',
-                                data: [1, 1, 0],
-                                color: '#3498DB'
-                            },
-                            {
-                                name: 'GH trống',
-                                data: [99, 99, 100],
-                                color: '#2C3E50'
-                            }
-                        ],
-                        plotOptions: {
-                            column: {
-                                stacking: 'percent',
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '{point.percentage:.0f}%'
-                                }
-                            }
-                        }
-                    });
-
-                    function resetFilters() {
-                        window.location.href = "{{ route('admin.ticket.revenue') }}";
                     }
+                }
+            });
 
-                    // JavaScript động cho System Admin
-                    document.addEventListener('DOMContentLoaded', function() {
-                        const branchSelect = document.querySelector('select[name="branch_id"]');
-                        const cinemaSelect = document.querySelector('select[name="cinema_id"]');
-                        const branchesRelation = @json($branchesRelation);
+            // Top Phim Bán Chạy (Pie Chart) - Random màu, có #191970
+            Highcharts.chart('topMoviesChart', {
+                chart: {
+                    type: 'pie'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
+                series: [{
+                    name: 'Số vé',
+                    colorByPoint: true, // Random màu từ bảng màu đã định nghĩa
+                    data: [{
+                        name: 'Nhí Gái Tiên',
+                        y: 44.3
+                    }, {
+                        name: 'Nghi Trước Quy',
+                        y: 28.6
+                    }, {
+                        name: 'Cậu Nhí Phiêu Lưu',
+                        y: 14
+                    }, {
+                        name: 'Sát Thủ Vùng Cực Hạn',
+                        y: 7.7
+                    }, {
+                        name: 'Lạc Trí',
+                        y: 5.4
+                    }]
+                }],
+                plotOptions: {
+                    pie: {
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}: {point.percentage:.1f}%'
+                        }
+                    }
+                }
+            });
 
-                        @if (auth()->user()->hasRole('System Admin'))
-                            if (branchSelect && cinemaSelect) {
-                                branchSelect.addEventListener('change', function() {
-                                    const branchId = this.value;
-                                    cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' :
-                                            '') +
-                                        '>Tất cả rạp</option>';
-                                    if (branchId && branchesRelation[branchId]) {
-                                        const cinemas = branchesRelation[branchId];
-                                        for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
-                                            const isSelected = cinemaId == "{{ $cinemaId }}" ?
-                                                'selected' : '';
-                                            cinemaSelect.innerHTML +=
-                                                `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
-                                        }
-                                    }
-                                });
-                                if (branchSelect.value) {
-                                    branchSelect.dispatchEvent(new Event('change'));
-                                }
+            // Phân Loại Vé (Donut Chart) - Random màu, có #191970
+            Highcharts.chart('ticketTypeChart', {
+                chart: {
+                    type: 'pie'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
+                plotOptions: {
+                    pie: {
+                        innerSize: '50%',
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.name}: {point.percentage:.1f}%'
+                        }
+                    }
+                },
+                series: [{
+                    name: 'Số vé',
+                    colorByPoint: true, // Random màu từ bảng màu đã định nghĩa
+                    data: [{
+                        name: 'GH VIP',
+                        y: 69.2
+                    }, {
+                        name: 'GH Thường',
+                        y: 27.7
+                    }, {
+                        name: 'GH Đôi',
+                        y: 3.1
+                    }]
+                }]
+            });
+
+            // Giờ Cao Điểm (Bar Chart) - Random màu, có #191970
+            Highcharts.chart('peakHoursChart', {
+                chart: {
+                    type: 'column'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    categories: ['07:00', '10:00', '08:00', '12:00', '11:00']
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    max: 60
+                },
+                series: [{
+                    name: 'Số vé',
+                    data: [50, 15, 10, 5, 3]
+                }],
+                plotOptions: {
+                    column: {
+                        colorByPoint: true, // Random màu từ bảng màu đã định nghĩa
+                        dataLabels: {
+                            enabled: false
+                        }
+                    }
+                }
+            });
+
+            // Tỷ Lệ Lấp Đầy Rạp (Grouped Bar Chart)
+            Highcharts.chart('fillRateChart', {
+                chart: {
+                    type: 'column'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    categories: ['Gò Vấp', 'Mỹ Đình', 'Hà Đông']
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    max: 100
+                },
+                series: [{
+                    name: 'GH đã đặt',
+                    data: [1, 1, 0],
+                    color: '#483D8B', // Màu chủ đạo
+                }, {
+                    name: 'GH trống',
+                    data: [99, 99, 100],
+                    color: '#483D8B',  // Tông nhạt hơn
+                }],
+                plotOptions: {
+                    column: {
+                        stacking: 'percent',
+                        dataLabels: {
+                            enabled: true,
+                            format: '{point.percentage:.0f}%'
+                        }
+                    }
+                }
+            });
+
+            function resetFilters() {
+                window.location.href = "{{ route('admin.ticket.revenue') }}";
+            }
+        });
+        // JavaScript động cho System Admin
+        document.addEventListener('DOMContentLoaded', function() {
+            const branchSelect = document.querySelector('select[name="branch_id"]');
+            const cinemaSelect = document.querySelector('select[name="cinema_id"]');
+            const branchesRelation = @json($branchesRelation);
+
+            @if (auth()->user()->hasRole('System Admin'))
+                if (branchSelect && cinemaSelect) {
+                    branchSelect.addEventListener('change', function() {
+                        const branchId = this.value;
+                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' :
+                                '') +
+                            '>Tất cả rạp</option>';
+                        if (branchId && branchesRelation[branchId]) {
+                            const cinemas = branchesRelation[branchId];
+                            for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
+                                const isSelected = cinemaId == "{{ $cinemaId }}" ?
+                                    'selected' : '';
+                                cinemaSelect.innerHTML +=
+                                    `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
                             }
-                        @endif
+                        }
                     });
+                    if (branchSelect.value) {
+                        branchSelect.dispatchEvent(new Event('change'));
+                    }
+                }
+            @endif
+        });
     </script>
 
     <style>
