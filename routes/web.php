@@ -41,4 +41,4 @@ Route::get('auth/google/redirect', [AuthController::class, 'googleRedirect']);
 
 Route::get('auth/google/callback', [AuthController::class, 'googleCallBack']);
 
-Route::get("/ahi", [QrCodeController::class, "sendQrCodeEmail"]);
+// Route::get("/ahi", [QrCodeController::class, "sendQrCodeEmail"]);

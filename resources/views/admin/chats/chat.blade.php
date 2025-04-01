@@ -50,28 +50,28 @@
                     <li class="nav-item">
                         <a href="apps-chat.html#chat" data-bs-toggle="tab" aria-expanded="true" class="nav-link active">
                             <i class="bx bx-chat font-size-20 d-sm-none"></i>
-                            <span class="d-none d-sm-block">Chat</span>
+                            <span class="d-none d-sm-block">Phòng</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a href="apps-chat.html#groups" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             <i class="bx bx-group font-size-20 d-sm-none"></i>
-                            <span class="d-none d-sm-block">Groups</span>
+                            <span class="d-none d-sm-block">Hoạt động</span>
                         </a>
                     </li>
-                    <li class="nav-item">
+                    {{-- <li class="nav-item">
                         <a href="apps-chat.html#contacts" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
                             <i class="bx bx-book-content font-size-20 d-sm-none"></i>
                             <span class="d-none d-sm-block">Contacts</span>
                         </a>
-                    </li>
+                    </li> --}}
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane show active" id="chat">
                         <div class="chat-message-list" data-simplebar>
                             <div class="pt-3">
                                 <div class="px-3">
-                                    <h5 class="font-size-14 mb-3">Recent</h5>
+                                    <h5 class="font-size-14 mb-3">Danh sách phòng chat</h5>
                                 </div>
                                 <ul class="list-unstyled chat-list">
                                     <li class="active">
@@ -373,7 +373,7 @@
                         </div>
                     </div>
 
-                    <div class="tab-pane" id="contacts">
+                    {{-- <div class="tab-pane" id="contacts">
                         <div class="chat-message-list" data-simplebar>
                             <div class="pt-3">
                                 <div class="px-3">
@@ -443,7 +443,7 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
                 </div>
             </div>
 
@@ -457,8 +457,8 @@
                         <div class="col-xl-4 col-7">
                             <div class="d-flex align-items-center">
                                 <div class="flex-shrink-0 avatar-sm me-3 d-sm-block d-none">
-                                    <img src="{{ $RoomChat->image ? Storage::url($RoomChat->image) : asset('logo/Icon Alpha cinema.svg')}}" alt=""
-                                        class="img-fluid d-block rounded-circle">
+                                    <img src="{{ $RoomChat->image ? Storage::url($RoomChat->image) : asset('logo/Icon Alpha cinema.svg') }}"
+                                        alt="" class="img-fluid d-block rounded-circle">
                                 </div>
                                 <div class="flex-grow-1">
                                     <h5 class="font-size-14 mb-1 text-truncate"><a href="apps-chat.html#"
@@ -749,7 +749,11 @@
         </footer>
     </div>
     <!-- end main content-->
-
+    
+        <script>
+            let roomId = "{{ $RoomChat->id }}";
+        </script>
+    @vite('resources/js/roomChat.js')
 @endsection
 
 @section('script')

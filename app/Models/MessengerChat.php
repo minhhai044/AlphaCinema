@@ -14,4 +14,7 @@ class MessengerChat extends Model
         'user_id',
         'room_chat_id',
     ];
+    public function user(){
+        return $this->belongsTo(User::class);
+    }
 }
