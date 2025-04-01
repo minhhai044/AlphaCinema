@@ -184,7 +184,34 @@ class StatisticalController extends Controller
 
         $totalRevenue = array_sum(array_column($revenues, 'revenue'));
 
+
+        // Truy vấn phim được xem lại nhiều nhất
+        $rewatchQuery = Ticket::query()
+            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
+            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->select(
+                'movies.name as movie_name',
+                DB::raw('COUNT(DISTINCT tickets.id) as rewatch_count'),
+                DB::raw('COUNT(DISTINCT tickets.user_id) as unique_users'),
+                DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as ticket_count')
+            )
+            ->whereNotNull('tickets.user_id')
+            ->groupBy('movies.name', 'movies.id')
+            ->havingRaw('COUNT(DISTINCT tickets.user_id) > 0')
+            ->orderBy('rewatch_count', 'desc');
+
+        $rewatchQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))
+            ->tap($filterClosure);
+
+        $mostRewatchedMovies = $rewatchQuery->get();
+        $mostRewatchedMovie = $mostRewatchedMovies->first();
+
+
         return view('admin.statistical.cinema_revenue', compact(
+            'mostRewatchedMovie',
+            'mostRewatchedMovies',
             'branches',
             'cinemas',
             'top6Movies',
