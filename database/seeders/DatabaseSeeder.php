@@ -856,7 +856,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Gold',
-                'total_spent' => 3000000,
+                'total_spent' => 1000000,
                 'ticket_percentage' => 7,
                 'combo_percentage' => 5,
                 'feedback_percentage' => 3,
@@ -864,7 +864,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Platinum',
-                'total_spent' => 7000000,
+                'total_spent' => 3000000,
                 'ticket_percentage' => 10,
                 'feedback_percentage' => 5,
                 'combo_percentage' => 7,
@@ -872,7 +872,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Diamond',
-                'total_spent' => 10000000,
+                'total_spent' => 5000000,
                 'ticket_percentage' => 15,
                 'feedback_percentage' => 7,
                 'combo_percentage' => 10,
