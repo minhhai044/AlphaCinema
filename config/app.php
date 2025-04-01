@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\ViewRoomChatServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -172,6 +173,7 @@ return [
         Spatie\Permission\PermissionServiceProvider::class,
         Laravel\Sanctum\SanctumServiceProvider::class,
         Laravel\Socialite\SocialiteServiceProvider::class,
+        ViewRoomChatServiceProvider::class
     ])->toArray(),
 
     /*

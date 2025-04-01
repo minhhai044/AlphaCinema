@@ -21,6 +21,7 @@ use App\Http\Controllers\Admin\ComboController;
 use App\Http\Controllers\Admin\MovieController;
 
 use App\Http\Controllers\Admin\ExportController;
+use App\Http\Controllers\Admin\RoomChatController;
 use App\Http\Controllers\Admin\ShowtimeController;
 
 use App\Http\Controllers\Admin\TyperoomController;
@@ -283,3 +284,12 @@ Route::post('/tickets/change-status', [TicketController::class, 'changeStatus'])
 
 
 Route::get('/tickets/{code}/check-exists', [TicketController::class, 'checkExists']);
+
+
+
+Route::group([
+    'prefix' => 'roomchats',  // Tiền tố URL cho tất cả route
+    'as' => 'roomchats.',
+], function () {
+    Route::get('{roomId}/', [RoomChatController::class, 'room'])->name('show');
+});

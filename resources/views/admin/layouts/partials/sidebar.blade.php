@@ -15,7 +15,7 @@
     <div id="sidebar-menu">
         <!-- Left Menu Start -->
         <ul class="metismenu list-unstyled" id="side-menu">
-           
+
 
             <li>
                 <a href="{{ route('admin.index') }}">
@@ -29,7 +29,7 @@
                         <i data-feather="pie-chart"></i>
                         <span data-key="t-service-systems">Thống kê</span>
                     </a>
-                    
+
                     <ul class="sub-menu" aria-expanded="false">
                         <li>
                             <a href="{{ route('admin.statistical.cinemaRevenue') }}">
@@ -281,6 +281,25 @@
                     </ul>
                 </li>
             @endcanany
+
+            <li>
+                <a href="javascript: void(0);" class="has-arrow">
+                    <i data-feather="users"></i>
+
+                    <span data-key="t-service-systems">Quản lý phòng chat</span>
+                </a>
+                <ul class="sub-menu" aria-expanded="false">
+                    @foreach ($RoomChats as $RoomChat)
+                        <li>
+                            <a href="{{ route('admin.roomchats.show', $RoomChat) }}">
+                                <span>{{ $RoomChat->name }}</span>
+                            </a>
+                        </li>
+                    @endforeach
+
+
+                </ul>
+            </li>
         </ul>
     </div>
     <!-- Sidebar -->
