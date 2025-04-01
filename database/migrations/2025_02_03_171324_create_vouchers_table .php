@@ -24,7 +24,7 @@ return new class extends Migration
             $table->bigInteger('limit')->default(0);
             $table->bigInteger('limit_by_user')->default(0);
             $table->boolean('is_active')->default(1)->comment("0 : Ngừng hoạt động , 1 : Hoạt động");
-            $table->boolean('type_voucher')->default(0)->comment("0: voucher seat, 1: voucher food and combo");            $table->timestamps();
+            $table->boolean('type_voucher')->default(0)->comment("0: voucher seat, 1: voucher food and combo");
             $table->timestamps();
         });
     }
