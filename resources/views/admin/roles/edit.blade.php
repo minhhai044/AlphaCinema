@@ -1,10 +1,10 @@
-@extends('admin.layouts.master');
+@extends('admin.layouts.master')
 
 @section('title', 'Cập nhật vai trò')
 
 @section('style')
     <style>
-        .card {
+        /* .card {
             box-shadow: 0px 1px 3px 1px #dedede;
         }
 
@@ -39,7 +39,7 @@
             margin: 2px 0;
             white-space: nowrap;
             justify-content: flex-end;
-        }
+        } */
     </style>
 @endsection
 
@@ -50,8 +50,6 @@
         @method("PUT")
 
         <div class="row">
-
-
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">Cập nhật vai trò</h4>
 
@@ -95,8 +93,13 @@
                                         <label for="account-name" class="form-label">
                                             <span class="text-danger">*</span> Tên vai trò
                                         </label>
-                                        <input class="form-control" type="text" name="name" id="account-name" value="{{ $role->name }}"
+                                        <input class="form-control" type="text" name="name" id="account-name" value="{{ $role->name }}" disabled
                                             placeholder="Nhập tên">
+                                        {{-- <select class="form-select" name="name" id="">
+                                            @foreach ($roles as $item)
+
+                                            @endforeach
+                                        </select> --}}
                                     </div>
                                 </div>
                             </div>

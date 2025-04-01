@@ -31,6 +31,7 @@ return new class extends Migration
             $table->unsignedBigInteger('point')->default(0); // ?
             $table->integer('cinema_id')->nullable(); // ?
             $table->integer('branch_id')->nullable(); // ?
+            $table->boolean('is_active')->default(true); // ?
             $table->softDeletes();
             $table->timestamps();
         });

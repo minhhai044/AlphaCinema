@@ -25,6 +25,7 @@
     </style>
 @endsection
 @section('content')
+
     <div class="row">
         <div class="col-12">
             <div class="d-flex justify-content-between">
@@ -76,8 +77,12 @@
                             <th>Tên</th>
                             <th>Ảnh</th>
                             <th>Email</th>
-                            <th>Chức năng</th>
+                            <th>Quyền</th>
                             <th>Giới tính</th>
+                            @if (auth()->user()->hasRole(['System Admin', 'Quản lý chi nhánh']))
+                                <th>Trạng thái</th>
+                            @endif
+
                             <th>Hành động</th>
                         </tr>
                     </thead>
@@ -114,6 +119,19 @@
                                                 : '<span class="badge bg-danger">Nữ</span>' !!}
                                         </td>
 
+                                        @if (auth()->user()->hasRole(['System Admin', 'Quản lý chi nhánh']))
+                                            <td>
+                                                <div class="form-check form-switch form-switch-md form-switch-success"
+                                                    style="display: flex; justify-content: center;">
+                                                    <input class="form-check-input switch-is-active changeIsActiveUser"
+                                                        type="checkbox" data-user-id="{{ $user->id }}"
+                                                        data-user-type="{{ auth()->user()->type_user }}"
+                                                        {{ $user->is_active === 1 ? 'checked' : '' }}
+                                                        onclick="changeIsActiveUser(event)">
+                                                </div>
+                                            </td>
+                                        @endif
+
                                         <td>
                                             <a href="{{ route('admin.users.show', $user) }}">
                                                 <button title="xem" class="btn btn-success btn-sm" type="button"><i
@@ -127,7 +145,7 @@
                                                     </a>
                                                 @endcan
 
-                                                @can('Xóa tài khoản')
+                                                {{-- @can('Xóa tài khoản')
                                                     <form method="POST" action="{{ route('admin.users.softDestroy', $user) }}"
                                                         class="d-inline-block">
                                                         @csrf
@@ -137,7 +155,7 @@
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
-                                                @endcan
+                                                @endcan --}}
                                             @endif
                                         </td>
                                     </tr>
@@ -173,6 +191,19 @@
                                                 : '<span class="badge bg-danger">Nữ</span>' !!}
                                         </td>
 
+                                        @if (auth()->user()->hasRole(['System Admin', 'Quản lý chi nhánh']))
+                                            <td>
+                                                <div class="form-check form-switch form-switch-md form-switch-success"
+                                                    style="display: flex; justify-content: center;">
+                                                    <input class="form-check-input switch-is-active changeIsActiveUser"
+                                                        type="checkbox" data-user-id="{{ $user->id }}"
+                                                        data-user-type="{{ auth()->user()->type_user }}"
+                                                        {{ $user->is_active === 1 ? 'checked' : '' }}
+                                                        onclick="changeIsActiveUser(event)">
+                                                </div>
+                                            </td>
+                                        @endif
+
                                         <td>
                                             <a href="{{ route('admin.users.show', $user) }}">
                                                 <button title="xem" class="btn btn-success btn-sm" type="button"><i
@@ -181,12 +212,12 @@
                                             @if ($user->hasRole('Nhân viên'))
                                                 @can('Sửa tài khoản')
                                                     <a href="{{ route('admin.users.edit', $user) }}">
-                                                        <button title="xem" class="btn btn-warning btn-sm" type="button"><i
-                                                                class="fas fa-edit"></i></button>
+                                                        <button title="xem" class="btn btn-warning btn-sm"
+                                                            type="button"><i class="fas fa-edit"></i></button>
                                                     </a>
                                                 @endcan
 
-                                                @can('Xóa tài khoản')
+                                                {{-- @can('Xóa tài khoản')
                                                     <form method="POST" action="{{ route('admin.users.softDestroy', $user) }}"
                                                         class="d-inline-block">
                                                         @csrf
@@ -196,7 +227,7 @@
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
-                                                @endcan
+                                                @endcan --}}
                                             @endif
                                         </td>
                                     </tr>
@@ -230,6 +261,19 @@
                                             : '<span class="badge bg-danger">Nữ</span>' !!}
                                     </td>
 
+                                    @if (auth()->user()->hasRole(['System Admin', 'Quản lý chi nhánh']))
+                                        <td>
+                                            <div class="form-check form-switch form-switch-md form-switch-success"
+                                                style="display: flex; justify-content: center;">
+                                                <input class="form-check-input switch-is-active changeIsActiveUser"
+                                                    type="checkbox" data-user-id="{{ $user->id }}"
+                                                    data-user-type="{{ auth()->user()->type_user }}"
+                                                    {{ $user->is_active === 1 ? 'checked' : '' }}
+                                                    onclick="changeIsActiveUser(event)">
+                                            </div>
+                                        </td>
+                                    @endif
+
                                     <td>
                                         <a href="{{ route('admin.users.show', $user) }}">
                                             <button title="xem" class="btn btn-success btn-sm" type="button"><i
@@ -244,7 +288,7 @@
                                                     </a>
                                                 @endcan
 
-                                                @can('Xóa tài khoản')
+                                                {{-- @can('Xóa tài khoản')
                                                     <form method="POST"
                                                         action="{{ route('admin.users.softDestroy', $user) }}"
                                                         class="d-inline-block">
@@ -255,7 +299,7 @@
                                                             <i class="bi bi-trash"></i>
                                                         </button>
                                                     </form>
-                                                @endcan
+                                                @endcan --}}
                                             @endif
                                         @endif
                                     </td>
@@ -289,4 +333,78 @@
 
         <!-- Datatable init js -->
         <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
+
+        <script>
+            var checkbox = null;
+            var userId = null;
+            var is_active = null;
+
+            function changeIsActiveUser(event) {
+                checkbox = event.target;
+                userId = $(checkbox).data('user-id');
+                is_active = checkbox.checked ? 1 : 0;
+
+                showModal();
+            }
+
+            function showModal() {
+                // Kiểm tra nếu modal đã tồn tại trong DOM rồi, nếu chưa thì tạo mới
+                if ($('#confirmChange').length === 0) {
+                    const html = `
+                        <div class="modal fade" id="confirmChange" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="cancelChangeStatus()"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <h5 class="modal-title">Xác nhận thay đổi trạng thái nhân viên</h5>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" onclick="saveChangeStatus()">Xác nhận</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelChangeStatus()">Hủy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    // Thêm modal vào DOM
+                    $('body').append(html);
+                }
+
+                const modalElement = document.getElementById('confirmChange');
+                const modal = new bootstrap.Modal(modalElement);
+                modal.show();
+                $(".modal-backdrop").hide(); // Ẩn backdrop nếu cần
+            }
+
+            // Sử dụng Bootstrap 5 Modal API để hiển thị modal
+            function saveChangeStatus() {
+                // Gửi AJAX request để thay đổi trạng thái
+                $.ajax({
+                    url: `/api/v1/users/change-active`,
+                    method: 'POST',
+                    data: {
+                        user_id: userId,
+                        is_active: parseInt(is_active),
+                    },
+                    success: function(response) {
+                        console.log(response);
+                        const modal = bootstrap.Modal.getInstance(document.getElementById('confirmChange'));
+                        modal.hide(); // Đóng modal sau khi thực hiện thay đổi
+                    },
+                    error: function(xhr) {
+                        const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
+                        alert(errorMessage);
+                    }
+                });
+            }
+
+            function cancelChangeStatus() {
+                checkbox.checked = !checkbox.checked;
+                // Đóng modal
+                const modal = bootstrap.Modal.getInstance(document.getElementById('confirmChange'));
+                modal.hide();
+            }
+        </script>
     @endsection

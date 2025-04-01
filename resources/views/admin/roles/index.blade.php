@@ -33,12 +33,12 @@
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">Danh sách vai trò</h4>
-                <div>
+                {{-- <div>
                     <a href="{{ route('admin.roles.create') }}" class="btn btn-primary waves-effect waves-light">
                         <i class="bx bx-plus me-1"></i>
                         Thêm mới vai trò
                     </a>
-                </div>
+                </div> --}}
             </div>
         </div>
     </div>
@@ -54,7 +54,8 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Tên</th>
-                                    <th>Vai trò</th>
+                                    <th>Quyền</th>
+                                    <th>Trạng thái</th>
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
@@ -90,20 +91,29 @@
                                 quyền</span>
                         @endif
                     </td>
+
+                    <td>
+                        <div class="form-check form-switch form-switch-md form-switch-success"
+                            style="display: flex; justify-content: center;">
+                            <input class="form-check-input switch-is-active changeIsActiveRole" type="checkbox"
+                                data-role-id="{{ $role->id }}" data-user-type="{{ auth()->user()->type_user }}"
+                                {{ $role->is_active === 1 ? 'checked' : '' }} onclick="changeIsActive(event)">
+                        </div>
+                    </td>
                     <td>
                         <a href="{{ route('admin.roles.edit', $role) }}">
                             <button title="xem" class="btn btn-warning btn-sm " type="button"><i
                                     class="fas fa-edit"></i></button>
                         </a>
 
-                        <form method="POST" action="{{ route('admin.roles.destroy', $role) }}" class="d-inline-block">
+                        {{-- <form method="POST" action="{{ route('admin.roles.destroy', $role) }}" class="d-inline-block">
                             @csrf
                             @method('DELETE')
                             <button type="submit" class="btn btn-danger btn-sm"
                                 onclick="return confirm('Bạn có muốn xóa không')">
                                 <i class="bi bi-trash"></i>
                             </button>
-                        </form>
+                        </form> --}}
                     </td>
                     </tr>
                     @endforeach
@@ -114,7 +124,9 @@
         </div>
     </div>
     </div>
-
+    @php
+        $appUrl = env('APP_URL');
+    @endphp
 @endsection
 
 @section('script')
@@ -138,4 +150,78 @@
 
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
+
+    <script>
+        let Url = @json($appUrl);
+        var checkbox = null;
+        var roleId = null;
+        var is_active = null;
+
+        function changeIsActive(event) {
+            checkbox = event.target;
+            roleId = $(checkbox).data('role-id');
+            is_active = checkbox.checked ? 1 : 0;
+            showModal();
+        }
+
+        function showModal() {
+            // Kiểm tra nếu modal đã tồn tại trong DOM rồi, nếu chưa thì tạo mới
+            if ($('#confirmChange').length === 0) {
+                const html = `
+                        <div class="modal fade" id="confirmChange" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="cancelChanges()"></button>
+                                    </div>
+                                    <div class="modal-body text-center">
+                                        <h5 class="modal-title">Xác nhận thay đổi trạng thái</h5>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-primary" onclick="saveChanges()">Xác nhận</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelChanges()">Hủy</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                // Thêm modal vào DOM
+                $('body').append(html);
+            }
+
+            const modalElement = document.getElementById('confirmChange');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+            $(".modal-backdrop").hide(); // Ẩn backdrop nếu cần
+        }
+
+        // Sử dụng Bootstrap 5 Modal API để hiển thị modal
+        function saveChanges() {
+            // Gửi AJAX request để thay đổi trạng thái
+            $.ajax({
+                url: `/api/v1/roles/change-active`,
+                method: 'POST',
+                data: {
+                    role_id: roleId,
+                    is_active: is_active,
+                },
+                success: function(response) {
+                    console.log(response);
+                    const modal = bootstrap.Modal.getInstance(document.getElementById('confirmChange'));
+                    modal.hide(); // Đóng modal sau khi thực hiện thay đổi
+                },
+                error: function(xhr) {
+                    const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
+                    alert(errorMessage);
+                }
+            });
+        }
+
+        function cancelChanges() {
+            checkbox.checked = !checkbox.checked;
+            // Đóng modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('confirmChange'));
+            modal.hide();
+        }
+    </script>
 @endsection
