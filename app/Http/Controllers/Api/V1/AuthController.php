@@ -262,9 +262,9 @@ class AuthController extends Controller
             }
 
             // Lấy rank tiếp theo (rank cao hơn)
-            $nextRank = Rank::where("total_spent", ">", $totalTransaction)
+            $allRanks = Rank::query()
                 ->orderBy("total_spent", "asc")
-                ->first();
+                ->get();
 
             return response()->json([
                 "status" => "success",
@@ -276,7 +276,7 @@ class AuthController extends Controller
                     "created_at" => $created_at
                 ],
                 "rank" => $currentRank,
-                "next_rank" => $nextRank
+                "next_rank" => $allRanks
             ]);
         } catch (\Exception $e) {
 
