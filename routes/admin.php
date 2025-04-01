@@ -262,9 +262,13 @@ Route::group([
     Route::get('/cinemaRevenue', [StatisticalController::class, 'cinemaRevenue'])->name('cinemaRevenue');
     Route::get('/comboRevenue', [StatisticalController::class, 'comboRevenue'])->name('comboRevenue');
     Route::get('/foodRevenue', [StatisticalController::class, 'foodRevenue'])->name('foodRevenue');
+    Route::get('/ticketRevenue', [StatisticalController::class, 'ticketRevenue'])->name('ticketRevenue');
 });
+
+// route cho bộ lọc thống kê
 Route::get('/combo-revenue', [StatisticalController::class, 'comboRevenue'])->name('combo.revenue');
 Route::get('/food-revenue', [StatisticalController::class, 'foodRevenue'])->name('food.revenue');
+Route::get('/ticket-revenue', [StatisticalController::class, 'ticketRevenue'])->name('ticket.revenue');
 
 Route::get('/statistical/cinemas', [StatisticalController::class, 'getCinemasByBranch'])->name('statistical.cinemas');
 // Route::get('/admin/statistical/cinemaRevenue', [App\Http\Controllers\Admin\StatisticalController::class, 'cinemaRevenue'])->name('statistical.cinemaRevenue');
