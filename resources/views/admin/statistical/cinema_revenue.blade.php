@@ -135,26 +135,33 @@
                     {{ $message }}
                 </div>
             @else
-                            <!-- Biểu đồ Doanh thu và Số vé -->
-                            <div class="card mt-4 mb-4">
-                                <div class="card-body">
-                                    <canvas id="revenueChart" style="height: 400px; width: 100%;"></canvas>
-                                </div>
-                            </div>
+                <!-- Biểu đồ Doanh thu và Số vé -->
+                <div class="card mt-4 mb-4">
+                    <div class="card-body">
+                        <canvas id="revenueChart" style="height: 400px; width: 100%;"></canvas>
+                    </div>
+                </div>
 
-                            <!-- Biểu đồ Số lượng suất chiếu -->
-                            <div class="card mt-4 mb-4">
-                                <div class="card-body">
-                                    <canvas id="showtimeChart" style="height: 400px; width: 100%;"></canvas>
-                                </div>
-                            </div>
-                            
-                            {{-- phim được xem lại --}}
-                            <div class="card mt-4 mb-4">
-                                <div class="card-body">
-                                    <canvas id="rewatchChart" style="height: 400px; width: 100%;"></canvas>
-                                </div>
-                            </div>
+                <!-- Biểu đồ Số lượng suất chiếu -->
+                <div class="card mt-4 mb-4">
+                    <div class="card-body">
+                        <canvas id="showtimeChart" style="height: 400px; width: 100%;"></canvas>
+                    </div>
+                </div>
+
+                {{-- phim được xem lại --}}
+                <div class="card mt-4 mb-4">
+                    <div class="card-body">
+                        <canvas id="rewatchChart" style="height: 400px; width: 100%;"></canvas>
+                    </div>
+                </div>
+
+                <!-- Biểu đồ Tỉ lệ lấp đầy -->
+                <div class="card mt-4 mb-4">
+                    <div class="card-body">
+                        <canvas id="fillRateChart" style="height: 400px; width: 100%;"></canvas>
+                    </div>
+                </div>
             @endif
 
             <div class="row">
@@ -264,6 +271,72 @@
                 @endif
             });
         </script>
+
+        {{-- Biểu đồ Tỉ lệ lấp đầy --}}
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        @if ($fillRates && $fillRates->isNotEmpty())
+            var fillRateCtx = document.getElementById('fillRateChart').getContext('2d');
+            var fillRateData = @json($fillRates);
+            if (fillRateData && fillRateData.length > 0) {
+                var labels = fillRateData.map(item => item.movie_name);
+                var fillRateValues = fillRateData.map(item => item.fill_rate);
+
+                new Chart(fillRateCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Tỷ lệ lấp đầy (%)',
+                            data: fillRateValues,
+                            backgroundColor: 'rgba(37, 44, 194, 1)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 1,
+                            barThickness: 100,
+                            borderRadius: 5
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100,
+                                title: {
+                                    display: true,
+                                    text: 'Tỷ lệ lấp đầy (%)',
+                                    font: { size: 14 }
+                                },
+                                ticks: {
+                                    callback: value => value + '%'
+                                }
+                            },
+                            x: {
+                                title: {
+                                    display: true,
+                                    text: 'Phim',
+                                    font: { size: 14 }
+                                },
+                                ticks: {
+                                    maxRotation: 45,
+                                    minRotation: 45
+                                }
+                            }
+                        },
+                        plugins: {
+                            title: {
+                                display: true,
+                                text: 'Tỷ Lệ Lấp Đầy Theo Phim',
+                                font: { size: 18, weight: 'bold' }
+                            }
+                        }
+                    }
+                });
+            }
+        @endif
+    });
+</script>
 
 
         <script>

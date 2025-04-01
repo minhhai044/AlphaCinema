@@ -209,8 +209,37 @@ class StatisticalController extends Controller
         $mostRewatchedMovie = $mostRewatchedMovies->first();
 
 
+        // Truy vấn tỷ lệ lấp đầy theo phim
+        $fillRateQuery = Ticket::query()
+            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
+            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->join('rooms', 'showtimes.room_id', '=', 'rooms.id')
+            ->select(
+                'movies.name as movie_name',
+                DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as seats_sold'),
+                DB::raw('SUM(JSON_LENGTH(rooms.seat_structure)) as total_seats'), 
+                DB::raw('ROUND(
+            (SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) /
+            SUM(JSON_LENGTH(rooms.seat_structure))) * 100,
+            2
+        ) as fill_rate')
+            )
+            ->where('rooms.is_active', 1)
+            ->groupBy('movies.name', 'movies.id')
+            ->orderBy('fill_rate', 'desc');
+
+        // Áp dụng phân quyền và bộ lọc thời gian
+        $fillRateQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))
+            ->tap($filterClosure);
+
+        // Lấy dữ liệu tỷ lệ lấp đầy
+        $fillRates = $fillRateQuery->get();
+
         return view('admin.statistical.cinema_revenue', compact(
             'mostRewatchedMovie',
+            'fillRates',
             'mostRewatchedMovies',
             'branches',
             'cinemas',
