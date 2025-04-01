@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\Admin\RankController;
+use App\Http\Controllers\Admin\RoleController;
+use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\Api\SiteSettingController;
 use App\Http\Controllers\Api\UserController;
 use App\Http\Controllers\Api\V1\AuthController;
@@ -22,9 +24,9 @@ Route::prefix('users')->group(function () {
 
 /**
  * Route Api Auth
- * 
+ *
  * signin : Đăng nhập
- * 
+ *
  * signup : Đăng ký tài khoản
  */
 
@@ -33,13 +35,13 @@ Route::post('signup', [AuthController::class, 'signUp']);
 
 /**
  * Route Api showtime
- * 
+ *
  * showtime : Lấy danh sách suất chiếu theo ngày
- * 
+ *
  * {slug}/movieShowTimes : Chi tiết showtime theo phim By Slug
- * 
+ *
  * listMovies : Danh sách movie
- * 
+ *
  * {slug}/showtimeDetail : Xem chi tiết suất chiếu
  */
 
@@ -51,7 +53,7 @@ Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail'
 
 /**
  * Api slideshows
- * 
+ *
  * slideshows : Lấy image slide
  */
 Route::get('/slideshows', [SlideShowController::class, 'index']);
@@ -59,19 +61,19 @@ Route::get('/slideshows', [SlideShowController::class, 'index']);
 
 /**
  * Api branchs
- * 
+ *
  * branchs : Lấy danh sách chi nhánh + rạp
- * 
+ *
  * get-cinemas : Lấy danh sách rạp
- * 
+ *
  */
 Route::get('/branchs',      [BranchController::class, 'index']);
 Route::get('/get-cinemas',  [TicketController::class, 'getCinemas']);
 /**
  * Api rank
- * 
+ *
  * ranksJson : Lấy rank
- * 
+ *
  */
 Route::get('/ranksJson', [RankController::class, 'getRanksJson']);
 
@@ -87,13 +89,13 @@ Route::middleware('auth:sanctum')->group(function () {
 
     Route::get('/ticket-by-user', [TicketController::class, 'getTicketByUser']);
     Route::get('/voucher', [AuthController::class, 'getUserVoucher']);
-   
+
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
 
-   
+
 
     Route::post('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
-    
+
 });
 
 Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
@@ -113,3 +115,6 @@ Route::get('/checkout', [PaymentController::class, 'checkout']);
 Route::post('send-otp', [AuthController::class, 'sendOtp']);
 Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);
+
+Route::post('roles/change-active', [RoleController::class, 'changActive']);
+Route::post('users/change-active', [AdminUserController::class, 'changActiveStatus']);

@@ -65,6 +65,10 @@ class AuthController extends Controller
                 return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
             }
 
+            if($user->is_active == false){
+                return $this->errorResponse('Tài khoản đã bị khóa', Response::HTTP_UNAUTHORIZED);
+            }
+
             // Tạo token xác thực
             $token = $user->createToken('UserToken')->plainTextToken;
 
@@ -349,9 +353,9 @@ class AuthController extends Controller
     }
     /**
      * Gửi mail kèm mã otp dựa vào email người dùng nhập vào
-     * 
+     *
      * @param \Illuminate\Http\Request $request
-     * 
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function sendOtp(SendOtpRequest $request)
@@ -406,9 +410,9 @@ class AuthController extends Controller
     }
     /**
      * Thay đổi password dựa vào mã otp và email người dùng yêu cầu reset
-     * 
+     *
      * @param \Illuminate\Http\Request $request
-     * 
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function resetPassword(Request $request)
