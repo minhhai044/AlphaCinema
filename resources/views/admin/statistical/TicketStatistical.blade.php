@@ -19,8 +19,7 @@
         </div>
 
         <!-- Form lọc -->
-        <form method="GET" action="{{ route('admin.ticket.revenue') }}" class="d-flex align-items-center gap-2"
-            id="filterForm">
+        <form method="GET" action="{{ route('admin.ticket.revenue') }}" class="d-flex align-items-center gap-2" id="filterForm">
             <!-- Bộ lọc chi nhánh -->
             @if (auth()->user()->hasRole('System Admin'))
                 <div class="input-group input-group-sm">
@@ -106,8 +105,7 @@
                 <select name="month" class="form-select border-0 shadow-sm">
                     <option value="" {{ !$selectedMonth ? 'selected' : '' }}>Chưa chọn</option>
                     @for ($i = 1; $i <= 12; $i++)
-                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng
-                            {{ $i }}</option>
+                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng {{ $i }}</option>
                     @endfor
                 </select>
             </div>
@@ -119,73 +117,21 @@
                 </span>
                 <select name="year" class="form-select border-0 shadow-sm">
                     @for ($i = 2020; $i <= Carbon\Carbon::now()->year; $i++)
-                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm
-                            {{ $i }}</option>
+                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm {{ $i }}</option>
                     @endfor
                 </select>
             </div>
 
             <!-- Nút lọc -->
-            <button type="submit"
-                class="btn btn-sm btn-success rounded-circle p-2 d-flex align-items-center justify-content-center"
-                title="Lọc dữ liệu" style="width: 36px; height: 36px;">
+            <button type="submit" class="btn btn-sm btn-success rounded-circle p-2 d-flex align-items-center justify-content-center" title="Lọc dữ liệu" style="width: 36px; height: 36px;">
                 <i class="bi bi-funnel fs-5"></i>
             </button>
 
             <!-- Nút reset -->
-            <button type="button"
-                class="btn btn-sm btn-primary rounded-circle p-2 d-flex align-items-center justify-content-center"
-                onclick="resetFilters()" title="Reset bộ lọc" style="width: 36px; height: 36px;">
+            <button type="button" class="btn btn-sm btn-primary rounded-circle p-2 d-flex align-items-center justify-content-center" onclick="resetFilters()" title="Reset bộ lọc" style="width: 36px; height: 36px;">
                 <i class="bi bi-arrow-counterclockwise fs-5"></i>
             </button>
         </form>
-
-        <!-- Cards Section -->
-        <div class="row g-4 mb-4 mt-2">
-            <!-- Tổng Vé Bán Ra -->
-            <div class="col-xl-3 col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted text-uppercase">Tổng Vé Bán Ra</h6>
-                        <h4 class="mb-2">104</h4>
-                        <p class="text-muted small">Từ 20-02-2025 đến 31-03-2025</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Trung Bình/Ngày -->
-            <div class="col-xl-3 col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted text-uppercase">Trung Bình/Ngày</h6>
-                        <h4 class="mb-2">3.25</h4>
-                        <p class="text-muted small">Số vé trung bình mỗi ngày</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Giờ Cao Điểm -->
-            <div class="col-xl-3 col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted text-uppercase">Giờ Cao Điểm</h6>
-                        <h4 class="mb-2">07:00</h4>
-                        <p class="text-muted small">Giờ bán vé nhỉnh nhất</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Tỷ Lệ Lấp Đầy -->
-            <div class="col-xl-3 col-md-6">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="text-muted text-uppercase">Tỷ Lệ Lấp Đầy</h6>
-                        <h4 class="mb-2">1.37%</h4>
-                        <p class="text-muted small">Tỷ lệ ghế đã đặt tại rạp Gò Vấp</p>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <!-- Charts Section -->
         <div class="row g-4 mb-4">
@@ -194,7 +140,16 @@
                 <div class="card shadow-sm">
                     <div class="card-body">
                         <h6 class="text-muted text-uppercase mb-3">Xu Hướng Bán Vé</h6>
-                        <p class="text-muted small mb-3">Số lượng vé bán ra (28/02/2025 - 31/03/2025)</p>
+                        <p class="text-muted small mb-3">
+                            Số lượng vé bán ra 
+                            @if($date)
+                                ngày {{ Carbon\Carbon::parse($date)->format('d/m/Y') }}
+                            @elseif($selectedMonth && $selectedYear)
+                                tháng {{ $selectedMonth }}/{{ $selectedYear }}
+                            @else
+                                hôm nay {{ $today->format('d/m/Y') }}
+                            @endif
+                        </p>
                         <div id="ticketTrendChart" style="width: 100%; height: 300px;"></div>
                     </div>
                 </div>
@@ -259,74 +214,37 @@
     <!-- Chart Initialization -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // Định nghĩa bảng màu tùy chỉnh cho Highcharts (áp dụng cho toàn bộ biểu đồ)
+            // Định nghĩa bảng màu tùy chỉnh cho Highcharts
             Highcharts.setOptions({
                 colors: ['#483D8B', '#4682B4', '#20B2AA', '#98FB98', '#FFDAB9']
             });
-            // Xu Hướng Đặt Vé (Line Chart)
+
+            // 1. Xu Hướng Bán Vé (Line Chart)
             Highcharts.chart('ticketTrendChart', {
-                chart: {
-                    type: 'line'
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: null
-                },
-                xAxis: {
-                    categories: ['08:03', '10:03', '12:03', '14:03', '16:03', '20:03', '22:03', '28:03']
-                },
-                yAxis: {
-                    title: {
-                        text: null
-                    },
-                    max: 25
-                },
+                chart: { type: 'line' },
+                credits: { enabled: false },
+                title: { text: null },
+                xAxis: { categories: @json($ticketTrendData['categories']) },
+                yAxis: { title: { text: null } },
                 series: [{
                     name: 'Số vé',
-                    data: [15, 10, 5, 5, 5, 20, 10, 5],
-                    color: '#191970' // Màu chủ đạo
+                    data: @json($ticketTrendData['data']),
+                    color: '#191970'
                 }],
                 plotOptions: {
-                    line: {
-                        marker: {
-                            enabled: true
-                        }
-                    }
+                    line: { marker: { enabled: true } }
                 }
             });
 
-            // Top Phim Bán Chạy (Pie Chart) - Random màu, có #191970
+            // 2. Top Phim Bán Chạy (Pie Chart)
             Highcharts.chart('topMoviesChart', {
-                chart: {
-                    type: 'pie'
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: null
-                },
+                chart: { type: 'pie' },
+                credits: { enabled: false },
+                title: { text: null },
                 series: [{
                     name: 'Số vé',
-                    colorByPoint: true, // Random màu từ bảng màu đã định nghĩa
-                    data: [{
-                        name: 'Nhí Gái Tiên',
-                        y: 44.3
-                    }, {
-                        name: 'Nghi Trước Quy',
-                        y: 28.6
-                    }, {
-                        name: 'Cậu Nhí Phiêu Lưu',
-                        y: 14
-                    }, {
-                        name: 'Sát Thủ Vùng Cực Hạn',
-                        y: 7.7
-                    }, {
-                        name: 'Lạc Trí',
-                        y: 5.4
-                    }]
+                    colorByPoint: true,
+                    data: @json($topMoviesData)
                 }],
                 plotOptions: {
                     pie: {
@@ -338,17 +256,11 @@
                 }
             });
 
-            // Phân Loại Vé (Donut Chart) - Random màu, có #191970
+            // 3. Phân Loại Vé (Donut Chart)
             Highcharts.chart('ticketTypeChart', {
-                chart: {
-                    type: 'pie'
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: null
-                },
+                chart: { type: 'pie' },
+                credits: { enabled: false },
+                title: { text: null },
                 plotOptions: {
                     pie: {
                         innerSize: '50%',
@@ -360,82 +272,43 @@
                 },
                 series: [{
                     name: 'Số vé',
-                    colorByPoint: true, // Random màu từ bảng màu đã định nghĩa
-                    data: [{
-                        name: 'GH VIP',
-                        y: 69.2
-                    }, {
-                        name: 'GH Thường',
-                        y: 27.7
-                    }, {
-                        name: 'GH Đôi',
-                        y: 3.1
-                    }]
+                    colorByPoint: true,
+                    data: @json($ticketTypeData)
                 }]
             });
 
-            // Giờ Cao Điểm (Bar Chart) - Random màu, có #191970
+            // 4. Giờ Cao Điểm (Bar Chart)
             Highcharts.chart('peakHoursChart', {
-                chart: {
-                    type: 'column'
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: null
-                },
-                xAxis: {
-                    categories: ['07:00', '10:00', '08:00', '12:00', '11:00']
-                },
-                yAxis: {
-                    title: {
-                        text: null
-                    },
-                    max: 60
-                },
+                chart: { type: 'column' },
+                credits: { enabled: false },
+                title: { text: null },
+                xAxis: { categories: @json($peakHoursData['categories']) },
+                yAxis: { title: { text: null } },
                 series: [{
                     name: 'Số vé',
-                    data: [50, 15, 10, 5, 3]
+                    data: @json($peakHoursData['data']),
+                    colorByPoint: true
                 }],
                 plotOptions: {
-                    column: {
-                        colorByPoint: true, // Random màu từ bảng màu đã định nghĩa
-                        dataLabels: {
-                            enabled: false
-                        }
-                    }
+                    column: { dataLabels: { enabled: false } }
                 }
             });
 
-            // Tỷ Lệ Lấp Đầy Rạp (Grouped Bar Chart)
+            // 5. Tỷ Lệ Lấp Đầy Rạp (Grouped Bar Chart)
             Highcharts.chart('fillRateChart', {
-                chart: {
-                    type: 'column'
-                },
-                credits: {
-                    enabled: false
-                },
-                title: {
-                    text: null
-                },
-                xAxis: {
-                    categories: ['Gò Vấp', 'Mỹ Đình', 'Hà Đông']
-                },
-                yAxis: {
-                    title: {
-                        text: null
-                    },
-                    max: 100
-                },
+                chart: { type: 'column' },
+                credits: { enabled: false },
+                title: { text: null },
+                xAxis: { categories: @json($fillRateData['categories']) },
+                yAxis: { title: { text: null }, max: 100 },
                 series: [{
                     name: 'GH đã đặt',
-                    data: [1, 1, 0],
-                    color: '#483D8B', // Màu chủ đạo
+                    data: @json($fillRateData['seats_sold']),
+                    color: '#483D8B'
                 }, {
                     name: 'GH trống',
-                    data: [99, 99, 100],
-                    color: '#483D8B',  // Tông nhạt hơn
+                    data: @json($fillRateData['seats_empty']),
+                    color: '#B0C4DE'
                 }],
                 plotOptions: {
                     column: {
@@ -448,10 +321,12 @@
                 }
             });
 
+            // Hàm reset bộ lọc
             function resetFilters() {
                 window.location.href = "{{ route('admin.ticket.revenue') }}";
             }
         });
+
         // JavaScript động cho System Admin
         document.addEventListener('DOMContentLoaded', function() {
             const branchSelect = document.querySelector('select[name="branch_id"]');
@@ -462,16 +337,12 @@
                 if (branchSelect && cinemaSelect) {
                     branchSelect.addEventListener('change', function() {
                         const branchId = this.value;
-                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' :
-                                '') +
-                            '>Tất cả rạp</option>';
+                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') + '>Tất cả rạp</option>';
                         if (branchId && branchesRelation[branchId]) {
                             const cinemas = branchesRelation[branchId];
                             for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
-                                const isSelected = cinemaId == "{{ $cinemaId }}" ?
-                                    'selected' : '';
-                                cinemaSelect.innerHTML +=
-                                    `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
+                                const isSelected = cinemaId == "{{ $cinemaId }}" ? 'selected' : '';
+                                cinemaSelect.innerHTML += `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
                             }
                         }
                     });
@@ -484,52 +355,17 @@
     </script>
 
     <style>
-        .card {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .card-body {
-            padding: 1.5rem;
-        }
-
-        h6 {
-            font-size: 0.9rem;
-            font-weight: 600;
-        }
-
-        h4 {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #2C3E50;
-        }
-
-        .text-muted {
-            font-size: 0.85rem;
-        }
-
-        .input-group-sm .form-control,
-        .input-group-sm .form-select {
-            font-size: 0.9rem;
-        }
-
-        .btn-sm {
-            font-size: 0.9rem;
-        }
-
+        .card { border: none; border-radius: 10px; box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); }
+        .card-body { padding: 1.5rem; }
+        h6 { font-size: 0.9rem; font-weight: 600; }
+        h4 { font-size: 1.5rem; font-weight: 700; color: #2C3E50; }
+        .text-muted { font-size: 0.85rem; }
+        .input-group-sm .form-control, .input-group-sm .form-select { font-size: 0.9rem; }
+        .btn-sm { font-size: 0.9rem; }
         @media (max-width: 768px) {
-            .card-body {
-                padding: 1rem;
-            }
-
-            h4 {
-                font-size: 1.2rem;
-            }
-
-            .text-muted {
-                font-size: 0.75rem;
-            }
+            .card-body { padding: 1rem; }
+            h4 { font-size: 1.2rem; }
+            .text-muted { font-size: 0.75rem; }
         }
     </style>
 @endsection
