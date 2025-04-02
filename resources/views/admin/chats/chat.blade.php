@@ -749,14 +749,43 @@
         </footer>
     </div>
     <!-- end main content-->
-    
-        <script>
-            let roomId = "{{ $RoomChat->id }}";
-        </script>
-    @vite('resources/js/roomChat.js')
+
+    <script>
+        let roomId = "{{ $RoomChat->id }}";
+    </script>
+    {{-- @vite('resources/js/roomChat.js') --}}
+
+
 @endsection
 
 @section('script')
 
+    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.15.0/dist/echo.iife.js"></script>
 
+    <script>
+        window.Echo = new Echo({
+            broadcaster: 'pusher',
+            key: '{{ env('PUSHER_APP_KEY') }}',
+            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+            forceTLS: true,
+            authEndpoint: '/broadcasting/auth',
+            auth: {
+                headers: {
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }
+        });
+        window.Echo.join('chat.' + roomId)
+            .here(users => {
+                console.log(users);
+            })
+            .joining(user => {
+                console.log(user);
+
+            })
+            .leaving(user => {
+                console.log(user);
+            })
+    </script>
 @endsection

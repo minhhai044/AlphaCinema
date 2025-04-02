@@ -29,7 +29,9 @@ return [
     */
 
     'connections' => [
-
+        'multi' => [
+            'driver' => 'multi', // Laravel sẽ dùng key này để gọi app('broadcast.driver.multi')
+        ],
         'reverb' => [
             'driver' => 'reverb',
             'key' => env('REVERB_APP_KEY'),
@@ -61,7 +63,7 @@ return [
                 'encrypted' => true,
                 'useTLS' => env('PUSHER_SCHEME', 'https') === 'https',
                 // 'useTLS' => true,
-                'timeout' => 1,
+                'timeout' => 10,
             ],
             'client_options' => [
                 // Guzzle client options: https://docs.guzzlephp.org/en/stable/request-options.html

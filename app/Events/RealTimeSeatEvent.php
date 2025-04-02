@@ -24,7 +24,11 @@ class RealTimeSeatEvent implements ShouldBroadcastNow
         $this->status = $status;
         $this->user_id = $user_id;
     }
-
+    // public function broadcastVia()
+    // {
+    //     Log::info('✅ broadcastVia được gọi cho RealTimeSeatEvent');
+    //     return app(\Illuminate\Contracts\Broadcasting\Factory::class)->driver('reverb');
+    // }
     public function broadcastOn()
     {
         return new Channel('showtime');
