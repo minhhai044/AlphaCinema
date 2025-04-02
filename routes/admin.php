@@ -183,11 +183,6 @@ Route::group([
     // Xóa mềm user (soft delete)
     Route::delete('{user}', [UserController::class, 'softDestroy'])->name('softDestroy');
 
-    // Xóa vĩnh viễn user
-    // Route::delete('{users}/forceDestroy', [UserController::class, 'forceDestroy'])->name('forceDestroy');
-
-    // Khôi phục user đã xóa mềm
-    // Route::get('{users}/restore', [UserController::class, 'restore'])->name('restore');
 
     // Hiển thị chi tiết user phải khai báo cuối cùng trong route
     Route::get('{user}', [UserController::class, 'show'])->name('show');
