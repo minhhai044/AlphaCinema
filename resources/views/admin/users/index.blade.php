@@ -232,7 +232,7 @@
                                         </td>
                                     </tr>
                                 @endif
-                            @else
+                            @elseif(auth()->user()->hasRole('System Admin'))
                                 <tr>
                                     <td>{{ $user->id }}</td>
                                     <td>{{ $user->name }}</td>
@@ -261,18 +261,18 @@
                                             : '<span class="badge bg-danger">Nữ</span>' !!}
                                     </td>
 
-                                    @if (auth()->user()->hasRole(['System Admin', 'Quản lý chi nhánh']))
-                                        <td>
-                                            <div class="form-check form-switch form-switch-md form-switch-success"
-                                                style="display: flex; justify-content: center;">
-                                                <input class="form-check-input switch-is-active changeIsActiveUser"
-                                                    type="checkbox" data-user-id="{{ $user->id }}"
-                                                    data-user-type="{{ auth()->user()->type_user }}"
-                                                    {{ $user->is_active === 1 ? 'checked' : '' }}
-                                                    onclick="changeIsActiveUser(event)">
-                                            </div>
-                                        </td>
-                                    @endif
+
+                                    <td>
+                                        <div class="form-check form-switch form-switch-md form-switch-success"
+                                            style="display: flex; justify-content: center;">
+                                            <input class="form-check-input switch-is-active changeIsActiveUser"
+                                                type="checkbox" data-user-id="{{ $user->id }}"
+                                                data-user-type="{{ auth()->user()->type_user }}"
+                                                {{ $user->is_active === 1 ? 'checked' : '' }}
+                                                onclick="changeIsActiveUser(event)">
+                                        </div>
+                                    </td>
+
 
                                     <td>
                                         <a href="{{ route('admin.users.show', $user) }}">

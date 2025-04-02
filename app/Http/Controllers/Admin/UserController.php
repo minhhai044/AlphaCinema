@@ -66,6 +66,10 @@ class UserController extends Controller
     {
         $data = $userRequest->validated();
 
+        if (!empty($data['cinema_id'])) {
+            $data = $userRequest->except('branch_id');
+        }
+
         $data['type_user'] = 1;
         if (auth()->user()->hasRole('Quản lý cơ sở')) {
             $data['cinema_id'] = auth()->user()->cinema_id;
@@ -128,9 +132,13 @@ class UserController extends Controller
 
         $data = $userRequest->validated();
         // dd($data);
-        $data['type_user'] = 1;
 
-        // dd($data);
+
+        if (!empty($data['cinema_id'])) {
+            $data = $userRequest->except('branch_id');
+        }
+
+        $data['type_user'] = 1;
 
         $result = $this->userService->updateUser($id, $data);
 
@@ -167,9 +175,10 @@ class UserController extends Controller
         }
     }
 
-    public function changActiveStatus(Request $request){
+    public function changActiveStatus(Request $request)
+    {
         try {
-            $user= User::find($request->user_id);
+            $user = User::find($request->user_id);
             // return response()->json($request);
             if (!$user) {
                 return response()->json(['message' => 'ROLE không tồn tại'], 404);

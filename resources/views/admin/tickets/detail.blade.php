@@ -78,7 +78,6 @@
             {{-- <a href="{{ route('admin.tickets.index') }}" class="btn btn-primary mb-4">
                 <i class="bi bi-arrow-left me-2"></i> Quay lại
             </a> --}}
-
             <div class="card shadow-sm ">
                 <div class="card-header bg-light-subtle">
                     <div class="row">
@@ -271,86 +270,104 @@
     </div>
 
     <div id="ticketContainer" class="d-none">
-        <div class="ticket-item mb-3">
-            <h3 class="text-center fw-bold pb-3">Hóa Đơn Đồ Ăn</h3>
-            <div class="mb-1">
-                <div class="mb-1 fs-5 fw-semibold">Chi nhánh công ty Alpha Cinema tại {{ $ticketData['branch']['name'] }}
+        @if (!empty($ticketData['combos']) || !empty($ticketData['foods']))
+            <div class="ticket-item mb-3">
+                <h3 class="text-center fw-bold pb-3">Hóa Đơn Đồ Ăn</h3>
+                <div class="mb-1">
+                    <div class="mb-1 fs-5 fw-semibold">Chi nhánh công ty Alpha Cinema tại
+                        {{ $ticketData['branch']['name'] }}
+                    </div>
+                    <div class="mb-1 ">MST: 012147901412</div>
+                    <div>Nhân viên in vé: {{ auth()->user()->name }} </div>
                 </div>
-                <div class="mb-1 ">MST: 012147901412</div>
-                <div>Nhân viên in vé: {{ auth()->user()->name }} </div>
-            </div>
-            <hr class="dashed-hr">
-            <div class="mb-1">
-                <h5 class="fw-semibold">Alpha Cinema {{ $ticketData['cinema']['name'] }}</h5>
-                <div class="mb-1">{{ $ticketData['cinema']['address'] }}</div>
-            </div>
-
-            <div class="my-3">
-                <hr class="dashed-double">
-                <hr class="dashed-double">
-            </div>
-
-            @forelse ($ticketData['combos'] as $combo)
-                <div class="row">
-                    <div class="fw-semibold col-6">{{ $combo['name'] }}</div>
-                    <div class="col-2 text-center">{{ $combo['quantity'] }}</div>
-                    <div class="col-4 text-end">{{ number_format($combo['total_price'], 0, '.', '.') }} </div>
+                <hr class="dashed-hr">
+                <div class="mb-1">
+                    <h5 class="fw-semibold">Alpha Cinema {{ $ticketData['cinema']['name'] }}</h5>
+                    <div class="mb-1">{{ $ticketData['cinema']['address'] }}</div>
                 </div>
 
-                <div class="row mb-1">
-                    @forelse ($combo['foods'] as $item)
-                        @php
-                            preg_match('/^(.*?)\s*\(SL:\s*(\d+)\)/', $item, $matches);
-                        @endphp
-                        <div class="col-6 ps-4"> • {{ $matches[1] ?? '' }}</div>
-                        <div class="col-2 text-center">{{ $matches[2] ?? 0 }}</div>
-                    @empty
-                        <div></div>
-                    @endforelse
+                <div class="my-3">
+                    <hr class="dashed-double">
+                    <hr class="dashed-double">
                 </div>
 
-            @empty
-                <div class="col-12 text-center text-muted py-3"></div>
-            @endforelse
+                @forelse ($ticketData['combos'] as $combo)
+                    <div class="row">
+                        <div class="fw-semibold col-6">{{ $combo['name'] }}</div>
+                        <div class="col-2 text-center">{{ $combo['quantity'] }}</div>
+                        <div class="col-4 text-end">{{ number_format($combo['total_price'], 0, '.', '.') }} </div>
+                    </div>
 
-            @forelse ($ticketData['foods'] as $food)
-                <div class="row">
-                    <div class="fw-semibold col-6">{{ $food['name'] }}</div>
-                    <div class="col-2 text-center">{{ $food['quantity'] }}</div>
-                    <div class="col-4 text-end">{{ number_format($food['total_price'], 0, '.', '.') }} </div>
+                    <div class="row mb-1">
+                        @forelse ($combo['foods'] as $item)
+                            @php
+                                preg_match('/^(.*?)\s*\(SL:\s*(\d+)\)/', $item, $matches);
+                            @endphp
+                            <div class="col-6 ps-4"> • {{ $matches[1] ?? '' }}</div>
+                            <div class="col-2 text-center">{{ $matches[2] ?? 0 }}</div>
+                        @empty
+                            <div></div>
+                        @endforelse
+                    </div>
+
+                @empty
+                    <div class="col-12 text-center text-muted py-3"></div>
+                @endforelse
+
+                @forelse ($ticketData['foods'] as $food)
+                    <div class="row">
+                        <div class="fw-semibold col-6">{{ $food['name'] }}</div>
+                        <div class="col-2 text-center">{{ $food['quantity'] }}</div>
+                        <div class="col-4 text-end">{{ number_format($food['total_price'], 0, '.', '.') }} </div>
+                    </div>
+                @empty
+                    <div class="col-12 text-center text-muted py-3"></div>
+                @endforelse
+
+                <div class="my-3">
+                    <hr class="dashed-double">
+                    <hr class="dashed-double">
                 </div>
-            @empty
-                <div class="col-12 text-center text-muted py-3"></div>
-            @endforelse
 
-            <div class="my-3">
-                <hr class="dashed-double">
-                <hr class="dashed-double">
+
+
+                @if (
+                    !empty($ticketData['voucher_discount_price']) &&
+                        isset($ticketData['voucher_type']) &&
+                        $ticketData['voucher_type'] == 1)
+                    <div class="mb-1 row">
+                        <div class="fw-medium col-6">Giảm giá</div>
+                        <div class="fw-medium col-2 text-center">VNĐ</div>
+                        <div class="col-4 text-end">
+                            {{ number_format($ticketData['voucher_discount_price'], 0, '.', '.') }}
+                        </div>
+                    </div>
+                @endif
+
+                @php
+                    $amount = $ticketData['total_amount']; // ví dụ: "290.000 VND"
+                    $parts = explode(' ', $amount); // [0] => "290.000", [1] => "VND"
+                    $discountFood =
+                        !empty($ticketData['voucher_type']) && $ticketData['voucher_type'] == 1
+                            ? $ticketData['voucher_discount_price']
+                            : 0; // Nếu không thỏa mãn điều kiện thì gán 0
+                @endphp
+
+                <div class="mb-1 row">
+                    <div class="fw-bold col-6 fs-5">Tổng tiền</div>
+                    <div class="fw-medium col-2 text-center">VNĐ</div>
+                    <div class="fw-medium fs-5 col-4 text-end">
+                        {{ number_format($ticketData['total_combo'] + $ticketData['total_food'] - $discountFood, 0, '.', '.') }}
+                    </div>
+                </div>
+
+                <hr class="dashed-hr">
+                <div class="mb-1 d-flex flex-column align-items-center text-center">
+                    <div> {!! $ticketData['barcode'] !!} </div>
+                    <div class="">893 {{ $ticketData['code'] }}</div>
+                </div>
             </div>
-
-            <div class="mb-1 row">
-                <div class="fw-medium col-6">Giảm giá</div>
-                <div class="fw-medium col-2 text-center">VNĐ</div>
-                <div class="col-4 text-end">{{ $ticketData['voucher_discount'] }}</div>
-            </div>
-
-            @php
-                $amount = $ticketData['total_amount']; // ví dụ: "290.000 VND"
-                $parts = explode(' ', $amount); // [0] => "290.000", [1] => "VND"
-            @endphp
-
-            <div class="mb-1 row">
-                <div class="fw-bold col-6 fs-5">Tổng tiền</div>
-                <div class="fw-medium col-2 text-center">VNĐ</div>
-                <div class="fw-medium fs-5 col-4 text-end">{{ number_format($ticketData['total_combo'] + $ticketData['total_food'], 0 , '.', '.') }}</div>
-            </div>
-
-            <hr class="dashed-hr">
-            <div class="mb-1 d-flex flex-column align-items-center text-center">
-                <div> {!! $ticketData['barcode'] !!} </div>
-                <div class="">893 {{ $ticketData['code'] }}</div>
-            </div>
-        </div>
+        @endif
 
         @forelse ($ticketData['seats']['details'] as $ticket)
             <div class="ticket-item mb-3 py-3 ${index > 0 ? 'mt-4' : ''}">
@@ -408,18 +425,42 @@
                     $parts = explode(' ', $amount);
                 @endphp
 
-                <div class="mb-1 row me-2">
-                    <div class="fw-medium col-8 ">Khuyến mãi </div>
-                    <div class="fw-medium fs-5 col-1">VNĐ</div>
-                    <div class="col-3 text-end">{{ $parts[0] ?? '0' }}</div>
-                </div>
+                @if (!empty($ticketData['point_use']))
+                    <div class="mb-1 row me-2 align-items-center">
+                        <div class="fw-medium col-8"> Điểm Alpha </div>
+                        <div class="fw-medium fs-5 col-1">VNĐ</div>
+                        <div class="col-3 text-end">
+                            {{ number_format($ticketData['point_use'], 0, '.', '.') }}
+                        </div>
+                    </div>
+                @endif
+
+                @if (
+                    !empty($ticketData['voucher_discount_price']) &&
+                        isset($ticketData['voucher_type']) &&
+                        $ticketData['voucher_type'] == 0)
+                    <div class="mb-1 row me-2 align-items-center">
+                        <div class="fw-medium col-8 ">Khuyến mãi </div>
+                        <div class="fw-medium fs-5 col-1">VNĐ</div>
+                        <div class="col-3 text-end">{{ $parts[0] ?? '0' }}</div>
+                    </div>
+                @endif
 
                 <div class="mb-5 row me-2">
-                    <h5 class="fw-bold col-8">Tổng tiền </h5>
+                    <h5 class="fw-bold col-8">Tổng tiền</h5>
                     <h5 class="fw-medium col-1">VNĐ</h5>
                     <h5 class="fw-medium fs-5 col-3 text-end">
-                        {{ number_format($ticketData['seats']['total_price'], 0, '.', '.') }} </h5>
+                        {{ number_format(
+                            empty($ticketData['voucher_type'])
+                                ? $ticketData['seats']['total_price'] - $ticketData['voucher_discount_price'] - $ticketData['point_use']
+                                : $ticketData['seats']['total_price'] - $ticketData['point_use'],
+                            0,
+                            '.',
+                            '.',
+                        ) }}
+                    </h5>
                 </div>
+
 
                 <div class="mb-1 d-flex flex-column align-items-center text-center">
                     <div> {!! $ticketData['barcode'] !!} </div>
@@ -525,7 +566,7 @@
         function changeStatus(event) {
             const ticketId = @json($ticketId);
             // const status = checkbox.checked ? 'confirmed' : 'pending';
-            const staff = 1 ;
+            const staff = 1;
 
             // Kiểm tra dữ liệu đầu vào
 

@@ -29,7 +29,10 @@ $(document).ready(function () {
             const pricePerSeat = seatCount > 0 ? (data.ticket.total_price / seatCount) : (data
                 .ticket.total_price || 0);
 
-            const total = data.ticket_seats.reduce((sum, seat) => sum + seat.price, 0);
+            let total = data.ticket_seats.reduce((sum, seat) => sum + seat.price, 0);
+            const discount = data.voucher_type == 0 ? data.voucher_discount : 0
+            total = total - discount - data.point_discount;
+            console.log(data);
 
             if (data.ticket_seats && data.ticket_seats.length > 0) {
                 data.ticket_seats.forEach((seat, index) => {
@@ -72,11 +75,24 @@ $(document).ready(function () {
                                 <div class="row me-2">
                                     <h5 class="fw-semibold col-8">Giá vé </h5>
                                     <h5 class="fw-medium col-1">VNĐ</h5>
-                                    <h5 class="fw-medium fs-5 col-3 text-end"> ${formatCurrency(pricePerSeat)} </h5>
-
+                                    <h5 class="fw-medium fs-5 col-3 text-end"> ${formatCurrency(seat.price)} </h5>
                                 </div>
 
                                 <hr class="dashed-hr">
+
+                                ${data.point_discount > 0 ? `<div class="mb-1 row me-2 align-items-center">
+                                    <div class="fw-medium col-8"> Điểm Alpha </div>
+                                    <div class="fw-medium fs-5 col-1">VNĐ</div>
+                                    <div class="col-3 text-end">
+                                        ${formatCurrency(data.point_discount)}
+                                    </div>
+                                </div>` : ''}
+
+                                ${data.voucher_type == 0 ? `<div class="mb-1 row me-2 align-items-center">
+                                        <div class="fw-medium col-8 ">Khuyến mãi </div>
+                                        <div class="fw-medium fs-5 col-1">VNĐ</div>
+                                        <div class="col-3 text-end">${formatCurrency(data.voucher_discount)}</div>
+                                    </div>` : ''}
 
                                 <div class="mb-5 row me-2">
                                     <h5 class="fw-bold col-8">Tổng tiền </h5>
@@ -123,6 +139,7 @@ $(document).ready(function () {
             let totalFoodPrice = 0;
             let discount = 0;
             let totalPrice = 0;
+            const  voucher_discount = data.voucher_type == 1 ? data.voucher_discount : 0;
 
             if (data.ticket_combos && data.ticket_combos.length > 0) {
                 data.ticket_combos.forEach(combo => {
@@ -201,10 +218,16 @@ $(document).ready(function () {
                             <hr class="dashed-double">
                         </div>
 
+                         ${data.voucher_type == 1 ? `<div class="mb-1 row align-items-center">
+                                        <div class="fw-medium col-6 ">Khuyến mãi </div>
+                                        <div class="fw-medium  col-2 text-center">VNĐ</div>
+                                        <div class="col-4 text-end">${formatCurrency(data.voucher_discount)}</div>
+                                    </div>` : ''}
+
                         <div class="mb-1 row">
                             <div class="fw-bold col-6 fs-5">Tổng tiền </div>
                             <div class="fw-medium  col-2 text-center">VNĐ</div>
-                            <div class="fw-medium fs-5 col-4 text-end"> ${formatCurrency(totalComboPrice + totalFoodPrice)} </div>
+                            <div class="fw-medium fs-5 col-4 text-end"> ${formatCurrency(totalComboPrice + totalFoodPrice - voucher_discount)} </div>
                         </div>
 
                          <hr class="dashed-hr">
