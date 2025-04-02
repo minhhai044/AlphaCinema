@@ -95,27 +95,18 @@ class UserService
         }
     }
 
-    public  function updateInfo($data, $user)
+    public  function updateInfo($data, $id)
     {
-        try {
+        $user = User::findOrFail($id);
 
-            // $data['type_user'] = $data['type_user'] ?? 0;
-
-            // $data['password'] = empty($data['password']) ? $user->password : $data['password'];
-
-            if (!empty($data['avatar']) && Storage::exists($user['avatar'])) {
-                Storage::delete($user['avatar']);
-            }
-            if (!empty($data['avatar'])) {
-                $data['avatar'] = Storage::put('avatar', $data['avatar']);
-            }
-
-            $user->update($data);
-
-            return $user;
-        } catch (\Throwable $th) {
-            Log::error($th->getMessage());
+        if (!empty($data['avatar']) && Storage::exists($user['avatar'])) {
+            Storage::delete($user['avatar']);
         }
+        if (!empty($data['avatar'])) {
+            $data['avatar'] = Storage::put('avatar', $data['avatar']);
+        }
+
+        return $user->update($data);
     }
 
     public  function changePassword($data, $user)

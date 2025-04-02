@@ -698,4 +698,122 @@ class StatisticalController extends Controller
             'top6Foods'
         ));
     }
+    public function ticketRevenue(Request $request)
+    {
+        $user = Auth::user();
+
+        // Validation input (giống comboRevenue)
+        $validated = $request->validate([
+            'branch_id' => 'nullable|integer|exists:branches,id',
+            'cinema_id' => 'nullable|integer|exists:cinemas,id',
+            'date' => 'nullable|date',
+            'movie_id' => 'nullable|integer|exists:movies,id',
+            'month' => 'nullable|integer|between:1,12',
+            'year' => 'nullable|integer|min:2020|max:' . Carbon::now()->year,
+        ]);
+
+        // Lấy input với giá trị mặc định (giống comboRevenue)
+        $branchId = $validated['branch_id'] ?? $user->branch_id ?? null;
+        $cinemaId = $validated['cinema_id'] ?? $user->cinema_id ?? null;
+        $date = $request->input('date') ? Carbon::parse($request->input('date')) : null;
+        $movieId = $validated['movie_id'] ?? null;
+        $selectedMonth = $validated['month'] ?? Carbon::now()->month;
+        $selectedYear = $validated['year'] ?? Carbon::now()->year;
+
+        // Xử lý ngày tháng (giống comboRevenue)
+        $startDate = $date ? $date->startOfDay() : Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth();
+        $endDate = $date ? $date->endOfDay() : Carbon::create($selectedYear, $selectedMonth, 1)->endOfMonth();
+
+        // Phân quyền (giống comboRevenue)
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchId = $user->branch_id;
+                if ($cinemaId && !Cinema::where('id', $cinemaId)->where('branch_id', $user->branch_id)->exists()) {
+                    $cinemaId = null;
+                }
+            } elseif ($user->cinema_id) {
+                $cinemaId = $user->cinema_id;
+                $branchId = Cinema::where('id', $user->cinema_id)->value('branch_id');
+            }
+        }
+
+        // Lấy danh sách chi nhánh, rạp, và phim (giống comboRevenue)
+        $branchesQuery = Branch::query()->select('id', 'name')->where('is_active', 1);
+        $cinemasQuery = Cinema::query()->select('id', 'name')->where('is_active', 1);
+
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchesQuery->where('id', $user->branch_id);
+                $cinemasQuery->where('branch_id', $user->branch_id);
+            } elseif ($user->cinema_id) {
+                $cinemasQuery->where('id', $user->cinema_id);
+                $branchesQuery->whereIn('id', Cinema::where('id', $user->cinema_id)->pluck('branch_id'));
+            } else {
+                $branchesQuery->where('id', 0);
+                $cinemasQuery->where('id', 0);
+            }
+        }
+
+        $branches = $branchesQuery->get();
+        $cinemas = $cinemasQuery->get();
+        $movies = Movie::select('id', 'name')->where('is_active', 1)->get();
+
+        // Quan hệ chi nhánh - rạp (giống comboRevenue)
+        $branchesRelationQuery = Cinema::query()->select('branch_id', 'id', 'name')->where('is_active', 1);
+        if (!$user->hasRole('System Admin')) {
+            if ($user->branch_id) {
+                $branchesRelationQuery->where('branch_id', $user->branch_id);
+            } elseif ($user->cinema_id) {
+                $branchesRelationQuery->where('id', $user->cinema_id);
+            } else {
+                $branchesRelationQuery->where('id', 0);
+            }
+        }
+
+        $branchesRelation = $branchesRelationQuery->get()
+            ->groupBy('branch_id')
+            ->map(fn($group) => $group->pluck('name', 'id')->toArray())
+            ->toArray();
+
+        // Truy vấn cơ bản cho tickets (giống comboRevenue)
+        $ticketQuery = Ticket::query()
+            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->whereBetween('tickets.created_at', [$startDate, $endDate]);
+
+        if ($branchId)
+            $ticketQuery->where('cinemas.branch_id', $branchId);
+        if ($cinemaId)
+            $ticketQuery->where('tickets.cinema_id', $cinemaId);
+        if ($movieId)
+            $ticketQuery->where('tickets.movie_id', $movieId);
+
+        // Debug log
+        Log::debug("Branch ID: $branchId, Cinema ID: $cinemaId, User Branch: {$user->branch_id}");
+
+        // Trả về view
+        return view('admin.statistical.TicketStatistical', compact(
+            'branches',
+            'cinemas',
+            'branchesRelation',
+            'movies',
+            'movieId',
+            'selectedMonth',
+            'selectedYear',
+            'branchId',
+            'cinemaId',
+            'date',
+            // 'foodRevenue',
+            // 'foodNames',
+            // 'foodQuantities',
+            // 'foodRevenues',
+            // 'trendDates',
+            // 'trendRevenues',
+            // 'foodUsage',
+            // 'foodSummaries',
+            // 'foodStatistics',
+            // 'top6Foods'
+        ));
+    }
 }

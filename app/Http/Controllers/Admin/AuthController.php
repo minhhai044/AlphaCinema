@@ -43,7 +43,7 @@ class AuthController extends Controller
 
             if (Hash::check($data['password'], $user->password)) {
 
-                if ($user->type_user === 1) {
+                if ($user->type_user === 1 && $user->is_active == true) {
                     Auth::login($user);
 
                     return redirect()->route('admin.index');

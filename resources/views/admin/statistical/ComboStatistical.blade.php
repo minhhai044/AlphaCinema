@@ -19,7 +19,8 @@
         </div>
 
         <!-- Form lọc -->
-        <form method="GET" action="{{ route('admin.combo.revenue') }}" class="d-flex align-items-center gap-2" id="filterForm">
+        <form method="GET" action="{{ route('admin.combo.revenue') }}" class="d-flex align-items-center gap-2"
+            id="filterForm">
             <!-- Bộ lọc chi nhánh -->
             @if (auth()->user()->hasRole('System Admin'))
                 <div class="input-group input-group-sm">
@@ -105,7 +106,8 @@
                 <select name="month" class="form-select border-0 shadow-sm">
                     <option value="" {{ !$selectedMonth ? 'selected' : '' }}>Chưa chọn</option>
                     @for ($i = 1; $i <= 12; $i++)
-                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng {{ $i }}</option>
+                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng
+                            {{ $i }}</option>
                     @endfor
                 </select>
             </div>
@@ -117,18 +119,23 @@
                 </span>
                 <select name="year" class="form-select border-0 shadow-sm">
                     @for ($i = 2020; $i <= Carbon\Carbon::now()->year; $i++)
-                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm {{ $i }}</option>
+                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm
+                            {{ $i }}</option>
                     @endfor
                 </select>
             </div>
 
             <!-- Nút lọc -->
-            <button type="submit" class="btn btn-sm btn-success rounded-circle p-2 d-flex align-items-center justify-content-center" title="Lọc dữ liệu" style="width: 36px; height: 36px;">
+            <button type="submit"
+                class="btn btn-sm btn-success rounded-circle p-2 d-flex align-items-center justify-content-center"
+                title="Lọc dữ liệu" style="width: 36px; height: 36px;">
                 <i class="bi bi-funnel fs-5"></i>
             </button>
 
             <!-- Nút reset -->
-            <button type="button" class="btn btn-sm btn-primary rounded-circle p-2 d-flex align-items-center justify-content-center" onclick="resetFilters()" title="Reset bộ lọc" style="width: 36px; height: 36px;">
+            <button type="button"
+                class="btn btn-sm btn-primary rounded-circle p-2 d-flex align-items-center justify-content-center"
+                onclick="resetFilters()" title="Reset bộ lọc" style="width: 36px; height: 36px;">
                 <i class="bi bi-arrow-counterclockwise fs-5"></i>
             </button>
         </form>
@@ -140,9 +147,7 @@
                 <div class="col-xl-12">
                     <div class="card card-h-100">
                         <div class="card-body">
-                            <h5 class="card-title text-center">Tổng doanh thu Combo</h5>
-                            <p class="text-center">{{ number_format($comboRevenue) }} VND</p>
-                            <canvas id="comboChart" style="height: 400px; width: 100%;"></canvas>
+                            <div id="comboChart" style="width: 100%; height: 400px;"></div>
                         </div>
                     </div>
                 </div>
@@ -150,8 +155,7 @@
             <div class="col-md-6">
                 <div class="card shadow-sm">
                     <div class="card-body">
-                        <h5 class="card-title text-center">Doanh thu Combo theo khung giờ</h5>
-                        <canvas id="stackedBarChart" width="400" height="200"></canvas>
+                        <div id="stackedBarChart" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
             </div>
@@ -159,37 +163,45 @@
             <div class="col-xl-6">
                 <div class="card card-h-100">
                     <div class="card-body">
-                        <h5 class="card-title text-center">Tỷ lệ đơn hàng có Combo</h5>
-                        <canvas id="comboUsageChart" style="height: 200px; max-width: 300px; margin: 0 auto;"></canvas>
+                        <div id="comboUsageChart" style="width: 100%; height: 400px;"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Hàng 4: Top 6 doanh thu -->
+        <!-- Hàng 4: Top 3 doanh thu -->
         <div class="row">
             <div class="col-12">
                 <div class="container mt-5">
-                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">Top 6 Combo Doanh Thu Cao Nhất</h3>
+                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">
+                        Top 3 Combo Doanh Thu Cao Nhất
+                    </h3>
                     <div class="row justify-content-center">
                         @forelse ($top6Combos as $index => $combo)
                             <div class="col-md-4 col-lg-3 mb-4">
-                                <div class="card top6-card shadow-sm h-100" style="border: none; border-radius: 10px; overflow: hidden;">
-                                    <div class="position-relative">
-                                        <img src="{{ Storage::url($combo->img_thumbnail) }}" class="card-img-top" style="height: 150px; object-fit: cover;" alt="{{ $combo->combo_name }}">
-                                        <span class="top6-rank" style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
+                                <div class="card top6-card shadow-sm h-100 d-flex flex-column"
+                                    style="border: none; border-radius: 10px; overflow: hidden;">
+                                    <div class="position-relative flex-grow-1" style="height: 60%;">
+                                        <img src="{{ Storage::url($combo->img_thumbnail) }}"
+                                            class="card-img-top w-100 h-100" style="object-fit: cover;"
+                                            alt="{{ $combo->combo_name }}">
+                                        <span class="top6-rank"
+                                            style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
                                             #{{ $index + 1 }}
                                         </span>
                                     </div>
-                                    <div class="card-body text-center" style="padding: 15px;">
+                                    <div class="card-body text-center d-flex flex-column justify-content-center"
+                                        style="height: 40%; padding: 15px;">
                                         <h5 class="card-title" style="font-size: 18px; color: #333; margin-bottom: 10px;">
                                             {{ $combo->combo_name }}
                                         </h5>
                                         <p class="mb-2" style="font-size: 14px; color: #6c757d;">
-                                            <strong>Doanh thu:</strong> <span style="color: #5156be;">{{ number_format($combo->total_price) }} đ</span>
+                                            <strong>Doanh thu:</strong> <span
+                                                style="color: #5156be;">{{ number_format($combo->total_price) }} đ</span>
                                         </p>
                                         <p class="mb-0" style="font-size: 14px; color: #6c757d;">
-                                            <strong>Lượt bán:</strong> <span style="color: #5156be;">{{ $combo->total_quantity }}</span>
+                                            <strong>Lượt bán:</strong> <span
+                                                style="color: #5156be;">{{ $combo->total_quantity }}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -206,146 +218,221 @@
     </div>
 
     <!-- Chart.js CDN -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
+    <script src="https://code.highcharts.com/highcharts.js"></script>
     <!-- Biểu đồ doanh thu -->
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            // 1. Tổng doanh thu Combo
-            var ctx = document.getElementById('comboChart').getContext('2d');
+            // Lấy dữ liệu từ PHP
             var comboNames = @json($comboNames);
-            var comboRevenues = @json($comboRevenues); // Sử dụng doanh thu thay vì số lượng
+            var comboRevenues = @json($comboRevenues);
             var comboSummaries = @json($comboSummaries);
 
+            // Kiểm tra nếu có dữ liệu
             if (comboNames.length > 0 && comboRevenues.length > 0) {
-                new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: comboNames,
-                        datasets: [{
-                            label: 'Doanh thu (VND)',
-                            data: comboRevenues,
-                            backgroundColor: '#5156be',
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            borderWidth: 1
-                        }]
+                Highcharts.chart('comboChart', {
+                    chart: {
+                        type: 'column'
                     },
-                    options: {
-                        responsive: false,
-                        maintainAspectRatio: false,
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Doanh thu (VND)'
-                                }
-                            },
-                            x: {
-                                title: { display: true, text: 'Tên Combo' }
-                            }
+                    title: {
+                        text: 'Doanh thu theo Combo'
+                    },
+                    xAxis: {
+                        categories: comboNames, // Sử dụng tên combo làm danh mục trục X
+                        crosshair: true,
+                        title: {
+                            text: 'Tên Combo'
                         },
-                        plugins: {
-                            legend: { display: true, position: 'top' },
-                            tooltip: {
-                                callbacks: {
-                                    label: function(tooltipItem) {
-                                        const index = tooltipItem.dataIndex;
-                                        return `${comboNames[index]}: ${comboSummaries[index]}`;
-                                    }
-                                }
-                            }
+                        accessibility: {
+                            description: 'Tên Combo'
                         }
+                    },
+                    yAxis: {
+                        min: 0,
+                        title: {
+                            text: 'Doanh thu (VND)' // Tiêu đề trục Y
+                        }
+                    },
+                    tooltip: {
+                        pointFormatter: function() {
+                            var index = this.index; // Lấy chỉ số của điểm dữ liệu
+                            return `${comboSummaries[index]}`; // Chỉ hiển thị tóm tắt, không lặp tên combo
+                        }
+                    },
+                    plotOptions: {
+                        column: {
+                            pointPadding: 0.2,
+                            borderWidth: 0,
+                            color: '#5156be' // Giữ màu nền
+                        }
+                    },
+                    series: [{
+                        name: 'Doanh thu (VND)',
+                        data: comboRevenues // Dữ liệu doanh thu từ PHP
+                    }],
+                    credits: {
+                        enabled: false // Tắt dòng chữ "Highcharts.com"
                     }
                 });
             } else {
-                ctx.font = "20px Arial";
-                ctx.fillText("Không có dữ liệu để hiển thị", 50, 200);
+                // Nếu không có dữ liệu, hiển thị thông báo trên container
+                var container = document.getElementById('comboChart');
+                container.innerHTML =
+                    '<p style="font: 20px Arial; text-align: center; margin-top: 200px;">Không có dữ liệu để hiển thị</p>';
             }
 
             // 2. Tỷ lệ đơn hàng có Combo
-            var usageCtx = document.getElementById('comboUsageChart').getContext('2d');
-            var comboUsage = @json($comboUsage);
+            Highcharts.setOptions({
+                colors: Highcharts.getOptions().colors.map(function(color) {
+                    return {
+                        radialGradient: {
+                            cx: 0.5,
+                            cy: 0.3,
+                            r: 0.7
+                        },
+                        stops: [
+                            [0, color],
+                            [1, Highcharts.color(color).brighten(-0.3).get(
+                                'rgb')] // làm tối màu
+                        ]
+                    };
+                })
+            });
 
-            new Chart(usageCtx, {
-                type: 'pie',
-                data: {
-                    labels: ['Có Combo', 'Không có Combo'],
-                    datasets: [{
-                        data: [comboUsage, 100 - comboUsage],
-                        backgroundColor: ['#5156be', '#d3d3d3'],
-                        borderColor: ['#5156be', '#d3d3d3'],
-                        borderWidth: 1
-                    }]
+            // Lấy dữ liệu từ PHP (giữ nguyên cách bạn truyền dữ liệu)
+            var comboUsage = @json($comboUsage);
+            // Tạo biểu đồ
+            Highcharts.chart('comboUsageChart', {
+                chart: {
+                    plotBackgroundColor: null,
+                    plotBorderWidth: null,
+                    plotShadow: false,
+                    type: 'pie'
                 },
-                options: {
-                    responsive: false,
-                    plugins: {
-                        legend: {
-                            position: 'bottom'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(tooltipItem) {
-                                    return `${tooltipItem.label}: ${tooltipItem.raw}%`;
-                                }
-                            }
-                        },
-                        datalabels: {
-                            color: '#ffffff',
-                            formatter: (value) => `${value}%`,
-                            font: {
-                                weight: 'bold'
-                            }
+                title: {
+                    text: 'Tỷ lệ đơn hàng có Combo'
+                },
+                tooltip: {
+                    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>' // Hiển thị % trong tooltip
+                },
+                accessibility: {
+                    point: {
+                        valueSuffix: '%'
+                    }
+                },
+                plotOptions: {
+                    pie: {
+                        allowPointSelect: true,
+                        cursor: 'pointer',
+                        dataLabels: {
+                            enabled: true,
+                            format: '<span style="font-size: 1.2em"><b>{point.name}</b></span><br>' +
+                                '<span style="opacity: 0.6">{point.percentage:.1f} %</span>',
+                            connectorColor: 'rgba(128,128,128,0.5)'
                         }
                     }
                 },
-                plugins: [ChartDataLabels]
+                credits: {
+                    enabled: false // Tắt dòng chữ "Highcharts.com"
+                },
+                series: [{
+                    name: 'Tỷ lệ',
+                    data: [{
+                            name: 'Có Combo',
+                            y: comboUsage
+                        },
+                        {
+                            name: 'Không có Combo',
+                            y: 100 - comboUsage
+                        }
+                    ],
+                    colors: ['#5156be', '#8ECae6'] // Màu xanh tím và đỏ
+                }]
             });
 
             // 3. Doanh thu Combo theo khung giờ
-            var ctxStacked = document.getElementById('stackedBarChart').getContext('2d');
-            var trendDates = @json($trendDates);
-            var trendRevenues = @json($trendRevenues);
+            // Lấy dữ liệu từ PHP
+            var trendDates = @json($trendDates); // Khung giờ suất chiếu
+            var trendRevenues = @json($trendRevenues); // Doanh thu tương ứng
 
+            // Kiểm tra nếu có dữ liệu
             if (trendDates.length > 0 && trendRevenues.length > 0) {
-                new Chart(ctxStacked, {
-                    type: 'bar',
-                    data: {
-                        labels: trendDates,
-                        datasets: [{
-                            label: 'Doanh thu Combo',
-                            data: trendRevenues,
-                            backgroundColor: '#36A2EB'
-                        }]
+                Highcharts.chart('stackedBarChart', {
+                    chart: {
+                        type: 'line' // Thay column thành line
                     },
-                    options: {
-                        scales: {
-                            x: {
-                                title: {
-                                    display: true,
-                                    text: 'Khung giờ suất chiếu'
-                                }
-                            },
-                            y: {
-                                beginAtZero: true,
-                                title: {
-                                    display: true,
-                                    text: 'Doanh thu (VND)'
-                                }
-                            }
+                    title: {
+                        text: 'Doanh thu Combo theo khung giờ'
+                    },
+                    accessibility: {
+                        point: {
+                            valueDescriptionFormat: '{xDescription}{separator}{value} VNĐ'
+                        }
+                    },
+                    xAxis: {
+                        title: {
+                            text: 'Khung giờ suất chiếu'
                         },
-                        plugins: {
-                            legend: {
-                                display: true,
-                                position: 'top'
+                        categories: trendDates
+                    },
+                    yAxis: {
+                        type: 'logarithmic',
+                        minorTickInterval: 0.1,
+                        title: {
+                            text: 'Doanh thu (VNĐ)'
+                        },
+                        labels: {
+                            formatter: function() {
+                                return Highcharts.numberFormat(this.value, 0, ',', '.') + ' VNĐ';
                             }
                         }
+                    },
+                    tooltip: {
+                        pointFormatter: function() {
+                            var total = this.series.data.reduce((sum, point) => sum + point.y,
+                                0); // Tính tổng doanh thu
+                            var percentage = total > 0 ? (this.y / total * 100).toFixed(1) :
+                                0; // Tính tỷ lệ %
+                            return `Doanh thu: ${Highcharts.numberFormat(this.y, 0, ',', '.')} VNĐ<br>Tỷ lệ: ${percentage}%`;
+                        }
+                    },
+                    series: [{
+                        name: 'Doanh thu Combo',
+                        keys: ['y', 'color'], // Sử dụng keys để định nghĩa giá trị và màu
+                        data: trendRevenues.map((revenue, index) => {
+                            // Tính toán màu cho từng điểm
+                            const colors = ['#0000ff', '#8d0073', '#ba0046', '#d60028',
+                                '#eb0014', '#fb0004', '#ff0000'
+                            ];
+                            const colorIndex = Math.min(index, colors.length - 1);
+                            return [revenue, colors[colorIndex]];
+                        }),
+                        color: {
+                            linearGradient: {
+                                x1: 0,
+                                x2: 0,
+                                y1: 1,
+                                y2: 0
+                            },
+                            stops: [
+                                [0, '#0000ff'], // Màu xanh ở giá trị thấp
+                                [1, '#ff0000'] // Màu đỏ ở giá trị cao
+                            ]
+                        }
+                    }],
+                    legend: {
+                        enabled: true,
+                        align: 'center',
+                        verticalAlign: 'top'
+                    },
+                    credits: {
+                        enabled: false
                     }
                 });
             } else {
-                ctxStacked.font = "20px Arial";
-                ctxStacked.fillText("Không có dữ liệu để hiển thị", 50, 100);
+                var container = document.getElementById('stackedBarChart');
+                container.innerHTML =
+                    '<p style="font: 20px Arial; text-align: center; margin-top: 100px;">Không có dữ liệu để hiển thị</p>';
             }
         });
 
@@ -363,12 +450,14 @@
                 if (branchSelect && cinemaSelect) {
                     branchSelect.addEventListener('change', function() {
                         const branchId = this.value;
-                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') + '>Tất cả rạp</option>';
+                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') +
+                            '>Tất cả rạp</option>';
                         if (branchId && branchesRelation[branchId]) {
                             const cinemas = branchesRelation[branchId];
                             for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
                                 const isSelected = cinemaId == "{{ $cinemaId }}" ? 'selected' : '';
-                                cinemaSelect.innerHTML += `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
+                                cinemaSelect.innerHTML +=
+                                    `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
                             }
                         }
                     });
@@ -401,9 +490,11 @@
         .card-img-top {
             border-bottom: 2px solid #5156be;
         }
+
         .top6-rank {
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .card {
             border-radius: 10px;
             overflow: hidden;

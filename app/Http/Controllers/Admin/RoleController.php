@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\RoleRequest;
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Spatie\Permission\Models\Permission;
@@ -22,7 +23,7 @@ class RoleController extends Controller
     {
         $roles = Role::with('permissions')->latest('id')->get();
 
-        return view(self::PATH_VIEW.__FUNCTION__, compact('roles'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('roles'));
     }
 
     /**
@@ -32,7 +33,7 @@ class RoleController extends Controller
     {
         $permissions = Permission::all();
 
-        return view(self::PATH_VIEW.__FUNCTION__, compact('permissions'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('permissions'));
     }
 
     /**
@@ -48,7 +49,6 @@ class RoleController extends Controller
             $role->syncPermissions($roleRequest->permissions);
 
             return redirect()->route('admin.roles.index')->with('success', "Thêm mới thành công");
-
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return back()->with('error', $th->getMessage());
@@ -70,8 +70,8 @@ class RoleController extends Controller
     {
         $permissions = Permission::all();
         $rolePermissions = $role->permissions->pluck('name')->toArray();
-    
-        return view(self::PATH_VIEW.__FUNCTION__, compact('role', 'permissions', 'rolePermissions'));
+
+        return view(self::PATH_VIEW . __FUNCTION__, compact('role', 'permissions', 'rolePermissions'));
     }
 
     /**
@@ -99,5 +99,34 @@ class RoleController extends Controller
         return redirect()
             ->route('admin.roles.index')
             ->with('success', 'Xóa thành công!');
+    }
+
+    public function changActive(Request $request)
+    {
+        // $request->validate([
+        //     'role_id' => 'required|exists:roles,id',
+        //     // 'is_active' => 'required|in:1,0',
+        // ]);
+
+        try {
+            $role = Role::find($request->role_id);
+            if (!$role) {
+                return response()->json(['message' => 'ROLE không tồn tại'], 404);
+            }
+            $role->update([
+                'is_active' => $request->is_active
+            ]);
+            return response()->json([
+                'data' => $role,
+                'messenge' => "Thao tác thành công !!!"
+            ]);
+            // $role->is_active = $request->is_active;
+            // $role->save();
+        } catch (Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'messenge' => "Thao tác không thành công !!!"
+            ]);
+        }
     }
 }

@@ -13,6 +13,7 @@ use App\Services\UserService;
 use Firebase\JWT\JWT;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Permission\Models\Role;
@@ -166,7 +167,26 @@ class UserController extends Controller
         }
     }
 
+    public function changActiveStatus(Request $request){
+        try {
+            $user= User::find($request->user_id);
+            // return response()->json($request);
+            if (!$user) {
+                return response()->json(['message' => 'ROLE không tồn tại'], 404);
+            }
+            $user->is_active = $request->is_active; // Thay đổi giá trị
+            $user->save();
+            return response()->json([
+                'data' => $user,
+                'messenge' => "Thao tác thành công !!!"
+            ]);
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return response()->json([
+                'messenge' => "Thao tác không thành công !!!"
+            ]);
+        }
+    }
     // Trong controller Laravel
     // Trong controller Laravel
-
 }

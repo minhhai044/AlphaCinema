@@ -56,11 +56,11 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+            'avatar' => 'nullable',
             'phone' => 'nullable|regex:/^\+?[0-9]{10,15}$/|unique:users,phone,' . $userId,  // Bỏ qua kiểm tra số điện thoại nếu là bản ghi hiện tại
             'email' => 'required|email|unique:users,email,' . $userId,  // Bỏ qua kiểm tra email nếu là bản ghi hiện tại
             'password' => 'nullable|string|min:8|confirmed',  // Mật khẩu có thể không thay đổi
-            'address' => 'required|string|max:255',
+            'address' => 'nullable|string|max:255',
             'gender' => 'boolean',
             'birthday' => 'nullable|date',
             'total_amount' => 'nullable|numeric',  // Kiểm tra dữ liệu số cho 'total_amount'

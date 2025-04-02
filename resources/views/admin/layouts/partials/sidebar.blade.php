@@ -15,7 +15,7 @@
     <div id="sidebar-menu">
         <!-- Left Menu Start -->
         <ul class="metismenu list-unstyled" id="side-menu">
-           
+
 
             <li>
                 <a href="{{ route('admin.index') }}">
@@ -29,23 +29,24 @@
                         <i data-feather="pie-chart"></i>
                         <span data-key="t-service-systems">Thống kê</span>
                     </a>
-                    
                     <ul class="sub-menu" aria-expanded="false">
                         <li>
                             <a href="{{ route('admin.statistical.cinemaRevenue') }}">
-
                                 <span data-key="t-vouchers">Thống kê phim</span>
                             </a>
                         </li>
                         <li>
+                            <a href="{{ route('admin.statistical.ticketRevenue') }}">
+                                <span data-key="t-vouchers">Thống kê vé</span>
+                            </a>
+                        </li>
+                        <li>
                             <a href="{{ route('admin.statistical.comboRevenue') }}">
-
                                 <span data-key="t-vouchers">Thống kê combo</span>
                             </a>
                         </li>
                         <li>
                             <a href="{{ route('admin.statistical.foodRevenue') }}">
-
                                 <span data-key="t-vouchers">Thống kê đồ ăn</span>
                             </a>
                         </li>

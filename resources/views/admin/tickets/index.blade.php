@@ -187,117 +187,12 @@
             </div>
         </div>
 
-        <!-- Bảng dữ liệu -->
-        {{-- <div class="table-responsive mt-3">
-            <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
-                <thead>
-                    <tr class="text-center">
-                        <th>Mã vé</th>
-                        <th>Thông tin người dùng</th>
-                        <th>Thông tin vé</th>
-                        <th>Trạng thái</th>
-                        <th>Chức năng</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @forelse ($tickets as $ticket)
-                        <tr>
-                            <td>{{ $ticket->code }}</td>
-                            <td>
-                                <div><span class="fw-bold">Người dùng:</span> {{ $ticket->user->name ?? 'N/A' }}</div>
-                                <div><span class="fw-bold">Chức vụ:</span>
-                                    <span class="badge bg-success">{{ $ticket->user->role ?? 'member' }}</span>
-                                </div>
-                                <div><span class="fw-bold">Email:</span> {{ $ticket->user->email ?? 'N/A' }}</div>
-                                <div><span class="fw-bold">Phương thức thanh toán:</span>
-                                    {{ $ticket->payment_name ?? 'N/A' }}</div>
-                            </td>
-                            <td>
-                                <div><span class="fw-bold">Phim:</span> {{ $ticket->movie->name ?? 'N/A' }}</div>
-                                <div><span class="fw-bold">Nơi chiếu:</span> {{ $ticket->branch->name ?? 'N/A' }} -
-                                    {{ $ticket->cinema->name ?? 'N/A' }}</div>
-                                <div>
-                                    <span class="fw-bold">Ghế:</span>
-                                    @php
-                                        $seats = $ticket->ticket_seats ?? [];
-                                        $seatNames = array_map(fn($seat) => $seat['seat_name'] ?? 'N/A', $seats);
-                                        echo implode(', ', $seatNames) ?: 'N/A';
-                                    @endphp
-                                </div>
-                                <div><span class="fw-bold">Tổng tiền:</span>
-                                    {{ number_format($ticket->total_price, 0, ',', '.') }} VNĐ</div>
-                                <div>
-                                    <span class="fw-bold">Trạng thái:</span>
-                                    <span id="statusTicket"
-                                        class="badge {{ $ticket->status == 'confirmed' ? 'bg-success' : 'bg-warning' }}">
-                                        {{ $ticket->status == 'confirmed' ? 'Đã xác nhận' : 'Chờ xác nhận' }}
-                                    </span>
-                                </div>
-                                <div>
-                                    <span class="fw-bold">Lịch chiếu:</span>
-                                    {{ $ticket->showtime->start_time ?? 'N/A' }} -
-                                    {{ $ticket->showtime->end_time ?? 'N/A' }}
-                                </div>
-                                <div><span class="fw-bold">Ngày chiếu:</span> {{  \Carbon\Carbon::parse($ticket->showtime->date)->format('d/m/Y') ?? 'N/A' }}</div>
-                                <div>
-                                    <span class="fw-bold">Thời hạn sử dụng:</span>
-                                    {{ \Carbon\Carbon::parse($ticket->showtime->end_time ?? '')->format('H:i') }},
-                                    {{ \Carbon\Carbon::parse($ticket->showtime->date ?? '')->format('d/m/Y') }}
-                                </div>
-                            </td>
-                            <td>
-                                <div class="form-check form-switch form-switch-md  form-switch-success"
-                                    style="display: flex; justify-content: center;">
-                                    <input class="form-check-input switch-is-active changeStatus" type="checkbox"
-                                        data-ticket-id="{{ $ticket->id }}"
-                                        data-user-type="{{ auth()->user()->type_user }}"
-                                        {{ $ticket->status === 'confirmed' ? 'checked disabled' : '' }}
-                                        onclick="changeStatus(event)">
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-group justify-content-center align-items-center">
-                                    <a href="{{ route('admin.tickets.show', $ticket) }}"
-                                        class="btn btn-sm btn-success me-2">
-                                        <i class="fas fa-eye"></i>
-                                    </a>
-                                    @if ($ticket->status === 'confirmed')
-                                        <button class="btn btn-sm btn-primary me-2 btn-print-ticket printTicket"
-                                            data-id="{{ $ticket->id }}">
-                                            <i class="bi bi-printer-fill"></i> Vé
-                                        </button>
-                                        <button class="btn btn-sm btn-warning btn-print-combo printCombo"
-                                            data-id="{{ $ticket->id }}">
-                                            <i class="bi bi-printer-fill"></i> Combo
-                                        </button>
-                                    @else
-                                        <button class="btn btn-sm btn-primary me-2 btn-print-ticket d-none printTicket"
-                                            data-id="{{ $ticket->id }}">
-                                            <i class="bi bi-printer-fill"></i> Vé
-                                        </button>
-                                        <button class="btn btn-sm btn-warning btn-print-combo d-none printCombo"
-                                            data-id="{{ $ticket->id }}">
-                                            <i class="bi bi-printer-fill"></i> Combo
-                                        </button>
-                                    @endif
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="5" class="text-center">Không có vé nào.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
-        </div> --}}
         <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
             <thead>
                 <tr class="text-center">
                     <th>Mã vé</th>
                     <th>Thông tin người dùng</th>
                     <th>Thông tin vé</th>
-
                     <th>Chức năng</th>
                 </tr>
             </thead>
@@ -345,13 +240,7 @@
                         </td>
                     </tr>
                 @empty
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td class="text-center">Không có vé nào.</td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+
                 @endforelse
             </tbody>
         </table>

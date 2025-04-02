@@ -65,6 +65,10 @@ class AuthController extends Controller
                 return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
             }
 
+            if($user->is_active == false){
+                return $this->errorResponse('Tài khoản đã bị khóa', Response::HTTP_UNAUTHORIZED);
+            }
+
             // Tạo token xác thực
             $token = $user->createToken('UserToken')->plainTextToken;
 
@@ -135,31 +139,18 @@ class AuthController extends Controller
             ->withCookie(cookie()->forget('auth'));
     }
 
-    public function updateProfile(Request $request)
+    public function updateProfile(UserRequest $userRequest,string $id)
     {
         try {
-            $user = Auth::user();
+            
+            $user = $this->userService->updateInfo($userRequest->validated(), $id);
 
-            // Validate request data
-            $data = $request->validate([
-                'name'    => 'nullable|string|max:255',
-                'phone'   => 'nullable|string|max:15|regex:/^[0-9]+$/',
-                'gender'  => 'nullable|in:0,1',
-                'address' => 'nullable|string|max:255',
-                'avatar'  => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
-            ]);
-
-            // Update user info
-            $user = $this->userService->updateInfo($data, $user);
-
-            // Return success response
             return $this->successResponse([
                 'message' => "Update thành công",
                 'data' => $user
             ]);
+
         } catch (Exception $e) {
-            // Handle any exceptions
-            Log($e->getMessage());
             return $this->errorResponse([
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
                 'error'   => $e->getTraceAsString()
@@ -275,9 +266,9 @@ class AuthController extends Controller
             }
 
             // Lấy rank tiếp theo (rank cao hơn)
-            $nextRank = Rank::where("total_spent", ">", $totalTransaction)
+            $allRanks = Rank::query()
                 ->orderBy("total_spent", "asc")
-                ->first();
+                ->get();
 
             return response()->json([
                 "status" => "success",
@@ -289,7 +280,7 @@ class AuthController extends Controller
                     "created_at" => $created_at
                 ],
                 "rank" => $currentRank,
-                "next_rank" => $nextRank
+                "next_rank" => $allRanks
             ]);
         } catch (\Exception $e) {
 
@@ -362,9 +353,9 @@ class AuthController extends Controller
     }
     /**
      * Gửi mail kèm mã otp dựa vào email người dùng nhập vào
-     * 
+     *
      * @param \Illuminate\Http\Request $request
-     * 
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function sendOtp(SendOtpRequest $request)
@@ -419,9 +410,9 @@ class AuthController extends Controller
     }
     /**
      * Thay đổi password dựa vào mã otp và email người dùng yêu cầu reset
-     * 
+     *
      * @param \Illuminate\Http\Request $request
-     * 
+     *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
     public function resetPassword(Request $request)
