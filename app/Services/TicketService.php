@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Models\Branch;
 use App\Models\Movie;
 use App\Models\Ticket;
+use App\Models\Voucher;
 use App\Repositories\Modules\TicketRepository;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -81,6 +82,12 @@ class TicketService
     {
         $ticketDetail = $this->ticketRepository->findTicket($code);
 
+        if (!empty($ticketDetail['voucher_code'])) {
+            // Lấy loại voucher từ voucher_code
+            $ticketType = Voucher::where("code", $ticketDetail['voucher_code'])->value('type_voucher');
+        }
+
+
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);
         $totalSeatPrice = $seatData['total_price'] ?? 0;
 
@@ -134,7 +141,9 @@ class TicketService
             'customer_name' => $ticketDetail->user->name ?? 'N/A',
             'voucher_code' => $ticketDetail->voucher_code ?? 'N/A',
             'voucher_discount' => $this->formatPrice($ticketDetail->voucher_discount),
-            'point_use' => $ticketDetail->point_use ? number_format($ticketDetail->point_use, 0, ',', '.') : 'N/A',
+            'voucher_type' => $ticketType ?? '',
+            'voucher_discount_price' => $ticketDetail->voucher_discount,
+            'point_use' => $ticketDetail->point_use ? $ticketDetail->point_use : 0,
             'point_discount' => $this->formatPrice($ticketDetail->point_discount),
             'expiry' => $ticketDetail->expiry ? Carbon::parse($ticketDetail->expiry)->format('d/m/Y H:i') : 'N/A',
         ];
@@ -221,7 +230,7 @@ class TicketService
         if (!is_array($ticketFoods) || empty($ticketFoods)) {
             return [];
         }
-// dd($ticketFoods);
+        // dd($ticketFoods);
         return array_filter(array_map(function ($food) {
             if (!is_array($food) || !isset($food['name'])) {
                 return null;
@@ -265,7 +274,8 @@ class TicketService
         return $this->ticket->findOrFail($id);
     }
 
-    public function extractNumber($str) {
+    public function extractNumber($str)
+    {
         // Loại bỏ tất cả các ký tự không phải số và dấu chấm
         $numberStr = preg_replace('/[^\d]/', '', $str);
         // Chuyển đổi chuỗi thành số nguyên

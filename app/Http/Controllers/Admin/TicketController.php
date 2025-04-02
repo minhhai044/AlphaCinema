@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Cinema;
 use App\Models\Ticket;
 use App\Models\User;
+use App\Models\Voucher;
 use App\Services\TicketService;
 use App\Traits\ApiResponseTrait;
 use Carbon\Carbon;
@@ -33,7 +34,6 @@ class TicketController extends Controller
         $cinemas = Cinema::pluck('id', 'name');
 
         return view(self::PATH_VIEW . 'index', compact('tickets', 'branches', 'branchesRelation', 'movies', 'cinemas'));
-
     }
 
     public function show(string $code)
@@ -43,7 +43,7 @@ class TicketController extends Controller
         $ticketData['total_food'] = $this->ticketService->extractNumber($ticketData['total_food_price']);
         $ticketData['barcode'] = DNS1D::getBarcodeHTML($ticketData['code'], 'C128', 1.5, 50);
 
-// dd($ticketData);
+        // dd($ticketData);
         return view(self::PATH_VIEW . 'detail', compact('ticketData'));
     }
     public function print()
@@ -74,26 +74,30 @@ class TicketController extends Controller
             $barcode = DNS1D::getBarcodeHTML($ticket->code, 'C128', 1.5, 50);
             $code = $ticket->code;
             $userPrintTicket = Auth::user()->name;
+            $ticketType = Voucher::where("code", $ticket['voucher_code'])->value('type_voucher');
 
             return $this->successResponse([
-                'ticket' => $ticket,
-                'branch' => $branch,
-                'cinema' => $cinema,
-                'user' => $user,
-                'ticket_combos' => $ticket_combos,
-                'ticket_seats' => $ticket_seats,
-                'room' => $room,
-                'showtime' => $showtime,
-                'start_time' => date("H:i", strtotime($start_time)),
-                'end_time' => date("H:i", strtotime($end_time)),
-                'address' => $address,
-                'movie' => $movie,
-                'type_movie' => $type_movie,
-                'category_movie' => $category_movie,
-                'duration' => $duration,
-                'barcode' => $barcode,
-                'code' => $code,
-                'userPrintTicket' => $userPrintTicket
+                'ticket'                => $ticket,
+                'branch'                => $branch,
+                'cinema'                => $cinema,
+                'user'                  => $user,
+                'ticket_combos'         => $ticket_combos,
+                'ticket_seats'          => $ticket_seats,
+                'room'                  => $room,
+                'showtime'              => $showtime,
+                'start_time'            => date("H:i", strtotime($start_time)),
+                'end_time'              => date("H:i", strtotime($end_time)),
+                'address'               => $address,
+                'movie'                 => $movie,
+                'type_movie'            => $type_movie,
+                'category_movie'        => $category_movie,
+                'duration'              => $duration,
+                'barcode'               => $barcode,
+                'code'                  => $code,
+                'userPrintTicket'       => $userPrintTicket,
+                'voucher_type'          => $ticketType,
+                'voucher_discount'      => $ticket->voucher_discount,
+                'point_discount'        => $ticket->point_discount ?? 0,
             ], 'Thành công rồi nè');
         } catch (\Throwable $th) {
             // Xử lý lỗi và trả về thông báo lỗi
@@ -124,30 +128,33 @@ class TicketController extends Controller
             $duration = $ticket->movie->duration;
             $barcode = DNS1D::getBarcodeHTML($ticket->code, 'C128', 1.5, 50);
             $code = $ticket->code;
+            $ticketType = Voucher::where("code", $ticket['voucher_code'])->value('type_voucher');
 
             $userPrintTicket = Auth::user()->name;
 
             return $this->successResponse([
-                'ticket' => $ticket,
-                'branch' => $branch,
-                'cinema' => $cinema,
-                'user' => $user,
-                'ticket_combos' => $ticket_combos,
-                'ticket_seats' => $ticket_seats,
-                'ticket_foods' => $ticket->ticket_foods,
-                'created_at' => Carbon::parse($ticket->created_at)->format("H:i d-m-Y"),
-                'room' => $room,
-                'showtime' => $showtime,
-                'start_time' => date("H:i", strtotime($start_time)),
-                'end_time' => date("H:i", strtotime($end_time)),
-                'address' => $address,
-                'movie' => $movie,
-                'type_movie' => $type_movie,
-                'category_movie' => $category_movie,
-                'duration' => $duration,
-                'barcode' => $barcode,
-                'userPrintTicket' => $userPrintTicket,
-                'code' => $code
+                'ticket'                => $ticket,
+                'branch'                => $branch,
+                'cinema'                => $cinema,
+                'user'                  => $user,
+                'ticket_combos'         => $ticket_combos,
+                'ticket_seats'          => $ticket_seats,
+                'ticket_foods'          => $ticket->ticket_foods,
+                'created_at'            => Carbon::parse($ticket->created_at)->format("H:i d-m-Y"),
+                'room'                  => $room,
+                'showtime'              => $showtime,
+                'start_time'            => date("H:i", strtotime($start_time)),
+                'end_time'              => date("H:i", strtotime($end_time)),
+                'address'               => $address,
+                'movie'                 => $movie,
+                'type_movie'            => $type_movie,
+                'category_movie'        => $category_movie,
+                'duration'              => $duration,
+                'barcode'               => $barcode,
+                'userPrintTicket'       => $userPrintTicket,
+                'code'                  => $code,
+                'voucher_type'          => $ticketType,
+                'voucher_discount'      => $ticket->voucher_discount,
             ], 'Thành công rồi nè');
         } catch (\Throwable $th) {
             // Xử lý lỗi và trả về thông báo lỗi
@@ -182,5 +189,4 @@ class TicketController extends Controller
             'exists' => $exists
         ]);
     }
-
 }
