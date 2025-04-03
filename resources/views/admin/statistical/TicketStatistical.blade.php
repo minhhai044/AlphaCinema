@@ -277,6 +277,8 @@
                 plotOptions: { column: { colorByPoint: true, dataLabels: { enabled: false } } }
             });
 
+            console.log(@json($fillRateData));
+            
             //  Tỷ Lệ Lấp Đầy Rạp
             Highcharts.chart('fillRateChart', {
                 chart: { type: 'column' },
@@ -288,6 +290,7 @@
                     { name: 'GH đã đặt', data: @json($fillRateData['seats_sold']), color: '#483D8B' },
                     { name: 'GH trống', data: @json($fillRateData['seats_empty']), color: '#98FB98' }
                 ],
+            
                 plotOptions: {
                     column: {
                         stacking: 'percent',

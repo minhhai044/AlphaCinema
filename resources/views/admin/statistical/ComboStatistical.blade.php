@@ -83,7 +83,7 @@
                 <input type="date" name="date" class="form-control border-0 shadow-sm" value="{{ $date }}">
             </div>
 
-            <!-- Bộ lọc phim -->
+            {{-- <!-- Bộ lọc phim -->
             <div class="input-group input-group-sm">
                 <span class="input-group-text bg-light text-muted border-0">
                     <i class="bi bi-film"></i>
@@ -96,7 +96,7 @@
                         </option>
                     @endforeach
                 </select>
-            </div>
+            </div> --}}
 
             <!-- Bộ lọc tháng -->
             <div class="input-group input-group-sm">

@@ -862,7 +862,6 @@ class StatisticalController extends Controller
             'year' => 'nullable|integer|min:2020|max:' . Carbon::now()->year,
         ]);
 
-        // Lấy input với giá trị mặc định (giống comboRevenue)
         $branchId = $validated['branch_id'] ?? $user->branch_id ?? null;
         $cinemaId = $validated['cinema_id'] ?? $user->cinema_id ?? null;
         $date = $request->input('date') ? Carbon::parse($request->input('date')) : null;
@@ -870,11 +869,9 @@ class StatisticalController extends Controller
         $selectedMonth = $validated['month'] ?? Carbon::now()->month;
         $selectedYear = $validated['year'] ?? Carbon::now()->year;
 
-        // Xử lý ngày tháng (giống comboRevenue)
         $startDate = $date ? $date->startOfDay() : Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth();
         $endDate = $date ? $date->endOfDay() : Carbon::create($selectedYear, $selectedMonth, 1)->endOfMonth();
 
-        // Phân quyền (giống comboRevenue)
         if (!$user->hasRole('System Admin')) {
             if ($user->branch_id) {
                 $branchId = $user->branch_id;
