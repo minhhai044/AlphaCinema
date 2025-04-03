@@ -467,11 +467,11 @@ class StatisticalController extends Controller
         return $data;
     }
 
-    // 4. Giờ cao điểm (theo giờ bắt đầu suất chiếu)
+    // 4. Giờ cao điểm 
     private function getPeakHoursData($tickets)
     {
         $data = $tickets->groupBy(function ($ticket) {
-            return Carbon::parse($ticket->start_time)->format('H:00');
+            return Carbon::parse($ticket->created_at)->format('H:00'); // Dựa vào created_at thay vì start_time
         })->map(function ($group) {
             return $group->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0);
         })->sortByDesc(function ($value) {
@@ -479,8 +479,8 @@ class StatisticalController extends Controller
         })->take(5)->toArray();
 
         return [
-            'categories' => array_keys($data),
-            'values' => array_values($data)
+            'categories' => array_keys($data) ?: [],
+            'values' => array_values($data) ?: []
         ];
     }
 
