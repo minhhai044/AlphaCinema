@@ -353,7 +353,6 @@ class StatisticalController extends Controller
             }
         }
 
-
         if ($branchId) {
             $ticketsQuery->where('branches.id', $branchId);
         }
@@ -372,42 +371,83 @@ class StatisticalController extends Controller
             $ticketsQuery->whereDate('tickets.created_at', $today);
         }
 
-        $tickets = $ticketsQuery->get();
+        Log::info('Filter applied:', [
+            'branch_id' => $branchId,
+            'cinema_id' => $cinemaId,
+            'date' => $date,
+            'movie_id' => $movieId,
+            'month' => $selectedMonth,
+            'year' => $selectedYear
+        ]);
 
+        try {
+            $tickets = $ticketsQuery->get();
+            Log::info('Tickets count: ' . $tickets->count());
 
-        $ticketTrendData = $this->getTicketTrendData($tickets, $date, $selectedMonth, $selectedYear);
-        $topMoviesData = $this->getTopMoviesData($tickets);
-        $ticketTypeData = $this->getTicketTypeData($tickets);
-        $peakHoursData = $this->getPeakHoursData($tickets);
-        $fillRateData = $this->getFillRateData($tickets);
+            $ticketTrendData = $this->getTicketTrendData($tickets, $date, $selectedMonth, $selectedYear);
+            $topMoviesData = $this->getTopMoviesData($tickets);
+            $ticketTypeData = $this->getTicketTypeData($tickets);
+            $peakHoursData = $this->getPeakHoursData($tickets);
+            $fillRateData = $this->getFillRateData($tickets);
 
-        return view('admin.statistical.TicketStatistical', compact(
-            'branches',
-            'cinemas',
-            'branchesRelation',
-            'branchId',
-            'cinemaId',
-            'date',
-            'movieId',
-            'movies',
-            'selectedMonth',
-            'selectedYear',
-            'tickets',
-            'ticketTrendData',
-            'topMoviesData',
-            'ticketTypeData',
-            'peakHoursData',
-            'fillRateData',
+           
+            $noDataMessage = $tickets->isEmpty() ? 'Không có dữ liệu cho bộ lọc hiện tại.' : null;
 
-        ));
+            return view('admin.statistical.TicketStatistical', compact(
+                'branches',
+                'cinemas',
+                'branchesRelation',
+                'branchId',
+                'cinemaId',
+                'date',
+                'movieId',
+                'movies',
+                'selectedMonth',
+                'selectedYear',
+                'tickets',
+                'ticketTrendData',
+                'topMoviesData',
+                'ticketTypeData',
+                'peakHoursData',
+                'fillRateData',
+                'noDataMessage'
+            ));
+        } catch (\Exception $e) {
+            Log::error('Error in ticketRevenueNew: ' . $e->getMessage());
+            $tickets = collect([]); // Trả về collection rỗng
+            $ticketTrendData = ['categories' => [], 'values' => []];
+            $topMoviesData = [];
+            $ticketTypeData = [];
+            $peakHoursData = ['categories' => [], 'values' => []];
+            $fillRateData = ['categories' => [], 'seats_sold' => [], 'seats_empty' => []];
+            $noDataMessage = 'Có lỗi xảy ra khi tải dữ liệu thống kê.';
+
+            return view('admin.statistical.TicketStatistical', compact(
+                'branches',
+                'cinemas',
+                'branchesRelation',
+                'branchId',
+                'cinemaId',
+                'date',
+                'movieId',
+                'movies',
+                'selectedMonth',
+                'selectedYear',
+                'tickets',
+                'ticketTrendData',
+                'topMoviesData',
+                'ticketTypeData',
+                'peakHoursData',
+                'fillRateData',
+                'noDataMessage'
+            ));
+        }
     }
 
-    // Xu hướng bán vé
     private function getTicketTrendData($tickets, $date, $selectedMonth, $selectedYear)
     {
-        $data = [];
+        $data = ['categories' => [], 'values' => []];
         if ($date) {
-            // Theo giờ trong ngày
             $ticketsByHour = $tickets->groupBy(function ($ticket) {
                 return Carbon::parse($ticket->created_at)->format('H:00');
             })->map(function ($group) {
@@ -420,7 +460,6 @@ class StatisticalController extends Controller
                 $data['values'][] = $ticketsByHour[$hour] ?? 0;
             }
         } else {
-            // Theo ngày trong tháng
             $daysInMonth = Carbon::create($selectedYear, $selectedMonth)->daysInMonth;
             $ticketsByDay = $tickets->groupBy(function ($ticket) {
                 return Carbon::parse($ticket->created_at)->format('d/m');
@@ -437,7 +476,6 @@ class StatisticalController extends Controller
         return $data;
     }
 
-    // Top phim bán chạy
     private function getTopMoviesData($tickets)
     {
         $data = $tickets->groupBy('movie_name')->map(function ($group) {
@@ -447,10 +485,9 @@ class StatisticalController extends Controller
             ];
         })->sortByDesc('y')->take(5)->values()->toArray();
 
-        return $data;
+        return $data ?: [];
     }
 
-    // Phân loại vé
     private function getTicketTypeData($tickets)
     {
         $roomTypes = DB::table('type_rooms')->pluck('name', 'id')->toArray();
@@ -479,7 +516,6 @@ class StatisticalController extends Controller
         return $data ?: [];
     }
 
-    // Giờ cao điểm
     private function getPeakHoursData($tickets)
     {
         $data = $tickets->groupBy(function ($ticket) {
@@ -496,10 +532,9 @@ class StatisticalController extends Controller
         ];
     }
 
-    // Tỷ lệ lấp đầy rạp (theo chi nhánh)
     private function getFillRateData($tickets)
     {
-        $data = [];
+        $data = ['categories' => [], 'seats_sold' => [], 'seats_empty' => []];
         $ticketsByBranch = $tickets->groupBy('branch_name');
 
         foreach ($ticketsByBranch as $branchName => $branchTickets) {
