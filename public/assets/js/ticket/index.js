@@ -139,7 +139,7 @@ $(document).ready(function () {
             let totalFoodPrice = 0;
             let discount = 0;
             let totalPrice = 0;
-            const  voucher_discount = data.voucher_type == 1 ? data.voucher_discount : 0;
+            const voucher_discount = data.voucher_type == 1 ? data.voucher_discount : 0;
 
             if (data.ticket_combos && data.ticket_combos.length > 0) {
                 data.ticket_combos.forEach(combo => {
@@ -251,7 +251,6 @@ $(document).ready(function () {
     // Thêm sự kiện click cho nút in
     $("#printAllTickets").on("click", function () {
 
-        changeStatus(event, ticketID);
         // Lưu lại nội dung và tiêu đề gốc
         const originalContent = $("body").html();
         const originalTitle = document.title;
@@ -303,6 +302,10 @@ $(document).ready(function () {
                             padding: 15px;
                             margin-bottom: 20px;
                         }
+                        .print-container {
+                            min-height: 100vh;
+                            height: auto;
+                        }
                     }
                 </style>
                 <!-- Nội dung in -->
@@ -321,6 +324,7 @@ $(document).ready(function () {
             // Khôi phục tiêu đề gốc trước khi tải lại trang
             document.title = originalTitle;
 
+            changeStatus(event, ticketID);
 
             window.onafterprint = function () {
                 console.log("IN thành công");

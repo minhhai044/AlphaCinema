@@ -488,8 +488,6 @@
     <script>
         $("#printAllTickets").on("click", function() {
 
-            changeStatus(event);
-
             // Lưu lại nội dung và tiêu đề gốc
             const originalContent = $("body").html();
             const originalTitle = document.title;
@@ -537,6 +535,10 @@
                             padding: 15px;
                             margin-bottom: 20px;
                         }
+                        .print-container {
+                            min-height: 100vh;
+                            height: auto;
+                        }
                     }
                 </style>
                 <!-- Nội dung in -->
@@ -551,10 +553,9 @@
             // Chờ một chút để đảm bảo tiêu đề đã được cập nhật
             setTimeout(function() {
                 window.print();
-
+                changeStatus(event);
                 // Khôi phục tiêu đề gốc trước khi tải lại trang
                 document.title = originalTitle;
-
 
                 window.onafterprint = function() {
                     console.log("IN thành công");

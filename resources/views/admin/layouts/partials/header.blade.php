@@ -11,7 +11,7 @@
         <div class="navbar-brand-box">
             <a href="{{ route('admin.index') }}" class="logo logo-dark">
                 <span class="logo-sm">
-                    <img src="{{ asset('logo/Icon Alpha cinema.svg') }}" alt=""  style="width: 140%">
+                    <img src="{{ asset('logo/Icon Alpha cinema.svg') }}" alt=""  style="width: 70%">
                 </span>
                 <span class="logo-lg">
                     <img src="{{ asset('logo/Logo Alpha cinema.svg') }}" alt="" style="width: 52%">
