@@ -219,7 +219,7 @@ class StatisticalController extends Controller
             ->select(
                 'movies.name as movie_name',
                 DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as seats_sold'),
-                DB::raw('SUM(JSON_LENGTH(rooms.seat_structure)) as total_seats'), 
+                DB::raw('SUM(JSON_LENGTH(rooms.seat_structure)) as total_seats'),
                 DB::raw('ROUND(
             (SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) /
             SUM(JSON_LENGTH(rooms.seat_structure))) * 100,
@@ -260,13 +260,20 @@ class StatisticalController extends Controller
     }
 
 
+
+
+
+
+
+
+
     public function ticketRevenueNew(Request $request)
     {
         $user = Auth::user();
 
         // Lấy danh sách chi nhánh và rạp
         $branchesQuery = DB::table('branches')->select('id', 'name')->where('is_active', 1);
-        $cinemasQuery = DB::table('cinemas')->select('id', 'name')->where('is_active', 1);
+        $cinemasQuery = DB::table('cinemas')->select('id', 'name', 'branch_id')->where('is_active', 1);
 
         if (!$user->hasRole('System Admin')) {
             if ($user->branch_id) {
@@ -309,8 +316,13 @@ class StatisticalController extends Controller
         $cinemaId = $request->input('cinema_id', $user->cinema_id ?? '');
         $date = $request->input('date');
         $movieId = $request->input('movie_id');
-        $selectedMonth = $request->input('month');
-        $selectedYear = $request->input('year');
+        $selectedMonth = $request->input('month', Carbon::now()->month) ?: Carbon::now()->month;
+        $selectedYear = $request->input('year', Carbon::now()->year) ?: Carbon::now()->year;
+
+        // Validate month/year
+        $selectedMonth = $selectedMonth ? max(1, min(12, (int) $selectedMonth)) : null;
+        $selectedYear = max(2020, min(Carbon::now()->year, (int) $selectedYear));
+        $today = $date ? Carbon::parse($date) : Carbon::today();
 
         // Lấy danh sách phim
         $movies = Movie::all();
@@ -320,7 +332,17 @@ class StatisticalController extends Controller
             ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
             ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
             ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
-            ->join('movies', 'tickets.movie_id', '=', 'movies.id');
+            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
+            ->join('rooms', 'showtimes.room_id', '=', 'rooms.id')
+            ->select(
+                'tickets.*',
+                'showtimes.start_time',
+                'movies.name as movie_name',
+                'cinemas.name as cinema_name',
+                'branches.name as branch_name',
+                'rooms.type_room_id',
+                'rooms.seat_structure'
+            );
 
         // Áp dụng phân quyền
         if (!$user->hasRole('System Admin')) {
@@ -338,22 +360,23 @@ class StatisticalController extends Controller
         if ($cinemaId) {
             $ticketsQuery->where('cinemas.id', $cinemaId);
         }
-        if ($date) {
-            $ticketsQuery->whereDate('tickets.created_at', $date);
-        }
         if ($movieId) {
             $ticketsQuery->where('tickets.movie_id', $movieId);
         }
-        if ($selectedMonth && $selectedYear) {
+        if ($date) {
+            $ticketsQuery->whereDate('tickets.created_at', $date);
+        } elseif ($selectedMonth && $selectedYear) {
             $ticketsQuery->whereMonth('tickets.created_at', $selectedMonth)
                 ->whereYear('tickets.created_at', $selectedYear);
+        } else {
+            $ticketsQuery->whereDate('tickets.created_at', $today);
         }
 
         // Lấy dữ liệu vé
         $tickets = $ticketsQuery->get();
 
-        // Dữ liệu cho biểu đồ (cập nhật từ dữ liệu tickets)
-        $ticketTrendData = $this->getTicketTrendData($tickets);
+        // Dữ liệu cho biểu đồ
+        $ticketTrendData = $this->getTicketTrendData($tickets, $date, $selectedMonth, $selectedYear);
         $topMoviesData = $this->getTopMoviesData($tickets);
         $ticketTypeData = $this->getTicketTypeData($tickets);
         $peakHoursData = $this->getPeakHoursData($tickets);
@@ -379,115 +402,193 @@ class StatisticalController extends Controller
         ));
     }
 
-    // Hàm lấy dữ liệu cho biểu đồ Xu Hướng Bán Vé
-    private function getTicketTrendData($tickets)
+    // 1. Xu hướng bán vé (theo ngày trong tháng hoặc giờ trong ngày)
+    private function getTicketTrendData($tickets, $date, $selectedMonth, $selectedYear)
     {
-        $trendData = [];
-        foreach ($tickets as $ticket) {
-            $hour = Carbon::parse($ticket->created_at)->format('H:00');
-            if (!isset($trendData[$hour])) {
-                $trendData[$hour] = 0;
+        $data = [];
+        if ($date) {
+            // Theo giờ trong ngày
+            $ticketsByHour = $tickets->groupBy(function ($ticket) {
+                return Carbon::parse($ticket->created_at)->format('H:00');
+            })->map(function ($group) {
+                return $group->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0);
+            })->toArray();
+
+            for ($i = 0; $i < 24; $i++) {
+                $hour = sprintf('%02d:00', $i);
+                $data['categories'][] = $hour;
+                $data['values'][] = $ticketsByHour[$hour] ?? 0;
             }
-            $trendData[$hour]++;
+        } else {
+            // Theo ngày trong tháng
+            $daysInMonth = Carbon::create($selectedYear, $selectedMonth)->daysInMonth;
+            $ticketsByDay = $tickets->groupBy(function ($ticket) {
+                return Carbon::parse($ticket->created_at)->format('d/m');
+            })->map(function ($group) {
+                return $group->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0);
+            })->toArray();
+
+            for ($i = 1; $i <= $daysInMonth; $i++) {
+                $day = sprintf('%02d/%02d', $i, $selectedMonth);
+                $data['categories'][] = $day;
+                $data['values'][] = $ticketsByDay[$day] ?? 0;
+            }
         }
-        ksort($trendData);
-        return [
-            'categories' => array_keys($trendData),
-            'data' => array_values($trendData),
-        ];
+        return $data;
     }
 
-    // Hàm lấy dữ liệu cho biểu đồ Top Phim Bán Chạy
+    // 2. Top phim bán chạy
     private function getTopMoviesData($tickets)
     {
-        $movieData = [];
-        foreach ($tickets as $ticket) {
-            if (!isset($movieData[$ticket->movie->name])) {
-                $movieData[$ticket->movie->name] = 0;
-            }
-            $movieData[$ticket->movie->name]++;
-        }
-        arsort($movieData);
-        $topMovies = array_slice($movieData, 0, 5, true); // Lấy top 5
-        $result = [];
-        foreach ($topMovies as $name => $count) {
-            $result[] = ['name' => $name, 'y' => $count];
-        }
-        return $result;
+        $data = $tickets->groupBy('movie_name')->map(function ($group) {
+            return [
+                'name' => $group->first()->movie_name,
+                'y' => $group->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0)
+            ];
+        })->sortByDesc('y')->take(5)->values()->toArray();
+
+        return $data;
     }
 
-    // Hàm lấy dữ liệu cho biểu đồ Phân Loại Vé
+    // 3. Phân loại vé (dựa trên type_room_id từ bảng rooms)
     private function getTicketTypeData($tickets)
     {
-        $typeData = [];
-        foreach ($tickets as $ticket) {
-            if (is_string($ticket->ticket_seats)) {
-                $seats = json_decode($ticket->ticket_seats, true);
-                if ($seats) {
-                    foreach ($seats as $seat) {
-                        $type = $seat['type_seat_id']; // Lấy type_seat_id
-                        if (!isset($typeData[$type])) {
-                            $typeData[$type] = 0;
-                        }
-                        $typeData[$type]++;
-                    }
-                }
-            }
-        }
-        $result = [];
-        foreach ($typeData as $type => $count) {
-            $result[] = ['name' => 'Type ' . $type, 'y' => $count]; // Hiển thị type_seat_id
-        }
-        return $result;
+        // Lấy danh sách type_room_id và tên loại phòng (giả sử có bảng room_types)
+        $roomTypes = DB::table('type_rooms')->pluck('name', 'id')->toArray();
+
+        $data = $tickets->groupBy('type_room_id')->map(function ($group) use ($roomTypes) {
+            $typeRoomId = $group->first()->type_room_id;
+            return [
+                'name' => $roomTypes[$typeRoomId] ?? "Phòng $typeRoomId",
+                'y' => $group->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0)
+            ];
+        })->values()->toArray();
+
+        return $data;
     }
 
-    // Hàm lấy dữ liệu cho biểu đồ Giờ Cao Điểm
+    // 4. Giờ cao điểm (theo giờ bắt đầu suất chiếu)
     private function getPeakHoursData($tickets)
     {
-        $hourData = [];
-        foreach ($tickets as $ticket) {
-            $hour = Carbon::parse($ticket->showtime->time)->format('H:00');
-            if (!isset($hourData[$hour])) {
-                $hourData[$hour] = 0;
-            }
-            $hourData[$hour]++;
-        }
-        arsort($hourData);
-        $topHours = array_slice($hourData, 0, 5, true); // Lấy top 5
+        $data = $tickets->groupBy(function ($ticket) {
+            return Carbon::parse($ticket->start_time)->format('H:00');
+        })->map(function ($group) {
+            return $group->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0);
+        })->sortByDesc(function ($value) {
+            return $value;
+        })->take(5)->toArray();
+
         return [
-            'categories' => array_keys($topHours),
-            'data' => array_values($topHours),
+            'categories' => array_keys($data),
+            'values' => array_values($data)
         ];
     }
 
-    // Hàm lấy dữ liệu cho biểu đồ Tỷ Lệ Lấp Đầy Rạp
+    // 5. Tỷ lệ lấp đầy rạp (theo chi nhánh)
     private function getFillRateData($tickets)
     {
-        // Logic này cần thêm thông tin về tổng số ghế trong rạp từ bảng 'rooms'
-        // Để đơn giản, tôi sẽ giả định có 100 ghế trong mỗi rạp
-        $cinemaData = [];
-        foreach ($tickets as $ticket) {
-            if (!isset($cinemaData[$ticket->cinema->name])) {
-                $cinemaData[$ticket->cinema->name] = ['booked' => 0, 'total' => 0];
-            }
+        $data = [];
+        $ticketsByBranch = $tickets->groupBy('branch_name');
 
-            $seats = [];
-            if(is_string($ticket->ticket_seats)){
-                $seats = json_decode($ticket->ticket_seats, true) ?? [];
-            }
+        foreach ($ticketsByBranch as $branchName => $branchTickets) {
+            $seatsSold = $branchTickets->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0);
+            $totalSeats = $branchTickets->map(fn($ticket) => is_array($ticket->seat_structure) ? count($ticket->seat_structure) : json_decode($ticket->seat_structure ?? '[]', true))
+                ->flatten()
+                ->count();
 
-            $cinemaData[$ticket->cinema->name]['booked'] += count($seats);
-            $cinemaData[$ticket->cinema->name]['total'] += 100; // Giả định 100 ghế
+            $data['categories'][] = $branchName;
+            $data['seats_sold'][] = $seatsSold;
+            $data['seats_empty'][] = $totalSeats - $seatsSold;
         }
-        $categories = array_keys($cinemaData);
-        $booked = array_map(fn($data) => $data['booked'], $cinemaData);
-        $available = array_map(fn($data) => $data['total'] - $data['booked'], $cinemaData);
-        return [
-            'categories' => $categories,
-            'booked' => $booked,
-            'available' => $available,
-        ];
+
+        return $data;
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // // Hàm lấy dữ liệu cho biểu đồ Top Phim Bán Chạy
+    // private function getTopMoviesData($tickets)
+    // {
+    //     $movieData = [];
+    //     foreach ($tickets as $ticket) {
+    //         if (!isset($movieData[$ticket->movie->name])) {
+    //             $movieData[$ticket->movie->name] = 0;
+    //         }
+    //         $movieData[$ticket->movie->name]++;
+    //     }
+    //     arsort($movieData);
+    //     $topMovies = array_slice($movieData, 0, 5, true); // Lấy top 5
+    //     $result = [];
+    //     foreach ($topMovies as $name => $count) {
+    //         $result[] = ['name' => $name, 'y' => $count];
+    //     }
+    //     return $result;
+    // }
+
+
+
+    // // Hàm lấy dữ liệu cho biểu đồ Giờ Cao Điểm
+    // private function getPeakHoursData($tickets)
+    // {
+    //     $hourData = [];
+    //     foreach ($tickets as $ticket) {
+    //         $hour = Carbon::parse($ticket->showtime->time)->format('H:00');
+    //         if (!isset($hourData[$hour])) {
+    //             $hourData[$hour] = 0;
+    //         }
+    //         $hourData[$hour]++;
+    //     }
+    //     arsort($hourData);
+    //     $topHours = array_slice($hourData, 0, 5, true); // Lấy top 5
+    //     return [
+    //         'categories' => array_keys($topHours),
+    //         'data' => array_values($topHours),
+    //     ];
+    // }
+
+    // // Hàm lấy dữ liệu cho biểu đồ Tỷ Lệ Lấp Đầy Rạp
+    // private function getFillRateData($tickets)
+    // {
+    //     // Logic này cần thêm thông tin về tổng số ghế trong rạp từ bảng 'rooms'
+    //     // Để đơn giản, tôi sẽ giả định có 100 ghế trong mỗi rạp
+    //     $cinemaData = [];
+    //     foreach ($tickets as $ticket) {
+    //         if (!isset($cinemaData[$ticket->cinema->name])) {
+    //             $cinemaData[$ticket->cinema->name] = ['booked' => 0, 'total' => 0];
+    //         }
+
+    //         $seats = [];
+    //         if(is_string($ticket->ticket_seats)){
+    //             $seats = json_decode($ticket->ticket_seats, true) ?? [];
+    //         }
+
+    //         $cinemaData[$ticket->cinema->name]['booked'] += count($seats);
+    //         $cinemaData[$ticket->cinema->name]['total'] += 100; // Giả định 100 ghế
+    //     }
+    //     $categories = array_keys($cinemaData);
+    //     $booked = array_map(fn($data) => $data['booked'], $cinemaData);
+    //     $available = array_map(fn($data) => $data['total'] - $data['booked'], $cinemaData);
+    //     return [
+    //         'categories' => $categories,
+    //         'booked' => $booked,
+    //         'available' => $available,
+    //     ];
+    // }
 
 
     private function applyPermission($query, $user, $branchId = null, $cinemaId = null)
@@ -536,7 +637,7 @@ class StatisticalController extends Controller
 
 
 
-    
+
     public function comboRevenue(Request $request)
     {
         $user = Auth::user();
