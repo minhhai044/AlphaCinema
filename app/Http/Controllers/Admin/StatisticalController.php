@@ -453,25 +453,37 @@ class StatisticalController extends Controller
     // 3. Phân loại vé (dựa trên type_room_id từ bảng rooms)
     private function getTicketTypeData($tickets)
     {
-        // Lấy danh sách type_room_id và tên loại phòng (giả sử có bảng room_types)
         $roomTypes = DB::table('type_rooms')->pluck('name', 'id')->toArray();
 
-        $data = $tickets->groupBy('type_room_id')->map(function ($group) use ($roomTypes) {
-            $typeRoomId = $group->first()->type_room_id;
+        $rooms = DB::table('rooms')
+            ->select('id', 'type_room_id')
+            ->whereIn('id', $tickets->pluck('room_id')->unique())
+            ->pluck('type_room_id', 'id')
+            ->toArray();
+
+        $data = $tickets->groupBy('room_id')->map(function ($group) use ($rooms, $roomTypes) {
+            $roomId = $group->first()->room_id;
+            $typeRoomId = $rooms[$roomId] ?? 0;
             return [
-                'name' => $roomTypes[$typeRoomId] ?? "Phòng $typeRoomId",
+                'name' => $roomTypes[$typeRoomId] ?? "Phòng không xác định ($typeRoomId)",
                 'y' => $group->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0)
             ];
-        })->values()->toArray();
+        })->groupBy('name')
+            ->map(function ($group) {
+                return [
+                    'name' => $group->first()['name'],
+                    'y' => $group->sum('y')
+                ];
+            })->values()->toArray();
 
-        return $data;
+        return $data ?: [];
     }
 
-    // 4. Giờ cao điểm 
+    // 4. Giờ cao điểm
     private function getPeakHoursData($tickets)
     {
         $data = $tickets->groupBy(function ($ticket) {
-            return Carbon::parse($ticket->created_at)->format('H:00'); // Dựa vào created_at thay vì start_time
+            return Carbon::parse($ticket->created_at)->format('H:00');
         })->map(function ($group) {
             return $group->sum(fn($ticket) => is_array($ticket->ticket_seats) ? count($ticket->ticket_seats) : 0);
         })->sortByDesc(function ($value) {
