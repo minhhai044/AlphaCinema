@@ -10,7 +10,7 @@
             <div class="p-3 px-4 border-bottom">
                 <div class="d-flex align-items-start ">
                     <div class="flex-shrink-0 me-3 align-self-center">
-                        <img src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : '	https://graph.facebook.com/4/picture?type=small' }}"
+                        <img src="{{ Auth::user()->avatar ? Storage::url(Auth::user()->avatar) : 'https://graph.facebook.com/4/picture?type=small' }}"
                             class="avatar-sm rounded-circle" alt="">
                     </div>
 
@@ -59,12 +59,7 @@
                             <span class="d-none d-sm-block">Hoạt động</span>
                         </a>
                     </li>
-                    {{-- <li class="nav-item">
-                        <a href="apps-chat.html#contacts" data-bs-toggle="tab" aria-expanded="false" class="nav-link">
-                            <i class="bx bx-book-content font-size-20 d-sm-none"></i>
-                            <span class="d-none d-sm-block">Contacts</span>
-                        </a>
-                    </li> --}}
+                    
                 </ul>
                 <div class="tab-content">
                     <div class="tab-pane show active" id="chat">
@@ -74,204 +69,34 @@
                                     <h5 class="font-size-14 mb-3">Danh sách phòng chat</h5>
                                 </div>
                                 <ul class="list-unstyled chat-list">
-                                    <li class="active">
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
 
-                                                <div class="flex-shrink-0 user-img online align-self-center me-3">
-                                                    <img src="assets/images/users/avatar-2.jpg"
-                                                        class="rounded-circle avatar-sm" alt="">
-                                                    <span class="user-status"></span>
-                                                </div>
-
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">Jennie Sherlock
-                                                    </h5>
-                                                    <p class="text-truncate mb-0">Hey! there I'm available</p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">02 min</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li class="unread">
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
-                                                <div class="flex-shrink-0 user-img online align-self-center me-3">
-                                                    <div class="avatar-sm align-self-center">
-                                                        <span
-                                                            class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                            S
-                                                        </span>
+                                    @foreach ($RoomChats as $room)
+                                        <li class="{{ $room->id === $RoomChat->id ? 'unread' : '' }}">
+                                            <a href="{{ route('admin.roomchats.show', $room->id) }}">
+                                                <div class="d-flex align-items-start">
+                                                    <div class="flex-shrink-0 user-img online align-self-center me-3">
+                                                        <img src="{{ $room->image ? Storage::url($room->image) : asset('logo/Icon Alpha cinema.svg') }}"
+                                                            class="rounded-circle avatar-sm" alt="">
+                                                        <span class="user-status"></span>
                                                     </div>
-                                                    <span class="user-status"></span>
-                                                </div>
 
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">Stacie Dube
-                                                    </h5>
-                                                    <p class="text-truncate mb-0">I've finished it! See you so
-                                                    </p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">10 min</div>
-                                                </div>
-                                                <div class="unread-message">
-                                                    <span class="badge bg-danger rounded-pill">1</span>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
-                                                <div class="flex-shrink-0 user-img away align-self-center me-3">
-                                                    <img src="assets/images/users/avatar-3.jpg"
-                                                        class="rounded-circle avatar-sm" alt="">
-                                                    <span class="user-status"></span>
-                                                </div>
-
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">Katie Olson
-                                                    </h5>
-                                                    <p class="text-truncate mb-0">This theme is awesome!</p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">22 min</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
-
-                                                <div class="flex-shrink-0 user-img align-self-center me-3">
-                                                    <img src="assets/images/users/avatar-4.jpg"
-                                                        class="rounded-circle avatar-sm" alt="">
-                                                    <span class="user-status"></span>
-                                                </div>
-
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">Marshall Wilson
-                                                    </h5>
-                                                    <p class="text-truncate mb-0">Nice to meet you</p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">01 Hr</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
-
-                                                <div class="flex-shrink-0 user-img online align-self-center me-3">
-                                                    <div class="avatar-sm align-self-center">
-                                                        <span
-                                                            class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                            J
-                                                        </span>
+                                                    <div class="flex-grow-1 overflow-hidden">
+                                                        <h5 class="text-truncate font-size-14 mb-1">{{ $room->name }}
+                                                        </h5>
+                                                        <p class="text-truncate mb-0">Chào mừng bạn tham gia phòng chat của
+                                                            chúng tôi !!!
+                                                        </p>
                                                     </div>
-                                                    <span class="user-status"></span>
+                                                    <div class="flex-shrink-0">
+                                                        <div class="font-size-11">10 min</div>
+                                                    </div>
+                                                    <div class="unread-message">
+                                                        <span class="badge bg-danger rounded-pill">1</span>
+                                                    </div>
                                                 </div>
-
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">James Lee</h5>
-                                                    <p class="text-truncate mb-0">Wow that's great</p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">04 Hrs</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
-
-                                                <div class="flex-shrink-0 user-img align-self-center me-3">
-                                                    <img src="assets/images/users/avatar-5.jpg"
-                                                        class="rounded-circle avatar-sm" alt="">
-                                                    <span class="user-status"></span>
-                                                </div>
-
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">Ronald Tucker
-                                                    </h5>
-                                                    <p class="text-truncate mb-0">Nice to meet you</p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">22/04</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
-
-                                                <div class="flex-shrink-0 user-img align-self-center me-3">
-                                                    <img src="assets/images/users/avatar-6.jpg"
-                                                        class="rounded-circle avatar-sm" alt="">
-                                                    <span class="user-status"></span>
-                                                </div>
-
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">Dennis Stewart
-                                                    </h5>
-                                                    <p class="text-truncate mb-0">Nice to meet you</p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">22/04</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
-                                                <div class="flex-shrink-0 user-img away align-self-center me-3">
-                                                    <img src="assets/images/users/avatar-3.jpg"
-                                                        class="rounded-circle avatar-sm" alt="">
-                                                    <span class="user-status"></span>
-                                                </div>
-
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">Katie Olson
-                                                    </h5>
-                                                    <p class="text-truncate mb-0">This theme is awesome!</p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">22 min</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-start">
-
-                                                <div class="flex-shrink-0 user-img align-self-center me-3">
-                                                    <img src="assets/images/users/avatar-4.jpg"
-                                                        class="rounded-circle avatar-sm" alt="">
-                                                    <span class="user-status"></span>
-                                                </div>
-
-                                                <div class="flex-grow-1 overflow-hidden">
-                                                    <h5 class="text-truncate font-size-14 mb-1">Marshall Wilson
-                                                    </h5>
-                                                    <p class="text-truncate mb-0">Nice to meet you</p>
-                                                </div>
-                                                <div class="flex-shrink-0">
-                                                    <div class="font-size-11">01 Hr</div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
+                                            </a>
+                                        </li>
+                                    @endforeach
                                 </ul>
                             </div>
                         </div>
@@ -281,173 +106,22 @@
                         <div class="chat-message-list" data-simplebar>
                             <div class="pt-3">
                                 <div class="px-3">
-                                    <h5 class="font-size-14 mb-3">Groups</h5>
+                                    <h5 class="font-size-14 mb-3">Danh sách hoạt động</h5>
                                 </div>
-                                <ul class="list-unstyled chat-list">
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-sm me-3">
-                                                    <span
-                                                        class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                        G
-                                                    </span>
-                                                </div>
+                                <ul class="list-unstyled chat-list" id="listOnline">
 
-                                                <div class="flex-grow-1">
-                                                    <h5 class="font-size-14 mb-0">General</h5>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-sm me-3">
-                                                    <span
-                                                        class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                        R
-                                                    </span>
-                                                </div>
-
-                                                <div class="flex-grow-1">
-                                                    <h5 class="font-size-14 mb-0">Reporting</h5>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-sm me-3">
-                                                    <span
-                                                        class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                        M
-                                                    </span>
-                                                </div>
-
-                                                <div class="flex-grow-1">
-                                                    <h5 class="font-size-14 mb-0">Meeting</h5>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-sm me-3">
-                                                    <span
-                                                        class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                        A
-                                                    </span>
-                                                </div>
-
-                                                <div class="flex-grow-1">
-                                                    <h5 class="font-size-14 mb-0">Project A</h5>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
-
-                                    <li>
-                                        <a href="apps-chat.html#">
-                                            <div class="d-flex align-items-center">
-                                                <div class="flex-shrink-0 avatar-sm me-3">
-                                                    <span
-                                                        class="avatar-title rounded-circle  bg-primary-subtle text-primary">
-                                                        B
-                                                    </span>
-                                                </div>
-
-                                                <div class="flex-grow-1">
-                                                    <h5 class="font-size-14 mb-0">Project B</h5>
-                                                </div>
-                                            </div>
-                                        </a>
-                                    </li>
                                 </ul>
                             </div>
                         </div>
                     </div>
 
-                    {{-- <div class="tab-pane" id="contacts">
-                        <div class="chat-message-list" data-simplebar>
-                            <div class="pt-3">
-                                <div class="px-3">
-                                    <h5 class="font-size-14 mb-3">Contacts</h5>
-                                </div>
 
-                                <div>
-                                    <div>
-                                        <div class="px-3 contact-list">A</div>
-
-                                        <ul class="list-unstyled chat-list">
-                                            <li>
-                                                <a href="apps-chat.html#">
-                                                    <h5 class="font-size-14 mb-0">Adam Miller</h5>
-                                                </a>
-                                            </li>
-
-                                            <li>
-                                                <a href="apps-chat.html#">
-                                                    <h5 class="font-size-14 mb-0">Alfonso Fisher</h5>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="mt-4">
-                                        <div class="px-3 contact-list">B</div>
-
-                                        <ul class="list-unstyled chat-list">
-                                            <li>
-                                                <a href="apps-chat.html#">
-                                                    <h5 class="font-size-14 mb-0">Bonnie Harney</h5>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="mt-4">
-                                        <div class="px-3 contact-list">C</div>
-
-                                        <ul class="list-unstyled chat-list">
-                                            <li>
-                                                <a href="apps-chat.html#">
-                                                    <h5 class="font-size-14 mb-0">Charles Brown</h5>
-                                                </a>
-                                                <a href="apps-chat.html#">
-                                                    <h5 class="font-size-14 mb-0">Carmella Jones</h5>
-                                                </a>
-                                                <a href="apps-chat.html#">
-                                                    <h5 class="font-size-14 mb-0">Carrie Williams</h5>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-
-                                    <div class="mt-4">
-                                        <div class="px-3 contact-list">D</div>
-
-                                        <ul class="list-unstyled chat-list">
-                                            <li>
-                                                <a href="apps-chat.html#">
-                                                    <h5 class="font-size-14 mb-0">Dolores Minter</h5>
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> --}}
                 </div>
             </div>
 
         </div>
+
+
         <!-- end chat-leftsidebar -->
 
         <div class="w-100 user-chat mt-4 mt-sm-0 ms-lg-1">
@@ -507,205 +181,49 @@
 
                 <div class="chat-conversation p-3 px-2" data-simplebar>
                     <ul class="list-unstyled mb-0">
-                        <li class="chat-day-title">
-                            <span class="title">Today</span>
-                        </li>
-                        <li>
-                            <div class="conversation-list">
-                                <div class="ctext-wrap">
-                                    <div class="ctext-wrap-content">
-                                        <h5 class="conversation-name"><a href="apps-chat.html#" class="user-name">Jennie
-                                                Sherlock</a> <span class="time">10:00</span></h5>
-                                        <p class="mb-0">Good morning !</p>
-                                    </div>
-                                    <div class="dropdown align-self-start">
-                                        <a class="dropdown-toggle" href="apps-chat.html#" role="button"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="apps-chat.html#">Copy</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Save</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Forward</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Delete</a>
+
+                        @foreach ($RoomChat->messenges->sortBy('created_at') as $mess)
+                            @php
+                                $isMine = $mess->user_id == Auth::id();
+                                $avatar = $mess->user->avatar
+                                    ? Storage::url($mess->user->avatar)
+                                    : 'https://graph.facebook.com/4/picture?type=small';
+                            @endphp
+
+                            <li class="{{ $isMine ? 'right' : '' }}">
+                                <div class="conversation-list d-flex {{ $isMine ? 'justify-content-end' : '' }}">
+                                    @if (!$isMine)
+                                        <div class="flex-shrink-0 me-2">
+                                            <img src="{{ $avatar }}" alt="Avatar"
+                                                class="rounded-circle avatar-xs" style="height: 2rem;
+    width: 2rem;">
+                                        </div>
+                                    @endif
+
+                                    <div class="ctext-wrap">
+                                        <div class="ctext-wrap-content">
+                                            <h5 class="conversation-name">
+                                                <a href="#"
+                                                    class="user-name">{{ $isMine ? 'Bạn' : $mess->user->name ?? 'Ẩn danh' }}</a>
+                                                <span class="time">{{ $mess->created_at->format('H:i') }}</span>
+                                            </h5>
+                                            <p class="mb-0">{{ $mess->messenge }}</p>
+                                        </div>
+                                        <div class="dropdown align-self-start">
+                                            <a class="dropdown-toggle" href="#" role="button"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                <i class="bx bx-dots-vertical-rounded"></i>
+                                            </a>
+                                            <div class="dropdown-menu">
+                                                <a class="dropdown-item" href="#">Copy</a>
+                                                <a class="dropdown-item" href="#">Xóa</a>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                            </li>
+                        @endforeach
 
-                        </li>
-
-                        <li class="right">
-                            <div class="conversation-list">
-                                <div class="ctext-wrap">
-                                    <div class="ctext-wrap-content">
-                                        <h5 class="conversation-name"><a href="apps-chat.html#"
-                                                class="user-name">Shawn</a> <span class="time">10:02</span>
-                                        </h5>
-                                        <p class="mb-0">Good morning</p>
-                                    </div>
-                                    <div class="dropdown align-self-start">
-                                        <a class="dropdown-toggle" href="apps-chat.html#" role="button"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="apps-chat.html#">Copy</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Save</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Forward</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </li>
-
-                        <li>
-                            <div class="conversation-list">
-                                <div class="ctext-wrap">
-                                    <div class="ctext-wrap-content">
-                                        <h5 class="conversation-name"><a href="apps-chat.html#" class="user-name">Jennie
-                                                Sherlock</a> <span class="time">10:04</span></h5>
-                                        <p class="mb-0">
-                                            Hello!
-                                        </p>
-                                    </div>
-                                    <div class="dropdown align-self-start">
-                                        <a class="dropdown-toggle" href="apps-chat.html#" role="button"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="apps-chat.html#">Copy</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Save</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Forward</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="ctext-wrap">
-                                    <div class="ctext-wrap-content">
-                                        <h5 class="conversation-name"><a href="apps-chat.html#" class="user-name">Jennie
-                                                Sherlock</a> <span class="time">10:04</span></h5>
-                                        <p class="mb-0">
-                                            What about our next meeting?
-                                        </p>
-                                    </div>
-                                    <div class="dropdown align-self-start">
-                                        <a class="dropdown-toggle" href="apps-chat.html#" role="button"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="apps-chat.html#">Copy</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Save</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Forward</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </li>
-
-                        <li>
-                            <div class="conversation-list">
-                                <div class="ctext-wrap">
-                                    <div class="ctext-wrap-content">
-                                        <h5 class="conversation-name"><a href="apps-chat.html#" class="user-name">Jennie
-                                                Sherlock</a> <span class="time">10:06</span></h5>
-                                        <p class="mb-0">
-                                            Next meeting tomorrow 10.00AM
-                                        </p>
-                                    </div>
-                                    <div class="dropdown align-self-start">
-                                        <a class="dropdown-toggle" href="apps-chat.html#" role="button"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="apps-chat.html#">Copy</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Save</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Forward</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </li>
-
-                        <li class="right">
-                            <div class="conversation-list">
-                                <div class="ctext-wrap">
-                                    <div class="ctext-wrap-content">
-                                        <h5 class="conversation-name"><a href="apps-chat.html#"
-                                                class="user-name">Shawn</a> <span class="time">10:08</span>
-                                        </h5>
-                                        <p class="mb-0">
-                                            Wow that's great
-                                        </p>
-                                    </div>
-                                    <div class="dropdown align-self-start">
-                                        <a class="dropdown-toggle" href="apps-chat.html#" role="button"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="apps-chat.html#">Copy</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Save</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Forward</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                        </li>
-
-                        <li>
-                            <div class="conversation-list">
-                                <div class="ctext-wrap">
-                                    <div class="ctext-wrap-content">
-                                        <h5 class="conversation-name"><a href="apps-chat.html#" class="user-name">Jennie
-                                                Sherlock</a> <span class="time">10:09</span></h5>
-                                        <p class="mb-0">
-                                            img-1.jpg & img-2.jpg images for a New Projects
-                                        </p>
-
-                                        <ul class="list-inline message-img mt-3  mb-0">
-                                            <li class="list-inline-item message-img-list">
-                                                <a class="d-inline-block m-1" href="apps-chat.html">
-                                                    <img src="assets/images/small/img-1.jpg" alt=""
-                                                        class="rounded img-thumbnail">
-                                                </a>
-                                            </li>
-
-                                            <li class="list-inline-item message-img-list">
-                                                <a class="d-inline-block m-1" href="apps-chat.html">
-                                                    <img src="assets/images/small/img-2.jpg" alt=""
-                                                        class="rounded img-thumbnail">
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="dropdown align-self-start">
-                                        <a class="dropdown-toggle" href="apps-chat.html#" role="button"
-                                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                            <i class="bx bx-dots-vertical-rounded"></i>
-                                        </a>
-                                        <div class="dropdown-menu">
-                                            <a class="dropdown-item" href="apps-chat.html#">Copy</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Save</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Forward</a>
-                                            <a class="dropdown-item" href="apps-chat.html#">Delete</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
                     </ul>
                 </div>
 
@@ -713,17 +231,19 @@
                     <div class="row">
                         <div class="col">
                             <div class="position-relative">
-                                <input type="text" class="form-control border bg-light-subtle"
-                                    placeholder="Enter Message...">
+                                <input type="text" id="messenger" class="form-control border bg-light-subtle"
+                                    placeholder="Nhập tin nhắn ...">
                             </div>
                         </div>
                         <div class="col-auto">
-                            <button type="submit" class="btn btn-primary chat-send w-md waves-effect waves-light"><span
-                                    class="d-none d-sm-inline-block me-2">Send</span> <i
+                            <button type="button" id="sendMessenger"
+                                class="btn btn-primary chat-send w-md waves-effect waves-light"><span
+                                    class="d-none d-sm-inline-block me-2">Gửi</span> <i
                                     class="mdi mdi-send float-end"></i></button>
                         </div>
                     </div>
                 </div>
+                
             </div>
         </div>
         <!-- end user chat -->
@@ -752,40 +272,14 @@
 
     <script>
         let roomId = "{{ $RoomChat->id }}";
+        let UserId = "{{ Auth::user()->id }}";
+        let routeMessenger = "{{ route('admin.roomchats.messenger', $RoomChat->id) }}"
     </script>
-    {{-- @vite('resources/js/roomChat.js') --}}
+    @vite('resources/js/roomChat.js')
 
 
 @endsection
 
 @section('script')
 
-    <script src="https://js.pusher.com/7.2/pusher.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.15.0/dist/echo.iife.js"></script>
-
-    <script>
-        window.Echo = new Echo({
-            broadcaster: 'pusher',
-            key: '{{ env('PUSHER_APP_KEY') }}',
-            cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
-            forceTLS: true,
-            authEndpoint: '/broadcasting/auth',
-            auth: {
-                headers: {
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            }
-        });
-        window.Echo.join('chat.' + roomId)
-            .here(users => {
-                console.log(users);
-            })
-            .joining(user => {
-                console.log(user);
-
-            })
-            .leaving(user => {
-                console.log(user);
-            })
-    </script>
 @endsection

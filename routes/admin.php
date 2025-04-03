@@ -292,4 +292,5 @@ Route::group([
     'as' => 'roomchats.',
 ], function () {
     Route::get('{roomId}/', [RoomChatController::class, 'room'])->name('show');
+    Route::post('{roomId}/', [RoomChatController::class, 'messenger'])->name('messenger');
 });

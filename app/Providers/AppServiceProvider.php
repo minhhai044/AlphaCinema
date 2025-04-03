@@ -26,6 +26,7 @@ class AppServiceProvider extends ServiceProvider
         Broadcast::extend('multi', function ($app) {
             return new MultiBroadcaster();
         });
+        
         Paginator::useBootstrapFive();
     }
 }

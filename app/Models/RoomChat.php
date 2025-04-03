@@ -13,4 +13,7 @@ class RoomChat extends Model
         'name',
         'image',
     ];
+    public function messenges(){
+        return $this->hasMany(MessengerChat::class);
+    }
 }
