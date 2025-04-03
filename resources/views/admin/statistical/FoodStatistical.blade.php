@@ -84,7 +84,7 @@
             </div>
 
             <!-- Bộ lọc phim -->
-            <div class="input-group input-group-sm">
+            {{-- <div class="input-group input-group-sm">
                 <span class="input-group-text bg-light text-muted border-0">
                     <i class="bi bi-film"></i>
                 </span>
@@ -96,7 +96,7 @@
                         </option>
                     @endforeach
                 </select>
-            </div>
+            </div> --}}
 
             <!-- Bộ lọc tháng -->
             <div class="input-group input-group-sm">
@@ -343,7 +343,7 @@
                             y: 100 - foodUsage
                         }
                     ],
-                    colors: ['#5156be',
+                    colors: ['#483D8B',
                         '#8ECae6'
                     ] // Màu xanh tím và đỏ (thay #d3d3d3 thành #ff0000 để giống combo)
                 }]
