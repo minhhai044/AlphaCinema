@@ -86,8 +86,8 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Tên phim</th>
                                     <th>Ảnh</th>
+                                    <th>Thông tin phim</th>
                                     <th>Hoạt động</th>
                                     <th>Nổi bật</th>
                                     <th>Xuất bản</th>
@@ -127,6 +127,14 @@
                 columns: [{
                         data: 'id',
                         name: 'id'
+                    },
+                    {
+                        data: 'img_thumbnail',
+                        render: function(data) {
+                            return data ?
+                                `<img src="/storage/${data}" style="max-width: 200px; height: auto; display: block; margin: 0 auto;">` :
+                                'No image';
+                        }
                     },
                     {
                         data: 'name',
@@ -217,14 +225,7 @@
                             `;
                         }
                     },
-                    {
-                        data: 'img_thumbnail',
-                        render: function(data) {
-                            return data ?
-                                `<img src="/storage/${data}" style="max-width: 200px; height: auto; display: block; margin: 0 auto;">` :
-                                'No image';
-                        }
-                    },
+
                     {
                         data: 'is_active',
                         render: function(data, type, row) {
@@ -382,7 +383,7 @@
             text-align: center;
             vertical-align: middle;
         }
-        #movieTable tbody td:nth-child(2) {
+        #movieTable tbody td:nth-child(3) {
             text-align: left;
         }
 

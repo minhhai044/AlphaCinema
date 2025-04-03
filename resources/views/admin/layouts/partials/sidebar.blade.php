@@ -36,7 +36,7 @@
                             </a>
                         </li>
                         <li>
-                            <a href="{{ route('admin.statistical.ticketRevenue') }}">
+                            <a href="{{ route('admin.ticket.revenuenew') }}">
                                 <span data-key="t-vouchers">Thống kê vé</span>
                             </a>
                         </li>
