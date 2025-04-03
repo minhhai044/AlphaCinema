@@ -374,7 +374,7 @@
                     document.getElementById('rewatchChart').innerHTML = '<p class="text-muted text-center">Không có dữ liệu phim xem lại để hiển thị.</p>';
                 }
 
-                // Biểu đồ Tỷ lệ lấp đầy (Column)
+                // Biểu đồ Tỷ lệ lấp đầy 
                 var fillRateData = @json($fillRates);
                 if (fillRateData && Array.isArray(fillRateData) && fillRateData.length > 0) {
                     Highcharts.chart('fillRateChart', {

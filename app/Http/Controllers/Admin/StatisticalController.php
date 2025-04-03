@@ -353,7 +353,7 @@ class StatisticalController extends Controller
             }
         }
 
-        // Áp dụng bộ lọc từ request
+
         if ($branchId) {
             $ticketsQuery->where('branches.id', $branchId);
         }
@@ -372,10 +372,9 @@ class StatisticalController extends Controller
             $ticketsQuery->whereDate('tickets.created_at', $today);
         }
 
-        // Lấy dữ liệu vé
         $tickets = $ticketsQuery->get();
 
-        // Dữ liệu cho biểu đồ
+
         $ticketTrendData = $this->getTicketTrendData($tickets, $date, $selectedMonth, $selectedYear);
         $topMoviesData = $this->getTopMoviesData($tickets);
         $ticketTypeData = $this->getTicketTypeData($tickets);
@@ -398,11 +397,12 @@ class StatisticalController extends Controller
             'topMoviesData',
             'ticketTypeData',
             'peakHoursData',
-            'fillRateData'
+            'fillRateData',
+
         ));
     }
 
-    // 1. Xu hướng bán vé (theo ngày trong tháng hoặc giờ trong ngày)
+    // Xu hướng bán vé
     private function getTicketTrendData($tickets, $date, $selectedMonth, $selectedYear)
     {
         $data = [];
@@ -437,7 +437,7 @@ class StatisticalController extends Controller
         return $data;
     }
 
-    // 2. Top phim bán chạy
+    // Top phim bán chạy
     private function getTopMoviesData($tickets)
     {
         $data = $tickets->groupBy('movie_name')->map(function ($group) {
@@ -450,7 +450,7 @@ class StatisticalController extends Controller
         return $data;
     }
 
-    // 3. Phân loại vé (dựa trên type_room_id từ bảng rooms)
+    // Phân loại vé
     private function getTicketTypeData($tickets)
     {
         $roomTypes = DB::table('type_rooms')->pluck('name', 'id')->toArray();
@@ -479,7 +479,7 @@ class StatisticalController extends Controller
         return $data ?: [];
     }
 
-    // 4. Giờ cao điểm
+    // Giờ cao điểm
     private function getPeakHoursData($tickets)
     {
         $data = $tickets->groupBy(function ($ticket) {
@@ -496,7 +496,7 @@ class StatisticalController extends Controller
         ];
     }
 
-    // 5. Tỷ lệ lấp đầy rạp (theo chi nhánh)
+    // Tỷ lệ lấp đầy rạp (theo chi nhánh)
     private function getFillRateData($tickets)
     {
         $data = [];

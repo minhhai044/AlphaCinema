@@ -19,7 +19,7 @@
         </div>
 
         <!-- Form lọc -->
-        <form method="GET" action="{{ route('admin.ticket.revenue') }}" class="d-flex align-items-center gap-2" id="filterForm">
+        <form method="GET" action="{{ route('admin.ticket.revenuenew') }}" class="d-flex align-items-center gap-2" id="filterForm">
             <!-- Bộ lọc chi nhánh -->
             @if (auth()->user()->hasRole('System Admin'))
                 <div class="input-group input-group-sm">
@@ -74,7 +74,7 @@
                 </div>
             @endif
 
-           
+
 
             <!-- Bộ lọc ngày -->
             <div class="input-group input-group-sm">
@@ -126,7 +126,7 @@
 
         <script>
             function resetFilters() {
-                window.location.href = "{{ route('admin.ticket.revenue') }}";
+                window.location.href = "{{ route('admin.ticket.revenuenew') }}";
             }
         </script>
 
@@ -207,7 +207,7 @@
                 colors: ['#483D8B', '#4682B4', '#20B2AA', '#98FB98', '#FFDAB9']
             });
 
-            // 1. Xu Hướng Bán Vé (Line Chart)
+            // Xu Hướng Bán Vé
             Highcharts.chart('ticketTrendChart', {
                 chart: { type: 'line' },
                 credits: { enabled: false },
@@ -222,7 +222,7 @@
                 plotOptions: { line: { marker: { enabled: true } } }
             });
 
-            // 2. Top Phim Bán Chạy (Pie Chart)
+            // Top Phim Bán Chạy
             Highcharts.chart('topMoviesChart', {
                 chart: { type: 'pie' },
                 credits: { enabled: false },
@@ -242,7 +242,7 @@
                 }
             });
 
-            // 3. Phân Loại Vé (Donut Chart)
+            // Phân Loại Vé
             Highcharts.chart('ticketTypeChart', {
                 chart: { type: 'pie' },
                 credits: { enabled: false },
@@ -263,7 +263,7 @@
                 }]
             });
 
-            // 4. Giờ Cao Điểm (Bar Chart)
+            //  Giờ Cao Điểm
             Highcharts.chart('peakHoursChart', {
                 chart: { type: 'column' },
                 credits: { enabled: false },
@@ -277,7 +277,7 @@
                 plotOptions: { column: { colorByPoint: true, dataLabels: { enabled: false } } }
             });
 
-            // 5. Tỷ Lệ Lấp Đầy Rạp (Grouped Bar Chart)
+            //  Tỷ Lệ Lấp Đầy Rạp
             Highcharts.chart('fillRateChart', {
                 chart: { type: 'column' },
                 credits: { enabled: false },
@@ -301,7 +301,7 @@
             }
         });
 
-        // JavaScript động cho System Admin
+
         document.addEventListener('DOMContentLoaded', function () {
             const branchSelect = document.querySelector('select[name="branch_id"]');
             const cinemaSelect = document.querySelector('select[name="cinema_id"]');
