@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Broadcast;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 /*
 |--------------------------------------------------------------------------
@@ -29,6 +30,7 @@ Broadcast::channel('chat.{roomId}', function ($user, $roomId) {
     Log::info($roomId);
     return [
         'id' => $user->id,
-        'name' => $user->name
+        'name' => $user->name,
+        'avatar' => $user->avatar ? Storage::url($user->avatar) : null,
     ];
 });
