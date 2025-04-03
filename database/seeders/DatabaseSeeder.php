@@ -9,6 +9,7 @@ use App\Models\Cinema;
 use App\Models\Day;
 use App\Models\Rank;
 use App\Models\Room;
+use App\Models\RoomChat;
 use App\Models\Seat_template;
 use App\Models\User;
 use Illuminate\Database\Seeder;
@@ -147,7 +148,7 @@ class DatabaseSeeder extends Seeder
                 'type_user' => 1,
                 'total_amount' => 0,
                 'cinema_id' => 2,
-                'branch_id' => 1,
+                'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
             ],
@@ -164,7 +165,7 @@ class DatabaseSeeder extends Seeder
                 'type_user' => 1,
                 'total_amount' => 0,
                 'cinema_id' => 7,
-                'branch_id' => 4,
+                'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
             ],
@@ -181,7 +182,7 @@ class DatabaseSeeder extends Seeder
                 'type_user' => 1,
                 'total_amount' => 0,
                 'cinema_id' => 2,
-                'branch_id' => 1,
+                'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
             ],
@@ -198,7 +199,7 @@ class DatabaseSeeder extends Seeder
                 'type_user' => 1,
                 'total_amount' => 0,
                 'cinema_id' => 7,
-                'branch_id' => 4,
+                'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
             ],
@@ -215,7 +216,7 @@ class DatabaseSeeder extends Seeder
                 'type_user' => 1,
                 'total_amount' => 0,
                 'cinema_id' => 1,
-                'branch_id' => 1,
+                'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
             ],
@@ -232,7 +233,7 @@ class DatabaseSeeder extends Seeder
                 'type_user' => 1,
                 'total_amount' => 0,
                 'branch_id' => 1,
-                'cinema_id' => 1,
+                'cinema_id' => null,
                 'point' => 0,
                 'google_id' => null,
             ],
@@ -563,7 +564,7 @@ class DatabaseSeeder extends Seeder
                 'trailer_url' => 'https://youtu.be/7W919zrrWu8',
                 'surcharge' => 15000,
                 'movie_versions' => json_encode(['2D', '3D']),
-                'movie_genres' => json_encode([ 'Horror', 'Action']),
+                'movie_genres' => json_encode(['Horror', 'Action']),
                 'is_active' => 1,
                 'is_hot' => 0,
                 'is_special' => 1,
@@ -768,7 +769,7 @@ class DatabaseSeeder extends Seeder
                     ['food_id' => 4, 'quantity' => 1],
                 ],
             ],
-            
+
         ];
 
         foreach ($combos as $combo) {
@@ -1008,5 +1009,11 @@ class DatabaseSeeder extends Seeder
                 ]);
             }
         }
+        RoomChat::create([
+            'name' => 'Phòng chat chung'
+        ]);
+        RoomChat::create([
+            'name' => 'Phòng chat VIP'
+        ]);
     }
 }
