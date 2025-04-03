@@ -19,7 +19,8 @@
         </div>
 
         <!-- Form lọc -->
-        <form method="GET" action="{{ route('admin.ticket.revenuenew') }}" class="d-flex align-items-center gap-2" id="filterForm">
+        <form method="GET" action="{{ route('admin.ticket.revenuenew') }}" class="d-flex align-items-center gap-2"
+            id="filterForm">
             <!-- Bộ lọc chi nhánh -->
             @if (auth()->user()->hasRole('System Admin'))
                 <div class="input-group input-group-sm">
@@ -92,7 +93,8 @@
                 <select name="month" class="form-select border-0 shadow-sm">
                     <option value="" {{ !$selectedMonth ? 'selected' : '' }}>Chưa chọn</option>
                     @for ($i = 1; $i <= 12; $i++)
-                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng {{ $i }}</option>
+                        <option value="{{ $i }}" {{ $selectedMonth == $i ? 'selected' : '' }}>Tháng
+                            {{ $i }}</option>
                     @endfor
                 </select>
             </div>
@@ -104,7 +106,8 @@
                 </span>
                 <select name="year" class="form-select border-0 shadow-sm">
                     @for ($i = 2020; $i <= Carbon\Carbon::now()->year; $i++)
-                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm {{ $i }}</option>
+                        <option value="{{ $i }}" {{ $selectedYear == $i ? 'selected' : '' }}>Năm
+                            {{ $i }}</option>
                     @endfor
                 </select>
             </div>
@@ -182,7 +185,7 @@
         </div>
 
         <!-- Tỷ Lệ Lấp Đầy Rạp -->
-        <div class="row g-4">
+        {{-- <div class="row g-4">
             <div class="col-12">
                 <div class="card shadow-sm">
                     <div class="card-body">
@@ -192,7 +195,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div> --}}
     </div>
 
     <!-- Highcharts CDN -->
@@ -202,35 +205,64 @@
 
     <!-- Chart Initialization -->
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             Highcharts.setOptions({
                 colors: ['#483D8B', '#4682B4', '#20B2AA', '#98FB98', '#FFDAB9']
             });
-
-            // Xu Hướng Bán Vé
+            // Xu Hướng Đặt Vé (Line Chart)
             Highcharts.chart('ticketTrendChart', {
-                chart: { type: 'line' },
-                credits: { enabled: false },
-                title: { text: null },
-                xAxis: { categories: @json($ticketTrendData['categories']) },
-                yAxis: { title: { text: null } },
+                chart: {
+                    type: 'line'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    categories: @json($ticketTrendData['categories']) // Lấy categories từ dữ liệu thực tế
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    },
+                    max: null // Xóa max cố định để phù hợp với dữ liệu thực tế
+                },
                 series: [{
                     name: 'Số vé',
-                    data: @json($ticketTrendData['values']),
-                    color: '#191970'
+                    data: @json($ticketTrendData['values']), // Lấy values từ dữ liệu thực tế
+                    color: '#191970' // Giữ nguyên màu chủ đạo
                 }],
-                plotOptions: { line: { marker: { enabled: true } } }
+                plotOptions: {
+                    line: {
+                        marker: {
+                            enabled: true
+                        }
+                    }
+                }
             });
 
             // Top Phim Bán Chạy
             Highcharts.chart('topMoviesChart', {
-                chart: { type: 'pie' },
-                credits: { enabled: false },
-                title: { text: null },
+                chart: {
+                    type: 'pie'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
                 series: [{
                     name: 'Số vé',
-                    colorByPoint: true,
-                    data: @json($topMoviesData)
+                    colorByPoint: true, // Cho phép mỗi điểm dữ liệu có màu riêng
+                    data: @json($topMoviesData), // Lấy dữ liệu thực tế từ $topMoviesData
+                    colors: [
+                        '#191970', // Màu cố định đầu tiên
+                        ...Array(4).fill().map(() => '#' + Math.floor(Math.random() * 16777215)
+                            .toString(16)) // Tạo 4 màu random
+                    ] // Tùy chỉnh bảng màu, không dùng Highcharts.setOptions
                 }],
                 plotOptions: {
                     pie: {
@@ -244,60 +276,113 @@
 
             // Phân Loại Vé
             Highcharts.chart('ticketTypeChart', {
-                chart: { type: 'pie' },
-                credits: { enabled: false },
-                title: { text: null },
+                chart: {
+                    type: 'pie'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
                 plotOptions: {
                     pie: {
-                        innerSize: '50%',
+                        innerSize: '50%', // Giữ hiệu ứng Donut
                         dataLabels: {
                             enabled: true,
-                            format: '{point.name}: {point.percentage:.1f}%'
+                            format: '{point.name}: {point.percentage:.1f}%' // Hiển thị tên và phần trăm
                         }
                     }
                 },
                 series: [{
                     name: 'Số vé',
-                    colorByPoint: true,
-                    data: @json($ticketTypeData)
+                    colorByPoint: true, // Cho phép mỗi điểm dữ liệu có màu riêng
+                    data: @json($ticketTypeData), // Đổ dữ liệu thực tế từ $ticketTypeData
+                    colors: [
+                        '#191970', // Màu cố định đầu tiên
+                        ...Array(2).fill().map(() => '#' + Math.floor(Math.random() * 16777215)
+                            .toString(16)) // Tạo 2 màu random
+                    ]
                 }]
             });
 
             //  Giờ Cao Điểm
             Highcharts.chart('peakHoursChart', {
-                chart: { type: 'column' },
-                credits: { enabled: false },
-                title: { text: null },
-                xAxis: { categories: @json($peakHoursData['categories']) },
-                yAxis: { title: { text: null } },
+                chart: {
+                    type: 'column'
+                },
+                credits: {
+                    enabled: false
+                },
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    categories: @json($peakHoursData['categories'])
+                },
+                yAxis: {
+                    title: {
+                        text: null
+                    }
+                },
                 series: [{
                     name: 'Số vé',
                     data: @json($peakHoursData['values'])
                 }],
-                plotOptions: { column: { colorByPoint: true, dataLabels: { enabled: false } } }
-            });
-
-            console.log(@json($fillRateData));
-            
-            //  Tỷ Lệ Lấp Đầy Rạp
-            Highcharts.chart('fillRateChart', {
-                chart: { type: 'column' },
-                credits: { enabled: false },
-                title: { text: null },
-                xAxis: { categories: @json($fillRateData['categories']) },
-                yAxis: { title: { text: null }, max: 100 },
-                series: [
-                    { name: 'GH đã đặt', data: @json($fillRateData['seats_sold']), color: '#483D8B' },
-                    { name: 'GH trống', data: @json($fillRateData['seats_empty']), color: '#98FB98' }
-                ],
-            
                 plotOptions: {
                     column: {
-                        stacking: 'percent',
-                        dataLabels: { enabled: true, format: '{point.percentage:.0f}%' }
+                        colorByPoint: true,
+                        dataLabels: {
+                            enabled: false
+                        }
                     }
                 }
             });
+
+            console.log(@json($fillRateData));
+
+            //  Tỷ Lệ Lấp Đầy Rạp
+            // Highcharts.chart('fillRateChart', {
+            //     chart: {
+            //         type: 'column'
+            //     },
+            //     credits: {
+            //         enabled: false
+            //     },
+            //     title: {
+            //         text: null
+            //     },
+            //     xAxis: {
+            //         categories: @json($fillRateData['categories'])
+            //     },
+            //     yAxis: {
+            //         title: {
+            //             text: null
+            //         },
+            //         max: 100
+            //     },
+            //     series: [{
+            //             name: 'GH đã đặt',
+            //             data: @json($fillRateData['seats_sold']),
+            //             color: '#483D8B'
+            //         },
+            //         {
+            //             name: 'GH trống',
+            //             data: @json($fillRateData['seats_empty']),
+            //             color: 'rgb(70, 130, 180)'
+            //         }
+            //     ],
+
+            //     plotOptions: {
+            //         column: {
+            //             stacking: 'percent',
+            //             dataLabels: {
+            //                 enabled: true,
+            //                 format: '{point.percentage:.0f}%'
+            //             }
+            //         }
+            //     }
+            // });
 
             function resetFilters() {
                 window.location.href = "{{ route('admin.ticket.revenue') }}";
@@ -305,21 +390,23 @@
         });
 
 
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const branchSelect = document.querySelector('select[name="branch_id"]');
             const cinemaSelect = document.querySelector('select[name="cinema_id"]');
             const branchesRelation = @json($branchesRelation);
 
             @if (auth()->user()->hasRole('System Admin'))
                 if (branchSelect && cinemaSelect) {
-                    branchSelect.addEventListener('change', function () {
+                    branchSelect.addEventListener('change', function() {
                         const branchId = this.value;
-                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') + '>Tất cả rạp</option>';
+                        cinemaSelect.innerHTML = '<option value="" ' + (!branchId ? 'selected' : '') +
+                            '>Tất cả rạp</option>';
                         if (branchId && branchesRelation[branchId]) {
                             const cinemas = branchesRelation[branchId];
                             for (const [cinemaId, cinemaName] of Object.entries(cinemas)) {
                                 const isSelected = cinemaId == "{{ $cinemaId }}" ? 'selected' : '';
-                                cinemaSelect.innerHTML += `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
+                                cinemaSelect.innerHTML +=
+                                    `<option value="${cinemaId}" ${isSelected}>${cinemaName}</option>`;
                             }
                         }
                     });
@@ -328,7 +415,7 @@
                     }
                 }
             @endif
-            });
+        });
     </script>
 
     <style>

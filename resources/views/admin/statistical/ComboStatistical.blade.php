@@ -173,7 +173,7 @@
         <div class="row">
             <div class="col-12">
                 <div class="container mt-5">
-                    <h3 class="text-center mb-4" style="font-weight: bold; color: #5156be;">
+                    <h3 class="text-center mb-4" style="font-weight: bold; color: #191970;">
                         Top 3 Combo Doanh Thu Cao Nhất
                     </h3>
                     <div class="row justify-content-center">
@@ -186,7 +186,7 @@
                                             class="card-img-top w-100 h-100" style="object-fit: cover;"
                                             alt="{{ $combo->combo_name }}">
                                         <span class="top6-rank"
-                                            style="position: absolute; top: 10px; left: 10px; background: #5156be; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
+                                            style="position: absolute; top: 10px; left: 10px; background: #191970; color: white; padding: 5px 10px; border-radius: 50%; font-size: 14px; font-weight: bold;">
                                             #{{ $index + 1 }}
                                         </span>
                                     </div>
@@ -197,11 +197,11 @@
                                         </h5>
                                         <p class="mb-2" style="font-size: 14px; color: #6c757d;">
                                             <strong>Doanh thu:</strong> <span
-                                                style="color: #5156be;">{{ number_format($combo->total_price) }} đ</span>
+                                                style="color: #191970;">{{ number_format($combo->total_price) }} đ</span>
                                         </p>
                                         <p class="mb-0" style="font-size: 14px; color: #6c757d;">
                                             <strong>Lượt bán:</strong> <span
-                                                style="color: #5156be;">{{ $combo->total_quantity }}</span>
+                                                style="color: #191970;">{{ $combo->total_quantity }}</span>
                                         </p>
                                     </div>
                                 </div>
@@ -263,7 +263,7 @@
                         column: {
                             pointPadding: 0.2,
                             borderWidth: 0,
-                            color: '#5156be' // Giữ màu nền
+                            color: '#191970' // Giữ màu nền
                         }
                     },
                     series: [{
@@ -346,7 +346,7 @@
                             y: 100 - comboUsage
                         }
                     ],
-                    colors: ['#5156be', '#8ECae6'] // Màu xanh tím và đỏ
+                    colors: ['#191970', '#8ECae6'] // Màu xanh tím và đỏ
                 }]
             });
 
@@ -480,7 +480,7 @@
         }
 
         .card-img-top {
-            border-bottom: 2px solid #5156be;
+            border-bottom: 2px solid #191970;
         }
 
         .top6-rank {
@@ -488,7 +488,7 @@
         }
 
         .card-img-top {
-            border-bottom: 2px solid #5156be;
+            border-bottom: 2px solid #191970;
         }
 
         .top6-rank {
