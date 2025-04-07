@@ -24,7 +24,7 @@ class ChangePasswordRequest extends FormRequest
     {
         return [
             // 'email'     => 'required|email|exists:users,email',  // Kiểm tra email có tồn tại trong bảng users
-            'password'  => 'required|string|confirmed|min:8', // Mật khẩu yêu cầu xác nhận
+            'password'  => 'required|string|min:8', // Mật khẩu yêu cầu xác nhận
             'password_old'  => 'required|string|min:8', // Mật khẩu yêu cầu xác nhận
         ];
     }

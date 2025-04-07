@@ -65,7 +65,7 @@ class AuthController extends Controller
                 return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
             }
 
-            if($user->is_active == false){
+            if ($user->is_active == false) {
                 return $this->errorResponse('Tài khoản đã bị khóa', Response::HTTP_UNAUTHORIZED);
             }
 
@@ -139,17 +139,16 @@ class AuthController extends Controller
             ->withCookie(cookie()->forget('auth'));
     }
 
-    public function updateProfile(UserRequest $userRequest,string $id)
+    public function updateProfile(UserRequest $userRequest, string $id)
     {
         try {
-            
+
             $user = $this->userService->updateInfo($userRequest->validated(), $id);
 
             return $this->successResponse([
                 'message' => "Update thành công",
                 'data' => $user
             ]);
-
         } catch (Exception $e) {
             return $this->errorResponse([
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
@@ -162,6 +161,10 @@ class AuthController extends Controller
     {
         try {
             $user = Auth::user();  // Get the current authenticated user
+
+            // return response()->json([
+            //     'user' => $user
+            // ]);
 
             // Get validated data from the request
             $data = $changePasswordRequest->validated();
