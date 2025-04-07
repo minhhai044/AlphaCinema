@@ -2,12 +2,14 @@
 
 namespace App\Traits;
 
+use Illuminate\Http\Response;
+
 trait ApiResponseTrait
 {
-    protected function successResponse($data, $message, $statusCode)
+    protected function successResponse($data = [], $message = '', $statusCode = Response::HTTP_OK)
     {
         $response = [
-            'status' => 'success',
+            'status' => true,
             'message' => $message,
         ];
 
@@ -17,11 +19,11 @@ trait ApiResponseTrait
 
         return response()->json($response, $statusCode);
     }
-    protected function errorResponse($e, $statusCode = 500)
+    protected function errorResponse($error, $statusCode = Response::HTTP_INTERNAL_SERVER_ERROR)
     {
         return response()->json([
-            'status' => 'error',
-            'error' => $e,
+            'status' => false,
+            'error' => $error,
         ], $statusCode);
     }
 }

@@ -7,10 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
+
 
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasRoles;
 
     /**
      * The attributes that are mass assignable.
@@ -19,8 +21,19 @@ class User extends Authenticatable
      */
     protected $fillable = [
         'name',
+        'avatar',
+        'phone',
         'email',
         'password',
+        'address',
+        'gender',
+        'birthday',
+        'total_amount',
+        'type_user',
+        'cinema_id',
+        'branch_id',
+        'google_id',
+        'point'
     ];
 
     /**
@@ -42,4 +55,43 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
     ];
+
+    const ROLE = [
+        'System Admin',
+        'Branch Manager',
+        'Cinema Manager',
+        'Staff'
+    ];
+
+    const TYPE_ADMIN = 1;
+    const TYPE_MEMBER = 0;
+
+    public function isAdmin()
+    {
+        return $this->type_user === self::TYPE_ADMIN;
+    }
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id');
+    }
+
+    public function cinema()
+    {
+        return $this->belongsTo(Cinema::class);
+    }
+
+    public function pointHistories()
+    {
+        return $this->hasMany(Point_history::class);
+    }
+
+
+    public function rank()
+    {
+        return $this->belongsTo(Rank::class, 'total_amount', 'total_spent');
+    }
+    public function tickets()
+    {
+        return $this->hasMany(Ticket::class);
+    }
 }

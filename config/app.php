@@ -1,5 +1,6 @@
 <?php
 
+use App\Providers\ViewRoomChatServiceProvider;
 use Illuminate\Support\Facades\Facade;
 use Illuminate\Support\ServiceProvider;
 
@@ -70,7 +71,8 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+
+    'timezone' => 'Asia/Ho_Chi_Minh',
 
     /*
     |--------------------------------------------------------------------------
@@ -141,7 +143,7 @@ return [
 
     'maintenance' => [
         'driver' => 'file',
-        // 'store' => 'redis',
+        'store' => 'redis',
     ],
 
     /*
@@ -165,9 +167,13 @@ return [
          */
         App\Providers\AppServiceProvider::class,
         App\Providers\AuthServiceProvider::class,
-        // App\Providers\BroadcastServiceProvider::class,
+        App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
+        Spatie\Permission\PermissionServiceProvider::class,
+        Laravel\Sanctum\SanctumServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
+        ViewRoomChatServiceProvider::class
     ])->toArray(),
 
     /*
@@ -183,6 +189,8 @@ return [
 
     'aliases' => Facade::defaultAliases()->merge([
         // 'Example' => App\Facades\Example::class,
+        'Redis' => Illuminate\Support\Facades\Redis::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
     ])->toArray(),
 
 ];
