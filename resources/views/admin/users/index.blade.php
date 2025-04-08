@@ -28,11 +28,31 @@
 
     <div class="row">
         <div class="col-12">
-            <div class="d-flex justify-content-between">
+
+            <div class="d-flex justify-content-between mb-3">
                 <h4 class="mb-sm-0 font-size-18">Danh sách người dùng</h4>
-                <div class="d-flex flex-row-reverse mb-3">
-                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
-                </div>
+
+                <form action="{{ route('admin.users.index') }}" method="GET" class="d-flex gap-3 align-items-center me-3">
+                    <!-- Select chi nhánh -->
+                    <select name="branch_id" class="form-select">
+                        <option value="">Chọn chi nhánh</option>
+                        @foreach ($branchs as $branch)
+                            <option value="{{ $branch->id }}" {{ request('branch_id') == $branch->id ? 'selected' : '' }}>
+                                {{ $branch->name }}
+                            </option>
+                        @endforeach
+                    </select>
+
+                    <!-- Nút tìm kiếm -->
+                    <div class="form-group col-md-1 d-flex align-items-end me-3">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bx bx-search-alt-2"></i>
+                        </button>
+                    </div>
+
+                    <!-- Nút thêm mới -->
+                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary flex-shrink-0">+ Thêm mới</a>
+                </form>
             </div>
 
             <div class="collapse" id="searchForm">

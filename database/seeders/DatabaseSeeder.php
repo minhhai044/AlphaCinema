@@ -57,11 +57,11 @@ class DatabaseSeeder extends Seeder
             'Sầm sơn',
             'Nga Sơn',
             'Kiến Xương',
-            'Quất Lâm',
-            'Từ Sơn',
             'Quỳnh Phụ',
-            'Đài bắc',
-            'Trung hoa',
+            'Ý Yên',
+            'Xuân Trường',
+            'Từ Sơn',
+            'Thuận Thành',
         ];
         $branchId = 1;
         $counter = 0;
@@ -119,6 +119,23 @@ class DatabaseSeeder extends Seeder
                 'google_id' => null,
             ],
             [
+                'name' => 'Quản lý chi nhánh Thanh Hóa',
+                'avatar' => '',
+                'phone' => '0987654333',
+                'email_verified_at' => '2025-02-22 19:58:51',
+                'email' => 'qlcnTH@gmail.com',
+                'password' => Hash::make('qlcnTH@gmail.com'),
+                'address' => 'Thanh Hóa',
+                'gender' => 0,
+                'birthday' => '2000-01-01',
+                'type_user' => 1,
+                'total_amount' => 0,
+                'cinema_id' => null,
+                'branch_id' => 2,
+                'point' => 0,
+                'google_id' => null,
+            ],
+            [
                 'name' => 'Quản lý chi nhánh Bắc Ninh',
                 'avatar' => '',
                 'phone' => '0987654323',
@@ -136,12 +153,12 @@ class DatabaseSeeder extends Seeder
                 'google_id' => null,
             ],
             [
-                'name' => 'Quản lý cơ sở Mỹ Đình',
+                'name' => 'Quản lý rạp Mỹ Đình',
                 'avatar' => '',
                 'phone' => '0987654324',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'qlcsMD@gmail.com',
-                'password' => Hash::make('qlcsMD@gmail.com'),
+                'email' => 'qlrMD@gmail.com',
+                'password' => Hash::make('qlrMD@gmail.com'),
                 'address' => 'Hà Nội',
                 'gender' => 0,
                 'birthday' => '2000-01-01',
@@ -153,18 +170,18 @@ class DatabaseSeeder extends Seeder
                 'google_id' => null,
             ],
             [
-                'name' => 'Quản lý cơ sở Từ Sơn',
+                'name' => 'Quản lý rạp Từ Sơn',
                 'avatar' => '',
                 'phone' => '0987654325',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'qlcsTS@gmail.com',
-                'password' => Hash::make('qlcsTS@gmail.com'),
+                'email' => 'qlrTS@gmail.com',
+                'password' => Hash::make('qlrTS@gmail.com'),
                 'address' => 'Bắc Ninh',
                 'gender' => 0,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
-                'cinema_id' => 7,
+                'cinema_id' => 9,
                 'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
@@ -198,24 +215,41 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
-                'cinema_id' => 7,
+                'cinema_id' => 9,
                 'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
             ],
             [
-                'name' => 'Quản lý cơ sở Hà Đông',
+                'name' => 'Quản lý rạp Hà Đông',
                 'avatar' => '',
                 'phone' => '0987654328',
                 'email_verified_at' => '2025-02-22 19:58:51',
-                'email' => 'qlcsHD@gmail.com',
-                'password' => Hash::make('qlcsHD@gmail.com'),
+                'email' => 'qlrHD@gmail.com',
+                'password' => Hash::make('qlrHD@gmail.com'),
                 'address' => 'Hà Nội',
                 'gender' => 1,
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
                 'cinema_id' => 1,
+                'branch_id' => null,
+                'point' => 0,
+                'google_id' => null,
+            ],
+            [
+                'name' => 'Quản lý rạp Nga Sơn',
+                'avatar' => '',
+                'phone' => '0987654343',
+                'email_verified_at' => '2025-02-22 19:58:51',
+                'email' => 'qlrNS@gmail.com',
+                'password' => Hash::make('qlrNS@gmail.com'),
+                'address' => 'Thanh Hóa',
+                'gender' => 1,
+                'birthday' => '2000-01-01',
+                'type_user' => 1,
+                'total_amount' => 0,
+                'cinema_id' => 4,
                 'branch_id' => null,
                 'point' => 0,
                 'google_id' => null,
@@ -232,8 +266,8 @@ class DatabaseSeeder extends Seeder
                 'birthday' => '2000-01-01',
                 'type_user' => 1,
                 'total_amount' => 0,
-                'branch_id' => 1,
-                'cinema_id' => null,
+                'branch_id' => null,
+                'cinema_id' => 1,
                 'point' => 0,
                 'google_id' => null,
             ],
@@ -335,7 +369,7 @@ class DatabaseSeeder extends Seeder
         $roles = [
             'System Admin',
             'Quản lý chi nhánh',
-            'Quản lý cơ sở',
+            'Quản lý rạp',
             'Nhân viên'
         ];
 
@@ -407,7 +441,7 @@ class DatabaseSeeder extends Seeder
             'Danh sách thống kê',
             'Thẻ thành viên'
         ]);
-        $managerRole = Role::findByName('Quản lý cơ sở');
+        $managerRole = Role::findByName('Quản lý rạp');
         $managerRole->givePermissionTo([
             'Danh sách phòng chiếu',
             'Thêm phòng chiếu',
@@ -465,16 +499,16 @@ class DatabaseSeeder extends Seeder
         $user = User::find(3);
         $user->assignRole('Quản lý chi nhánh');
         $user = User::find(4);
-        $user->assignRole('Quản lý cơ sở');
+        $user->assignRole('Quản lý rạp');
 
         $user = User::find(5);
-        $user->assignRole('Quản lý cơ sở');
+        $user->assignRole('Quản lý rạp');
         $user = User::find(6);
         $user->assignRole('Nhân viên');
         $user = User::find(7);
         $user->assignRole('Nhân viên');
         $user = User::find(8);
-        $user->assignRole('Quản lý cơ sở');
+        $user->assignRole('Quản lý rạp');
         $user = User::find(9);
         $user->assignRole('Nhân viên');
 

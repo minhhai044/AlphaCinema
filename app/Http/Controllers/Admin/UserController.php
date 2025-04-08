@@ -18,6 +18,8 @@ use Illuminate\Support\Facades\Storage;
 use Laravel\Sanctum\PersonalAccessToken;
 use Spatie\Permission\Models\Role;
 
+use function React\Promise\all;
+
 class UserController extends Controller
 {
     private const PATH_VIEW = 'admin.users.';
@@ -31,15 +33,32 @@ class UserController extends Controller
         $this->userRepository = $userRepository;
     }
 
-    public function index()
+    public function index(Request $request)
     {
         // $users = User::orderByDesc('id')->get();
-        $users = User::where('type_user', 1)->with('cinema.branch')->get();
+        $branchs = Branch::all();
+        $branchId = $request->input('branch_id');
+
+        $users = User::where('type_user', 1)
+            ->when($branchId, function ($query) use ($branchId) {
+                // Lấy các bản ghi có branch_id từ yêu cầu
+                return $query->where('branch_id', $branchId)
+                    // Lấy thêm bản ghi có cinema_id thông qua quan hệ với cinema và branch
+                    ->orWhereHas('cinema', function ($cinemaQuery) use ($branchId) {
+                        $cinemaQuery->whereHas('branch', function ($branchQuery) use ($branchId) {
+                            $branchQuery->where('id', $branchId);
+                        });
+                    });
+            })
+            ->with('cinema.branch') // Tải kèm thông tin về cinema và branch
+            ->get();
+
+
+        // tôi muốn lọc theo chi nhánh
 
         $roles = Role::all();
 
-
-        return view(self::PATH_VIEW . __FUNCTION__, compact('users', 'roles'));
+        return view(self::PATH_VIEW . __FUNCTION__, compact('users', 'roles', 'branchs'));
     }
 
     public function create()
