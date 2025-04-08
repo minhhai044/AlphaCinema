@@ -39,8 +39,11 @@ class UserController extends Controller
         $branchs = Branch::all();
         $branchId = $request->input('branch_id');
 
-        $users = User::where('type_user', 1)
-            ->when($branchId, function ($query) use ($branchId) {
+        $users = User::where('type_user', 1);
+
+        // Kiểm tra vai trò 'System Admin' của người dùng hiện tại
+        if (auth()->user()->hasRole("System Admin")) {
+            $users = $users->when($branchId, function ($query) use ($branchId) {
                 // Lấy các bản ghi có branch_id từ yêu cầu
                 return $query->where('branch_id', $branchId)
                     // Lấy thêm bản ghi có cinema_id thông qua quan hệ với cinema và branch
@@ -49,12 +52,11 @@ class UserController extends Controller
                             $branchQuery->where('id', $branchId);
                         });
                     });
-            })
-            ->with('cinema.branch') // Tải kèm thông tin về cinema và branch
+            });
+        }
+
+        $users = $users->with('cinema.branch') // Tải kèm thông tin về cinema và branch
             ->get();
-
-
-        // tôi muốn lọc theo chi nhánh
 
         $roles = Role::all();
 
@@ -67,7 +69,6 @@ class UserController extends Controller
         $roles = Role::all();
         $branches = Branch::where('is_active', 1)->get();
 
-
         if (auth()->user()->hasRole("Quản lý chi nhánh")) {
             $cinemas = Cinema::where('is_active', '1')
                 ->where('branch_id', auth()->user()->branch_id)
@@ -79,7 +80,6 @@ class UserController extends Controller
         // Trả về view cùng dữ liệu đã lấy
         return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas', 'branches']));
     }
-
 
     public function store(UserRequest $userRequest)
     {
@@ -125,7 +125,6 @@ class UserController extends Controller
 
     public function edit($id)
     {
-
         $typeAdmin = User::TYPE_ADMIN;
         $roles = Role::all();
 
@@ -142,7 +141,6 @@ class UserController extends Controller
                 ->get();
         }
 
-        // dd($user);
         return view(self::PATH_VIEW . __FUNCTION__, compact(['typeAdmin', 'roles', 'cinemas', 'user', 'branches']));
     }
 
@@ -150,8 +148,6 @@ class UserController extends Controller
     {
 
         $data = $userRequest->validated();
-        // dd($data);
-
 
         if (!empty($data['cinema_id'])) {
             $data = $userRequest->except('branch_id');
@@ -162,7 +158,6 @@ class UserController extends Controller
         $result = $this->userService->updateUser($id, $data);
 
         if ($userRequest->has('role_id')) {
-            // dd($userRequest->role_id);
             $result->roles()->sync($userRequest->role_id);
         } else {
             $result->roles()->detach();
@@ -175,7 +170,6 @@ class UserController extends Controller
         }
     }
 
-    // xóa mềm
     public function softDestroy(string $id)
     {
         try {
@@ -215,6 +209,4 @@ class UserController extends Controller
             ]);
         }
     }
-    // Trong controller Laravel
-    // Trong controller Laravel
 }

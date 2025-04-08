@@ -494,23 +494,24 @@ class DatabaseSeeder extends Seeder
         $user = User::find(1);
         $user->assignRole('System Admin');
 
-        $user = User::find(2);
-        $user->assignRole('Quản lý chi nhánh');
-        $user = User::find(3);
-        $user->assignRole('Quản lý chi nhánh');
-        $user = User::find(4);
-        $user->assignRole('Quản lý rạp');
+        // Lấy tất cả các người dùng
+        $userRole = User::all();
 
-        $user = User::find(5);
-        $user->assignRole('Quản lý rạp');
-        $user = User::find(6);
-        $user->assignRole('Nhân viên');
-        $user = User::find(7);
-        $user->assignRole('Nhân viên');
-        $user = User::find(8);
-        $user->assignRole('Quản lý rạp');
-        $user = User::find(9);
-        $user->assignRole('Nhân viên');
+        foreach ($userRole as $user) {
+            // Gán vai trò 'Quản lý chi nhánh' cho người dùng có tên chứa 'Quản lý chi nhánh'
+            if (strpos($user->name, 'Quản lý chi nhánh') !== false) {
+                $user->assignRole('Quản lý chi nhánh');
+            }
+            // Gán vai trò 'Quản lý rạp' cho người dùng có tên chứa 'Quản lý rạp'
+            elseif (strpos($user->name, 'Quản lý rạp') !== false) {
+                $user->assignRole('Quản lý rạp');
+            }
+            // Gán vai trò 'Nhân viên' cho người dùng có tên chứa 'Nhân viên'
+            elseif (strpos($user->name, 'Nhân viên') !== false) {
+                $user->assignRole('Nhân viên');
+            }
+        }
+
 
 
         //Seed Movie
