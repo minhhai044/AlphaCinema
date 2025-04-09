@@ -90,7 +90,7 @@ class UserController extends Controller
         }
 
         $data['type_user'] = 1;
-        if (auth()->user()->hasRole('Quản lý cơ sở')) {
+        if (auth()->user()->hasRole('Quản lý rạp')) {
             $data['cinema_id'] = auth()->user()->cinema_id;
         }
 

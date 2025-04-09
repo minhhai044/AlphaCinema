@@ -140,6 +140,7 @@ class TicketService
             'payment_time' => $ticketDetail->created_at ? Carbon::parse($ticketDetail->created_at)->format('H:i - d/m/Y') : 'N/A',
             'customer_name' => $ticketDetail->user->name ?? 'N/A',
             'voucher_code' => $ticketDetail->voucher_code ?? 'N/A',
+            'vat' => $ticketDetail->vat,
             'voucher_discount' => $this->formatPrice($ticketDetail->voucher_discount),
             'voucher_type' => $ticketType ?? '',
             'voucher_discount_price' => $ticketDetail->voucher_discount,

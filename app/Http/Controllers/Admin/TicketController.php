@@ -71,6 +71,7 @@ class TicketController extends Controller
             $type_movie = $ticket->room->type_room->name;
             $category_movie = $ticket->movie->category;
             $duration = $ticket->movie->duration;
+
             $barcode = DNS1D::getBarcodeHTML($ticket->code, 'C128', 1.5, 50);
             $code = $ticket->code;
             $userPrintTicket = Auth::user()->name;
@@ -94,6 +95,7 @@ class TicketController extends Controller
                 'duration'              => $duration,
                 'barcode'               => $barcode,
                 'code'                  => $code,
+                'vat'                   => $ticket->vat,
                 'userPrintTicket'       => $userPrintTicket,
                 'voucher_type'          => $ticketType,
                 'voucher_discount'      => $ticket->voucher_discount,
@@ -150,6 +152,7 @@ class TicketController extends Controller
                 'type_movie'            => $type_movie,
                 'category_movie'        => $category_movie,
                 'duration'              => $duration,
+                'vat'                   => $ticket->vat,
                 'barcode'               => $barcode,
                 'userPrintTicket'       => $userPrintTicket,
                 'code'                  => $code,

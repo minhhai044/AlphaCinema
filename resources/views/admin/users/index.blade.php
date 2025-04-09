@@ -161,7 +161,7 @@
                                                 <button title="xem" class="btn btn-success btn-sm" type="button"><i
                                                         class="bi bi-eye"></i></button>
                                             </a>
-                                            @if ($user->hasRole(['Nhân viên', 'Quản lý cơ sở']))
+                                            @if ($user->hasRole(['Nhân viên', 'Quản lý rạp']))
                                                 @can('Sửa tài khoản')
                                                     <a href="{{ route('admin.users.edit', $user) }}">
                                                         <button title="xem" class="btn btn-warning btn-sm" type="button"><i
@@ -184,7 +184,7 @@
                                         </td>
                                     </tr>
                                 @endif
-                            @elseif (auth()->user()->hasRole('Quản lý cơ sở'))
+                            @elseif (auth()->user()->hasRole('Quản lý rạp'))
                                 {{-- Facility Manager: Show users from the same cinema --}}
                                 @if ($user->cinema_id == auth()->user()->cinema_id && $user->hasRole('Nhân viên'))
                                     <tr>

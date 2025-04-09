@@ -217,13 +217,13 @@
                                                 </option>
                                             @elseif (auth()->user()->hasRole('Quản lý chi nhánh'))
                                                 <!-- Branch Manager can assign 'Quản lý chi nhánh' and 'Nhân viên' roles -->
-                                                @if ($role['name'] == 'Quản lý cơ sở' || $role['name'] == 'Nhân viên')
+                                                @if ($role['name'] == 'Quản lý rạp' || $role['name'] == 'Nhân viên')
                                                     <option id="{{ $role['name'] }}" {{-- {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}> --}}
                                                         {{ old('role_id') == $role['name'] ? 'selected' : '' }}>
                                                         {{ $role['name'] }}
                                                     </option>
                                                 @endif
-                                            @elseif (auth()->user()->hasRole('Quản lý cơ sở'))
+                                            @elseif (auth()->user()->hasRole('Quản lý rạp'))
                                                 <!-- Facility Manager can only assign 'Nhân viên' role -->
                                                 @if ($role['name'] == 'Nhân viên')
                                                     <option id="{{ $role['name'] }}" {{-- {{ in_array($role->name, old('role_id', [])) ? 'selected' : '' }}> --}}
@@ -240,7 +240,7 @@
                             </div>
 
                             <div id="box-branch"
-                                class="col-lg-6 {{ auth()->user()->hasRole('Quản lý chi nhánh') || auth()->user()->hasRole('Quản lý cơ sở') ? 'd-none' : '' }}">
+                                class="col-lg-6 {{ auth()->user()->hasRole('Quản lý chi nhánh') || auth()->user()->hasRole('Quản lý rạp') ? 'd-none' : '' }}">
                                 <div class="mb-3">
                                     <label for="account-cinema" class="form-label">
                                         Chi nhánh
@@ -270,11 +270,11 @@
                                         <span class="required">*</span>
                                     </label>
                                     <select class="form-select" id="cinema_select" name="cinema_id"
-                                        {{ auth()->user()->hasRole('Quản lý cơ sở') ? 'disabled' : '' }}>
+                                        {{ auth()->user()->hasRole('Quản lý rạp') ? 'disabled' : '' }}>
                                         <option value="">Chọn rạp làm việc</option>
                                         @foreach ($cinemas as $cinema)
                                             <option value="{{ $cinema->id }}"
-                                                {{ auth()->user()->hasRole('Quản lý cơ sở') && auth()->user()->cinema_id == $cinema->id ? 'selected' : '' }}
+                                                {{ auth()->user()->hasRole('Quản lý rạp') && auth()->user()->cinema_id == $cinema->id ? 'selected' : '' }}
                                                 {{ old('cinema_id') == $cinema->id ? 'selected' : '' }}>
                                                 {{ $cinema->name }}
                                             </option>
@@ -466,16 +466,16 @@
                 if (value == "Quản lý chi nhánh") {
                     $("#box-cinema").addClass('d-none'); // Ẩn box-cinema
                     $("#box-branch").removeClass('d-none'); // Hiển thị box-branch
-                    // } else if (Array.isArray(value) && value.includes("Nhân viên") || value.includes("Quản lý cơ sở")) {
-                } else if (value == "Nhân viên" || value == "Quản lý cơ sở") {
-                    // Kiểm tra nếu chọn "Nhân viên" hoặc "Quản lý cơ sở", hiển thị cinema và ẩn branch
+                    // } else if (Array.isArray(value) && value.includes("Nhân viên") || value.includes("Quản lý rạp")) {
+                } else if (value == "Nhân viên" || value == "Quản lý rạp") {
+                    // Kiểm tra nếu chọn "Nhân viên" hoặc "Quản lý rạp", hiển thị cinema và ẩn branch
                     $("#box-cinema").removeClass('d-none'); // Hiển thị box-cinema
                     const branchId = $('#branch_select').val();
                     if (branchId) {
                         getCinemasByBranch(branchId);
                     }
                 } else {
-                    // Nếu không chọn "Nhân viên" hoặc "Quản lý cơ sở" hoặc "Quản lý chi nhánh", ẩn cinema và branch
+                    // Nếu không chọn "Nhân viên" hoặc "Quản lý rạp" hoặc "Quản lý chi nhánh", ẩn cinema và branch
                     $("#box-cinema").removeClass('d-none'); // Ẩn box-cinema
                     $("#box-branch").removeClass('d-none'); // Ẩn box-branch
                 }

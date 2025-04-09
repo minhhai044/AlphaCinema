@@ -206,13 +206,13 @@
                                                 </option>
                                             @elseif (auth()->user()->hasRole('Quản lý chi nhánh'))
                                                 <!-- Branch Manager can select 'Quản lý chi nhánh' and 'Nhân viên' -->
-                                                @if ($role->name == 'Quản lý cơ sở' || $role->name == 'Nhân viên')
+                                                @if ($role->name == 'Quản lý rạp' || $role->name == 'Nhân viên')
                                                     <option value="{{ $role->id }}"
                                                         {{ $user->roles->contains($role) ? 'selected' : '' }}>
                                                         {{ $role->name }}
                                                     </option>
                                                 @endif
-                                            @elseif (auth()->user()->hasRole('Quản lý cơ sở'))
+                                            @elseif (auth()->user()->hasRole('Quản lý rạp'))
                                                 <!-- Facility Manager can only select 'Nhân viên' -->
                                                 @if ($role->name == 'Nhân viên')
                                                     <option value="{{ $role->id }}"
@@ -229,7 +229,7 @@
                             </div>
 
                             <div id="box-branch"
-                                class="col-lg-6 {{ auth()->user()->hasRole(['Quản lý chi nhánh', 'Quản lý cơ sở']) && $user->hasRole(['Quản lý cơ sở', 'Nhân viên'])? 'd-none': '' }}">
+                                class="col-lg-6 {{ auth()->user()->hasRole(['Quản lý chi nhánh', 'Quản lý rạp']) && $user->hasRole(['Quản lý rạp', 'Nhân viên'])? 'd-none': '' }}">
                                 <div class="mb-3">
                                     <label for="account-branch" class="form-label">Chi nhánh <span
                                             class="required">*</span></label>
@@ -256,11 +256,11 @@
                                         <span class="required">*</span>
                                     </label>
                                     <select class="form-select" id="cinema_select" name="cinema_id"
-                                        {{ auth()->user()->hasRole('Quản lý cơ sở') ? 'disabled' : '' }}>
+                                        {{ auth()->user()->hasRole('Quản lý rạp') ? 'disabled' : '' }}>
                                         <option value="">Chọn rạp làm việc</option>
                                         @foreach ($cinemas as $cinema)
                                             <option value="{{ $cinema->id }}"
-                                                {{ auth()->user()->hasRole('Quản lý cơ sở') && auth()->user()->cinema_id == $cinema->id ? 'selected' : '' }}
+                                                {{ auth()->user()->hasRole('Quản lý rạp') && auth()->user()->cinema_id == $cinema->id ? 'selected' : '' }}
                                                 {{ $user->cinema_id == $cinema->id ? 'selected' : '' }}>
                                                 {{ $cinema->name }}
                                             </option>
