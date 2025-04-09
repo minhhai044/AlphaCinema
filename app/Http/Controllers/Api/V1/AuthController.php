@@ -14,6 +14,7 @@ use App\Models\Point_history;
 use App\Models\Rank;
 use App\Models\User;
 use App\Models\User_voucher;
+use App\Models\Vat;
 use App\Services\UserService;
 use App\Traits\ApiRequestJsonTrait;
 use App\Traits\ApiResponseTrait;
@@ -49,6 +50,8 @@ class AuthController extends Controller
             // Validate dữ liệu đầu vào
             $data = $request->validated();
 
+            $vat = Vat::query()->limit(1);
+
             // Lấy user theo email
             $user = $this->userService->getUserApi($data['email']);
 
@@ -78,7 +81,8 @@ class AuthController extends Controller
             return $this->successResponse([
                 'user' => $user,
                 'token' => $token,
-                'cookie' => $cookie
+                'cookie' => $cookie,
+                'vat' => $vat
             ], 'Đăng nhập thành công', Response::HTTP_OK)->withCookie($cookie);
         } catch (\Throwable $th) {
             // Ghi log chi tiết lỗi
