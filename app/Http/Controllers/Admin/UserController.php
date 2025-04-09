@@ -94,7 +94,6 @@ class UserController extends Controller
             $data['cinema_id'] = auth()->user()->cinema_id;
         }
 
-        // dd($data);
         $user =  $this->userService->storeUser($data);
 
         if ($userRequest->has('role_id')) {

@@ -12,6 +12,7 @@ use App\Models\Room;
 use App\Models\RoomChat;
 use App\Models\Seat_template;
 use App\Models\User;
+use App\Models\Vat;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -33,6 +34,11 @@ class DatabaseSeeder extends Seeder
         /**
          * Seeder Branch
          */
+        Vat::create([
+            'rate' => 8,
+            'description' => 'Thuế giá trị gia tăng'
+        ]);
+
         $branches = [
             'Hà nội',
             'Thanh Hóa',
@@ -83,6 +89,9 @@ class DatabaseSeeder extends Seeder
         /**
          * Seeder Users
          */
+
+
+
         $users = [
             [
                 'name' => 'System Admin',
