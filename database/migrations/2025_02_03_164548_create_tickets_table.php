@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignIdFor(Showtime::class)->constrained();
             $table->string('code')->unique();
             $table->string('voucher_code')->nullable();
+            $table->integer('vat')->nullable();
             $table->decimal('voucher_discount', 10, 0)->default(0);
             $table->decimal('point_use', 10, 0)->default(0);
             $table->decimal('point_discount', 10, 0)->default(0);
