@@ -121,6 +121,19 @@
 
 
     <script>
+ // Hàm xác nhận trước khi thay đổi
+        function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái Đồ ăn?', title =
+                    'AlphaCinema thông báo') {
+                    return Swal.fire({
+                        icon: 'warning',
+                        title: title,
+                        text: text,
+                        showCancelButton: true,
+                        confirmButtonText: 'Đồng ý',
+                        cancelButtonText: 'Hủy',
+                    }).then(result => result.isConfirmed);
+                }
+
         $(document).on("change", ".changeActive", function() {
             let foodId = $(this).data("food-id");
             let is_active = $(this).is(":checked") ? 1 : 0;
