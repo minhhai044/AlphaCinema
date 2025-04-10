@@ -141,7 +141,6 @@
         // Gắn sự kiện thay đổi trạng thái
         $(document).on("change", ".changeActive", function(e) {
         e.preventDefault();
-
         let $checkbox = $(this);
         let comboId = $checkbox.data("combo-id");
         let is_active = $checkbox.is(":checked") ? 1 : 0;
@@ -171,9 +170,7 @@
                         $checkbox.prop("checked", !is_active);
                     }
                 });
-            
                } else {
-
                 // Người dùng từ chối => hoàn tác lại checkbox
                 $checkbox.prop("checked", !is_active);
             }
