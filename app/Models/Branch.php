@@ -18,4 +18,8 @@ class Branch extends Model
     {
         return $this->hasMany(Ticket::class);
     }
+
+    public function movies(){
+        return $this->hasMany(Movie::class);
+    }
 }
