@@ -1015,5 +1015,38 @@ class DatabaseSeeder extends Seeder
         RoomChat::create([
             'name' => 'Phòng chat VIP'
         ]);
+
+        $movie_branches = [
+            ['branch_id' => 1, 'movie_id' => 1],
+            ['branch_id' => 1, 'movie_id' => 2],
+            ['branch_id' => 1, 'movie_id' => 3],
+            ['branch_id' => 1, 'movie_id' => 4],
+            ['branch_id' => 1, 'movie_id' => 5],
+            ['branch_id' => 1, 'movie_id' => 6],
+            ['branch_id' => 2, 'movie_id' => 3],
+            ['branch_id' => 2, 'movie_id' => 4],
+            ['branch_id' => 2, 'movie_id' => 5],
+            ['branch_id' => 2, 'movie_id' => 7],
+            ['branch_id' => 2, 'movie_id' => 8],
+            ['branch_id' => 3, 'movie_id' => 6],
+            ['branch_id' => 3, 'movie_id' => 7],
+            ['branch_id' => 3, 'movie_id' => 8],
+            ['branch_id' => 3, 'movie_id' => 9],
+            ['branch_id' => 4, 'movie_id' => 1],
+            ['branch_id' => 4, 'movie_id' => 2],
+            ['branch_id' => 4, 'movie_id' => 5],
+            ['branch_id' => 4, 'movie_id' => 9],
+            ['branch_id' => 4, 'movie_id' => 10],
+            ['branch_id' => 5, 'movie_id' => 1],
+            ['branch_id' => 5, 'movie_id' => 3],
+            ['branch_id' => 5, 'movie_id' => 6],
+            ['branch_id' => 5, 'movie_id' => 7],
+            ['branch_id' => 5, 'movie_id' => 8],
+            ['branch_id' => 5, 'movie_id' => 10],
+        ];
+
+        DB::table('movie_branches')->insert($movie_branches);
+
+
     }
 }
