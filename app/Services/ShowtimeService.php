@@ -68,9 +68,13 @@ class ShowtimeService
         foreach ($branchs as $branch) {
             $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
         }
-
-        $movies = Movie::query()->where('is_active', 1)->get();
-
+        $query = Movie::with('movieBranches')->where('is_active', 1);
+        if (Auth::user()->branch_id) {
+            $query = $query->whereHas('movieBranches', function ($q) {
+                $q->where('branch_id', Auth::user()->branch_id);
+            });
+        }
+        $movies = $query->get();
         return [$branchs, $branchsRelation, $listShowtimes, $movies, $listShowtimesByDates];
     }
     public function createService(string $id)
