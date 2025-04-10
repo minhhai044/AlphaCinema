@@ -25,6 +25,7 @@ return new class extends Migration
             $table->foreignIdFor(Room::class)->constrained();
             $table->json('seat_structure');
             $table->string('slug')->nullable();
+            $table->boolean('status')->default(0)->comment('0: Chưa có người đặt,1: Đã có nguời đặt');
             $table->date('date')->comment('Ngày chiếu');
             $table->time('start_time')->comment('Giờ bắt đầu');
             $table->time('end_time')->comment('Giờ kết thúc');
