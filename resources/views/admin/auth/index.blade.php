@@ -30,7 +30,7 @@
         <div class="container-fluid p-0">
             <div class="row g-0">
                 <div class="col-xxl-12 col-lg-12 col-md-12">
-                    <div class="auth-full-page-content d-flex p-sm-5 p-4">
+                    <div class="auth-full-page-content d-flex p-sm-5 p-4 align-items-center">
                         <div class="w-100 d-flex justify-content-center">
                             <div class="d-flex flex-column w-25">
                                 <div class="mb-1 mb-md-5 text-center">
@@ -84,7 +84,7 @@
                                             </div>
 
                                         </div> --}}
-                                        <div class="mb-3">
+                                        <div class="mt-3">
                                             <button class="btn btn-primary w-100 waves-effect waves-light"
                                                 type="submit">Đăng nhập</button>
                                         </div>
