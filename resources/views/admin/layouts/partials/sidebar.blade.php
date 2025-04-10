@@ -285,7 +285,7 @@
 
             <li>
                 <a href="javascript: void(0);" class="has-arrow">
-                    <i data-feather="users"></i>
+                    <i data-feather="message-square"></i>
 
                     <span data-key="t-service-systems">Quản lý phòng chat</span>
                 </a>
