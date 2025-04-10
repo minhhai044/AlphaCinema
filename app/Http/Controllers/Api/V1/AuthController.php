@@ -249,7 +249,7 @@ class AuthController extends Controller
 
         $pathRedirect = env('APP_URL_FE');
 
-        return redirect()->to("{$pathRedirect}auth/callback?data=" . urlencode($authDataEncoded));
+        return redirect()->to("{$pathRedirect}/auth/callback?data=" . urlencode($authDataEncoded));
     }
 
     public function getUserRank()
