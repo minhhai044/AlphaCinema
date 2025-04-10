@@ -95,7 +95,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
     Route::post('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
-
 });
 
 Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
@@ -118,3 +117,6 @@ Route::post('reset-password', [AuthController::class, 'resetPassword']);
 
 Route::post('roles/change-active', [RoleController::class, 'changActive']);
 Route::post('users/change-active', [AdminUserController::class, 'changActiveStatus']);
+
+Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
+Route::post('/confirm-email', [AuthController::class, 'confirmVerifyEmail']);

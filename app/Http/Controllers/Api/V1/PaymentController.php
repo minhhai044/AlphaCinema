@@ -208,7 +208,7 @@ class PaymentController extends Controller
         $vnp_TransactionStatus = $request->query('vnp_TransactionStatus', '');
         $vnp_TxnRef = $request->query('vnp_TxnRef', '');
         $orderId = $request->query('orderId', '');
-        $frontendUrl = "http://localhost:3000";
+        $frontendUrl = env('APP_URL_FE');
 
         $txnRef = $orderId ?: $vnp_TxnRef;
         if (!$txnRef) {
@@ -273,6 +273,8 @@ class PaymentController extends Controller
             });
 
             Redis::del("order:$txnRef");
+
+            $pathRedirect = env('APP_URL_FE');
 
             // return redirect($frontendUrl)->withCookie(cookie('order_id', $txnRef, 10));
             return redirect($frontendUrl . '/booking-success')->withCookies([

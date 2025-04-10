@@ -7,8 +7,10 @@ use App\Http\Controllers\Filters\Filter;
 use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
+use App\Http\Requests\ConfirmVerifyEmailRequest;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Requests\UserRequest;
+use App\Http\Requests\VerifyEmailRequest;
 use App\Mail\SendOtpMail;
 use App\Models\Point_history;
 use App\Models\Rank;
@@ -241,7 +243,9 @@ class AuthController extends Controller
 
         $authDataEncoded = base64_encode(json_encode($authData));
 
-        return redirect()->to('http://localhost:3000/auth/callback?data=' . urlencode($authDataEncoded));
+        $pathRedirect = env('APP_URL_FE');
+
+        return redirect()->to("{$pathRedirect}auth/callback?data=" . urlencode($authDataEncoded));
     }
 
     public function getUserRank()
@@ -383,6 +387,66 @@ class AuthController extends Controller
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+    public function verifyEmail(VerifyEmailRequest $request)
+    {
+        try {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return $this->errorResponse('Email không tồn tại', Response::HTTP_NOT_FOUND);
+            }
+
+            if (!empty($user->email_verified_at)) {
+                return $this->successResponse([], 'Email đã được xác minh trước đó', Response::HTTP_OK);
+            }
+
+            $otp = rand(100000, 999999);
+            // $expiresAt = Carbon::now()->addMinutes(2);
+
+            // Redis::setex("otp_{$request->email}", 300, Hash::make($otp));
+            Redis::setex("verify-email-{$request->email}", 300, Hash::make($otp));
+
+            Mail::to($request->email)->queue(new SendOtpMail($otp, $user->name));
+
+            return $this->successResponse([], 'Vui lòng kiểm tra email của bạn', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function confirmVerifyEmail(ConfirmVerifyEmailRequest $request)
+    {
+        try {
+            $user = User::where('email', $request->email)->first();
+
+            if (!$user) {
+                return $this->errorResponse('Email không tồn tại', Response::HTTP_NOT_FOUND);
+            }
+
+            $redisKey = "verify-email-{$request->email}";
+            $hashedOtp = Redis::get($redisKey);
+
+            if (!$hashedOtp) {
+                return $this->errorResponse('OTP đã hết hạn hoặc không tồn tại', Response::HTTP_BAD_REQUEST);
+            }
+
+            if (!Hash::check($request->otp, $hashedOtp)) {
+                return $this->errorResponse('Mã OTP không chính xác', Response::HTTP_UNAUTHORIZED);
+            }
+
+            $user->email_verified_at = now();
+            $user->save();
+
+            Redis::del($redisKey);
+
+            return $this->successResponse([], 'Xác minh email thành công', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
     /**
      * Kiểm tra otp người dùng nhập vào có đúng không
      * @param \Illuminate\Http\Request $request
