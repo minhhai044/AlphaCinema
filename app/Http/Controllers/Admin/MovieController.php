@@ -60,19 +60,27 @@ class MovieController extends Controller
     // 5. Hiển thị form chỉnh sửa phim
     public function edit($id)
     {
-        $movie = $this->movieService->getMovieById($id);
-        return view('admin.movies.edit', compact('movie'));
+        $movie = Movie::with('branches')->findOrFail($id); // Load movie kèm các rạp đã liên kết
+        $branches = \App\Models\Branch::all();
+
+        return view('admin.movies.edit', compact('movie', 'branches'));
     }
 
-    // 6. Cập nhật phim
+
+
     public function update(MovieRequest $request, $id)
     {
-        // dd($request->all());
+        // dd(1);
+        // dd($id);
+
         $validated = $request->validated();
-        // dd($validated);
-        $this->movieService->updateMovie($id, $validated);
+
+        $this->movieService->updateMovie( $id, $validated);
+
+
         return redirect()->route('admin.movies.index')->with('success', 'Cập nhật phim thành công!');
     }
+
 
 
     // 7. Xóa phim
