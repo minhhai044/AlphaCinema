@@ -51,4 +51,8 @@ class Movie extends Model
     {
         return $this->hasMany(Ticket::class);
     }
+
+    public function branch(){
+        return $this->hasMany(Branch::class);
+    }
 }

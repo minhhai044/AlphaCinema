@@ -48,6 +48,8 @@ class MovieRequest extends FormRequest
             'is_hot' => 'boolean',
             'is_special' => 'boolean',
             'is_publish' => 'boolean',
+            'branch_ids' => 'required|array',
+'branch_ids.*' => 'exists:branches,id',
         ];
     }
 

@@ -32,7 +32,9 @@ class MovieController extends Controller
     // 2. Hiển thị form thêm mới phim
     public function create()
     {
-        return view('admin.movies.create');
+        $branches = \App\Models\Branch::all();
+        // dd($branches);
+        return view('admin.movies.create', compact('branches'));
     }
 
     // 3. Lưu phim mới
@@ -71,7 +73,7 @@ class MovieController extends Controller
         $this->movieService->updateMovie($id, $validated);
         return redirect()->route('admin.movies.index')->with('success', 'Cập nhật phim thành công!');
     }
-   
+
 
     // 7. Xóa phim
     public function destroy($id)
