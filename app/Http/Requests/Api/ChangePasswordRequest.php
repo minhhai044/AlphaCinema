@@ -2,10 +2,12 @@
 
 namespace App\Http\Requests\Api;
 
+use App\Traits\ApiRequestJsonTrait;
 use Illuminate\Foundation\Http\FormRequest;
 
 class ChangePasswordRequest extends FormRequest
 {
+    use ApiRequestJsonTrait;
     /**
      * Determine if the user is authorized to make this request.
      */
