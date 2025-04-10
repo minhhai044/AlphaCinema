@@ -106,6 +106,7 @@ class AuthController extends Controller
     public function signUp(RegisterRequest $request)
     {
         try {
+            $vat = Vat::query()->limit(1);
             $data = $request->validated();
             $data['type_user'] = 0;
 
@@ -115,7 +116,8 @@ class AuthController extends Controller
 
             return $this->successResponse([
                 'user' => $user,
-                'token' => $token
+                'token' => $token,
+                'vat' => $vat
             ], 'Đăng ký thành công', Response::HTTP_CREATED);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
@@ -209,31 +211,43 @@ class AuthController extends Controller
     public function googleCallBack()
     {
         $googleUser = Socialite::driver('google')->user();
+        $updateData = [];
 
-        // $user = User::updateOrCreate(
-        //     ['google_id' => $googleUser->id],
-        //     [
-        //         'name' => $googleUser->name,
-        //         'email' => $googleUser->email,
-        //         'password' => Str::password(12),
-        //         'avatar' => $googleUser->avatar,
-        //         'type_user' => 0,
-        //     ]
-        // );
         $user = User::firstOrCreate(
-            ['email' => $googleUser->email], // Tìm theo email trước
+            ['email' => $googleUser->email],
             [
                 'google_id' => $googleUser->id,
                 'name' => $googleUser->name,
-                'password' => Hash::make(Str::password(12)), // Chỉ tạo mật khẩu nếu user chưa có
+                'password' => Hash::make(Str::password(12)),
                 'avatar' => $googleUser->avatar,
                 'type_user' => 0,
+                'email_verified_at' => now(),
             ]
         );
 
         if (!$user->google_id) {
-            $user->update(['google_id' => $googleUser->id, 'avatar' => $googleUser->avatar]);
+            $updateData['google_id'] = $googleUser->id;
         }
+
+        if (!$user->avatar) {
+            $updateData['avatar'] = $googleUser->avatar;
+        }
+
+        if (!$user->email_verified_at) {
+            $updateData['email_verified_at'] = now();
+        }
+
+        if (!empty($updateData)) {
+            $user->update($updateData);
+        }
+
+        // if (!$user->google_id) {
+        //     $user->update(['google_id' => $googleUser->id, 'avatar' => $googleUser->avatar]);
+        // }
+
+        // if (!$user->email_verified_at) {
+        //     $user->update(['email_verified_at' => now()]);
+        // }
 
         // Auth::login($user);
 
