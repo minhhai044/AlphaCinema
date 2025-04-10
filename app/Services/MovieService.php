@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Movie;
+use App\Models\MovieBranch;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\DB;
 
@@ -43,7 +44,18 @@ class MovieService
             // $data['movie_versions'] = json_encode($data['movie_versions']) ;
             // $data['movie_genres'] = json_encode($data['movie_genres']) ;
             // dd($data['movie_versions']);
-            Movie::create($data);
+            $movie = Movie::create($data);
+
+            if (isset($data['branch_ids']) && is_array($data['branch_ids'])) {
+                foreach ($data['branch_ids'] as $branch_id) {
+                    MovieBranch::create([
+                        'movie_id' => $movie->id,
+                        'branch_id' => $branch_id,
+                    ]);
+                }
+            }
+
+            return $movie;
         });
     }
 
