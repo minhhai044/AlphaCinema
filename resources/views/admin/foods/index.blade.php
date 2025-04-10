@@ -69,9 +69,8 @@
                             <td>
                                 <div class="d-flex justify-content-center align-items-center">
                                     <div class=" form-check form-switch form-switch-md" dir="ltr">
-                                        <input class="form-check-input switch-is-active changeActive"
-                                            @checked($food->is_active) type="checkbox" data-food-id="{{ $food->id }}"
-                                            onclick="return confirm('Bạn có chắc muốn thay đổi?')">
+                                        <input class="form-check-input switch-is-active changeActive" type="checkbox"
+                                            data-food-id="{{ $food->id }}" @checked($food->is_active)>
                                     </div>
                                 </div>
 
@@ -121,43 +120,21 @@
 
 
     <script>
- // Hàm xác nhận trước khi thay đổi
+        // Hàm xác nhận trước khi thay đổi
         function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái Đồ ăn?', title =
-                    'AlphaCinema thông báo') {
-                    return Swal.fire({
-                        icon: 'warning',
-                        title: title,
-                        text: text,
-                        showCancelButton: true,
-                        confirmButtonText: 'Đồng ý',
-                        cancelButtonText: 'Hủy',
-                    }).then(result => result.isConfirmed);
-                }
+            'AlphaCinema thông báo') {
+            return Swal.fire({
+                icon: 'warning',
+                title: title,
+                text: text,
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy',
+            }).then(result => result.isConfirmed);
+        }
 
-        $(document).on("change", ".changeActive", function() {
-            let foodId = $(this).data("food-id");
-            let is_active = $(this).is(":checked") ? 1 : 0;
-            $.ajax({
-                url: "{{ route('food.change-active') }}",
-                method: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: foodId,
-                    is_active: is_active
-                },
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success('Trạng thái hoạt động đã được cập nhật.');
-                    } else {
-                        toastr.error(response.message || 'Có lỗi xảy ra.');
-                        $(`[data-food-id="${foodId}"]`).prop("checked", !is_active);
-                    }
-                },
-                error: function(xhr) {
-                    toastr.error('Có lỗi xảy ra khi cập nhật trạng thái.');
-                    $(`[data-food-id="${foodId}"]`).prop("checked", !is_active);
-                }
-            });
+        // Sự kiện thay đổi trạng thái của đồ ăn (food)
+        
         });
     </script>
 
