@@ -139,7 +139,30 @@
         confirmChange().then((confirmed) => {
             if (confirmed) {
                 // Gửi AJAX nếu đồng ý
+                $.ajax({
+                    url: "{{ route('combos.change-active') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: comboId,
+                        is_active: is_active
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success('Trạng thái hoạt động đã được cập nhật.');
+                        } else {
+                            toastr.error(response.message || 'Có lỗi xảy ra.');
+                            $checkbox.prop("checked", !is_active);
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Lỗi kết nối server!');
+                        $checkbox.prop("checked", !is_active);
+                    }
+                });
+            
                } else {
+
                 // Người dùng từ chối => hoàn tác lại checkbox
                 $checkbox.prop("checked", !is_active);
             }
