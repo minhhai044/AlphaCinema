@@ -63,7 +63,11 @@ class ShowtimeService
             ];
         });
 
-        $branchs = Branch::with('cinemas.rooms')->where('is_active', 1)->get();
+        $query = Branch::with('cinemas.rooms')->where('is_active', 1);
+        if (Auth::user()->branch_id) {
+            $query = $query->where('id', Auth::user()->branch_id);
+        }
+        $branchs = $query->get();
         $branchsRelation = [];
         foreach ($branchs as $branch) {
             $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
