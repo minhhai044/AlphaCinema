@@ -33,6 +33,37 @@
                                             @enderror
                                         </div>
 
+                                        @php
+    $selectedBranches = $movie->branches->pluck('id')->toArray();
+@endphp
+
+<div class="mb-3">
+    <label class="form-label">Rạp chiếu phim
+        <span class="required" style="color: red">*</span>
+    </label>
+    <div class="row">
+        @foreach ($branches as $branch)
+            <div class="col-md-4">
+                <div class="form-check">
+                    <input type="checkbox" name="branch_ids[]"
+                        value="{{ $branch->id }}"
+                        id="branch_{{ $branch->id }}"
+                        class="form-check-input {{ $errors->has('branch_ids') ? 'is-invalid' : '' }}"
+                        {{ in_array($branch->id, old('branch_ids', $selectedBranches)) ? 'checked' : '' }}>
+                    <label class="form-check-label" for="branch_{{ $branch->id }}">
+                        {{ $branch->name }}
+                    </label>
+                </div>
+            </div>
+        @endforeach
+    </div>
+    @if ($errors->has('branch_ids'))
+        <div class="invalid-feedback d-block">
+            <span class="text-danger fw-medium">{{ $errors->first('branch_ids') }}</span>
+        </div>
+    @endif
+</div>
+
                                         <div class="mb-3">
                                             <label class="form-label">Danh mục phim</label>
                                             <input type="text" name="category"
