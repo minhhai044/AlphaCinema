@@ -47,7 +47,7 @@ class ShowtimeService
         if (empty($date) || empty($branch_id) || empty($cinema_id)) {
             $showtimes = collect();
         } else {
-            $showtimes = Showtime::with('movie', 'room.type_room', 'branch', 'cinema')
+            $showtimes = Showtime::with('movie', 'room.type_room', 'branch', 'cinema','tickets')
                 ->where('date', $date)
                 ->where('branch_id', $branch_id)
                 ->where('cinema_id', $cinema_id)
@@ -63,22 +63,28 @@ class ShowtimeService
             ];
         });
 
-        $query = Branch::with('cinemas.rooms')->where('is_active', 1);
+        $queryBranch = Branch::with('cinemas.rooms')->where('is_active', 1);
+
         if (Auth::user()->branch_id) {
-            $query = $query->where('id', Auth::user()->branch_id);
+          $queryBranch->where('id', Auth::user()->branch_id);
         }
-        $branchs = $query->get();
+
+        $branchs = $queryBranch->get();
+
         $branchsRelation = [];
+
         foreach ($branchs as $branch) {
             $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
         }
-        $query = Movie::with('movieBranches')->where('is_active', 1);
+
+        $queryMovie = Movie::with('movieBranches')->where('is_active', 1);
+
         if (Auth::user()->branch_id) {
-            $query = $query->whereHas('movieBranches', function ($q) {
+            $queryMovie->whereHas('movieBranches', function ($q) {
                 $q->where('branch_id', Auth::user()->branch_id);
             });
         }
-        $movies = $query->get();
+        $movies = $queryMovie->get();
         return [$branchs, $branchsRelation, $listShowtimes, $movies, $listShowtimesByDates];
     }
     public function createService(string $id)

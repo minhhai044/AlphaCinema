@@ -388,7 +388,7 @@
                                                             {{ $showtime['room']['name'] }}</td>
                                                         <td>
                                                             <div class="mt-2">
-                                                                <input type="checkbox"
+                                                                <input type="checkbox" @disabled($showtime['tickets'])
                                                                     id="is_active{{ $showtime['id'] }}"
                                                                     @checked($showtime['is_active']) switch="primary" />
                                                                 <label for="is_active{{ $showtime['id'] }}"></label>
@@ -400,7 +400,7 @@
                                                                 @csrf
                                                                 <input type="hidden" name="showtime_id"
                                                                     value="{{ $showtime['id'] }}">
-                                                                <button type="submit"
+                                                                <button @disabled($showtime['tickets']) type="submit"
                                                                     onclick="return confirm('Bạn có chắc chắn không !!!')"
                                                                     class="btn btn-sm btn-danger fw-bold">
                                                                     <i class="bi bi-trash"></i>
