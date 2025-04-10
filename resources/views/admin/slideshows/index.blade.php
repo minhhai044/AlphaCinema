@@ -67,8 +67,9 @@
                                         <div class="form-check form-switch form-switch-md mb-3" dir="ltr">
                                             <input class="form-check-input switch-is-active changeActive" name="is_active"
                                                 type="checkbox" role="switch" data-slideshow-id="{{ $slideshow->id }}"
-                                                @checked($slideshow->is_active) onclick="return checkActive(this)">
+                                                @checked($slideshow->is_active)>
                                         </div>
+                                        
                                     </td>
                                     <td>
                                         <a href="{{ route('admin.slideshows.edit', $slideshow) }}">
@@ -118,76 +119,91 @@
                 let slideshowId = currentCheckbox.data('slideshow-id');
                 let is_active = currentCheckbox.is(':checked') ? 1 : 0;
 
-                // Kiểm tra nếu checkbox đang bật mà bị tắt chính nó
+                // Ngăn tắt slideshow đang hoạt động
                 if (!is_active && currentCheckbox.data('current-active') === 1) {
-                    alert('Bạn không thể tắt slideshow đang hoạt động!');
-                    currentCheckbox.prop('checked', true); // Hoàn tác thay đổi
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Không thể tắt!',
+                        text: 'Bạn không thể tắt slideshow đang hoạt động.',
+                        confirmButtonText: 'Đã hiểu',
+                        timer: 3000,
+                        timerProgressBar: true,
+                    });
+                    currentCheckbox.prop('checked', true);
                     return;
                 }
 
-                // Xác nhận nếu người dùng muốn thay đổi
-                if (!confirm('Bạn có chắc muốn thay đổi?')) {
-                    currentCheckbox.prop('checked', !currentCheckbox.is(':checked')); // Hoàn tác thay đổi
-                    return;
-                }
+                // Hiển thị hộp xác nhận
+                Swal.fire({
+                    icon: 'question',
+                    title: 'Xác nhận thay đổi',
+                    text: 'Bạn có chắc chắn muốn thay đổi trạng thái slideshow này?',
+                    showCancelButton: true,
+                    confirmButtonText: 'Đồng ý',
+                    cancelButtonText: 'Hủy bỏ',
+                }).then((result) => {
+                    if (!result.isConfirmed) {
+                        currentCheckbox.prop('checked', !currentCheckbox.is(':checked'));
+                        return;
+                    }
 
-                // Tắt tất cả các checkbox khác nếu bật checkbox hiện tại
-                if (is_active === 1) {
-                    $('.changeActive').not(currentCheckbox).prop('checked', false);
-                }
+                    // Tắt tất cả các checkbox khác nếu bật checkbox hiện tại
+                    if (is_active === 1) {
+                        $('.changeActive').not(currentCheckbox).prop('checked', false);
+                    }
 
-                // Gửi yêu cầu AJAX để cập nhật trạng thái
-                $.ajax({
-                    url: "{{ route('slideshows.change-active') }}",
-                    method: 'POST',
-                    data: {
-                        _token: '{{ csrf_token() }}',
-                        id: slideshowId,
-                        is_active: is_active
-                    },
-                    success: function(response) {
-                        if (response.success) {
-                            // Cập nhật trạng thái hiện tại
-                            $('.changeActive').data('current-active',
-                                0); // Reset trạng thái cho tất cả
-                            if (is_active === 1) {
-                                currentCheckbox.data('current-active',
-                                    1); // Đặt trạng thái mới cho checkbox đang bật
+                    // Gửi AJAX cập nhật
+                    $.ajax({
+                        url: "{{ route('slideshows.change-active') }}",
+                        method: 'POST',
+                        data: {
+                            _token: '{{ csrf_token() }}',
+                            id: slideshowId,
+                            is_active: is_active
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                // Reset trạng thái
+                                $('.changeActive').data('current-active', 0);
+                                if (is_active === 1) {
+                                    currentCheckbox.data('current-active', 1);
+                                }
+
+                                Swal.fire({
+                                    icon: 'success',
+                                    title: 'Cập nhật thành công',
+                                    text: 'Trạng thái slideshow đã được cập nhật.',
+                                    confirmButtonText: 'Đóng',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                }).then(() => location.reload());
+                            } else {
+                                Swal.fire({
+                                    icon: 'error',
+                                    title: 'Cập nhật thất bại',
+                                    text: response.message ||
+                                        'Đã xảy ra lỗi, vui lòng thử lại.',
+                                    confirmButtonText: 'Đóng',
+                                    timer: 3000,
+                                    timerProgressBar: true,
+                                });
+                                console.error(response.message);
                             }
-                            Swal.fire({
-                                icon: 'success',
-                                title: 'Thành công!',
-                                text: 'Trạng thái hoạt động đã được cập nhật.',
-                                confirmButtonText: 'Đóng',
-                                timer: 3000,
-                                timerProgressBar: true,
-                            }).then(() => location.reload());
-                        } else {
+                        },
+                        error: function(xhr, status, error) {
                             Swal.fire({
                                 icon: 'error',
-                                title: 'Lỗi!',
-                                text: 'Có lỗi xảy ra, vui lòng thử lại.',
+                                title: 'Lỗi kết nối',
+                                text: 'Không thể kết nối tới máy chủ. Vui lòng thử lại sau.',
                                 confirmButtonText: 'Đóng',
                                 timer: 3000,
                                 timerProgressBar: true,
                             });
-                            console.error(response.message);
+                            console.error(error);
+                            currentCheckbox.prop('checked', !currentCheckbox.is(
+                                ':checked'));
                         }
-                    },
-                    error: function(xhr, status, error) {
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Lỗi!',
-                            text: 'Lỗi kết nối hoặc server không phản hồi.',
-                            confirmButtonText: 'Đóng',
-                            timer: 3000,
-                            timerProgressBar: true,
-                        });
-                        console.error(error);
-
-                        // Hoàn tác thay đổi nếu server phản hồi lỗi
-                        currentCheckbox.prop('checked', !currentCheckbox.is(':checked'));
-                    }
+                    });
                 });
             });
         });
