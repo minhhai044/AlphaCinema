@@ -56,6 +56,8 @@ class MovieRequest extends FormRequest
     public function rulesForUpdate(): array
     {
         return [
+             'branch_ids' => 'required|array',
+        'branch_ids.*' => 'exists:branches,id',
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255',
             'category' => 'required|string|max:255',
