@@ -79,14 +79,13 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{  limitText($item->description, 15) }}
+                                    {{ limitText($item->description, 15) }}
                                 </td>
                                 <td>
                                     <div class="d-flex justify-content-center align-items-center">
                                         <div class="form-check form-switch form-switch-md mb-3" dir="ltr">
                                             <input class="form-check-input switch-is-active changeActive" type="checkbox"
-                                            data-combo-id="{{ $item->id }}"
-                                            @checked($item->is_active)>
+                                                data-combo-id="{{ $item->id }}" @checked($item->is_active)>
                                         </div>
                                     </div>
                                 </td>
@@ -126,34 +125,25 @@
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
 
     <script>
-        $(document).on("change", ".changeActive", function() {
-            let comboId = $(this).data("combo-id"); // Lấy ID của combo
-            let is_active = $(this).is(":checked") ? 1 : 0;
+      
 
-            // Gửi yêu cầu AJAX để thay đổi trạng thái
-            $.ajax({
-                url: "{{ route('combos.change-active') }}", // API cập nhật trạng thái combo
-                method: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: comboId,
-                    is_active: is_active
-                },
-                success: function(response) {
-                    if (response.success) {
+        // Gắn sự kiện thay đổi trạng thái
+        $(document).on("change", ".changeActive", function(e) {
+        e.preventDefault();
 
-                        toastr.success('Trạng thái hoạt động đã được cập nhật.');
-                    } else {
-                        toastr.error(response.message || 'Có lỗi xảy ra.');
-                        $(`[data-combo-id="${comboId}"]`).prop("checked", !is_active);
-                    }
-                },
-                error: function() {
-                    $(`[data-combo-id="${comboId}"]`).prop("checked", !is_active);
-                }
-            });
+        let $checkbox = $(this);
+        let comboId = $checkbox.data("combo-id");
+        let is_active = $checkbox.is(":checked") ? 1 : 0;
 
-
-        })
+        // Gọi xác nhận
+        confirmChange().then((confirmed) => {
+            if (confirmed) {
+                // Gửi AJAX nếu đồng ý
+               } else {
+                // Người dùng từ chối => hoàn tác lại checkbox
+                $checkbox.prop("checked", !is_active);
+            }
+        });
+        });
     </script>
 @endsection
