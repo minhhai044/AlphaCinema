@@ -73,7 +73,6 @@
                                             data-food-id="{{ $food->id }}" @checked($food->is_active)>
                                     </div>
                                 </div>
-
                             </td>
                             <td>
                                 <a href="{{ route('admin.foods.edit', $food) }}" class="btn btn-warning btn-sm">
@@ -88,12 +87,10 @@
         </div>
     </div>
 
-
     @php
         $appUrl = env('APP_URL');
     @endphp
 @endsection
-
 
 @section('script')
     <script>
@@ -114,10 +111,8 @@
     </script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
     </script>
-
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
-
 
     <script>
         // Hàm xác nhận trước khi thay đổi
