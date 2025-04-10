@@ -93,25 +93,69 @@ class ShowtimeController extends Controller
     //     );
     // }
 
+    /**
+     * Có cache redis
+     */
+    // public function listMovies(Request $request)
+    // {
+    //     $branchId = $request->branchId;
+    //     $cinemId = $request->cinemId;
+
+    //     // Tạo key cache dựa trên cinema_id và branch_id
+    //     $cacheKey = 'movies:' . $cinemId . ':' . $branchId;
+
+    //     // Kiểm tra xem dữ liệu có trong cache chưa
+    //     $movies = Redis::get($cacheKey);
+
+    //     if ($movies) {
+    //         // Nếu có dữ liệu trong cache, trả về dữ liệu này
+    //         return $this->successResponse(
+    //             json_decode($movies),  // Phải giải mã JSON vì Redis lưu trữ dữ liệu dạng chuỗi
+    //             'Thao tác thành công'
+    //         );
+    //     }
+
+    //     // Nếu không có trong cache, thực hiện truy vấn từ cơ sở dữ liệu
+    //     if ($branchId && $cinemId) {
+    //         $movies = Movie::whereHas('showtime', function ($query) use ($branchId, $cinemId) {
+    //             $query->where('branch_id', $branchId)
+    //                 ->where('cinema_id', $cinemId)
+    //                 ->where(function ($q) {
+    //                     $q->where('date', '>', Carbon::now()->toDateString())
+    //                         ->orWhere(function ($q2) {
+    //                             $q2->where('date', Carbon::now()->toDateString())
+    //                                 ->where('start_time', '>=', Carbon::now()->toTimeString());
+    //                         });
+    //                 });
+    //         })
+    //             ->with('showtime')
+    //             ->latest('id')
+    //             ->get();
+
+    //         // Redis::setex($cacheKey, 600, $movies->toJson());
+
+    //         if ($movies->isNotEmpty()) {
+    //             Redis::setex($cacheKey, 600, $movies->toJson());
+    //         }
+
+    //         return $this->successResponse(
+    //             $movies,
+    //             'Thao tác thành công'
+    //         );
+    //     }
+
+    //     // Nếu không có branchId và cinemId, lấy tất cả movies
+    //     $movies = Movie::query()->latest('id')->get();
+    //     return $this->successResponse(
+    //         $movies,
+    //         'Thao tác thành công'
+    //     );
+    // }
 
     public function listMovies(Request $request)
     {
         $branchId = $request->branchId;
         $cinemId = $request->cinemId;
-
-        // Tạo key cache dựa trên cinema_id và branch_id
-        $cacheKey = 'movies:' . $cinemId . ':' . $branchId;
-
-        // Kiểm tra xem dữ liệu có trong cache chưa
-        $movies = Redis::get($cacheKey);
-
-        if ($movies) {
-            // Nếu có dữ liệu trong cache, trả về dữ liệu này
-            return $this->successResponse(
-                json_decode($movies),  // Phải giải mã JSON vì Redis lưu trữ dữ liệu dạng chuỗi
-                'Thao tác thành công'
-            );
-        }
 
         // Nếu không có trong cache, thực hiện truy vấn từ cơ sở dữ liệu
         if ($branchId && $cinemId) {
@@ -129,9 +173,6 @@ class ShowtimeController extends Controller
                 ->with('showtime')
                 ->latest('id')
                 ->get();
-
-            // Lưu kết quả vào Redis với thời gian hết hạn 10 phút
-            Redis::setex($cacheKey, 600, $movies->toJson());  // 600 giây = 10 phút
 
             return $this->successResponse(
                 $movies,
