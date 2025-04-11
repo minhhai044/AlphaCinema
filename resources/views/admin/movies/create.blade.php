@@ -58,11 +58,9 @@
                                         </div>
                                         <div class="mb-3">
                                             <label for="branch_ids" class="form-label">Chi nhánh chiếu phim</label>
-                                            <select name="branch_ids[]" class="form-control select2" multiple id="branch_ids"
-                                                style="width: 100%;">
+                                            <select name="branch_ids[]" class="form-control select2" multiple id="branch_ids" style="width: 100%;">
                                                 @foreach ($branches as $branch)
-                                                    <option value="{{ $branch->id }}"
-                                                        {{ in_array($branch->id, old('branch_ids', $selectedBranches ?? [])) ? 'selected' : '' }}>
+                                                    <option value="{{ $branch->id }}" {{ in_array($branch->id, old('branch_ids', $selectedBranches ?? [])) ? 'selected' : '' }}>
                                                         {{ $branch->name }}
                                                     </option>
                                                 @endforeach
@@ -75,6 +73,7 @@
                                                 @endif
                                             </div>
                                         </div>
+
                                         <div class="mb-3">
                                             <label class="form-label">Danh mục phim
                                                 <span class="required" style="color: red">*</span></label>
@@ -483,6 +482,47 @@
                     });
                 }
             });
+
+             $(document).ready(function () {
+                    const $branchSelect = $('#branch_ids');
+
+                    $branchSelect.select2({
+                        placeholder: "Chọn chi nhánh",
+                        closeOnSelect: false,
+                        width: '100%',
+                        templateResult: formatOptionWithCheckbox,
+                    });
+
+                    function formatOptionWithCheckbox(option) {
+                        if (!option.id) return option.text;
+
+                        const selectedValues = $branchSelect.val() || [];
+                        const isSelected = selectedValues.includes(option.id);
+
+                        return $(`
+                <span>
+                    <input type="checkbox" style="margin-right: 6px;" ${isSelected ? 'checked' : ''}/>
+                    ${option.text}
+                </span>
+            `);
+                    }
+
+                    function updateSelectedNames() {
+                        const selectedOptions = $branchSelect.select2('data');
+                        if (!selectedOptions.length) {
+                            $('#selected-branch-text').text("Chọn chi nhánh");
+                            return;
+                        }
+                        const names = selectedOptions.map(opt => opt.text);
+                        $('#selected-branch-text').text(`Đã chọn: ${names.join(', ')}`);
+                    }
+
+                    $branchSelect.on('change', function () {
+                        updateSelectedNames();
+                    });
+
+                    updateSelectedNames();
+                });
         </script>
     </div>
 @endsection
