@@ -127,7 +127,8 @@ class TicketController extends Controller
         }
     }
 
-    public function getComboFoodById($id){
+    public function getComboFoodById($id)
+    {
         try {
             $ticket = $this->ticketService->getTicketID($id);
 
@@ -157,7 +158,7 @@ class TicketController extends Controller
                 'ticket_combos' => $ticket_combos,
                 'ticket_seats' => $ticket_seats,
                 'ticket_foods' => $ticket->ticket_foods,
-                'created_at' => Carbon::parse($ticket->created_at)->format("H:i d-m-Y") ,
+                'created_at' => Carbon::parse($ticket->created_at)->format("H:i d-m-Y"),
                 'room' => $room,
                 'showtime' => $showtime,
                 'start_time' => date("H:i", strtotime($start_time)),
@@ -187,13 +188,13 @@ class TicketController extends Controller
 
             // Lấy danh sách vé của người dùng
             $tickets = Ticket::where('user_id', $user['id'])
-            ->with(['showtime', 'movie', 'room','cinema','branch'])
-            ->get();
+                ->with(['showtime', 'movie', 'room', 'cinema', 'branch'])
+                ->latest('id')
+                ->get();
 
             return response()->json(['status' => 'success', 'data' => $tickets], 200);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
         }
     }
-
 }

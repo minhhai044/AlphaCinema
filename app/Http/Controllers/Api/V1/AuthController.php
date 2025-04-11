@@ -52,7 +52,7 @@ class AuthController extends Controller
             // Validate dữ liệu đầu vào
             $data = $request->validated();
 
-            $vat = Vat::query()->limit(1);
+            $vat = Vat::first();
 
             // Lấy user theo email
             $user = $this->userService->getUserApi($data['email']);
@@ -78,14 +78,14 @@ class AuthController extends Controller
             $token = $user->createToken('UserToken')->plainTextToken;
 
             // Tạo cookie chứa token (thời gian sống 24h - 1440 phút)
-            $cookie = cookie('user_token', $token, 1440);
+            // $cookie = cookie('user_token', $token, 1440);
 
             return $this->successResponse([
                 'user' => $user,
                 'token' => $token,
-                'cookie' => $cookie,
+                // 'cookie' => $cookie,
                 'vat' => $vat
-            ], 'Đăng nhập thành công', Response::HTTP_OK)->withCookie($cookie);
+            ], 'Đăng nhập thành công', Response::HTTP_OK);
         } catch (\Throwable $th) {
             // Ghi log chi tiết lỗi
             Log::error('Lỗi đăng nhập: ' . $th->getMessage(), [
@@ -106,7 +106,7 @@ class AuthController extends Controller
     public function signUp(RegisterRequest $request)
     {
         try {
-            $vat = Vat::query()->limit(1);
+            $vat = Vat::first();
             $data = $request->validated();
             $data['type_user'] = 0;
 
