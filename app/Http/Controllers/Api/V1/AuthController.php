@@ -213,6 +213,8 @@ class AuthController extends Controller
         $googleUser = Socialite::driver('google')->user();
         $updateData = [];
 
+        $vat = Vat::first();
+
         $user = User::firstOrCreate(
             ['email' => $googleUser->email],
             [
@@ -254,9 +256,10 @@ class AuthController extends Controller
         $token = $user->createToken('authToken')->plainTextToken;
 
         $authData = json_encode([
-            'user' => $user,
-            'token' => $token,
-            'isLogin' => true
+            'user'      => $user,
+            'token'     => $token,
+            'isLogin'   => true,
+            'vat'       => $vat
         ]);
 
         $authDataEncoded = base64_encode(json_encode($authData));

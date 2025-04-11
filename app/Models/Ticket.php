@@ -11,6 +11,7 @@ class Ticket extends Model
 
     protected $fillable = [
         'user_id',
+        'vat',
         'cinema_id',
         'room_id',
         'movie_id',
