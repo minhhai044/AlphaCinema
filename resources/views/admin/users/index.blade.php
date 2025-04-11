@@ -359,6 +359,20 @@
         <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
 
         <script>
+            // Hàm xác nhận trước khi thay đổi (sử dụng SweetAlert)
+            function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái nhân viên?', title =
+                'AlphaCinema thông báo') {
+                return Swal.fire({
+                    icon: 'warning',
+                    title: title,
+                    text: text,
+                    showCancelButton: true,
+                    confirmButtonText: 'Xác nhận',
+                    cancelButtonText: 'Hủy',
+                }).then(result => result.isConfirmed);
+            }
+
+            // Hàm thay đổi trạng thái nhân viên
             var checkbox = null;
             var userId = null;
             var is_active = null;
@@ -368,41 +382,17 @@
                 userId = $(checkbox).data('user-id');
                 is_active = checkbox.checked ? 1 : 0;
 
-                showModal();
+                // Sử dụng SweetAlert để xác nhận thay đổi
+                confirmChange('Bạn có chắc chắn muốn thay đổi trạng thái nhân viên ?').then((confirmed) => {
+                    if (confirmed) {
+                        saveChangeStatus(); // Lưu thay đổi trạng thái nếu xác nhận
+                    } else {
+                        checkbox.checked = !checkbox.checked; // Hoàn tác thay đổi nếu hủy
+                    }
+                });
             }
 
-            function showModal() {
-                // Kiểm tra nếu modal đã tồn tại trong DOM rồi, nếu chưa thì tạo mới
-                if ($('#confirmChange').length === 0) {
-                    const html = `
-                        <div class="modal fade" id="confirmChange" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-                            <div class="modal-dialog">
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="cancelChangeStatus()"></button>
-                                    </div>
-                                    <div class="modal-body text-center">
-                                        <h5 class="modal-title">Xác nhận thay đổi trạng thái nhân viên</h5>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-primary" onclick="saveChangeStatus()">Xác nhận</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="cancelChangeStatus()">Hủy</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    // Thêm modal vào DOM
-                    $('body').append(html);
-                }
-
-                const modalElement = document.getElementById('confirmChange');
-                const modal = new bootstrap.Modal(modalElement);
-                modal.show();
-                $(".modal-backdrop").hide(); // Ẩn backdrop nếu cần
-            }
-
-            // Sử dụng Bootstrap 5 Modal API để hiển thị modal
+            // Lưu thay đổi trạng thái nhân viên
             function saveChangeStatus() {
                 // Gửi AJAX request để thay đổi trạng thái
                 $.ajax({
@@ -414,21 +404,14 @@
                     },
                     success: function(response) {
                         console.log(response);
-                        const modal = bootstrap.Modal.getInstance(document.getElementById('confirmChange'));
-                        modal.hide(); // Đóng modal sau khi thực hiện thay đổi
+                        toastr.success('Trạng thái nhân viên đã được cập nhật.');
                     },
                     error: function(xhr) {
                         const errorMessage = xhr.responseJSON?.message || 'Đã có lỗi xảy ra!';
-                        alert(errorMessage);
+                        toastr.error(errorMessage);
+                        checkbox.checked = !checkbox.checked; // Hoàn tác thay đổi nếu có lỗi
                     }
                 });
-            }
-
-            function cancelChangeStatus() {
-                checkbox.checked = !checkbox.checked;
-                // Đóng modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('confirmChange'));
-                modal.hide();
             }
         </script>
     @endsection
