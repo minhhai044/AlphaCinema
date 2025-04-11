@@ -17,7 +17,6 @@ toastr.options = {
   hideMethod: "fadeOut",
 };
 /** Config */
-
 /**
  * Hiển thị alert, có những type success, error, info, warning, question
  *

@@ -34,4 +34,15 @@
 
 <script src="https://unpkg.com/html5-qrcode" type="text/javascript"></script>
 
-<link rel="stylesheet" href="{{asset('assets/css/qrcode.css')}}">
+<link rel="stylesheet" href="{{ asset('assets/css/qrcode.css') }}">
+
+<style>
+    .toast {
+        opacity: 1 !important;
+        /* Đảm bảo opacity là 1 để thông báo không bị mờ */
+        /* Màu nền xanh đậm để nổi bật */
+        color: white !important;
+        /* Màu chữ trắng để dễ đọc hơn */
+        transition: opacity 0.3s ease-in-out !important;
+    }
+</style>
