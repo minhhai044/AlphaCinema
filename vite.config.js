@@ -11,6 +11,7 @@ export default defineConfig({
                 'resources/css/app.css',
                 'resources/js/app.js',
                 'resources/js/roomChat.js',
+                'resources/js/notification.js',
             ],
             refresh: true,
         }),

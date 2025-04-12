@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\User_voucher;
 use App\Models\Voucher;
 use App\Services\MailService;
+use App\Services\NotificationService;
 use App\Services\ShowtimeService;
 use App\Traits\ApiResponseTrait;
 use Illuminate\Http\Request;
@@ -25,11 +26,13 @@ class PaymentController extends Controller
     use ApiResponseTrait;
     private $showtimeService;
     private $mailService;
+    private $notificationService;
     private const PATH_URL = "https://alphacinema.me";
-    public function __construct(ShowtimeService $showtimeService, MailService $mailService)
+    public function __construct(ShowtimeService $showtimeService, MailService $mailService, NotificationService $notificationService)
     {
         $this->showtimeService = $showtimeService;
         $this->mailService = $mailService;
+        $this->notificationService = $notificationService;
     }
 
     public static function generateOrderId()
@@ -247,20 +250,7 @@ class PaymentController extends Controller
 
                 // Cộng point
                 $point = $orderData['data']['point'] ?? 0;
-                // User::where('id', $orderData['data']['ticket']['user_id'])->update(['point', $point]);
                 User::where('id', $orderData['data']['ticket']['user_id'])->update(['point' => $point]);
-
-                // ->increment('point', $point);
-
-                // $voucher = Voucher::with('userVouchers')
-                //     ->where('code', $orderData['data']['code_voucher'])
-                //     ->first();
-
-                // $userVoucher = $voucher->userVouchers()
-                //     ->where('user_id', $orderData['user_id'])
-                //     ->first();
-
-                // $userVoucher->decrement('usage_count',1);
 
 
                 User_voucher::whereHas('voucher', function ($query) use ($orderData) {
@@ -268,6 +258,15 @@ class PaymentController extends Controller
                 })
                     ->where('user_id', $orderData['data']['ticket']['user_id'])
                     ->decrement('usage_count', 1);
+
+                $this->notificationService->storeService([
+                    'user_id' => $orderData['data']['ticket']['user_id'],
+                    'ticket_id' => $ticket->id,
+                    'title' => 'Thông báo mua vé : ' . $ticket->code,
+                    'content' => 'Đặt vé phim : ' . $ticket->movie->name,
+                    'link' => route('admin.tickets.show', $ticket->code),
+                    'status' => 0
+                ]);
 
                 $this->mailService->sendMailService($ticket);
             });

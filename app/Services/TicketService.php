@@ -82,6 +82,10 @@ class TicketService
     {
         $ticketDetail = $this->ticketRepository->findTicket($code);
 
+        $ticketDetail->notification()->update([
+            'status' => 1
+        ]);
+        
         if (!empty($ticketDetail['voucher_code'])) {
             // Lấy loại voucher từ voucher_code
             $ticketType = Voucher::where("code", $ticketDetail['voucher_code'])->value('type_voucher');
