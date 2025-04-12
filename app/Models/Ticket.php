@@ -37,6 +37,7 @@ class Ticket extends Model
         'ticket_combos' => 'array',
         'ticket_foods' => 'array',
         'price_percentage' => 'array',
+        // 'price_percentage' => 'array',
         // 'total_price' => 'decimal:2',
         // 'expiry' => 'datetime',
 
