@@ -28,7 +28,19 @@ class RoomService
         $seat_templates = Seat_template::query()->where('is_active', 1)->get();
 
         $type_rooms = Type_room::query()->pluck('name', 'id')->all();
-        $rooms = Room::with('branch', 'cinema', 'seat_template', 'type_room')->latest('id')->get();
+
+        $queryRoom = Room::with('branch', 'cinema', 'seat_template', 'type_room')->latest('id');
+        
+        if (Auth::user()->branch_id) {
+            $queryRoom->where('branch_id', Auth::user()->branch_id);
+        }
+        
+        if (Auth::user()->cinema_id) {
+            $queryRoom->where('cinema_id', Auth::user()->cinema_id);
+        }
+        
+        $rooms = $queryRoom->get();
+
         return [$branchs, $branchsRelation, $seat_templates, $type_rooms, $rooms];
     }
 

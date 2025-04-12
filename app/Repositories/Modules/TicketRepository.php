@@ -44,7 +44,7 @@ class TicketRepository
      */
     public function findTicket($code)
     {
-        $query = $this->ticket->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch')->where('code',$code);
+        $query = $this->ticket->with('movie', 'cinema', 'room', 'user', 'showtime', 'branch','notification')->where('code',$code);
         $user = Auth::user();
 
         if ($user->hasRole('Quản lý chi nhánh')) {

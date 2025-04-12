@@ -62,7 +62,7 @@ class MultiBroadcaster implements Broadcaster
 
         $channelNames = array_map(fn($ch) => (string) $ch, $channels);
 
-       
+
         $eventClass = is_object($event) ? get_class($event) : $event;
 
         switch ($eventClass) {
@@ -75,7 +75,11 @@ class MultiBroadcaster implements Broadcaster
                 Log::info('💬 Gửi tới PUSHER');
                 $this->broadcasters['pusher']->broadcast($channelNames, $event, $payload);
                 break;
-
+            case \App\Events\RealTimeNotificationEvent::class:
+                Log::info('💬 Gửi tới PUSHER');
+                $this->broadcasters['pusher']->broadcast($channelNames, $event, $payload);
+                break;
+                
             default:
                 foreach ($this->broadcasters as $name => $broadcaster) {
                     $broadcaster->broadcast($channelNames, $event, $payload);

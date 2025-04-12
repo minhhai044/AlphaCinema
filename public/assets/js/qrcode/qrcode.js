@@ -23,7 +23,7 @@ console.log(1);
             toastr.error('Không tìm thấy camera nào!');
         }
     }).catch(function (err) {
-        toastr.error('Không thể truy cập camera!');
+        // toastr.error('Không thể truy cập camera!');
     });
 }
 

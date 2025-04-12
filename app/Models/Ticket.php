@@ -109,4 +109,9 @@ class Ticket extends Model
         }
         return $query->where('id', 0);
     }
+
+    public function notification()
+    {
+        return $this->hasOne(Notification::class);
+    }
 }
