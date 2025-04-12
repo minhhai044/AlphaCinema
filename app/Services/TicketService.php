@@ -87,9 +87,9 @@ class TicketService
             $ticketType = Voucher::where("code", $ticketDetail['voucher_code'])->value('type_voucher');
         }
 
-
         $seatData = $this->getSeatList($ticketDetail->ticket_seats);
         $totalSeatPrice = $seatData['total_price'] ?? 0;
+        // dd($totalSeatPrice);
 
         $foods = $this->getFoodList($ticketDetail->ticket_foods);
         $combos = $this->getComboList($ticketDetail->ticket_combos);
@@ -124,6 +124,7 @@ class TicketService
             ],
             'seats' => $seatData,
             'ticket_price' => $this->formatPrice($totalSeatPrice),
+            'price_ticket' => $totalSeatPrice ,
             'combos' => $combos,
             'foods' => $foods,
             'total_combo_price' => $this->formatPrice($totalComboPrice),

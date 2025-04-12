@@ -93,7 +93,7 @@
                                         <label for="account-name" class="form-label">
                                             <span class="text-danger">*</span> Tên vai trò
                                         </label>
-                                        <input class="form-control" type="text" name="name" id="account-name" value="{{ $role->name }}" disabled
+                                        <input class="form-control disabled" readonly type="text" name="name" id="account-name" value="{{ $role->name }}"
                                             placeholder="Nhập tên">
                                         {{-- <select class="form-select" name="name" id="">
                                             @foreach ($roles as $item)

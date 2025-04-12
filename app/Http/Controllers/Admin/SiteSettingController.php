@@ -19,17 +19,18 @@ class SiteSettingController extends Controller
     public function __construct(SiteSettingService $settingService)
     {
         $this->settingService = $settingService;
+        $this->middleware('can:Cấu hình website')->only('index', 'update', 'resetToDefault');
     }
 
     public function index()
     {
-       
+
         // $settings = Site_setting::firstOrCreate([], Site_setting::defaultSetting());
         // $settings->fill(Site_setting::defaultSetting())->save();
 
-       
+
         $settings = Site_setting::first();
-        
+
         // 🔥 Nếu chưa có bản ghi, tạo một đối tượng mới với giá trị mặc định (không lưu vào DB)
         if (!$settings) {
             // $settings = new Site_setting(Site_setting::defaultSetting());

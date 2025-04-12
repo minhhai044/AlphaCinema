@@ -16,6 +16,11 @@ class MovieController extends Controller
     public function __construct(MovieService $movieService)
     {
         $this->movieService = $movieService;
+        $this->middleware('can:Danh sách phim')->only('index');
+        $this->middleware('can:Thêm phim')->only(['create', 'store']);
+        $this->middleware('can:Sửa phim')->only(['edit', 'update']);
+        $this->middleware('can:Xóa phim')->only('destroy');
+        $this->middleware('can:Xem chi tiết phim')->only('show');
     }
 
     // 1. Hiển thị danh sách phim

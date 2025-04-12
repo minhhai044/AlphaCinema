@@ -19,6 +19,11 @@ class RoomController extends Controller
     public function __construct(RoomService $roomService)
     {
         $this->roomService = $roomService;
+        $this->middleware('can:Danh sách phòng chiếu')->only('index');
+        $this->middleware('can:Thêm phòng chiếu')->only(['create', 'store']);
+        $this->middleware('can:Sửa phòng chiếu')->only(['edit', 'update']);
+        $this->middleware('can:Xóa phòng chiếu')->only('destroy');
+        $this->middleware('can:Xem chi tiết phòng chiếu')->only('show');
     }
     public function index(Request $request)
     {
@@ -49,6 +54,5 @@ class RoomController extends Controller
         } catch (\Throwable $th) {
             return back()->with('error', 'Thao tác không thành công !!!');
         }
-
     }
 }

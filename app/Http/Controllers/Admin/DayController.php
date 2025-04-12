@@ -15,6 +15,7 @@ class DayController extends Controller
     public function __construct(DayService $dayService)
     {
         $this->dayService = $dayService;
+        $this->middleware('can:Danh sách ngày')->only('index');
     }
 
     public function index()

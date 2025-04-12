@@ -27,6 +27,11 @@ class ShowtimeController extends Controller
     public function __construct(ShowtimeService $showtimeService)
     {
         $this->showtimeService = $showtimeService;
+        $this->middleware('can:Danh sách suất chiếu')->only('index');
+        $this->middleware('can:Thêm suất chiếu')->only(['create', 'store']);
+        $this->middleware('can:Sửa suất chiếu')->only(['edit', 'update']);
+        $this->middleware('can:Xóa suất chiếu')->only('destroy');
+        $this->middleware('can:Xem chi tiết suất chiếu')->only('show');
     }
     public function index(Request $request)
     {
@@ -279,9 +284,9 @@ class ShowtimeController extends Controller
                 return back()->with('error', 'Vui lòng nhập đầy đủ thông tin !!!');
             }
             $groupedData = [];
-    
+
             foreach ($request['dates'] as $keyDate => $date) {
-    
+
                 foreach ($request['branches'][$keyDate] as $branch) {
                     foreach ($request['cinemas'][$keyDate] as $cinema) {
                         foreach ($request['rooms'][$keyDate] as $room) {
@@ -320,11 +325,11 @@ class ShowtimeController extends Controller
                     ]);
                 }
             }
-            return redirect()->route('admin.showtimes.index')->with('success','Thao tác thành công !!!');            
+            return redirect()->route('admin.showtimes.index')->with('success','Thao tác thành công !!!');
         } catch (\Throwable $th) {
             Log::error(__CLASS__ . __FUNCTION__, [$th->getMessage()]);
 
-            return back()->with('error','Thao tác không thành công !!!');            
+            return back()->with('error','Thao tác không thành công !!!');
         }
     }
 }

@@ -26,6 +26,7 @@ class Ticket extends Model
         'ticket_combos',
         'ticket_foods',
         'total_price',
+        'price_percentage',
         'staff',
         'expiry',
         'status',

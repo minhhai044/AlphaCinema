@@ -19,6 +19,12 @@ class RoleController extends Controller
     const PATH_VIEW = 'admin.roles.';
     const PATH_UPLOAD = 'roles';
 
+    public function __construct( )
+    {
+        $this->middleware('can:Danh sách vai trò')->only('index');
+        $this->middleware('can:Sửa vai trò')->only(['edit', 'update']);
+    }
+
     public function index()
     {
         $roles = Role::with('permissions')->latest('id')->get();
@@ -80,6 +86,7 @@ class RoleController extends Controller
     public function update(RoleRequest $roleRequest, Role $role)
     {
         try {
+            // dd($roleRequest);
             $role->update(['name' => $roleRequest->name]);
             $role->syncPermissions($roleRequest->permissions);
 

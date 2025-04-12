@@ -11,6 +11,15 @@ use App\Http\Requests\BranchRequest;
 class BranchController extends Controller
 {
     private const PATH_VIEW = 'admin.branches.';
+
+    public function __construct()
+    {
+        $this->middleware('can:Danh sách chi nhánh')->only('index');
+        $this->middleware('can:Thêm chi nhánh')->only(['create', 'store']);
+        $this->middleware('can:Sửa chi nhánh')->only(['edit', 'update']);
+        $this->middleware('can:Xóa chi nhánh')->only('destroy');
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search'); // Lấy từ khóa tìm kiếm từ request
@@ -34,12 +43,12 @@ class BranchController extends Controller
         $data = $request->validated(); // Lấy dữ liệu đã validate
         try {
             $data['is_active'] = 1;
-            $data['surcharge'] ??= 0;  
+            $data['surcharge'] ??= 0;
 
             if ($data['surcharge'] < 1000) {
                 return redirect()->back()->with('error', 'Phụ phí phải lớn hơn hoặc bằng 1000.');
             }
-            
+
             if (!empty($data['name'])) {
                 $data['slug'] = Str::slug($data['name'], '-') . '-' . Str::ulid();
             }
@@ -61,7 +70,7 @@ class BranchController extends Controller
         $branch->update([
             'name' => $data['name'],
             'surcharge' => $data['surcharge'],
-            
+
         ]);
 
         return redirect()->route('admin.branches.index')->with('success', 'Cập nhật chi nhánh thành công!');
@@ -78,7 +87,7 @@ class BranchController extends Controller
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
-        
+
     }
 
     public function toggleStatus($id, Request $request)

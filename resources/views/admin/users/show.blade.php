@@ -184,7 +184,7 @@
                                                                 {{ $history->processed ? 'Đã xử lý' : 'Chưa xử lý' }}
                                                             </span>
                                                         </td>
-                                                        
+
                                                     </tr>
                                                 @endforeach
                                             </tbody>
@@ -211,7 +211,7 @@
                                     @endif
                                 @else
                                     <!-- Nếu không phải người dùng (Admin), không hiển thị lịch sử điểm và rank -->
-                                    <p>Lịch sử điểm và Rank chỉ hiển thị cho người dùng.</p>
+                                    {{-- <p>Lịch sử điểm và Rank chỉ hiển thị cho người dùng.</p> --}}
                                 @endif
                             </div>
 

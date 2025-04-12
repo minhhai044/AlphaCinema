@@ -33,6 +33,7 @@ return new class extends Migration
             $table->json('ticket_seats')->nullable();
             $table->json('ticket_combos')->nullable();
             $table->json('ticket_foods')->nullable();
+            $table->json('price_percentage')->nullable();
             $table->string('staff')->nullable();
             $table->unsignedBigInteger('total_price')->default(0);
             $table->datetime('expiry')->nullable();

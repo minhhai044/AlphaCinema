@@ -21,6 +21,11 @@ class RankController extends Controller
     /**
      * Display a listing of the resource.
      */
+    public function __construct( )
+    {
+        $this->middleware('can:Danh sách hạn mức')->only('index');
+    }
+
     public function index()
     {
         $ranks = Rank::query()->orderBy('total_spent', 'asc')->get();
@@ -81,7 +86,7 @@ class RankController extends Controller
     {
         try {
             $user = Auth::user();
-            
+
             if (!$user) {
                 return response()->json(['status' => 'error', 'message' => 'User not authenticated'], 401);
             }
@@ -110,7 +115,7 @@ class RankController extends Controller
             ], 500);
         }
     }
-    
+
     public function getRanksJson()
     {
         $ranks = Rank::query()->orderBy('total_spent', 'asc')->get();
@@ -119,6 +124,6 @@ class RankController extends Controller
             'data' => $ranks
         ]);
     }
-    
+
 
 }

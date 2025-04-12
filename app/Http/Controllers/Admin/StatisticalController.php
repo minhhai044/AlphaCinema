@@ -390,7 +390,7 @@ class StatisticalController extends Controller
             $peakHoursData = $this->getPeakHoursData($tickets);
             $fillRateData = $this->getFillRateData($tickets);
 
-           
+
             $noDataMessage = $tickets->isEmpty() ? 'Không có dữ liệu cho bộ lọc hiện tại.' : null;
 
             return view('admin.statistical.TicketStatistical', compact(

@@ -19,6 +19,13 @@ class SlideShowController extends Controller
     private const PATH_VIEW = 'admin.slideshows.';
     private const PATH_UPLOAD = 'slideshows';
 
+    public function __construct() {
+        $this->middleware('can:Danh sách slideshows')->only('index');
+        $this->middleware('can:Thêm slideshows')->only(['create', 'store']);
+        $this->middleware('can:Sửa slideshows')->only(['edit', 'update']);
+        $this->middleware('can:Xóa slideshows')->only('destroy');
+    }
+
     public function index()
     {
         $slideshows = Slideshow::latest()->get();

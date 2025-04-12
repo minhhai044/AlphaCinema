@@ -13,17 +13,19 @@ class TypeSeatController extends Controller
     /**
      * Display a listing of the resource.
      */
-    const PATH_VIEW = 'admin.type_seats.'; 
+    const PATH_VIEW = 'admin.type_seats.';
     private $typeSeatService;
     public function __construct(TypeSeatService $typeSeatService)
     {
         $this->typeSeatService = $typeSeatService;
+        $this->middleware('can:Danh sách loại ghế')->only('index');
+        $this->middleware('can:Sửa loại ghế')->only(['edit', 'update']);
     }
     public function index()
     {
         $typeSeats = Type_seat::query()->latest('id')->get(); // Đổi tên biến cho dễ hiểu.
         return view(self::PATH_VIEW . __FUNCTION__, compact('typeSeats')); // Sử dụng tên biến mới.
-    
+
     }
 
     /**
@@ -32,7 +34,7 @@ class TypeSeatController extends Controller
     public function create()
     {
         return view(self::PATH_VIEW . __FUNCTION__);
-        
+
     }
 
     /**
@@ -65,7 +67,7 @@ class TypeSeatController extends Controller
     public function edit(Type_seat $type_seat)
     {
         return view(self::PATH_VIEW . __FUNCTION__,compact('type_seat'));
-        
+
     }
 
     /**

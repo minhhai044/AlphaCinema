@@ -250,13 +250,36 @@
                     </div>
                     <div class="mb-1">
                         <span class="text-body-secondary"> Tiền Vé: </span>
-                        <span class="fw-medium">{{ $ticketData['ticket_price'] ?? '0 VND' }}</span>
+                        <span class="fw-medium">
+                            {{
+                                number_format(
+                                    ($ticketData['price_ticket'] -
+                                    $ticketData['point_use'] -
+                                    ($ticketData['voucher_type'] == 0 ? $ticketData['voucher_discount_price'] : 0)) *
+                                    (1 + $ticketData['vat'] / 100),
+                                    0, '.', '.'
+                                ) . ' VND' ?? '0 VND'
+                            }}
+                        </span>
                     </div>
-                    @if (!empty($ticketData['total_combo']) || $ticketData['total_food'])
+
+
+                    @if (!empty($ticketData['total_combo']) || !empty($ticketData['total_food']))
                         <div class="mb-1">
                             <span class="text-body-secondary"> Tiền đồ ăn: </span>
-                            <span
-                                class="fw-medium">{{ number_format($ticketData['total_combo'] + $ticketData['total_food'], 0, '.', '.') . ' VND' ?? '0 VND' }}</span>
+                            <span class="fw-medium">
+                                {{ number_format(
+                                    ($ticketData['total_combo'] +
+                                        $ticketData['total_food'] -
+                                        ($ticketData['voucher_type'] == 1 ? $ticketData['voucher_discount_price'] : 0)) *
+                                        (1 + $ticketData['vat'] / 100),
+                                    0,
+                                    '.',
+                                    '.',
+                                ) .
+                                    ' VND' ??
+                                    '0 VND' }}
+                            </span>
                         </div>
                     @endif
 
@@ -330,7 +353,6 @@
                 </div>
 
 
-
                 @if (
                     !empty($ticketData['voucher_discount_price']) &&
                         isset($ticketData['voucher_type']) &&
@@ -357,9 +379,16 @@
                     <div class="fw-bold col-6 fs-5">Tổng tiền</div>
                     <div class="fw-medium col-2 text-center">VNĐ</div>
                     <div class="fw-medium fs-5 col-4 text-end">
-                        {{ number_format($ticketData['total_combo'] + $ticketData['total_food'] - $discountFood, 0, '.', '.') }}
+                        {{ number_format(
+                            ($ticketData['total_combo'] + $ticketData['total_food'] - $discountFood) * (1 + $ticketData['vat'] / 100),
+                            0,
+                            '.',
+                            '.',
+                        ) }}
                     </div>
+                    <div class="col-12 text-end">(Bao gồm {{ $ticketData['vat'] }}% VAT)</div>
                 </div>
+
 
                 <hr class="dashed-hr">
                 <div class="mb-1 d-flex flex-column align-items-center text-center">
@@ -410,6 +439,7 @@
                 @php
                     $amount = $ticket['price'];
                     $parts = explode(' ', $amount);
+
                 @endphp
 
                 <div class="row me-2">
@@ -452,14 +482,18 @@
                     <h5 class="fw-medium fs-5 col-3 text-end">
                         {{ number_format(
                             empty($ticketData['voucher_type'])
-                                ? $ticketData['seats']['total_price'] - $ticketData['voucher_discount_price'] - $ticketData['point_use']
-                                : $ticketData['seats']['total_price'] - $ticketData['point_use'],
+                                ? ($ticketData['seats']['total_price'] - $ticketData['voucher_discount_price'] - $ticketData['point_use']) *
+                                    (1 + $ticketData['vat'] / 100)
+                                : ($ticketData['seats']['total_price'] - $ticketData['point_use']) * (1 + $ticketData['vat'] / 100),
                             0,
                             '.',
                             '.',
                         ) }}
                     </h5>
+
+                    <div class="col-12 text-end">(Bao gồm {{ $ticketData['vat'] }}% VAT)</div>
                 </div>
+
 
 
                 <div class="mb-1 d-flex flex-column align-items-center text-center">
@@ -544,7 +578,7 @@
                 <!-- Nội dung in -->
                 ${printContent}
             </div>
-        `);
+            `);
 
 
             // Hiển thị thông báo cho người dùng

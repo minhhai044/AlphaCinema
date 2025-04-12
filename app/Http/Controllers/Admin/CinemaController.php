@@ -23,6 +23,10 @@ class CinemaController extends Controller
     public function __construct(CinemaService $cinemaService)
     {
         $this->cinemaService = $cinemaService;
+        $this->middleware('can:Danh sách rạp')->only('index');
+        $this->middleware('can:Thêm rạp')->only(['create', 'store']);
+        $this->middleware('can:Sửa rạp')->only(['edit', 'update']);
+        $this->middleware('can:Xóa rạp')->only('destroy');
     }
     /**
      * Display a listing of the resource.

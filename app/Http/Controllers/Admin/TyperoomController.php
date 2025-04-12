@@ -18,6 +18,8 @@ class TyperoomController extends Controller
     public function __construct(TypeRoomService $typeRoomService)
     {
         $this->typeRoomService = $typeRoomService;
+        $this->middleware('can:Danh sách loại phòng')->only('index');
+        $this->middleware('can:Sửa loại phòng')->only(['edit','update']);
     }
     public function index()
     {
@@ -48,7 +50,7 @@ class TyperoomController extends Controller
         } catch (\Throwable $th) {
             return back()
                 ->with('THAO TÁC KHÔNG THÀNH CÔNG');
-                
+
         } catch (\Throwable $th) {
             back()
                 ->with('error', 'THAO TÁC KHÔNG THÀNH CÔNG');

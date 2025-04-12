@@ -18,6 +18,15 @@ use App\Models\User;
 class VoucherController extends Controller
 {
     private const PATH_VIEW = 'admin.vouchers.';
+
+    public function __construct()
+    {
+        $this->middleware('can:Danh sách vouchers')->only('index');
+        $this->middleware('can:Thêm vouchers')->only(['create', 'store']);
+        $this->middleware('can:Sửa vouchers')->only(['edit', 'update']);
+        $this->middleware('can:Xóa vouchers')->only('destroy');
+    }
+
     public function index(Request $request)
     {
         $search = $request->input('search'); // Lấy từ khóa tìm kiếm từ request

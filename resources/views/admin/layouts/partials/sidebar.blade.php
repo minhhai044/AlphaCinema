@@ -55,62 +55,58 @@
                 </li>
             @endcanany
 
-            @canany([
-                'Danh sách đồ ăn',
-                'Thêm đồ ăn',
-                'Sửa đồ ăn',
-                'Xóa đồ ăn',
-                'Danh sách combo',
-                'Thêm combo',
-                'Sửa
-                combo',
-                'Xóa combo',
-                'Danh sách vouchers',
-                'Thêm vouchers',
-                'Sửa vouchers',
-                'Xóa vouchers',
-                'Áp dụng
-                vouchers',
-                'Sửa áp dụng vouchers',
-                'Xóa áp dụng vouchers',
-                ])
+            @canany(['Danh sách đồ ăn', 'Thêm đồ ăn', 'Sửa đồ ăn', 'Xóa đồ ăn', 'Danh sách combo', 'Thêm combo', 'Sửa
+                combo', 'Xóa combo', 'Danh sách vouchers', 'Thêm vouchers', 'Sửa vouchers', 'Xóa vouchers', 'Áp dụng
+                vouchers', 'Sửa áp dụng vouchers', 'Xóa áp dụng vouchers'])
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="gift"></i>
-
                         <span data-key="t-service-systems">Dịch vụ và ưu đãi</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li>
-                            <a href="{{ route('admin.vouchers.index') }}">
+                        @canany(['Danh sách vouchers', 'Thêm vouchers', 'Sửa vouchers', 'Xóa vouchers'])
+                            <li>
+                                <a href="{{ route('admin.vouchers.index') }}">
+                                    <span data-key="t-vouchers">Quản lý mã giảm giá</span>
+                                </a>
+                            </li>
+                        @endcanany
 
-                                <span data-key="t-vouchers">Quản lý mã giảm giá</span>
-                            </a>
-                        </li>
+                        @canany(['Áp dụng vouchers', 'Sửa áp dụng vouchers', 'Xóa áp dụng vouchers'])
+                            <li>
+                                <a href="{{ route('admin.user-vouchers.index') }}">
+                                    <span data-key="t-vouchers">Áp mã giảm giá</span>
+                                </a>
+                            </li>
+                        @endcanany
 
-                        <li>
-                            <a href="{{ route('admin.user-vouchers.index') }}">
-                                <span data-key="t-vouchers">Áp mã giảm giá</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.foods.index') }}">
-                                <span data-key="t-accounts">Quản lý đồ ăn</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.combos.index') }}">
-                                <span data-key="t-accounts">Quản lý combo</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.ranks.index') }}">
-                                <span data-key="t-ranks">Quản lý hạn mức</span>
-                            </a>
-                        </li>
+                        @canany(['Danh sách đồ ăn', 'Thêm đồ ăn', 'Sửa đồ ăn', 'Xóa đồ ăn'])
+                            <li>
+                                <a href="{{ route('admin.foods.index') }}">
+                                    <span data-key="t-accounts">Quản lý đồ ăn</span>
+                                </a>
+                            </li>
+                        @endcanany
+
+                        @canany(['Danh sách combo', 'Thêm combo', 'Sửa combo', 'Xóa combo'])
+                            <li>
+                                <a href="{{ route('admin.combos.index') }}">
+                                    <span data-key="t-accounts">Quản lý combo</span>
+                                </a>
+                            </li>
+                        @endcanany
+
+                        @can(['Danh sách hạn mức'],'Sửa hạn mức')
+                            <li>
+                                <a href="{{ route('admin.ranks.index') }}">
+                                    <span data-key="t-ranks">Quản lý hạn mức</span>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
             @endcanany
+
 
             @canany([
                 'Danh sách chi nhánh',
@@ -118,60 +114,77 @@
                 'Sửa chi nhánh',
                 'Xóa chi nhánh',
                 'Danh sách rạp',
-                'Thêm rạp',
+                'Thêm
+                rạp',
                 'Sửa rạp',
                 'Xóa rạp',
                 'Danh sách phòng chiếu',
                 'Thêm phòng chiếu',
                 'Sửa phòng chiếu',
-                'Xóa phòng chiếu',
-                'Xem
-                chi tiết phòng chiếu',
+                'Xóa phòng
+                chiếu',
+                'Xem chi tiết phòng chiếu',
+                'Quản lý mẫu sơ đồ ghế',
+                'Quản lý loại ghế',
+                'Quản lý loại phòng',
                 ])
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="map"></i>
-
-
                         <span data-key="t-service-systems">Hệ thống Rạp</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
-                        <li>
-                            <a href="{{ route('admin.branches.index') }}">
-                                <span>Quản lý chi nhánh</span>
-                            </a>
-                        </li>
+                        @canany(['Danh sách chi nhánh', 'Thêm chi nhánh', 'Sửa chi nhánh', 'Xóa chi nhánh'])
+                            <li>
+                                <a href="{{ route('admin.branches.index') }}">
+                                    <span>Quản lý chi nhánh</span>
+                                </a>
+                            </li>
+                        @endcanany
 
-                        <li>
-                            <a href="{{ route('admin.cinemas.index') }}">
-                                <span>Quản lý Rạp</span>
-                            </a>
-                        </li>
+                        @canany(['Danh sách rạp', 'Thêm rạp', 'Sửa rạp', 'Xóa rạp'])
+                            <li>
+                                <a href="{{ route('admin.cinemas.index') }}">
+                                    <span>Quản lý Rạp</span>
+                                </a>
+                            </li>
+                        @endcanany
 
-                        <li>
-                            <a href="{{ route('admin.rooms.index') }}">
-                                <span>Quản lý phòng</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.index.seat_templates') }}">
-                                <span>Quản lý mẫu sơ đồ ghế</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href="{{ route('admin.type_seats.index') }}">
-                                <span>Quản lý loại ghế</span>
-                            </a>
-                        </li>
-                        <li>
-                            <a href=" {{ route('admin.typerooms.index') }}">
-                                <span>Quản lý loại phòng</span>
-                            </a>
-                        </li>
+                        @canany(['Danh sách phòng chiếu', 'Thêm phòng chiếu', 'Sửa phòng chiếu', 'Xóa phòng chiếu'])
+                            <li>
+                                <a href="{{ route('admin.rooms.index') }}">
+                                    <span>Quản lý phòng</span>
+                                </a>
+                            </li>
+                        @endcanany
 
+                        @can(['Danh sách mẫu sơ đồ ghế' , 'Thêm mẫu sơ đồ ghế', 'Sửa mẫu sơ đồ ghế'])
+                            <li>
+                                <a href="{{ route('admin.index.seat_templates') }}">
+                                    <span>Quản lý mẫu sơ đồ ghế</span>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can(['Danh sách loại ghế'])
+                            <li>
+                                <a href="{{ route('admin.type_seats.index') }}">
+                                    <span>Quản lý loại ghế</span>
+                                </a>
+                            </li>
+                        @endcan
+
+                        @can(['Danh sách loại phòng'])
+                            <li>
+                                <a href="{{ route('admin.typerooms.index') }}">
+                                    <span>Quản lý loại phòng</span>
+                                </a>
+                            </li>
+                        @endcan
                     </ul>
                 </li>
             @endcanany
+
 
 
             @canany([
@@ -228,11 +241,14 @@
                             </li>
                         @endcanany
 
-                        <li>
-                            <a href="{{ route('admin.days.index') }}">
-                                <span data-key="t-movies">Quản lý ngày</span>
-                            </a>
-                        </li>
+                        @canany(['Danh sách ngày', 'Sửa ngày'])
+                            <li>
+                                <a href="{{ route('admin.days.index') }}">
+                                    <span data-key="t-movies">Quản lý ngày</span>
+                                </a>
+                            </li>
+                        @endcanany
+
                     </ul>
                 </li>
             @endcanany
@@ -247,7 +263,7 @@
                     <ul class="sub-menu" aria-expanded="false">
                         <li>
                             <a href="{{ route('admin.users.index') }}">
-                                <span data-key="t-cinemas">Quản lý người dùng</span>
+                                <span data-key="t-cinemas">Quản lý nhân viên</span>
                             </a>
                         </li>
                         @if (auth()->user()->hasRole('System Admin'))
@@ -297,8 +313,6 @@
                             </a>
                         </li>
                     @endforeach
-
-
                 </ul>
             </li>
         </ul>

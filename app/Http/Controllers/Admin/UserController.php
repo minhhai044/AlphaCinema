@@ -31,6 +31,10 @@ class UserController extends Controller
     {
         $this->userService = $userService;
         $this->userRepository = $userRepository;
+        $this->middleware('can:Danh sách tài khoản')->only('index');
+        $this->middleware('can:Thêm tài khoản')->only(['create', 'store']);
+        $this->middleware('can:Sửa tài khoản')->only(['edit', 'update']);
+        $this->middleware('can:Xóa tài khoản')->only('destroy');
     }
 
     public function index(Request $request)

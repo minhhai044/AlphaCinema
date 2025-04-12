@@ -24,6 +24,10 @@ class ComboController extends Controller
     public function __construct(ComboService $comboService)
     {
         $this->comboService = $comboService;
+        $this->middleware('can:Danh sách combo')->only('index');
+        $this->middleware('can:Thêm combo')->only(['create', 'store']);
+        $this->middleware('can:Sửa combo')->only(['edit', 'update']);
+        $this->middleware('can:Xóa combo')->only('destroy');
     }
 
     // 1. Hiển thị danh sách Food
@@ -91,7 +95,7 @@ class ComboController extends Controller
         try {
 
             $data = $comboRequest->validated();
-            $data['is_active'] = $data['is_active'] ?? 0;    
+            $data['is_active'] = $data['is_active'] ?? 0;
             if (empty($data['price_sale'])) {
                 $data['price_sale'] = 0;
             }

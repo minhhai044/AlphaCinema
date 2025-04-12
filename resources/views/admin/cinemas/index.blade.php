@@ -110,7 +110,7 @@
                                     Tên rạp chiếu <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control create-name" id="createName" name="name"
-                                    required placeholder="Nhập tên cấp bậc">
+                                    required placeholder="Nhập tên rạp chiếu">
                                 <small class="fst-italic text-danger mt-3 name-error" id="createNameError"></small>
                             </div>
 
@@ -184,7 +184,7 @@
                                     Tên rạp chiếu <span class="text-danger">*</span>
                                 </label>
                                 <input type="text" class="form-control update-name" id="updateName" name="name"
-                                    required placeholder="Nhập tên cấp bậc">
+                                    required placeholder="Nhập tên rạp chiếu">
                                 <small class="fst-italic text-danger mt-3 name-error" id="updateNameError"></small>
                             </div>
 

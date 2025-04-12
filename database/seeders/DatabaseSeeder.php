@@ -284,9 +284,6 @@ class DatabaseSeeder extends Seeder
 
         User::insert($users);
 
-
-
-
         $permissions = [
             'Danh sách chi nhánh',
             'Thêm chi nhánh',
@@ -368,6 +365,16 @@ class DatabaseSeeder extends Seeder
             'Thẻ thành viên',
             'Danh sách ngày',
             'Sửa ngày',
+            'Danh sách vai trò',
+            'Sửa vai trò',
+            'Danh sách loại phòng',
+            'Sửa loại phòng',
+            'Danh sách loại ghế',
+            'Sửa loại ghế',
+            'Danh sách áp mã giảm giá',
+            'Thêm áp mã giảm giá',
+            'Sửa áp mã giảm giá',
+            'Xóa áp mã giảm giá',
         ];
 
         // Tạo các quyền từ danh sách
@@ -448,7 +455,7 @@ class DatabaseSeeder extends Seeder
             'Xóa tài khoản',
             'Cấu hình website',
             'Danh sách thống kê',
-            'Thẻ thành viên'
+            'Thẻ thành viên',
         ]);
         $managerRole = Role::findByName('Quản lý rạp');
         $managerRole->givePermissionTo([
@@ -1139,7 +1146,5 @@ class DatabaseSeeder extends Seeder
         ];
 
         DB::table('movie_branches')->insert($movie_branches);
-
-
     }
 }

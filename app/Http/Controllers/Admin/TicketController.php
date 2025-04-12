@@ -25,6 +25,9 @@ class TicketController extends Controller
     public function __construct(TicketService $ticketService)
     {
         $this->ticketService = $ticketService;
+        $this->middleware('can:Danh sách hóa đơn')->only('index');
+        $this->middleware('can:Quét hóa đơn')->only('scan', 'processScan');
+        $this->middleware('can:Xem chi tiết hóa đơn')->only('show');
     }
 
     public function index(Request $request)
