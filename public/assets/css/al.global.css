@@ -42,3 +42,37 @@
 /* .card {
     --bs-card-border-width: 0px !important;
 } */
+
+/* .notification-item {
+    padding: 10px 12px;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.notification-item h6,
+.notification-item p {
+    line-height: 1.4;
+    margin-bottom: 4px;
+    white-space: normal;
+    word-break: break-word;
+}  */
+
+
+ .notification-item {
+    display: block;
+    /* padding: 12px 15px; */
+    border-bottom: 1px solid #f1f1f1;
+    background-color: #fff;
+    transition: all 0.2s ease-in-out;
+}
+
+.notification-item:hover {
+    background-color: #f9f9f9;
+} 
+
+ .notification-item h6,
+ .notification-item p {
+    line-height: 1.4;
+    /* margin-bottom: 4px; */
+    white-space: normal;
+    word-break: break-word;
+}
