@@ -47,7 +47,7 @@ class ShowtimeService
         if (empty($date) || empty($branch_id) || empty($cinema_id)) {
             $showtimes = collect();
         } else {
-            $showtimes = Showtime::with('movie', 'room.type_room', 'branch', 'cinema','tickets')
+            $showtimes = Showtime::with('movie', 'room.type_room', 'branch', 'cinema', 'tickets')
                 ->where('date', $date)
                 ->where('branch_id', $branch_id)
                 ->where('cinema_id', $cinema_id)
@@ -63,19 +63,43 @@ class ShowtimeService
             ];
         });
 
+        /**
+         *  @var mixed
+         *  Phần quyền hiển thị suất chiếu theo chi nhánh và rạp
+         */
+
         $queryBranch = Branch::with('cinemas.rooms')->where('is_active', 1);
 
         if (Auth::user()->branch_id) {
-          $queryBranch->where('id', Auth::user()->branch_id);
+            $queryBranch->where('id', Auth::user()->branch_id);
+        }
+
+        if (Auth::user()->cinema_id) {
+            $queryBranch->whereHas('cinemas', function ($q) {
+                $q->where('id', Auth::user()->cinema_id);
+            });
         }
 
         $branchs = $queryBranch->get();
 
         $branchsRelation = [];
 
-        foreach ($branchs as $branch) {
-            $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
+        if (Auth::user()->branch_id) {
+            foreach ($branchs as $branch) {
+                $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
+            }
         }
+
+        if (Auth::user()->cinema_id) {
+            foreach ($branchs as $branch) {
+                $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->where('id', Auth::user()->cinema_id)->pluck('name', 'id')->all();
+            }
+        }
+
+        /**
+         *  @var mixed
+         *  Phần quyền phim theo chi nhánh
+         */
 
         $queryMovie = Movie::with('movieBranches')->where('is_active', 1);
 
@@ -85,8 +109,11 @@ class ShowtimeService
             });
         }
         $movies = $queryMovie->get();
+
         return [$branchs, $branchsRelation, $listShowtimes, $movies, $listShowtimesByDates];
     }
+
+
     public function createService(string $id)
     {
         $query = Branch::with('cinemas.rooms')->where('is_active', 1);
