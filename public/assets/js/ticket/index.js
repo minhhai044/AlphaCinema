@@ -97,7 +97,8 @@ $(document).ready(function () {
                                 <div class="mb-5 row me-2">
                                     <h5 class="fw-bold col-8">Tổng tiền </h5>
                                     <h5 class="fw-medium col-1">VNĐ</h5>
-                                    <h5 class="fw-medium fs-5 col-3 text-end"> ${formatCurrency(total)}</h5>
+                                    <h5 class="fw-medium fs-5 col-3 text-end"> ${formatCurrency((data.price_percentage.price_ticket_percentage - discount - data.point_discount) * (1 + data.vat/100) )}</h5>
+                                    <div class="col-12 text-end">(Bao gồm ${data.vat} % VAT)</div>
                                 </div>
 
                                  <div class="mb-1 d-flex flex-column align-items-center text-center">
@@ -227,7 +228,9 @@ $(document).ready(function () {
                         <div class="mb-1 row">
                             <div class="fw-bold col-6 fs-5">Tổng tiền </div>
                             <div class="fw-medium  col-2 text-center">VNĐ</div>
-                            <div class="fw-medium fs-5 col-4 text-end"> ${formatCurrency(totalComboPrice + totalFoodPrice - voucher_discount)} </div>
+                            <div class="fw-medium fs-5 col-4 text-end"> ${formatCurrency((data.price_percentage.price_food_percentage - voucher_discount) * (1 + data.vat/100) )}</div>
+
+                            <div class="col-12 text-end">(Bao gồm ${data.vat} % VAT)</div>
                         </div>
 
                          <hr class="dashed-hr">
