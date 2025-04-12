@@ -20,7 +20,7 @@
                             </button>
                             <button class="btn btn-warning waves-effect waves-light">
                                 <a href="{{ route('admin.export', 'movies') }}">
-                                   <span style="color: white"> <i class="bx bx-download me-1"></i>Xuất Excel</span></a>
+                                    <span style="color: white"> <i class="bx bx-download me-1"></i>Xuất Excel</span></a>
                             </button>
                         </div>
                     </div>
@@ -187,30 +187,30 @@
                         let genreHtml = genres.map(genre => {
                             let vietnameseGenre = genreMapping[genre] || genre;
                             return `<span style="background-color: green; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
-                                        ${vietnameseGenre}
-                                    </span>`;
+                                            ${vietnameseGenre}
+                                        </span>`;
                         }).join(' ');
 
                         let versions = Array.isArray(row.movie_versions) ? row.movie_versions : [];
                         let versionHtml = versions.map(version =>
                             `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
-                                        ${version}
-                                    </span>`).join(' ');
+                                            ${version}
+                                        </span>`).join(' ');
 
                         return `
-                                    <div style="padding: 15px; border-radius: 8px;">
-                                        <h3 style="margin: 0 0 10px; color: #007bff; font-weight: bold;">${data || '<span style="color: gray;">Chưa có tên phim</span>'}</h3>
-                                        <p style="margin: 5px 0; font-size: 14px;">
-                                            <strong style="color: #333;">Đạo diễn:</strong> ${row.director || '<span style="color: gray;">Đang cập nhật</span>'}
-                                        </p>
-                                        <p style="margin: 5px 0; font-size: 14px;">
-                                            <strong style="color: #333;">Thời lượng:</strong> ${row.duration || '<span style="color: gray;">Chưa có</span>'} phút
-                                        </p>
-                                        <p style="margin: 5px 0; font-size: 14px;">
-                                            <strong style="color: #333;">Thể loại:</strong> ${genreHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
-                                        </p>
-                                        <p style="margin: 5px 0; font-size: 14px;">
-                                            <strong style="color: #333;">Ngày khởi chiếu:</strong> ${row.release_date
+                                        <div style="padding: 15px; border-radius: 8px;">
+                                            <h3 style="margin: 0 0 10px; color: #007bff; font-weight: bold;">${data || '<span style="color: gray;">Chưa có tên phim</span>'}</h3>
+                                            <p style="margin: 5px 0; font-size: 14px;">
+                                                <strong style="color: #333;">Đạo diễn:</strong> ${row.director || '<span style="color: gray;">Đang cập nhật</span>'}
+                                            </p>
+                                            <p style="margin: 5px 0; font-size: 14px;">
+                                                <strong style="color: #333;">Thời lượng:</strong> ${row.duration || '<span style="color: gray;">Chưa có</span>'} phút
+                                            </p>
+                                            <p style="margin: 5px 0; font-size: 14px;">
+                                                <strong style="color: #333;">Thể loại:</strong> ${genreHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
+                                            </p>
+                                            <p style="margin: 5px 0; font-size: 14px;">
+                                                <strong style="color: #333;">Ngày khởi chiếu:</strong> ${row.release_date
                                 ? (() => {
                                     const date = new Date(row.release_date);
                                     return isNaN(date.getTime())
@@ -219,9 +219,9 @@
                                 })()
                                 : '<span style="color: gray;">Chưa có</span>'
                             }
-                                        </p>
-                                        <p style="margin: 5px 0; font-size: 14px;">
-                                            <strong style="color: #333;">Ngày kết thúc:</strong> ${row.end_date
+                                            </p>
+                                            <p style="margin: 5px 0; font-size: 14px;">
+                                                <strong style="color: #333;">Ngày kết thúc:</strong> ${row.end_date
                                 ? (() => {
                                     const date = new Date(row.end_date);
                                     return isNaN(date.getTime())
@@ -230,34 +230,34 @@
                                 })()
                                 : '<span style="color: gray;">Chưa có</span>'
                             }
-                                        </p>
-                                        <p style="margin: 5px 0; font-size: 14px;">
-                                            <strong style="color: #333;">Danh mục:</strong> ${row.category || '<span style="color: gray;">Chưa có</span>'}
-                                        </p>
-                                        <p style="margin: 5px 0; font-size: 14px;">
-                                            <strong style="color: #333;">Phiên bản:</strong> ${versionHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
-                                        </p>
-                                        <p style="margin: 5px 0; font-size: 14px;">
-                                            <strong style="color: #333;">Mã YouTube Trailer:</strong>
-                                            <input type="text" value="${row.trailer_url || 'Không có'}" readonly
-                                                style="border: 1px solid #ccc; padding: 5px; width: 100%; border-radius: 4px; background: #fff; font-size: 13px;">
-                                        </p>
-                                    </div>
-                                `;
+                                            </p>
+                                            <p style="margin: 5px 0; font-size: 14px;">
+                                                <strong style="color: #333;">Danh mục:</strong> ${row.category || '<span style="color: gray;">Chưa có</span>'}
+                                            </p>
+                                            <p style="margin: 5px 0; font-size: 14px;">
+                                                <strong style="color: #333;">Phiên bản:</strong> ${versionHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
+                                            </p>
+                                            <p style="margin: 5px 0; font-size: 14px;">
+                                                <strong style="color: #333;">Mã YouTube Trailer:</strong>
+                                                <input type="text" value="${row.trailer_url || 'Không có'}" readonly
+                                                    style="border: 1px solid #ccc; padding: 5px; width: 100%; border-radius: 4px; background: #fff; font-size: 13px;">
+                                            </p>
+                                        </div>
+                                    `;
                     }
                 },
                 {
                     data: 'is_active',
                     render: function (data, type, row) {
                         return `
-                                    <div class="form-check form-switch form-switch-md form-switch-success">
-                                        <input class="form-check-input changeStatus"
-                                               type="checkbox"
-                                               data-movie-id="${row.id}"
-                                               data-field="is_active"
-                                               ${data ? 'checked' : ''}>
-                                    </div>
-                                `;
+                                        <div class="form-check form-switch form-switch-md form-switch-success">
+                                            <input class="form-check-input changeStatus"
+                                                   type="checkbox"
+                                                   data-movie-id="${row.id}"
+                                                   data-field="is_active"
+                                                   ${data ? 'checked' : ''}>
+                                        </div>
+                                    `;
                     },
                     orderable: false,
                     searchable: false
@@ -266,14 +266,14 @@
                     data: 'is_hot',
                     render: function (data, type, row) {
                         return `
-                                    <div class="form-check form-switch form-switch-md form-switch-success">
-                                        <input class="form-check-input changeStatus"
-                                               type="checkbox"
-                                               data-movie-id="${row.id}"
-                                               data-field="is_hot"
-                                               ${data ? 'checked' : ''}>
-                                    </div>
-                                `;
+                                        <div class="form-check form-switch form-switch-md form-switch-success">
+                                            <input class="form-check-input changeStatus"
+                                                   type="checkbox"
+                                                   data-movie-id="${row.id}"
+                                                   data-field="is_hot"
+                                                   ${data ? 'checked' : ''}>
+                                        </div>
+                                    `;
                     },
                     orderable: false,
                     searchable: false
@@ -282,14 +282,14 @@
                     data: 'is_publish',
                     render: function (data, type, row) {
                         return `
-                                    <div class="form-check form-switch form-switch-md form-switch-success">
-                                        <input class="form-check-input changeStatus"
-                                               type="checkbox"
-                                               data-movie-id="${row.id}"
-                                               data-field="is_publish"
-                                               ${data ? 'checked' : ''}>
-                                    </div>
-                                `;
+                                        <div class="form-check form-switch form-switch-md form-switch-success">
+                                            <input class="form-check-input changeStatus"
+                                                   type="checkbox"
+                                                   data-movie-id="${row.id}"
+                                                   data-field="is_publish"
+                                                   ${data ? 'checked' : ''}>
+                                        </div>
+                                    `;
                     },
                     orderable: false,
                     searchable: false
@@ -298,15 +298,15 @@
                     data: 'id',
                     render: function (data) {
                         return `
-                                    <div class="text-center d-flex gap-2">
-                                        <a href="/admin/movies/${data}" class="btn btn-success">
-                                            <i class="fas fa-eye"></i>
-                                        </a>
-                                        <a href="/admin/movies/${data}/edit" class="btn btn-warning">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    </div>
-                                `;
+                                        <div class="text-center d-flex gap-2">
+                                            <a href="/admin/movies/${data}" class="btn btn-success">
+                                                <i class="fas fa-eye"></i>
+                                            </a>
+                                            <a href="/admin/movies/${data}/edit" class="btn btn-warning">
+                                                <i class="fas fa-edit"></i>
+                                            </a>
+                                        </div>
+                                    `;
                     },
                     orderable: false,
                     searchable: false
@@ -410,10 +410,12 @@
             text-align: center;
             vertical-align: middle;
         }
+
         #movieTable tbody td {
             text-align: center;
             vertical-align: middle;
         }
+
         #movieTable tbody td:nth-child(3) {
             text-align: left;
         }
@@ -489,11 +491,13 @@
         }
 
         #table-controls {
-            margin-bottom: 10px; /* Khoảng cách nhỏ giữa controls và bảng */
+            margin-bottom: 10px;
+            /* Khoảng cách nhỏ giữa controls và bảng */
         }
 
         #dataTables-search .dataTables_filter {
-            margin: 0; /* Loại bỏ margin mặc định của DataTables */
+            margin: 0;
+            /* Loại bỏ margin mặc định của DataTables */
         }
 
         #dataTables-search .dataTables_filter label {
@@ -504,7 +508,8 @@
 
         #dataTables-search .dataTables_filter input {
             margin-left: 5px;
-            width: 200px; /* Điều chỉnh chiều rộng ô tìm kiếm nếu cần */
+            width: 200px;
+            /* Điều chỉnh chiều rộng ô tìm kiếm nếu cần */
         }
 
         #pageLength {

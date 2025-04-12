@@ -235,7 +235,7 @@
 
     <!-- Script Highcharts -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             Highcharts.setOptions({
                 colors: ['#483D8B', '#4682B4', '#20B2AA', '#98FB98', '#FFDAB9']
             });
@@ -250,7 +250,7 @@
                         updateCinemas(branchSelect.value, selectedCinemaId);
                     }
 
-                    branchSelect.addEventListener('change', function() {
+                    branchSelect.addEventListener('change', function () {
                         updateCinemas(this.value);
                     });
 
@@ -258,12 +258,12 @@
                         cinemaSelect.innerHTML = '<option value="">Chọn rạp</option>';
                         if (branchId) {
                             fetch('{{ route('admin.statistical.cinemas') }}?branch_id=' + branchId, {
-                                    method: 'GET',
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                    }
-                                })
+                                method: 'GET',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.length > 0) {
@@ -290,7 +290,7 @@
                 }
             @endif
 
-            @if (!$message)
+                @if (!$message)
                     // Biểu đồ Doanh thu và Số vé
                     var revenueData = @json($revenues);
                     if (revenueData && Array.isArray(revenueData) && revenueData.length > 0) {
@@ -471,93 +471,93 @@
 
                     // Biểu đồ Tỷ lệ lấp đầy
                     var fillRateData = @json($fillRates);
-                console.log('fillRateData:', fillRateData); // Debug
-                if (fillRateData && Array.isArray(fillRateData) && fillRateData.length > 0) {
-                    // Kiểm tra dữ liệu bất thường
-                    fillRateData.forEach((item, index) => {
-                        if (item.fill_rate > 100 || item.fill_rate < 0) {
-                            console.warn(`Cảnh báo: Tỉ lệ lấp đầy của ${item.movie_name || 'Phim không xác định'} không hợp lệ: ${item.fill_rate}%`);
-                        }
-                        if (item.seats_sold == 0 && item.total_seats > 0) {
-                            console.warn(`Cảnh báo: Phim ${item.movie_name || 'Không xác định'} có seats_sold = 0 mặc dù total_seats = ${item.total_seats}`);
-                        }
-                    });
-
-                    const colors = [
-                        '#191970',
-                        ...Array(fillRateData.length - 1).fill().map(() => '#' + Math.floor(Math.random() * 16777215).toString(16))
-                    ];
-
-                    Highcharts.chart('fillRateChart', {
-                        chart: {
-                            type: 'column'
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        title: {
-                            text: null
-                        },
-                        xAxis: {
-                            categories: fillRateData.map(item => item.movie_name || 'Không xác định'),
-                            labels: {
-                                rotation: -45,
-                                style: {
-                                    fontSize: '12px'
-                                }
+                    console.log('fillRateData:', fillRateData); // Debug
+                    if (fillRateData && Array.isArray(fillRateData) && fillRateData.length > 0) {
+                        // Kiểm tra dữ liệu bất thường
+                        fillRateData.forEach((item, index) => {
+                            if (item.fill_rate > 100 || item.fill_rate < 0) {
+                                console.warn(`Cảnh báo: Tỉ lệ lấp đầy của ${item.movie_name || 'Phim không xác định'} không hợp lệ: ${item.fill_rate}%`);
                             }
-                        },
-                        yAxis: {
-                            max: 100,
-                            min: 0,
-                            title: {
-                                text: 'Tỷ lệ lấp đầy (%)'
+                            if (item.seats_sold == 0 && item.total_seats > 0) {
+                                console.warn(`Cảnh báo: Phim ${item.movie_name || 'Không xác định'} có seats_sold = 0 mặc dù total_seats = ${item.total_seats}`);
+                            }
+                        });
+
+                        const colors = [
+                            '#191970',
+                            ...Array(fillRateData.length - 1).fill().map(() => '#' + Math.floor(Math.random() * 16777215).toString(16))
+                        ];
+
+                        Highcharts.chart('fillRateChart', {
+                            chart: {
+                                type: 'column'
                             },
-                            labels: {
-                                format: '{value}%'
-                            }
-                        },
-                        series: [{
-                            name: 'Tỷ lệ lấp đầy',
-                            data: fillRateData.map((item, index) => ({
-                                y: Math.min(parseFloat(item.fill_rate) || 0, 100),
-                                color: colors[index]
-                            })),
-                            colorByPoint: true
-                        }],
-                        plotOptions: {
-                            column: {
-                                borderRadius: 5,
-                                pointWidth: Math.min(30, 600 / fillRateData.length),
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '{y}%',
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: null
+                            },
+                            xAxis: {
+                                categories: fillRateData.map(item => item.movie_name || 'Không xác định'),
+                                labels: {
+                                    rotation: -45,
                                     style: {
-                                        fontSize: '10px'
+                                        fontSize: '12px'
                                     }
                                 }
+                            },
+                            yAxis: {
+                                max: 100,
+                                min: 0,
+                                title: {
+                                    text: 'Tỷ lệ lấp đầy (%)'
+                                },
+                                labels: {
+                                    format: '{value}%'
+                                }
+                            },
+                            series: [{
+                                name: 'Tỷ lệ lấp đầy',
+                                data: fillRateData.map((item, index) => ({
+                                    y: Math.min(parseFloat(item.fill_rate) || 0, 100),
+                                    color: colors[index]
+                                })),
+                                colorByPoint: true
+                            }],
+                            plotOptions: {
+                                column: {
+                                    borderRadius: 5,
+                                    pointWidth: Math.min(30, 600 / fillRateData.length),
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{y}%',
+                                        style: {
+                                            fontSize: '10px'
+                                        }
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                formatter: function () {
+                                    return `<span style="color:${this.point.color}">●</span> ${this.series.name}: <b>${this.y.toFixed(2)}%</b><br/>Phim: ${this.x}`;
+                                }
+                            },
+                            legend: {
+                                enabled: true,
+                                labelFormatter: function () {
+                                    const index = this.index;
+                                    const movieName = fillRateData[index]?.movie_name || 'Không xác định';
+                                    return `<span style="color:${colors[index]}">${movieName}</span>`;
+                                }
                             }
-                        },
-                        tooltip: {
-                            formatter: function () {
-                                return `<span style="color:${this.point.color}">●</span> ${this.series.name}: <b>${this.y.toFixed(2)}%</b><br/>Phim: ${this.x}`;
-                            }
-                        },
-                        legend: {
-                            enabled: true,
-                            labelFormatter: function () {
-                                const index = this.index;
-                                const movieName = fillRateData[index]?.movie_name || 'Không xác định';
-                                return `<span style="color:${colors[index]}">${movieName}</span>`;
-                            }
-                        }
-                    });
-                } else {
-                    document.getElementById('fillRateChart').innerHTML =
-                        '<p class="text-muted text-center">Không có dữ liệu tỷ lệ lấp đầy để hiển thị.</p>';
-                }
-            @endif
-        });
+                        });
+                    } else {
+                        document.getElementById('fillRateChart').innerHTML =
+                            '<p class="text-muted text-center">Không có dữ liệu tỷ lệ lấp đầy để hiển thị.</p>';
+                    }
+                @endif
+            });
     </script>
 
     <style>
