@@ -281,7 +281,7 @@
                         data: 'id',
                         render: function(data) {
                             return `
-                                <div class="text-center">
+                                <div class="text-center d-flex grap-2">
                                     <a href="/admin/movies/${data}" class="btn btn-success">
                                         <i class="fas fa-eye"></i>
                                     </a>
