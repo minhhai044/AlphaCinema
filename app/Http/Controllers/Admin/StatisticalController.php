@@ -163,6 +163,7 @@ class StatisticalController extends Controller
             }
         }
 
+        // Truy vấn top 6 phim
         $revenueQuery = Ticket::query()
             ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
             ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
@@ -170,11 +171,11 @@ class StatisticalController extends Controller
             ->join('movies', 'tickets.movie_id', '=', 'movies.id')
             ->select(
                 'movies.name as movie_name',
-                'movies.img_thumbnail', // Lấy hình ảnh từ bảng movies
+                'movies.img_thumbnail',
                 DB::raw('SUM(tickets.total_price) as revenue'),
                 DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as ticket_count')
             )
-            ->groupBy('movies.name', 'movies.img_thumbnail'); // Nhóm theo name và img_thumbnail
+            ->groupBy('movies.name', 'movies.img_thumbnail');
 
         // Áp dụng phân quyền và bộ lọc
         $revenueQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))->tap($filterClosure);
@@ -183,7 +184,6 @@ class StatisticalController extends Controller
         $top6Movies = $revenueQuery->orderBy('revenue', 'desc')->limit(6)->get();
 
         $totalRevenue = array_sum(array_column($revenues, 'revenue'));
-
 
         // Truy vấn phim được xem lại nhiều nhất
         $rewatchQuery = Ticket::query()
@@ -208,34 +208,120 @@ class StatisticalController extends Controller
         $mostRewatchedMovies = $rewatchQuery->get();
         $mostRewatchedMovie = $mostRewatchedMovies->first();
 
-
         // Truy vấn tỷ lệ lấp đầy theo phim
-        $fillRateQuery = Ticket::query()
-            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
-            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
-            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
-            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
-            ->join('rooms', 'showtimes.room_id', '=', 'rooms.id')
-            ->select(
-                'movies.name as movie_name',
-                DB::raw('SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) as seats_sold'),
-                DB::raw('SUM(JSON_LENGTH(rooms.seat_structure)) as total_seats'),
-                DB::raw('ROUND(
-            (SUM(JSON_LENGTH(COALESCE(tickets.ticket_seats, "[]"))) /
-            SUM(JSON_LENGTH(rooms.seat_structure))) * 100,
+        
+$fillRateQuery = Ticket::query()
+    ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+    ->join('movies', 'tickets.movie_id', '=', 'movies.id')
+    ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+    ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+    ->join('rooms', 'showtimes.room_id', '=', 'rooms.id')
+    ->select(
+        'movies.name as movie_name',
+        'movies.id as movie_id',
+        DB::raw('SUM(JSON_LENGTH(CASE
+            WHEN tickets.ticket_seats IS NULL OR tickets.ticket_seats = "" THEN "[]"
+            ELSE tickets.ticket_seats
+        END)) as seats_sold'),
+        DB::raw('(
+            SELECT COALESCE(SUM(show_count * JSON_LENGTH(rooms.seat_structure)), 0)
+            FROM (
+                SELECT showtimes.room_id, COUNT(*) as show_count
+                FROM showtimes
+                WHERE showtimes.movie_id = movies.id
+                AND showtimes.id IN (
+                    SELECT tickets.showtime_id
+                    FROM tickets
+                    WHERE 1=1
+                    AND tickets.created_at >= ?
+                    AND tickets.created_at < ?
+                )
+                GROUP BY showtimes.room_id
+            ) as showtime_counts
+            JOIN rooms ON rooms.id = showtime_counts.room_id
+            WHERE rooms.is_active = 1
+        ) as total_seats'),
+        DB::raw('ROUND(
+            LEAST(
+                CASE
+                    WHEN (
+                        SELECT SUM(show_count * JSON_LENGTH(rooms.seat_structure))
+                        FROM (
+                            SELECT showtimes.room_id, COUNT(*) as show_count
+                            FROM showtimes
+                            WHERE showtimes.movie_id = movies.id
+                            AND showtimes.id IN (
+                                SELECT tickets.showtime_id
+                                FROM tickets
+                                WHERE 1=1
+                                AND tickets.created_at >= ?
+                                AND tickets.created_at < ?
+                            )
+                            GROUP BY showtimes.room_id
+                        ) as showtime_counts
+                        JOIN rooms ON rooms.id = showtime_counts.room_id
+                        WHERE rooms.is_active = 1
+                    ) = 0 THEN 0
+                    ELSE (
+                        SUM(JSON_LENGTH(CASE
+                            WHEN tickets.ticket_seats IS NULL OR tickets.ticket_seats = "" THEN "[]"
+                            ELSE tickets.ticket_seats
+                        END)) /
+                        (
+                            SELECT SUM(show_count * JSON_LENGTH(rooms.seat_structure))
+                            FROM (
+                                SELECT showtimes.room_id, COUNT(*) as show_count
+                                FROM showtimes
+                                WHERE showtimes.movie_id = movies.id
+                                AND showtimes.id IN (
+                                    SELECT tickets.showtime_id
+                                    FROM tickets
+                                    WHERE 1=1
+                                    AND tickets.created_at >= ?
+                                    AND tickets.created_at < ?
+                                )
+                                GROUP BY showtimes.room_id
+                            ) as showtime_counts
+                            JOIN rooms ON rooms.id = showtime_counts.room_id
+                            WHERE rooms.is_active = 1
+                        )
+                    ) * 100
+                END,
+                100
+            ),
             2
         ) as fill_rate')
-            )
-            ->where('rooms.is_active', 1)
-            ->groupBy('movies.name', 'movies.id')
-            ->orderBy('fill_rate', 'desc');
+    )
+    ->where('rooms.is_active', 1)
+    ->groupBy('movies.name', 'movies.id')
+    ->orderBy('fill_rate', 'desc');
 
-        // Áp dụng phân quyền và bộ lọc thời gian
-        $fillRateQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))
-            ->tap($filterClosure);
+// Xác định khoảng thời gian
+$startDate = $date ? Carbon::parse($date)->startOfDay() :
+    ($selectedMonth && $selectedYear ?
+        Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth() :
+        Carbon::today()->startOfDay());
+$endDate = $date ? Carbon::parse($date)->endOfDay() :
+    ($selectedMonth && $selectedYear ?
+        Carbon::create($selectedYear, $selectedMonth, 1)->endOfMonth() :
+        Carbon::today()->endOfDay());
 
-        // Lấy dữ liệu tỷ lệ lấp đầy
-        $fillRates = $fillRateQuery->get();
+// Thêm tham số liên kết
+$fillRateQuery->addBinding($startDate, 'select');
+$fillRateQuery->addBinding($endDate, 'select');
+$fillRateQuery->addBinding($startDate, 'select');
+$fillRateQuery->addBinding($endDate, 'select');
+$fillRateQuery->addBinding($startDate, 'select');
+$fillRateQuery->addBinding($endDate, 'select');
+
+// Áp dụng phân quyền và bộ lọc thời gian
+$fillRateQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))
+    ->tap($filterClosure);
+
+// Lấy dữ liệu tỷ lệ lấp đầy
+$fillRates = $fillRateQuery->get();
+
+        // dd($fillRates);
 
         return view('admin.statistical.cinema_revenue', compact(
             'mostRewatchedMovie',
@@ -258,10 +344,6 @@ class StatisticalController extends Controller
             'totalRevenue'
         ));
     }
-
-
-
-
 
 
 
@@ -390,7 +472,7 @@ class StatisticalController extends Controller
             $peakHoursData = $this->getPeakHoursData($tickets);
             $fillRateData = $this->getFillRateData($tickets);
 
-           
+
             $noDataMessage = $tickets->isEmpty() ? 'Không có dữ liệu cho bộ lọc hiện tại.' : null;
 
             return view('admin.statistical.TicketStatistical', compact(
