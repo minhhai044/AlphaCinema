@@ -251,7 +251,7 @@
                     <div class="mb-1">
                         <span class="text-body-secondary"> Tiền Vé: </span>
                         <span class="fw-medium">
-                            {{-- {{
+                            {{
                                 number_format(
                                     ($ticketData['price_percentage']['price_ticket_percentage'] -
                                     $ticketData['point_use'] -
@@ -259,7 +259,7 @@
                                     (1 + $ticketData['vat'] / 100),
                                     0, '.', '.'
                                 ) . ' VND' ?? '0 VND'
-                            }} --}}
+                            }}
                         </span>
                     </div>
 
@@ -479,7 +479,7 @@
                     <h5 class="fw-bold col-8">Tổng tiền</h5>
                     <h5 class="fw-medium col-1">VNĐ</h5>
                     <h5 class="fw-medium fs-5 col-3 text-end">
-                        {{-- {{ number_format(
+                        {{ number_format(
                             empty($ticketData['voucher_type'])
                                 ? ($ticketData['price_percentage']['price_ticket_percentage'] - $ticketData['voucher_discount_price'] - $ticketData['point_use']) *
                                     (1 + $ticketData['vat'] / 100)
@@ -487,7 +487,7 @@
                             0,
                             '.',
                             '.',
-                        ) }} --}}
+                        ) }}
                     </h5>
 
                     <div class="col-12 text-end">(Bao gồm {{ $ticketData['vat'] }}% VAT)</div>
