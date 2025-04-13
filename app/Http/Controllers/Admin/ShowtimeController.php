@@ -28,9 +28,9 @@ class ShowtimeController extends Controller
     {
         $this->showtimeService = $showtimeService;
         $this->middleware('can:Danh sách suất chiếu')->only('index');
-        $this->middleware('can:Thêm suất chiếu')->only(['create', 'store']);
+        $this->middleware('can:Thêm suất chiếu')->only(['createList', 'create', 'store','storePremium']);
         $this->middleware('can:Sửa suất chiếu')->only(['edit', 'update']);
-        $this->middleware('can:Xóa suất chiếu')->only('destroy');
+        $this->middleware('can:Xóa suất chiếu')->only('delete');
         $this->middleware('can:Xem chi tiết suất chiếu')->only('show');
     }
     public function index(Request $request)

@@ -26,7 +26,9 @@
                 <div class="page-title-right">
 
 
-                    <a href="{{ route('admin.foods.create') }}" class="btn btn-primary  me-2">+ Thêm mới</a>
+                    @can('Thêm đồ ăn')
+                        <a href="{{ route('admin.foods.create') }}" class="btn btn-primary  me-2">+ Thêm mới</a>
+                    @endcan
                     <a href="{{ route('admin.export', 'food') }}" class="btn btn-warning waves-effect waves-light">
                         <i class="bx bx-download me-1"></i>
                         Xuất Excel
@@ -46,8 +48,11 @@
                         <th class="fw-semibold text-center">Loại đồ ăn</th>
                         <th class="fw-semibold text-center">Hình ảnh</th>
                         <th class="fw-semibold text-center">Giá bán</th>
-                        <th class="fw-semibold text-center">Hoạt động</th>
-                        <th class="fw-semibold text-center">Chức năng</th>
+                        @can('Sửa đồ ăn')
+                            <th class="fw-semibold text-center">Hoạt động</th>
+                            <th class="fw-semibold text-center">Chức năng</th>
+                        @endcan
+
                     </tr>
                 </thead>
                 <tbody>
@@ -66,22 +71,22 @@
                                 @endif
                             </td>
                             <td>{{ number_format($food->price) }} VND</td>
-                            <td>
-                                <div class="d-flex justify-content-center align-items-center">
-                                    <div class=" form-check form-switch form-switch-md" dir="ltr">
-                                        <input class="form-check-input switch-is-active changeActive"
-                                            @checked($food->is_active) type="checkbox" data-food-id="{{ $food->id }}"
-                                            onclick="return confirm('Bạn có chắc muốn thay đổi?')">
+                            @can('Sửa đồ ăn')
+                                <td>
+                                    <div class="d-flex justify-content-center align-items-center">
+                                        <div class=" form-check form-switch form-switch-md" dir="ltr">
+                                            <input class="form-check-input switch-is-active changeActive"
+                                                @checked($food->is_active) type="checkbox" data-food-id="{{ $food->id }}"
+                                                onclick="return confirm('Bạn có chắc muốn thay đổi?')">
+                                        </div>
                                     </div>
-                                </div>
-
-                            </td>
-                            <td>
-                                <a href="{{ route('admin.foods.edit', $food) }}" class="btn btn-warning btn-sm">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-
-                            </td>
+                                </td>
+                                <td>
+                                    <a href="{{ route('admin.foods.edit', $food) }}" class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </td>
+                            @endcan
                         </tr>
                     @endforeach
                 </tbody>

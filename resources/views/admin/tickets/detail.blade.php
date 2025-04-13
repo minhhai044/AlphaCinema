@@ -253,7 +253,7 @@
                         <span class="fw-medium">
                             {{
                                 number_format(
-                                    ($ticketData['price_ticket'] -
+                                    ($ticketData['price_percentage']['price_ticket_percentage'] -
                                     $ticketData['point_use'] -
                                     ($ticketData['voucher_type'] == 0 ? $ticketData['voucher_discount_price'] : 0)) *
                                     (1 + $ticketData['vat'] / 100),
@@ -269,8 +269,7 @@
                             <span class="text-body-secondary"> Tiền đồ ăn: </span>
                             <span class="fw-medium">
                                 {{ number_format(
-                                    ($ticketData['total_combo'] +
-                                        $ticketData['total_food'] -
+                                    ($ticketData['price_percentage']['price_food_percentage'] -
                                         ($ticketData['voucher_type'] == 1 ? $ticketData['voucher_discount_price'] : 0)) *
                                         (1 + $ticketData['vat'] / 100),
                                     0,
@@ -380,7 +379,7 @@
                     <div class="fw-medium col-2 text-center">VNĐ</div>
                     <div class="fw-medium fs-5 col-4 text-end">
                         {{ number_format(
-                            ($ticketData['total_combo'] + $ticketData['total_food'] - $discountFood) * (1 + $ticketData['vat'] / 100),
+                            ($ticketData['price_percentage']['price_food_percentage'] - $discountFood) * (1 + $ticketData['vat'] / 100),
                             0,
                             '.',
                             '.',
@@ -482,9 +481,9 @@
                     <h5 class="fw-medium fs-5 col-3 text-end">
                         {{ number_format(
                             empty($ticketData['voucher_type'])
-                                ? ($ticketData['seats']['total_price'] - $ticketData['voucher_discount_price'] - $ticketData['point_use']) *
+                                ? ($ticketData['price_percentage']['price_ticket_percentage'] - $ticketData['voucher_discount_price'] - $ticketData['point_use']) *
                                     (1 + $ticketData['vat'] / 100)
-                                : ($ticketData['seats']['total_price'] - $ticketData['point_use']) * (1 + $ticketData['vat'] / 100),
+                                : ($ticketData['price_percentage']['price_ticket_percentage'] - $ticketData['point_use']) * (1 + $ticketData['vat'] / 100),
                             0,
                             '.',
                             '.',

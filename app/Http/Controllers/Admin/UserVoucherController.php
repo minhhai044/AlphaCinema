@@ -17,10 +17,10 @@ class UserVoucherController extends Controller
 
      public function __construct()
      {
-        //  $this->middleware('can:Danh sách áp mã giảm giá')->only('index');
-        //  $this->middleware('can:Thêm áp mã giảm giá')->only(['create', 'store']);
-        //  $this->middleware('can:Sửa áp mã giảm giá')->only(['edit', 'update']);
-        //  $this->middleware('can:Xóa áp mã giảm giá')->only('destroy');
+         $this->middleware('can:Danh sách áp mã giảm giá')->only('index');
+         $this->middleware('can:Thêm áp mã giảm giá')->only(['create', 'store']);
+         $this->middleware('can:Sửa áp mã giảm giá')->only(['edit', 'update']);
+         $this->middleware('can:Xóa áp mã giảm giá')->only('destroy');
      }
 
     public function index()

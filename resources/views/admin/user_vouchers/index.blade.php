@@ -57,11 +57,13 @@
                                 <h6 class="mb-sm-0 font-size-16">Áp mã giảm giá</h6>
                             </div>
                         </div>
-                        <div class="col-sm-auto">
-                            <div class="mb-4">
-                                <a href="{{ route('admin.user-vouchers.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                        @can('Thêm vouchers')
+                            <div class="col-sm-auto">
+                                <div class="mb-4">
+                                    <a href="{{ route('admin.user-vouchers.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                                </div>
                             </div>
-                        </div>
+                        @endcan
                     </div>
 
                     <div class="table-responsive">
@@ -86,14 +88,14 @@
                                         <td>{{ $User_voucher->usage_count }}</td>
                                         <td class="text-center">
                                             <a href="{{ route('admin.user-vouchers.edit', $User_voucher) }}" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i> 
+                                                <i class="fas fa-edit"></i>
                                             </a>
                                             <form action="{{ route('admin.user-vouchers.destroy', $User_voucher) }}" method="POST"
                                                 class="d-inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="bi bi-trash"></i> 
+                                                    <i class="bi bi-trash"></i>
                                                 </button>
                                             </form>
                                         </td>
@@ -142,5 +144,5 @@
                 table.page.len($(this).val()).draw();
             });
     </script>
-   
+
 @endsection

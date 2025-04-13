@@ -129,6 +129,7 @@ class TicketService
             'seats' => $seatData,
             'ticket_price' => $this->formatPrice($totalSeatPrice),
             'price_ticket' => $totalSeatPrice ,
+            'price_percentage' => $ticketDetail->price_percentage,
             'combos' => $combos,
             'foods' => $foods,
             'total_combo_price' => $this->formatPrice($totalComboPrice),
