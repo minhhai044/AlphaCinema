@@ -24,40 +24,65 @@ class MovieController extends Controller
     public function index(Request $request)
     {
         try {
-            // Tổng số bản ghi (không lọc)
+            $user = auth()->user();
+
+            // Tổng số bản ghi (toàn bộ)
             $totalRecords = Movie::count();
 
             // Tạo query gốc
             $query = Movie::query()->latest();
 
-            // Lọc theo tên phim
-            if ($request->filled('id')) {
-                $query->where('id', 'LIKE', '%' . $request->id . '%');
+            //PHÂN QUYỀN: Nếu KHÔNG phải System Admin thì lọc theo chi nhánh
+            if (!$user->hasRole('System Admin')) {
+                \Log::info('User info:', ['user_id' => $user->id, 'branch_id' => $user->branch_id]);
+                if ($user->branch_id) {
+                    $query->join('movie_branches', 'movies.id', '=', 'movie_branches.movie_id')
+                        ->where('movie_branches.branch_id', $user->branch_id)
+                        ->select('movies.*');
+                    \Log::info('Query SQL:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+                } else {
+                    \Log::warning('No branch assigned for user: ' . $user->id);
+                    return response()->json([
+                        'draw' => intval($request->draw),
+                        'recordsTotal' => 0,
+                        'recordsFiltered' => 0,
+                        'data' => [],
+                    ]);
+                }
             }
 
-            // Lọc theo movie_versions (dữ liệu JSON)
+            \Log::info('Request filters:', [
+                'id' => $request->id,
+                'movie_versions' => $request->movie_versions,
+                'movie_genres' => $request->movie_genres,
+                'search' => $request->search['value'] ?? null,
+            ]);
+
+            if ($request->filled('id')) {
+                $query->where('movies.id', 'LIKE', '%' . $request->id . '%');
+            }
+
             if ($request->filled('movie_versions')) {
                 $versions = is_array($request->movie_versions) ? $request->movie_versions : [$request->movie_versions];
                 foreach ($versions as $version) {
-                    $query->whereJsonContains('movie_versions', $version);
+                    $query->whereJsonContains('movies.movie_versions', $version);
                 }
             }
 
-            // Lọc theo movie_genres (dữ liệu JSON)
             if ($request->filled('movie_genres')) {
                 $genres = is_array($request->movie_genres) ? $request->movie_genres : [$request->movie_genres];
                 foreach ($genres as $genre) {
-                    $query->whereJsonContains('movie_genres', $genre);
+                    $query->whereJsonContains('movies.movie_genres', $genre);
                 }
             }
 
-            // Tìm kiếm từ DataTables (nếu có)
             if ($request->has('search') && !empty($request->search['value'])) {
                 $searchValue = $request->search['value'];
-                $query->where('name', 'LIKE', "%{$searchValue}%");
+                $query->where('movies.name', 'LIKE', "%{$searchValue}%");
             }
 
-            // Số bản ghi sau khi lọc
+            \Log::info('Final query before count:', ['sql' => $query->toSql(), 'bindings' => $query->getBindings()]);
+
             $filteredRecords = $query->count();
 
             // Phân trang
@@ -65,14 +90,17 @@ class MovieController extends Controller
             $start = $request->input('start', 0);
             $movies = $query->skip($start)->take($length)->get();
 
+            \Log::info('Movies fetched:', ['movies' => $movies->toArray()]);
+
             return response()->json([
-                "draw" => intval($request->draw),
-                "recordsTotal" => $totalRecords,     // Tổng số bản ghi trước lọc
-                "recordsFiltered" => $filteredRecords,  // Số bản ghi sau khi lọc
-                "data" => $movies,
+                'draw' => intval($request->draw),
+                'recordsTotal' => $totalRecords,
+                'recordsFiltered' => $filteredRecords,
+                'data' => $movies,
             ]);
         } catch (\Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 500);
+            \Log::error('Error in ApiMovieController: ' . $e->getMessage());
+            return response()->json(['error' => 'Có lỗi xảy ra'], 500);
         }
     }
     public function getMoviesByCinema(Request $request)
