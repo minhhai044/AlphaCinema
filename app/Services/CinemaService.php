@@ -2,10 +2,12 @@
 
 namespace App\Services;
 
+use App\Models\Cinema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use App\Repositories\Modules\CinemaRepository;
+use Illuminate\Support\Facades\Auth;
 
 class CinemaService
 {
@@ -16,7 +18,15 @@ class CinemaService
     }
     public function getAllPaginateService($perPage = 10, string $latest = 'id')
     {
-        return $this->cinemaRepository->getPaginateCinemaRepository($perPage, $latest);
+        $query = Cinema::query()->latest($latest);
+
+        if (Auth::user()->branch_id) {
+            $query->where('branch_id', Auth::user()->branch_id);
+        }
+        // if (Auth::user()->cinema_id) {
+        //     $query->where('id', Auth::user()->cinema_id);
+        // }
+        return $query->get();
     }
     public function storeService($data)
     {

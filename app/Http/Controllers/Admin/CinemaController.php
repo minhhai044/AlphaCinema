@@ -13,6 +13,7 @@ use App\Traits\ApiResponseTrait;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class CinemaController extends Controller
@@ -34,7 +35,13 @@ class CinemaController extends Controller
     public function index()
     {
         $cinemas = $this->cinemaService->getAllPaginateService(10);
-        $branchs = Branch::query()->orderByDesc('id')->get();
+        
+        $query = Branch::query()->orderByDesc('id');
+        if (Auth::user()->branch_id) {
+            $query->where('id', Auth::user()->branch_id);
+        }
+
+        $branchs = $query->get();
         return view(self::PATH_VIEW . __FUNCTION__, compact('cinemas', 'branchs'));
     }
     /**
