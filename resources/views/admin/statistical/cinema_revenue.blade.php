@@ -163,7 +163,7 @@
                 </div>
 
                 <!-- Phim được xem lại -->
-                <div class="col-12 col-lg-6">
+                <div class="col-12 col-lg-12">
                     <div class="card shadow-sm h-100">
                         <div class="card-body">
                             <h6 class="text-muted text-uppercase mb-3">Phim Được Xem Lại Nhiều Nhất</h6>
@@ -174,7 +174,7 @@
                 </div>
 
                 <!-- Tỷ lệ lấp đầy -->
-                <div class="col-12 col-lg-6">
+                {{-- <div class="col-12 col-lg-6">
                     <div class="card shadow-sm h-100">
                         <div class="card-body">
                             <h6 class="text-muted text-uppercase mb-3">Tỷ Lệ Lấp Đầy Theo Phim</h6>
@@ -182,7 +182,7 @@
                             <div id="fillRateChart" style="width: 100%; height: 350px;"></div>
                         </div>
                     </div>
-                </div>
+                </div> --}}
             </div>
 
             <!-- Top 6 Phim -->
@@ -235,7 +235,7 @@
 
     <!-- Script Highcharts -->
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             Highcharts.setOptions({
                 colors: ['#483D8B', '#4682B4', '#20B2AA', '#98FB98', '#FFDAB9']
             });
@@ -250,7 +250,7 @@
                         updateCinemas(branchSelect.value, selectedCinemaId);
                     }
 
-                    branchSelect.addEventListener('change', function() {
+                    branchSelect.addEventListener('change', function () {
                         updateCinemas(this.value);
                     });
 
@@ -258,12 +258,12 @@
                         cinemaSelect.innerHTML = '<option value="">Chọn rạp</option>';
                         if (branchId) {
                             fetch('{{ route('admin.statistical.cinemas') }}?branch_id=' + branchId, {
-                                    method: 'GET',
-                                    headers: {
-                                        'X-Requested-With': 'XMLHttpRequest',
-                                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                                    }
-                                })
+                                method: 'GET',
+                                headers: {
+                                    'X-Requested-With': 'XMLHttpRequest',
+                                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                                }
+                            })
                                 .then(response => response.json())
                                 .then(data => {
                                     if (data.length > 0) {
@@ -290,256 +290,274 @@
                 }
             @endif
 
-            @if (!$message)
-                // Biểu đồ Doanh thu và Số vé
-                var revenueData = @json($revenues);
-                if (revenueData && Array.isArray(revenueData) && revenueData.length > 0) {
-                    Highcharts.chart('revenueChart', {
-                        chart: {
-                            zooming: {
-                                type: 'xy'
-                            }
-                        },
-                        title: {
-                            text: null // Xóa tiêu đề
-                        },
-                        credits: {
-                            enabled: false,
-                            text: 'Nguồn: Hệ thống quản lý rạp chiếu phim'
-                        },
-                        xAxis: [{
-                            categories: revenueData.map(item => item.movie_name ||
-                                'Không xác định'),
-                            crosshair: true,
-                            labels: {
-                                rotation: -45
-                            }
-                        }],
-                        yAxis: [{ // Primary yAxis (Doanh thu)
-                            labels: {
-                                format: '{value:,.0f} VNĐ',
-                                style: {
-                                    color: Highcharts.getOptions().colors[1]
+                @if (!$message)
+                    // Biểu đồ Doanh thu và Số vé
+                    var revenueData = @json($revenues);
+                    if (revenueData && Array.isArray(revenueData) && revenueData.length > 0) {
+                        Highcharts.chart('revenueChart', {
+                            chart: {
+                                zooming: {
+                                    type: 'xy'
                                 }
                             },
                             title: {
-                                text: 'Doanh thu (VNĐ)',
-                                style: {
-                                    color: Highcharts.getOptions().colors[1]
-                                }
-                            }
-                        }, { // Secondary yAxis (Số vé)
-                            title: {
-                                text: 'Số vé',
-                                style: {
-                                    color: Highcharts.getOptions().colors[0]
-                                }
+                                text: null // Xóa tiêu đề
                             },
-                            labels: {
-                                format: '{value:,.0f}',
-                                style: {
-                                    color: Highcharts.getOptions().colors[0]
-                                }
+                            credits: {
+                                enabled: false,
+                                text: 'Nguồn: Hệ thống quản lý rạp chiếu phim'
                             },
-                            opposite: true
-                        }],
-                        tooltip: {
-                            shared: true
-                        },
-                        legend: {
-                            align: 'left',
-                            verticalAlign: 'top',
-                            backgroundColor: Highcharts.defaultOptions.legend.backgroundColor ||
-                                'rgba(255,255,255,0.25)'
-                        },
-                        series: [{
-                            name: 'Doanh thu (VNĐ)',
-                            type: 'column',
-                            yAxis: 0,
-                            data: revenueData.map(item => parseFloat(item.revenue) || 0),
+                            xAxis: [{
+                                categories: revenueData.map(item => item.movie_name ||
+                                    'Không xác định'),
+                                crosshair: true,
+                                labels: {
+                                    rotation: -45
+                                }
+                            }],
+                            yAxis: [{ // Primary yAxis (Doanh thu)
+                                labels: {
+                                    format: '{value:,.0f} VNĐ',
+                                    style: {
+                                        color: Highcharts.getOptions().colors[1]
+                                    }
+                                },
+                                title: {
+                                    text: 'Doanh thu (VNĐ)',
+                                    style: {
+                                        color: Highcharts.getOptions().colors[1]
+                                    }
+                                }
+                            }, { // Secondary yAxis (Số vé)
+                                title: {
+                                    text: 'Số vé',
+                                    style: {
+                                        color: Highcharts.getOptions().colors[0]
+                                    }
+                                },
+                                labels: {
+                                    format: '{value:,.0f}',
+                                    style: {
+                                        color: Highcharts.getOptions().colors[0]
+                                    }
+                                },
+                                opposite: true
+                            }],
                             tooltip: {
-                                valueSuffix: ' VNĐ',
-                                valueDecimals: 0
-                            }
-                        }, {
-                            name: 'Số vé',
-                            type: 'spline',
-                            yAxis: 1,
-                            data: revenueData.map(item => parseInt(item.ticket_count) || 0),
-                            tooltip: {
-                                valueSuffix: ' vé'
-                            }
-                        }],
-                        plotOptions: {
-                            column: {
-                                borderRadius: 5
-                            }
-                        }
-                    });
-                } else {
-                    document.getElementById('revenueChart').innerHTML =
-                        '<p class="text-muted text-center">Không có dữ liệu doanh thu để hiển thị.</p>';
-                }
-
-                // Biểu đồ Số lượng suất chiếu
-                var showtimeData = @json($showtimes);
-                if (showtimeData && Array.isArray(showtimeData) && showtimeData.length > 0) {
-                    Highcharts.chart('showtimeChart', {
-                        chart: {
-                            type: 'bar'
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        title: {
-                            text: null
-                        },
-                        xAxis: {
-                            categories: showtimeData.map(item => item.movie_name ||
-                                'Không xác định') // Giữ nguyên danh mục
-                        },
-                        yAxis: {
-                            title: {
-                                text: 'Số lượng suất chiếu'
-                            }
-                        },
-                        series: [{
-                            name: 'Số suất chiếu',
-                            data: showtimeData.map(item => parseInt(item.showtime_count) ||
-                                0), // Giữ nguyên dữ liệu
-                            colors: [
-                                '#191970', // Màu cố định đầu tiên
-                                ...Array(showtimeData.length - 1).fill().map(() => '#' + Math
-                                    .floor(Math.random() * 16777215).toString(16)
-                                ) // Random màu cho các cột còn lại
-                            ]
-                        }],
-                        plotOptions: {
-                            bar: {
-                                borderRadius: 5, // Giữ bo góc
-                                colorByPoint: true // Cho phép mỗi cột có màu riêng
-                            }
-                        },
-                        tooltip: {
-                            valueSuffix: ' suất' // Giữ nguyên hậu tố
-                        }
-                    });
-                } else {
-                    document.getElementById('showtimeChart').innerHTML =
-                        '<p class="text-muted text-center">Không có dữ liệu suất chiếu để hiển thị.</p>';
-                }
-
-                // Biểu đồ Phim được xem lại
-                var rewatchData = @json($mostRewatchedMovies);
-                if (rewatchData && Array.isArray(rewatchData) && rewatchData.length > 0) {
-                    Highcharts.chart('rewatchChart', {
-                        chart: {
-                            type: 'pie'
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        title: {
-                            text: null
-                        },
-                        series: [{
-                            name: 'Số lần xem lại',
-                            data: rewatchData.map(item => ({
-                                name: item.movie_name || 'Không xác định',
-                                y: parseInt(item.rewatch_count) || 0
-                            })),
-                            colorByPoint: true
-                        }],
-                        plotOptions: {
-                            pie: {
-                                allowPointSelect: true,
-                                cursor: 'pointer',
-                                dataLabels: {
-                                    enabled: true,
-                                    format: '<b>{point.name}</b>: {point.y} lần'
+                                shared: true
+                            },
+                            legend: {
+                                align: 'left',
+                                verticalAlign: 'top',
+                                backgroundColor: Highcharts.defaultOptions.legend.backgroundColor ||
+                                    'rgba(255,255,255,0.25)'
+                            },
+                            series: [{
+                                name: 'Doanh thu (VNĐ)',
+                                type: 'column',
+                                yAxis: 0,
+                                data: revenueData.map(item => parseFloat(item.revenue) || 0),
+                                tooltip: {
+                                    valueSuffix: ' VNĐ',
+                                    valueDecimals: 0
+                                }
+                            }, {
+                                name: 'Số vé',
+                                type: 'spline',
+                                yAxis: 1,
+                                data: revenueData.map(item => parseInt(item.ticket_count) || 0),
+                                tooltip: {
+                                    valueSuffix: ' vé'
+                                }
+                            }],
+                            plotOptions: {
+                                column: {
+                                    borderRadius: 5
                                 }
                             }
-                        },
-                        tooltip: {
-                            valueSuffix: ' lần'
-                        }
-                    });
-                } else {
-                    document.getElementById('rewatchChart').innerHTML =
-                        '<p class="text-muted text-center">Không có dữ liệu phim xem lại để hiển thị.</p>';
-                }
+                        });
+                    } else {
+                        document.getElementById('revenueChart').innerHTML =
+                            '<p class="text-muted text-center">Không có dữ liệu doanh thu để hiển thị.</p>';
+                    }
 
-                // Biểu đồ Tỷ lệ lấp đầy 
-                var fillRateData = @json($fillRates);
-                if (fillRateData && Array.isArray(fillRateData) && fillRateData.length > 0) {
-                    // Tạo mảng màu random dựa trên số lượng dữ liệu
-                    const colors = [
-                        '#191970', // Màu cố định đầu tiên
-                        ...Array(fillRateData.length - 1).fill().map(() => '#' + Math.floor(Math.random() *
-                            16777215).toString(16))
-                    ];
-
-                    Highcharts.chart('fillRateChart', {
-                        chart: {
-                            type: 'column'
-                        },
-                        credits: {
-                            enabled: false
-                        },
-                        title: {
-                            text: null
-                        },
-                        xAxis: {
-                            categories: fillRateData.map(item => item.movie_name || 'Không xác định'),
-                            labels: {
-                                rotation: -45
-                            }
-                        },
-                        yAxis: {
-                            max: 100,
-                            title: {
-                                text: 'Tỷ lệ lấp đầy (%)'
+                    // Biểu đồ Số lượng suất chiếu
+                    var showtimeData = @json($showtimes);
+                    if (showtimeData && Array.isArray(showtimeData) && showtimeData.length > 0) {
+                        Highcharts.chart('showtimeChart', {
+                            chart: {
+                                type: 'bar'
                             },
-                            labels: {
-                                format: '{value}%'
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: null
+                            },
+                            xAxis: {
+                                categories: showtimeData.map(item => item.movie_name ||
+                                    'Không xác định') // Giữ nguyên danh mục
+                            },
+                            yAxis: {
+                                title: {
+                                    text: 'Số lượng suất chiếu'
+                                }
+                            },
+                            series: [{
+                                name: 'Số suất chiếu',
+                                data: showtimeData.map(item => parseInt(item.showtime_count) ||
+                                    0), // Giữ nguyên dữ liệu
+                                colors: [
+                                    '#191970', // Màu cố định đầu tiên
+                                    ...Array(showtimeData.length - 1).fill().map(() => '#' + Math
+                                        .floor(Math.random() * 16777215).toString(16)
+                                    ) // Random màu cho các cột còn lại
+                                ]
+                            }],
+                            plotOptions: {
+                                bar: {
+                                    borderRadius: 5, // Giữ bo góc
+                                    colorByPoint: true // Cho phép mỗi cột có màu riêng
+                                }
+                            },
+                            tooltip: {
+                                valueSuffix: ' suất' // Giữ nguyên hậu tố
                             }
-                        },
-                        series: [{
-                            name: 'Tỷ lệ lấp đầy',
-                            data: fillRateData.map((item, index) => ({
-                                y: parseFloat(item.fill_rate) || 0, // Giá trị tỷ lệ
-                                color: colors[index] // Gán màu random cho từng cột
-                            })),
-                            colorByPoint: true // Cho phép mỗi cột có màu riêng
-                        }],
-                        plotOptions: {
-                            column: {
-                                borderRadius: 5,
-                                pointWidth: 30
+                        });
+                    } else {
+                        document.getElementById('showtimeChart').innerHTML =
+                            '<p class="text-muted text-center">Không có dữ liệu suất chiếu để hiển thị.</p>';
+                    }
+
+                    // Biểu đồ Phim được xem lại
+                    var rewatchData = @json($mostRewatchedMovies);
+                    if (rewatchData && Array.isArray(rewatchData) && rewatchData.length > 0) {
+                        Highcharts.chart('rewatchChart', {
+                            chart: {
+                                type: 'pie'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: null
+                            },
+                            series: [{
+                                name: 'Số lần xem lại',
+                                data: rewatchData.map(item => ({
+                                    name: item.movie_name || 'Không xác định',
+                                    y: parseInt(item.rewatch_count) || 0
+                                })),
+                                colorByPoint: true
+                            }],
+                            plotOptions: {
+                                pie: {
+                                    allowPointSelect: true,
+                                    cursor: 'pointer',
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '<b>{point.name}</b>: {point.y} lần'
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                valueSuffix: ' lần'
                             }
-                        },
-                        tooltip: {
-                            formatter: function() {
-                                // Hiển thị tên phim và màu trong tooltip
-                                return `<span style="color:${this.point.color}">●</span> ${this.series.name}: <b>${this.y}%</b><br/>Phim: ${this.x}`;
+                        });
+                    } else {
+                        document.getElementById('rewatchChart').innerHTML =
+                            '<p class="text-muted text-center">Không có dữ liệu phim xem lại để hiển thị.</p>';
+                    }
+
+                    // Biểu đồ Tỷ lệ lấp đầy
+                    var fillRateData = @json($fillRates);
+                    console.log('fillRateData:', fillRateData); // Debug
+                    if (fillRateData && Array.isArray(fillRateData) && fillRateData.length > 0) {
+                        // Kiểm tra dữ liệu bất thường
+                        fillRateData.forEach((item, index) => {
+                            if (item.fill_rate > 100 || item.fill_rate < 0) {
+                                console.warn(`Cảnh báo: Tỉ lệ lấp đầy của ${item.movie_name || 'Phim không xác định'} không hợp lệ: ${item.fill_rate}%`);
                             }
-                        },
-                        legend: {
-                            enabled: true, // Bật legend để hiển thị màu theo tên phim
-                            labelFormatter: function() {
-                                // Hiển thị tên phim trong legend với màu tương ứng
-                                const index = this.index;
-                                const movieName = fillRateData[index]?.movie_name || 'Không xác định';
-                                return `<span style="color:${colors[index]}">${movieName}</span>`;
+                            if (item.seats_sold == 0 && item.total_seats > 0) {
+                                console.warn(`Cảnh báo: Phim ${item.movie_name || 'Không xác định'} có seats_sold = 0 mặc dù total_seats = ${item.total_seats}`);
                             }
-                        }
-                    });
-                } else {
-                    document.getElementById('fillRateChart').innerHTML =
-                        '<p class="text-muted text-center">Không có dữ liệu tỷ lệ lấp đầy để hiển thị.</p>';
-                }
-            @endif
-        });
+                        });
+
+                        const colors = [
+                            '#191970',
+                            ...Array(fillRateData.length - 1).fill().map(() => '#' + Math.floor(Math.random() * 16777215).toString(16))
+                        ];
+
+                        Highcharts.chart('fillRateChart', {
+                            chart: {
+                                type: 'column'
+                            },
+                            credits: {
+                                enabled: false
+                            },
+                            title: {
+                                text: null
+                            },
+                            xAxis: {
+                                categories: fillRateData.map(item => item.movie_name || 'Không xác định'),
+                                labels: {
+                                    rotation: -45,
+                                    style: {
+                                        fontSize: '12px'
+                                    }
+                                }
+                            },
+                            yAxis: {
+                                max: 100,
+                                min: 0,
+                                title: {
+                                    text: 'Tỷ lệ lấp đầy (%)'
+                                },
+                                labels: {
+                                    format: '{value}%'
+                                }
+                            },
+                            series: [{
+                                name: 'Tỷ lệ lấp đầy',
+                                data: fillRateData.map((item, index) => ({
+                                    y: Math.min(parseFloat(item.fill_rate) || 0, 100),
+                                    color: colors[index]
+                                })),
+                                colorByPoint: true
+                            }],
+                            plotOptions: {
+                                column: {
+                                    borderRadius: 5,
+                                    pointWidth: Math.min(30, 600 / fillRateData.length),
+                                    dataLabels: {
+                                        enabled: true,
+                                        format: '{y}%',
+                                        style: {
+                                            fontSize: '10px'
+                                        }
+                                    }
+                                }
+                            },
+                            tooltip: {
+                                formatter: function () {
+                                    return `<span style="color:${this.point.color}">●</span> ${this.series.name}: <b>${this.y.toFixed(2)}%</b><br/>Phim: ${this.x}`;
+                                }
+                            },
+                            legend: {
+                                enabled: true,
+                                labelFormatter: function () {
+                                    const index = this.index;
+                                    const movieName = fillRateData[index]?.movie_name || 'Không xác định';
+                                    return `<span style="color:${colors[index]}">${movieName}</span>`;
+                                }
+                            }
+                        });
+                    } else {
+                        document.getElementById('fillRateChart').innerHTML =
+                            '<p class="text-muted text-center">Không có dữ liệu tỷ lệ lấp đầy để hiển thị.</p>';
+                    }
+                @endif
+            });
     </script>
 
     <style>

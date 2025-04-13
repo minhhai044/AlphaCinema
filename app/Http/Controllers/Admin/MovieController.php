@@ -33,13 +33,15 @@ class MovieController extends Controller
         // dd($movies);
         return view('admin.movies.index', compact('movies', 'filters'));
     }
+    
 
     // 2. Hiển thị form thêm mới phim
     public function create()
     {
         $branches = \App\Models\Branch::all();
+        $selectedBranches = [];
         // dd($branches);
-        return view('admin.movies.create', compact('branches'));
+        return view('admin.movies.create', compact('branches', 'selectedBranches'));
     }
 
     // 3. Lưu phim mới
@@ -65,19 +67,28 @@ class MovieController extends Controller
     // 5. Hiển thị form chỉnh sửa phim
     public function edit($id)
     {
-        $movie = $this->movieService->getMovieById($id);
-        return view('admin.movies.edit', compact('movie'));
+        $movie = Movie::with('branches')->findOrFail($id);
+        $branches = \App\Models\Branch::all();
+        $selectedBranches = $movie->branches()->pluck('branches.id')->toArray();
+
+        return view('admin.movies.edit', compact('movie', 'branches', 'selectedBranches'));
     }
 
-    // 6. Cập nhật phim
+
+
     public function update(MovieRequest $request, $id)
     {
-        // dd($request->all());
+        // dd(1);
+        // dd($id);
+
         $validated = $request->validated();
-        // dd($validated);
-        $this->movieService->updateMovie($id, $validated);
+
+        $this->movieService->updateMovie( $id, $validated);
+
+
         return redirect()->route('admin.movies.index')->with('success', 'Cập nhật phim thành công!');
     }
+
 
 
     // 7. Xóa phim

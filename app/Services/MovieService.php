@@ -76,7 +76,7 @@ class MovieService
 
             // Giữ nguyên giá trị cũ nếu không có dữ liệu mới
             $data['release_date'] = $data['release_date'] ?? $movie->release_date;
-            $data[' end_date'] = $data['end_date'] ?? $movie->end_date;
+            $data['end_date'] = $data['end_date'] ?? $movie->end_date;
 
             // Xử lý ảnh thumbnail nếu có
             if (isset($data['img_thumbnail'])) {
@@ -90,12 +90,28 @@ class MovieService
             $data['movie_versions'] = $data['movie_versions'] ?? [];
             $data['movie_genres'] = $data['movie_genres'] ?? [];
 
-            // Cập nhật dữ liệu và trả về model
+            // Cập nhật rạp chiếu
+            MovieBranch::where('movie_id', $movie->id)->delete();
+            if (!empty($data['branch_ids']) && is_array($data['branch_ids'])) {
+                foreach ($data['branch_ids'] as $branch_id) {
+                    MovieBranch::create([
+                        'movie_id' => $movie->id,
+                        'branch_id' => $branch_id,
+                    ]);
+                }
+            }
+
+            // Sau khi xử lý xong, xóa branch_ids để không ảnh hưởng update()
+            unset($data['branch_ids']);
+
+            // dd($data);
+            // Cập nhật dữ liệu còn lại
             $movie->update($data);
 
             return $movie;
         });
     }
+
 
 
     public function deleteMovie($id)

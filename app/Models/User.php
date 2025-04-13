@@ -75,6 +75,10 @@ class User extends Authenticatable
     {
         return $this->belongsTo(Branch::class, 'branch_id');
     }
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'branches', 'user_id', 'branch_id');
+    }
 
     public function cinema()
     {

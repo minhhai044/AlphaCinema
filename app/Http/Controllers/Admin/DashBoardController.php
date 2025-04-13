@@ -304,7 +304,8 @@ class DashBoardController extends Controller
             ->orderBy('revenue', 'desc')
             ->get();
 
-        $revenueSeries = $revenueByCinema->pluck('revenue')->map(fn($value) => round((float) $value / 1000000, 2))->toArray();
+        // Bỏ round() để giữ nguyên giá trị
+        $revenueSeries = $revenueByCinema->pluck('revenue')->map(fn($value) => (float) $value / 1000000)->toArray();
         $cinemaLabels = $revenueByCinema->pluck('cinema_name')->toArray();
 
         return [json_encode($revenueSeries), json_encode($cinemaLabels)];

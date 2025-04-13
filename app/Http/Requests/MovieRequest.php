@@ -49,13 +49,15 @@ class MovieRequest extends FormRequest
             'is_special' => 'boolean',
             'is_publish' => 'boolean',
             'branch_ids' => 'required|array',
-'branch_ids.*' => 'exists:branches,id',
+            'branch_ids.*' => 'exists:branches,id',
         ];
     }
 
     public function rulesForUpdate(): array
     {
         return [
+            'branch_ids' => 'required|array',
+            'branch_ids.*' => 'exists:branches,id',
             'name' => 'required|string|max:255',
             'slug' => 'required|string|max:255',
             'category' => 'required|string|max:255',
@@ -66,7 +68,7 @@ class MovieRequest extends FormRequest
             'rating' => 'required|numeric|min:0|max:10',
             'release_date' => 'required|date',
             'end_date' => 'required|date|after_or_equal:release_date',
-            'trailer_url' => 'nullable|url',
+            'trailer_url' => 'required|url',
             'surcharge' => 'nullable|numeric|min:0',
             'movie_versions' => 'sometimes|array',
             'movie_versions.*' => 'string|max:255',
@@ -82,6 +84,7 @@ class MovieRequest extends FormRequest
     public function messages()
     {
         return [
+            'branch_ids.required' => 'Nhập danh sách chi nhánh.',
             'name.required' => 'Tên phim là bắt buộc.',
             'name.string' => 'Tên phim phải là chuỗi ký tự.',
             'name.max' => 'Tên phim không được vượt quá 255 ký tự.',

@@ -151,11 +151,11 @@
                     </form>
                 </div>
                 {{-- <div class="page-title-right">
-                    <ol class="breadcrumb m-0">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Thống kê</a></li>
-                        <li class="breadcrumb-item active">Dashboard</li>
-                    </ol>
-                </div> --}}
+                            <ol class="breadcrumb m-0">
+                                <li class="breadcrumb-item"><a href="javascript:void(0);">Thống kê</a></li>
+                                <li class="breadcrumb-item active">Dashboard</li>
+                            </ol>
+                        </div> --}}
             </div>
         </div>
     </div>
@@ -173,12 +173,14 @@
                     <div class="row align-items-center">
                         <div class="col-12">
                             <h4 class="mb-3">
-                                <span class="counter-value" data-target="{{ $revenueToday }}">{{ $formattedRevenueToday }}</span> VNĐ
+                                <span class="counter-value"
+                                    data-target="{{ $revenueToday }}">{{ $formattedRevenueToday }}</span> VNĐ
                             </h4>
                         </div>
                     </div>
                     <div class="text-nowrap">
-                        <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>0%</span>
+                        <span class="badge bg-success-subtle text-success badge-custom"><i
+                                class="bi bi-arrow-up"></i>0%</span>
                         <span class="ms-1 text-muted">So với hôm qua</span>
                     </div>
                 </div>
@@ -289,6 +291,9 @@
             <div class="card card-custom">
                 <div class="card-header-custom">
                     <i class="bi bi-bar-chart-line me-1"></i> Doanh thu theo rạp - Tháng
+                    @php
+                        use Carbon\Carbon;
+                    @endphp
                     {{ $selectedMonth ?: Carbon::now()->month }}/{{ $selectedYear }}
                 </div>
                 <div class="card-body">

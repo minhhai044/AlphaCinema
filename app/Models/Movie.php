@@ -59,4 +59,8 @@ class Movie extends Model
     {
         return $this->hasMany(MovieBranch::class);
     }
+    public function branches()
+    {
+        return $this->belongsToMany(Branch::class, 'movie_branches', 'movie_id', 'branch_id');
+    }
 }

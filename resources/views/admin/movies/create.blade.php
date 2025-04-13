@@ -17,7 +17,8 @@
 
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="{{ route('admin.movies.index') }}">Danh sách phim</a></li>
+                                        <li class="breadcrumb-item"><a href="{{ route('admin.movies.index') }}">Danh sách
+                                                phim</a></li>
                                         <li class="breadcrumb-item active">Thêm mới</li>
                                     </ol>
                                 </div>
@@ -56,31 +57,23 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-    <label class="form-label">Rạp chiếu phim
-        <span class="required" style="color: red">*</span>
-    </label>
-    <div class="row">
-        @foreach ($branches as $branch)
-            <div class="col-md-4">
-                <div class="form-check">
-                    <input type="checkbox" name="branch_ids[]"
-                        value="{{ $branch->id }}"
-                        id="branch_{{ $branch->id }}"
-                        class="form-check-input {{ $errors->has('branch_ids') ? 'is-invalid' : '' }}"
-                        {{ in_array($branch->id, old('branch_ids', [])) ? 'checked' : '' }}>
-                    <label class="form-check-label" for="branch_{{ $branch->id }}">
-                        {{ $branch->name }}
-                    </label>
-                </div>
-            </div>
-        @endforeach
-    </div>
-    <div class="{{ $errors->has('branch_ids') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
-        @if ($errors->has('branch_ids'))
-            <span class="text-danger fw-medium">{{ $errors->first('branch_ids') }}</span>
-        @endif
-    </div>
-</div>
+                                            <label for="branch_ids" class="form-label">Chi nhánh chiếu phim</label>
+                                            <select name="branch_ids[]" class="form-control select2" multiple id="branch_ids" style="width: 100%;">
+                                                @foreach ($branches as $branch)
+                                                    <option value="{{ $branch->id }}" {{ in_array($branch->id, old('branch_ids', $selectedBranches ?? [])) ? 'selected' : '' }}>
+                                                        {{ $branch->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <div
+                                                class="{{ $errors->has('branch_ids') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
+                                                @if ($errors->has('branch_ids'))
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('branch_ids') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+
                                         <div class="mb-3">
                                             <label class="form-label">Danh mục phim
                                                 <span class="required" style="color: red">*</span></label>
@@ -90,7 +83,8 @@
                                             <div
                                                 class="{{ $errors->has('category') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('category'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('category') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('category') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -103,7 +97,8 @@
                                             <div
                                                 class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('img_thumbnail'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('img_thumbnail') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('img_thumbnail') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -126,7 +121,8 @@
                                             <div
                                                 class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('movie_genres'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('movie_genres') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('movie_genres') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -139,7 +135,8 @@
                                             <div
                                                 class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('surcharge'))
-                                                   <span class="text-danger fw-medium"> {{ $errors->first('surcharge') }}</span>
+                                                    <span class="text-danger fw-medium">
+                                                        {{ $errors->first('surcharge') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -156,7 +153,8 @@
                                             <div
                                                 class="{{ $errors->has('director') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('director'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('director') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('director') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -170,7 +168,8 @@
                                             <div
                                                 class="{{ $errors->has('trailer_url') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('trailer_url'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('trailer_url') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('trailer_url') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -183,7 +182,8 @@
                                             <div
                                                 class="{{ $errors->has('duration') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('duration'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('duration') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('duration') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -193,13 +193,15 @@
                                             <div
                                                 class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('release_date'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('release_date') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('release_date') }}</span>
                                                 @endif
                                             </div>
                                             <div
                                                 class="{{ $errors->has('end_date') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                 @if ($errors->has('end_date'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('end_date') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('end_date') }}</span>
                                                 @endif
                                             </div>
                                             <div class="input-daterange input-group" id="datepicker6"
@@ -236,7 +238,8 @@
                                             <div
                                                 class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('movie_versions'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('movie_versions') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('movie_versions') }}</span>
                                                 @endif
                                             </div>
                                         </div>
@@ -261,7 +264,8 @@
                                             <div
                                                 class="{{ $errors->has('rating') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
                                                 @if ($errors->has('rating'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('rating') }}</span>
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('rating') }}</span>
                                                 @elseif (old('rating'))
                                                     Đã chọn {{ old('rating') }} sao
                                                 @endif
@@ -276,7 +280,8 @@
                                         <div
                                             class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
                                             @if ($errors->has('description'))
-                                                <span class="text-danger fw-medium">{{ $errors->first('description') }}</span>
+                                                <span
+                                                    class="text-danger fw-medium">{{ $errors->first('description') }}</span>
                                             @endif
                                         </div>
                                     </div>
@@ -378,6 +383,11 @@
                     allowClear: true
                 });
 
+                    $('#branch_ids').select2({
+                        placeholder: "Chọn chi nhánh...",
+                        allowClear: true
+                    });
+
                 document.querySelectorAll('.custom-switch input[type="checkbox"]').forEach(function(checkbox) {
                     checkbox.addEventListener('change', function() {
                         var hiddenInput = document.getElementById(this.id.replace('switch_', 'is_'));
@@ -433,45 +443,86 @@
             });
 
 
-            document.addEventListener('DOMContentLoaded', function () {
-        const stars = document.querySelectorAll('.star-rating .bi-star, .star-rating .bi-star-fill');
-        const ratingInput = document.getElementById('rating-value');
-        let currentRating = ratingInput.value || 0;
+            document.addEventListener('DOMContentLoaded', function() {
+                const stars = document.querySelectorAll('.star-rating .bi-star, .star-rating .bi-star-fill');
+                const ratingInput = document.getElementById('rating-value');
+                let currentRating = ratingInput.value || 0;
 
-        if (currentRating) {
-            updateStars(currentRating);
-        }
+                if (currentRating) {
+                    updateStars(currentRating);
+                }
 
-        stars.forEach(star => {
-            star.addEventListener('click', function () {
-                currentRating = this.getAttribute('data-rating');
-                ratingInput.value = currentRating;
-                updateStars(currentRating);
-            });
+                stars.forEach(star => {
+                    star.addEventListener('click', function() {
+                        currentRating = this.getAttribute('data-rating');
+                        ratingInput.value = currentRating;
+                        updateStars(currentRating);
+                    });
 
-            star.addEventListener('mouseover', function () {
-                const hoverRating = this.getAttribute('data-rating');
-                updateStars(hoverRating, true);
-            });
+                    star.addEventListener('mouseover', function() {
+                        const hoverRating = this.getAttribute('data-rating');
+                        updateStars(hoverRating, true);
+                    });
 
-            star.addEventListener('mouseout', function () {
-                updateStars(currentRating);
-            });
-        });
+                    star.addEventListener('mouseout', function() {
+                        updateStars(currentRating);
+                    });
+                });
 
-        function updateStars(rating, hover = false) {
-            stars.forEach(star => {
-                const starRating = star.getAttribute('data-rating');
-                if (starRating <= rating) {
-                    star.classList.remove('bi-star');
-                    star.classList.add('bi-star-fill');
-                } else {
-                    star.classList.remove('bi-star-fill');
-                    star.classList.add('bi-star');
+                function updateStars(rating, hover = false) {
+                    stars.forEach(star => {
+                        const starRating = star.getAttribute('data-rating');
+                        if (starRating <= rating) {
+                            star.classList.remove('bi-star');
+                            star.classList.add('bi-star-fill');
+                        } else {
+                            star.classList.remove('bi-star-fill');
+                            star.classList.add('bi-star');
+                        }
+                    });
                 }
             });
-        }
-    });
+
+             $(document).ready(function () {
+                    const $branchSelect = $('#branch_ids');
+
+                    $branchSelect.select2({
+                        placeholder: "Chọn chi nhánh",
+                        closeOnSelect: false,
+                        width: '100%',
+                        templateResult: formatOptionWithCheckbox,
+                    });
+
+                    function formatOptionWithCheckbox(option) {
+                        if (!option.id) return option.text;
+
+                        const selectedValues = $branchSelect.val() || [];
+                        const isSelected = selectedValues.includes(option.id);
+
+                        return $(`
+                <span>
+                    <input type="checkbox" style="margin-right: 6px;" ${isSelected ? 'checked' : ''}/>
+                    ${option.text}
+                </span>
+            `);
+                    }
+
+                    function updateSelectedNames() {
+                        const selectedOptions = $branchSelect.select2('data');
+                        if (!selectedOptions.length) {
+                            $('#selected-branch-text').text("Chọn chi nhánh");
+                            return;
+                        }
+                        const names = selectedOptions.map(opt => opt.text);
+                        $('#selected-branch-text').text(`Đã chọn: ${names.join(', ')}`);
+                    }
+
+                    $branchSelect.on('change', function () {
+                        updateSelectedNames();
+                    });
+
+                    updateSelectedNames();
+                });
         </script>
     </div>
 @endsection
@@ -479,16 +530,23 @@
 @section('style')
     <style>
         .star-rating .bi-star-fill {
-        color: #f1c40f; /* Màu vàng cho ngôi sao được chọn */
-    }
-    .star-rating .bi-star:hover,
-    .star-rating .bi-star-fill:hover {
-        color: #f39c12; /* Màu khi hover */
-    }
-    .select2-container--default .select2-selection--multiple .select2-selection__choice {
-    background-color: #545cee; /* Nền xanh đậm cho mục đã chọn */
-    color: white; /* Chữ trắng để nổi bật */
-    border: 1px solid darkblue; /* Viền xanh đậm hơn */
-}
+            color: #f1c40f;
+            /* Màu vàng cho ngôi sao được chọn */
+        }
+
+        .star-rating .bi-star:hover,
+        .star-rating .bi-star-fill:hover {
+            color: #f39c12;
+            /* Màu khi hover */
+        }
+
+        .select2-container--default .select2-selection--multiple .select2-selection__choice {
+            background-color: #545cee;
+            /* Nền xanh đậm cho mục đã chọn */
+            color: white;
+            /* Chữ trắng để nổi bật */
+            border: 1px solid darkblue;
+            /* Viền xanh đậm hơn */
+        }
     </style>
 @endsection
