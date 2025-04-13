@@ -96,6 +96,15 @@ class ShowtimeService
             }
         }
 
+        if (!Auth::user()->branch_id && !Auth::user()->cinema_id) {
+            foreach ($branchs as $branch) {
+
+                $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
+            
+            }
+        }
+
+
         /**
          *  @var mixed
          *  Phần quyền phim theo chi nhánh
