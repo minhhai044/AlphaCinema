@@ -96,7 +96,7 @@
                             </li>
                         @endcanany
 
-                        @can(['Danh sách hạn mức'],'Sửa hạn mức')
+                        @can(['Danh sách hạn mức','Sửa hạn mức'],)
                             <li>
                                 <a href="{{ route('admin.ranks.index') }}">
                                     <span data-key="t-ranks">Quản lý hạn mức</span>

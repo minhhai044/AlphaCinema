@@ -51,9 +51,11 @@
                             </div>
                         </div>
                     </form>
-                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movieModal">
-                        <i class="bi bi-plus-lg"></i> Thêm suất chiếu
-                    </button>
+                    @can('Thêm suất chiếu')
+                        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movieModal">
+                            <i class="bi bi-plus-lg"></i> Thêm suất chiếu
+                        </button>
+                    @endcan
                 </div>
 
             </div>
@@ -80,7 +82,7 @@
                         <!-- Danh sách phim -->
                         <ul class="list-group overflow-auto" style="height: 200px;" id="movieList">
                             {{-- @foreach ($movies as $movie)
-                               
+
                             @endforeach --}}
                         </ul>
                     </div>
@@ -491,7 +493,7 @@
             $('#movieList').empty(); // Xóa danh sách cũ
             filteredMovies.forEach(item => {
                 $('#movieList').append(`
-                   
+
                        <li class="list-group-item movie-item fw-semibold d-flex align-items-center justify-content-between border-0 rounded-3 mb-2 p-3 shadow-sm">
                             <a href="/admin/showtimes/${item.id}/create" class="text-dark fw-semibold d-flex align-items-center text-decoration-none flex-grow-1">
                                 <i class="bi bi-film me-3"></i>
@@ -504,7 +506,7 @@
                             </a>
                         </li>
 
-                    
+
                 `);
             });
         }

@@ -22,11 +22,13 @@
 
                 <div class="page-title-right">
 
+                    @can('Thêm phòng chiếu')
+                        <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
+                            data-bs-target="#exampleModal">
+                            <i class="bi bi-plus-lg"></i> Thêm phòng chiếu
+                        </button>
+                    @endcan
 
-                    <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">
-                        <i class="bi bi-plus-lg"></i> Thêm phòng chiếu
-                    </button>
                 </div>
 
             </div>
@@ -157,15 +159,15 @@
                         <td>{{ $room->type_room->name ?? 'Không có loại phòng' }}</td>
 
                         <td>
-                        <div class="d-flex justify-content-center align-items-center">
-                            <div class="custom-switch">
-                                <input @checked($room->is_active) switch="primary" data-publish="{{ $room->is_publish }}"
-                                    class="form-check-input switch-is-active" id="is_active{{ $room->id }}"
-                                    type="checkbox">
+                            <div class="d-flex justify-content-center align-items-center">
+                                <div class="custom-switch">
+                                    <input @checked($room->is_active) switch="primary"
+                                        data-publish="{{ $room->is_publish }}" class="form-check-input switch-is-active"
+                                        id="is_active{{ $room->id }}" type="checkbox">
                                     <label for="is_active{{ $room->id }}"></label>
+                                </div>
                             </div>
-                        </div>
-                        
+
                         </td>
                         <td>
                             <button class="btn btn-success btn-sm"><a class="dropdown-item"

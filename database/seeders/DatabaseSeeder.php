@@ -506,8 +506,6 @@ class DatabaseSeeder extends Seeder
             }
         }
 
-
-
         //Seed Movie
         /**
          * Seeder Movies - 10 phim hoạt hình với Comedy, Horror, Action
