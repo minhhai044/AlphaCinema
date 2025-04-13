@@ -1,7 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AuthController as AuthAdmin;
-
+use App\Http\Controllers\Api\MovieController;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -41,4 +41,6 @@ Route::get('auth/google/redirect', [AuthController::class, 'googleRedirect']);
 
 Route::get('auth/google/callback', [AuthController::class, 'googleCallBack']);
 
-
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/movies', [MovieController::class, 'index'])->name('api.movies.index');
+});
