@@ -26,7 +26,7 @@ class FoodController extends Controller
         $this->foodService = $foodService;
         $this->middleware('can:Danh sách đồ ăn')->only('index');
         $this->middleware('can:Thêm đồ ăn')->only(['create', 'store']);
-        $this->middleware('can:Sửa đồ ăn')->only(['edit', 'update']);
+        $this->middleware('can:Sửa đồ ăn')->only(['edit', 'update', 'change-active']);
         $this->middleware('can:Xóa đồ ăn')->only('destroy');
     }
 

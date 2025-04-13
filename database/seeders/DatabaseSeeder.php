@@ -362,6 +362,9 @@ class DatabaseSeeder extends Seeder
             'Xóa tài khoản',
             'Cấu hình website',
             'Danh sách thống kê',
+            'Thống kê đồ ăn',
+            'Thống kê vé',
+            'Thống kê phim',
             'Thẻ thành viên',
             'Danh sách ngày',
             'Sửa ngày',
@@ -429,10 +432,6 @@ class DatabaseSeeder extends Seeder
             'Thêm combo',
             'Sửa combo',
             'Xóa combo',
-            'Danh sách vouchers',
-            'Thêm vouchers',
-            'Sửa vouchers',
-            'Xóa vouchers',
             'Sửa giá',
             'Danh sách liên hệ',
             'Sửa liên hệ',
@@ -441,6 +440,9 @@ class DatabaseSeeder extends Seeder
             'Sửa tài khoản',
             'Xóa tài khoản',
             'Danh sách thống kê',
+            'Thống kê đồ ăn',
+            'Thống kê vé',
+            'Thống kê phim',
         ]);
         $managerRole = Role::findByName('Quản lý rạp');
         $managerRole->givePermissionTo([
@@ -470,6 +472,9 @@ class DatabaseSeeder extends Seeder
             'Thêm tài khoản',
             'Sửa tài khoản',
             'Danh sách thống kê',
+            'Thống kê đồ ăn',
+            'Thống kê vé',
+            'Thống kê phim',
         ]);
 
         $managerRole = Role::findByName('Nhân viên');

@@ -21,7 +21,9 @@
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-18">Quản lý Combo</h4>
                 <div class="page-title-right">
-                    <a href="{{ route('admin.combos.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                    @can('Thêm combo')
+                        <a href="{{ route('admin.combos.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                    @endcan
                     <a href="{{ route('admin.export', 'combos') }}" class="btn btn-warning waves-effect waves-light">
                         <i class="bx bx-download me-1"></i>
                         Xuất Excel
@@ -43,8 +45,10 @@
                             <th class="fw-semibold text-center">Thông tin Combo</th>
                             <th class="fw-semibold text-center">Giá bán</th>
                             <th class="fw-semibold text-center">Mô tả</th>
-                            <th class="fw-semibold text-center">Hoạt động</th>
-                            <th class="fw-semibold text-center">Chức năng</th>
+                            @can('Sửa combo')
+                                <th class="fw-semibold text-center">Hoạt động</th>
+                                <th class="fw-semibold text-center">Chức năng</th>
+                            @endcan
                         </tr>
                     </thead>
                     <tbody>
@@ -79,22 +83,25 @@
                                     @endif
                                 </td>
                                 <td>
-                                    {{  limitText($item->description, 15) }}
+                                    {{ limitText($item->description, 15) }}
                                 </td>
-                                <td>
-                                    <div class="d-flex justify-content-center align-items-center">
-                                        <div class="form-check form-switch form-switch-md mb-3" dir="ltr">
-                                            <input class="form-check-input switch-is-active changeActive" type="checkbox"
-                                                onclick="return confirm('Bạn có chắc muốn thay đổi?')"
-                                                data-combo-id="{{ $item->id }}" @checked($item->is_active)>
+
+                                @can('Sửa combo')
+                                    <td>
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div class="form-check form-switch form-switch-md mb-3" dir="ltr">
+                                                <input class="form-check-input switch-is-active changeActive" type="checkbox"
+                                                    onclick="return confirm('Bạn có chắc muốn thay đổi?')"
+                                                    data-combo-id="{{ $item->id }}" @checked($item->is_active)>
+                                            </div>
                                         </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="{{ route('admin.combos.edit', $item) }}" class="btn btn-warning btn-sm">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
-                                </td>
+                                    </td>
+                                    <td>
+                                        <a href="{{ route('admin.combos.edit', $item) }}" class="btn btn-warning btn-sm">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                    </td>
+                                @endcan
                             </tr>
                         @endforeach
                     </tbody>

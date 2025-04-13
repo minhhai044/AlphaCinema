@@ -23,7 +23,7 @@ class VoucherController extends Controller
     {
         $this->middleware('can:Danh sách vouchers')->only('index');
         $this->middleware('can:Thêm vouchers')->only(['create', 'store']);
-        $this->middleware('can:Sửa vouchers')->only(['edit', 'update']);
+        $this->middleware('can:Sửa vouchers')->only(['edit', 'update', 'toggle']);
         $this->middleware('can:Xóa vouchers')->only('destroy');
     }
 

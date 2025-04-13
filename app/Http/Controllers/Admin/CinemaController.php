@@ -25,7 +25,7 @@ class CinemaController extends Controller
         $this->cinemaService = $cinemaService;
         $this->middleware('can:Danh sách rạp')->only('index');
         $this->middleware('can:Thêm rạp')->only(['create', 'store']);
-        $this->middleware('can:Sửa rạp')->only(['edit', 'update']);
+        $this->middleware('can:Sửa rạp')->only(['edit', 'update', 'toggle']);
         $this->middleware('can:Xóa rạp')->only('destroy');
     }
     /**

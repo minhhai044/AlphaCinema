@@ -16,7 +16,7 @@ class BranchController extends Controller
     {
         $this->middleware('can:Danh sách chi nhánh')->only('index');
         $this->middleware('can:Thêm chi nhánh')->only(['create', 'store']);
-        $this->middleware('can:Sửa chi nhánh')->only(['edit', 'update']);
+        $this->middleware('can:Sửa chi nhánh')->only(['edit', 'update', 'toggle']);
         $this->middleware('can:Xóa chi nhánh')->only('destroy');
     }
 

@@ -22,6 +22,9 @@ class StatisticalController extends Controller
     public function __construct(TicketService $ticketService)
     {
         $this->ticketService = $ticketService;
+        $this->middleware('can:Thống kê đồ ăn')->only(['foodRevenue', 'comboRevenue']);
+        $this->middleware('can:Thống kê vé')->only(['ticketRevenue']);
+        $this->middleware('can:Thống kê phim')->only(['cinemaRevenue']);
     }
 
     public function cinemaRevenue(Request $request)
