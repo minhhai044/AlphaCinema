@@ -73,7 +73,7 @@ class UserRequest extends FormRequest
     public function rulesForSignIn()
     {
         return [
-            'email' => 'required|email|exists:users,email',
+            'email' => 'required|email',
             'password' => 'required|string|min:8',
         ];
     }
