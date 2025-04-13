@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\V1\AuthController;
 use App\Http\Controllers\Api\V1\BranchController;
 use App\Http\Controllers\Api\V1\FoodController;
 use App\Http\Controllers\Api\V1\ComboFoodController;
+use App\Http\Controllers\Api\V1\OrderController;
 use App\Http\Controllers\Api\V1\PaymentController;
 use App\Http\Controllers\Api\V1\RoomController;
 use App\Http\Controllers\Api\V1\SeatTemplateController;
@@ -88,6 +89,12 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/pointhistory', [AuthController::class, 'getUserPointHistory']);
 
     Route::get('/ticket-by-user', [TicketController::class, 'getTicketByUser']);
+    /**
+     * Chi tiết đơn hàng dựa vào mã code
+     */
+    Route::get('/{code}/order', [TicketController::class, 'findByCode']);
+
+
     Route::get('/voucher', [AuthController::class, 'getUserVoucher']);
 
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);

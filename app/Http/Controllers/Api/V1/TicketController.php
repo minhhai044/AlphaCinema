@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
 use App\Traits\ApiResponseTrait;
 use Carbon\Carbon;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Milon\Barcode\Facades\DNS1DFacade as DNS1D;
@@ -195,6 +196,30 @@ class TicketController extends Controller
             return response()->json(['status' => 'success', 'data' => $tickets], 200);
         } catch (\Throwable $e) {
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+    public function findByCode(Request $request, $code)
+    {
+        try {
+            $user = Auth::user();
+
+            $ticket = Ticket::with(['movie', 'room'])
+                ->where([
+                    ['user_id', $user->id],
+                    ['code', $code]
+                ])->first();
+
+            if (!$ticket) {
+                return $this->errorResponse('Đơn hàng không tồn tại', Response::HTTP_NOT_FOUND);
+            }
+
+            return $this->successResponse([
+                'user' => $user->id,
+                'ticket' => $ticket
+            ]);
+        } catch (\Throwable $th) {
+            return response()->json(['status' => 'error', 'message' => $th->getMessage()], 500);
         }
     }
 }
