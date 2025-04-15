@@ -255,7 +255,7 @@
                                 number_format(
                                     ($ticketData['price_percentage']['price_ticket_percentage'] -
                                     $ticketData['point_use'] -
-                                    ($ticketData['voucher_type'] == 0 ? $ticketData['voucher_discount_price'] : 0)) *
+                                    ($ticketData['voucher_type'] == 1 ? $ticketData['voucher_discount_price'] : 0)) *
                                     (1 + $ticketData['vat'] / 100),
                                     0, '.', '.'
                                 ) . ' VND' ?? '0 VND'
@@ -270,7 +270,7 @@
                             <span class="fw-medium">
                                 {{ number_format(
                                     ($ticketData['price_percentage']['price_food_percentage'] -
-                                        ($ticketData['voucher_type'] == 1 ? $ticketData['voucher_discount_price'] : 0)) *
+                                        ($ticketData['voucher_type'] == 0 ? $ticketData['voucher_discount_price'] : 0)) *
                                         (1 + $ticketData['vat'] / 100),
                                     0,
                                     '.',
@@ -355,7 +355,7 @@
                 @if (
                     !empty($ticketData['voucher_discount_price']) &&
                         isset($ticketData['voucher_type']) &&
-                        $ticketData['voucher_type'] == 1)
+                        $ticketData['voucher_type'] == 0)
                     <div class="mb-1 row">
                         <div class="fw-medium col-6">Giảm giá</div>
                         <div class="fw-medium col-2 text-center">VNĐ</div>
@@ -369,7 +369,7 @@
                     $amount = $ticketData['total_amount']; // ví dụ: "290.000 VND"
                     $parts = explode(' ', $amount); // [0] => "290.000", [1] => "VND"
                     $discountFood =
-                        !empty($ticketData['voucher_type']) && $ticketData['voucher_type'] == 1
+                        !empty($ticketData['voucher_type']) && $ticketData['voucher_type'] == 0
                             ? $ticketData['voucher_discount_price']
                             : 0; // Nếu không thỏa mãn điều kiện thì gán 0
                 @endphp
@@ -467,7 +467,7 @@
                 @if (
                     !empty($ticketData['voucher_discount_price']) &&
                         isset($ticketData['voucher_type']) &&
-                        $ticketData['voucher_type'] == 0)
+                        $ticketData['voucher_type'] == 1)
                     <div class="mb-1 row me-2 align-items-center">
                         <div class="fw-medium col-8 ">Khuyến mãi </div>
                         <div class="fw-medium fs-5 col-1">VNĐ</div>

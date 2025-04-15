@@ -75,7 +75,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">Danh mục phim
+                                            <label class="form-label">Diễn viên
                                                 <span class="required" style="color: red">*</span></label>
                                             <input type="text" name="category"
                                                 class="form-control {{ $errors->has('category') ? 'is-invalid' : (old('category') ? 'is-valid' : '') }}"
@@ -160,7 +160,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">URL Youte
+                                            <label class="form-label">URL Youtube
                                                 <span class="required" style="color: red">*</span></label>
                                             <input type="text" name="trailer_url"
                                                 class="form-control {{ $errors->has('trailer_url') ? 'is-invalid' : (old('trailer_url') ? 'is-valid' : '') }}"

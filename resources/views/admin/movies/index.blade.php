@@ -13,7 +13,9 @@
                             <!-- Không cần #pageLength ở đây nữa -->
                         </div>
                         <div class="col-md-6 text-end">
-                            <a href="{{ route('admin.movies.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                            @can('Thêm phim')
+                                <a href="{{ route('admin.movies.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                            @endcan
                             <button class="btn btn-outline-secondary me-2" type="button" data-bs-toggle="collapse"
                                 data-bs-target="#searchForm">
                                 <i class="fas fa-filter"></i> Bộ lọc
@@ -132,7 +134,7 @@
             }).then(result => result.isConfirmed);
         }
 
-        $(document).ready(function () {
+        $(document).ready(function() {
             var table = $('#movieTable').DataTable({
                 processing: true,
                 serverSide: true,
@@ -142,62 +144,63 @@
                 ajax: {
                     url: "{{ route('api.movies.index') }}",
                     type: "GET",
-                    data: function (d) {
+                    data: function(d) {
                         d.id = $('input[name="id"]').val();
                         d.movie_versions = $('select[name="movie_versions"]').val();
                         d.movie_genres = $('select[name="movie_genres"]').val();
                     },
-                    error: function (xhr, status, error) {
+                    error: function(xhr, status, error) {
                         console.error("Lỗi API:", xhr.responseText);
                         toastr.error('Lỗi khi tải dữ liệu bảng.');
                     }
                 },
                 columns: [{
-                    data: 'id',
-                    name: 'id'
-                },
-                {
-                    data: 'img_thumbnail',
-                    render: function (data) {
-                        return data ?
-                            `<img src="/storage/${data}" style="max-width: 200px; height: auto; display: block; margin: 0 auto;">` :
-                            'No image';
-                    }
-                },
-                {
-                    data: 'name',
-                    name: 'name',
-                    render: function (data, type, row) {
-                        if (!row) return '<span style="color: gray;">Không có dữ liệu</span>';
+                        data: 'id',
+                        name: 'id'
+                    },
+                    {
+                        data: 'img_thumbnail',
+                        render: function(data) {
+                            return data ?
+                                `<img src="/storage/${data}" style="max-width: 200px; height: auto; display: block; margin: 0 auto;">` :
+                                'No image';
+                        }
+                    },
+                    {
+                        data: 'name',
+                        name: 'name',
+                        render: function(data, type, row) {
+                            if (!row) return '<span style="color: gray;">Không có dữ liệu</span>';
 
-                        let genreMapping = {
-                            "Action": "Hành động",
-                            "Horror": "Kinh dị",
-                            "Comedy": "Hài",
-                            "Drama": "Chính kịch",
-                            "Sci-Fi": "Khoa học viễn tưởng",
-                            "Fantasy": "Giả tưởng",
-                            "Romance": "Lãng mạn",
-                            "Thriller": "Giật gân",
-                            "Adventure": "Phiêu lưu",
-                            "Animation": "Hoạt hình"
-                        };
+                            let genreMapping = {
+                                "Action": "Hành động",
+                                "Horror": "Kinh dị",
+                                "Comedy": "Hài",
+                                "Drama": "Chính kịch",
+                                "Sci-Fi": "Khoa học viễn tưởng",
+                                "Fantasy": "Giả tưởng",
+                                "Romance": "Lãng mạn",
+                                "Thriller": "Giật gân",
+                                "Adventure": "Phiêu lưu",
+                                "Animation": "Hoạt hình"
+                            };
 
-                        let genres = Array.isArray(row.movie_genres) ? row.movie_genres : [];
-                        let genreHtml = genres.map(genre => {
-                            let vietnameseGenre = genreMapping[genre] || genre;
-                            return `<span style="background-color: green; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
+                            let genres = Array.isArray(row.movie_genres) ? row.movie_genres : [];
+                            let genreHtml = genres.map(genre => {
+                                let vietnameseGenre = genreMapping[genre] || genre;
+                                return `<span style="background-color: green; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
                                             ${vietnameseGenre}
                                         </span>`;
-                        }).join(' ');
+                            }).join(' ');
 
-                        let versions = Array.isArray(row.movie_versions) ? row.movie_versions : [];
-                        let versionHtml = versions.map(version =>
-                            `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
+                            let versions = Array.isArray(row.movie_versions) ? row.movie_versions :
+                                [];
+                            let versionHtml = versions.map(version =>
+                                `<span style="background-color: blue; color: white; padding: 3px 5px; border-radius: 5px; margin-right: 5px;">
                                             ${version}
                                         </span>`).join(' ');
 
-                        return `
+                            return `
                                         <div style="padding: 15px; border-radius: 8px;">
                                             <h3 style="margin: 0 0 10px; color: #007bff; font-weight: bold;">${data || '<span style="color: gray;">Chưa có tên phim</span>'}</h3>
                                             <p style="margin: 5px 0; font-size: 14px;">
@@ -244,73 +247,91 @@
                                             </p>
                                         </div>
                                     `;
-                    }
-                },
-                {
-                    data: 'is_active',
-                    render: function (data, type, row) {
-                        return `
-                                        <div class="form-check form-switch form-switch-md form-switch-success">
-                                            <input class="form-check-input changeStatus"
-                                                   type="checkbox"
-                                                   data-movie-id="${row.id}"
-                                                   data-field="is_active"
-                                                   ${data ? 'checked' : ''}>
-                                        </div>
-                                    `;
+                        }
                     },
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'is_hot',
-                    render: function (data, type, row) {
-                        return `
-                                        <div class="form-check form-switch form-switch-md form-switch-success">
-                                            <input class="form-check-input changeStatus"
-                                                   type="checkbox"
-                                                   data-movie-id="${row.id}"
-                                                   data-field="is_hot"
-                                                   ${data ? 'checked' : ''}>
-                                        </div>
-                                    `;
+                    {
+                        data: 'is_active',
+                        render: function(data, type, row) {
+                            return `
+                                    <div class="form-check form-switch form-switch-md form-switch-success">
+                                        <input class="form-check-input @can('Sửa phim') changeStatus @endcan"
+                                            type="checkbox"
+                                            data-movie-id="${row.id}"
+                                            data-field="is_active"
+                                            ${data ? 'checked' : ''}
+                                            @can('Sửa phim')
+                                            @else
+                                            disabled
+                                            @endcan
+                                        >
+                                    </div>
+                                `;
+                        },
+                        orderable: false,
+                        searchable: false
                     },
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'is_publish',
-                    render: function (data, type, row) {
-                        return `
-                                        <div class="form-check form-switch form-switch-md form-switch-success">
-                                            <input class="form-check-input changeStatus"
-                                                   type="checkbox"
-                                                   data-movie-id="${row.id}"
-                                                   data-field="is_publish"
-                                                   ${data ? 'checked' : ''}>
-                                        </div>
-                                    `;
+                    {
+                        data: 'is_hot',
+                        render: function(data, type, row) {
+                            return `
+                                    <div class="form-check form-switch form-switch-md form-switch-success">
+                                        <input class="form-check-input @can('Sửa phim') changeStatus @endcan"
+                                            type="checkbox"
+                                            data-movie-id="${row.id}"
+                                            data-field="is_hot"
+                                            ${data ? 'checked' : ''}
+                                            @can('Sửa phim')
+                                            @else
+                                            disabled
+                                            @endcan
+                                        >
+                                    </div>
+                                `;
+                        },
+                        orderable: false,
+                        searchable: false
                     },
-                    orderable: false,
-                    searchable: false
-                },
-                {
-                    data: 'id',
-                    render: function (data) {
-                        return `
+                    {
+                        data: 'is_publish',
+                        render: function(data, type, row) {
+                            return `
+                                    <div class="form-check form-switch form-switch-md form-switch-success">
+                                        <input class="form-check-input @can('Sửa phim') changeStatus @endcan"
+                                            type="checkbox"
+                                            data-movie-id="${row.id}"
+                                            data-field="is_publish"
+                                            ${data ? 'checked' : ''}
+                                            @can('Sửa phim')
+                                            @else
+                                            disabled
+                                            @endcan
+                                        >
+                                    </div>
+                                `;
+                        },
+                        orderable: false,
+                        searchable: false
+                    },
+                    {
+                        data: 'id',
+                        render: function(data) {
+                            return `
                                         <div class="text-center d-flex gap-2">
                                             <a href="/admin/movies/${data}" class="btn btn-success">
                                                 <i class="fas fa-eye"></i>
                                             </a>
-                                            <a href="/admin/movies/${data}/edit" class="btn btn-warning">
+                                            @can('Sửa phim')
+                                                <a href="/admin/movies/${data}/edit" class="btn btn-warning">
                                                 <i class="fas fa-edit"></i>
-                                            </a>
+                                                </a>
+                                            @endcan
+
                                         </div>
                                     `;
-                    },
-                    orderable: false,
-                    searchable: false
-                }
+                        },
+                        orderable: false,
+                        searchable: false
+                    }
                 ],
                 pageLength: 5,
                 lengthChange: false,
@@ -325,12 +346,12 @@
                     emptyTable: "Không có dữ liệu để hiển thị",
                     zeroRecords: "Không tìm thấy kết quả phù hợp"
                 },
-                drawCallback: function () {
+                drawCallback: function() {
                     $('#dataTables-search').html($('.dataTables_filter').detach());
                 }
             });
 
-            $('#movieTable').on('change', '.changeStatus', function (e) {
+            $('#movieTable').on('change', '.changeStatus', function(e) {
                 e.preventDefault();
 
                 let $checkbox = $(this);
@@ -341,7 +362,7 @@
                     'is_active': 'Bạn có chắc chắn muốn thay đổi trạng thái hoạt động của phim?',
                     'is_hot': 'Bạn có chắc chắn muốn thay đổi trạng thái nổi bật của phim?',
                     'is_publish': 'Bạn có chắc chắn muốn thay đổi trạng thái xuất bản của phim?'
-                }[field];
+                } [field];
 
                 confirmChange(message).then((confirmed) => {
                     if (confirmed) {
@@ -353,7 +374,7 @@
                                 value: is_active,
                                 _token: '{{ csrf_token() }}'
                             },
-                            success: function (response) {
+                            success: function(response) {
                                 if (response.success) {
                                     toastr.success('Cập nhật trạng thái thành công!');
                                     table.ajax.reload(null, false);
@@ -362,7 +383,7 @@
                                     $checkbox.prop('checked', !is_active);
                                 }
                             },
-                            error: function (xhr) {
+                            error: function(xhr) {
                                 console.error('Lỗi:', xhr.responseText);
                                 toastr.error('Đã xảy ra lỗi khi cập nhật trạng thái.');
                                 $checkbox.prop('checked', !is_active);
@@ -374,20 +395,20 @@
                 });
             });
 
-            $('#pageLength').on('change', function () {
+            $('#pageLength').on('change', function() {
                 table.page.len($(this).val()).draw();
             });
 
             // Lọc dữ liệu
-            $('#filterForm').on('submit', function (e) {
+            $('#filterForm').on('submit', function(e) {
                 e.preventDefault();
                 table.ajax.reload();
             });
 
             // Reset lọc
-            $('#resetFilter').on('click', function () {
+            $('#resetFilter').on('click', function() {
                 $('#filterForm')[0].reset(); // Reset form
-                setTimeout(function () {
+                setTimeout(function() {
                     table.ajax.reload();
                 }, 50);
             });
