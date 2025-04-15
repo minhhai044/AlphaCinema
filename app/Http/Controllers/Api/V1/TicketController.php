@@ -7,6 +7,7 @@ use App\Http\Requests\TicketRequest;
 use App\Models\Cinema;
 use App\Models\Movie;
 use App\Models\Ticket;
+use App\Models\Voucher;
 use App\Services\TicketService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -204,11 +205,16 @@ class TicketController extends Controller
         try {
             $user = Auth::user();
 
-            $ticket = Ticket::with(['movie', 'room'])
+            $ticket = Ticket::with(['movie', 'room', 'showtime'])
                 ->where([
                     ['user_id', $user->id],
                     ['code', $code]
                 ])->first();
+
+            if($ticket){
+                $ticketType = Voucher::where("code", $ticket['voucher_code'])->value('type_voucher');
+                $ticket['voucher_type'] = $ticketType;
+            }
 
             if (!$ticket) {
                 return $this->errorResponse('Đơn hàng không tồn tại', Response::HTTP_NOT_FOUND);
@@ -216,7 +222,7 @@ class TicketController extends Controller
 
             return $this->successResponse([
                 'user' => $user->id,
-                'ticket' => $ticket
+                'ticket' => $ticket,
             ]);
         } catch (\Throwable $th) {
             return response()->json(['status' => 'error', 'message' => $th->getMessage()], 500);
