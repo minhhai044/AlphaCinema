@@ -23,6 +23,7 @@
         "php-flasher/flasher-toastr-laravel": "^1.15",
         "predis/predis": "^2.3",
         "pusher/pusher-php-server": "^7.2",
+        "spatie/laravel-analytics": "^5.5",
         "spatie/laravel-permission": "^6.12",
         "tinymce/tinymce": "^7.7"
     },

@@ -71,6 +71,7 @@
                                 @endif
                             </td>
                             <td>{{ number_format($food->price) }} VND</td>
+
                             @can('Sửa đồ ăn')
                                 <td>
                                     <div class="d-flex justify-content-center align-items-center">
@@ -87,6 +88,7 @@
                                     </a>
                                 </td>
                             @endcan
+
                         </tr>
                     @endforeach
                 </tbody>
@@ -94,12 +96,10 @@
         </div>
     </div>
 
-
     @php
         $appUrl = env('APP_URL');
     @endphp
 @endsection
-
 
 @section('script')
     <script>
@@ -120,34 +120,56 @@
     </script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
     </script>
-
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
 
-
     <script>
-        $(document).on("change", ".changeActive", function() {
-            let foodId = $(this).data("food-id");
-            let is_active = $(this).is(":checked") ? 1 : 0;
-            $.ajax({
-                url: "{{ route('food.change-active') }}",
-                method: "POST",
-                data: {
-                    _token: "{{ csrf_token() }}",
-                    id: foodId,
-                    is_active: is_active
-                },
-                success: function(response) {
-                    if (response.success) {
-                        toastr.success('Trạng thái hoạt động đã được cập nhật.');
-                    } else {
-                        toastr.error(response.message || 'Có lỗi xảy ra.');
-                        $(`[data-food-id="${foodId}"]`).prop("checked", !is_active);
-                    }
-                },
-                error: function(xhr) {
-                    toastr.error('Có lỗi xảy ra khi cập nhật trạng thái.');
-                    $(`[data-food-id="${foodId}"]`).prop("checked", !is_active);
+        // Hàm xác nhận trước khi thay đổi
+        function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái Đồ ăn?', title =
+            'AlphaCinema thông báo') {
+            return Swal.fire({
+                icon: 'warning',
+                title: title,
+                text: text,
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy',
+            }).then(result => result.isConfirmed);
+        }
+
+        // Sự kiện thay đổi trạng thái của đồ ăn (food)
+        $(document).on("change", ".changeActive", function(e) {
+            e.preventDefault();
+
+            let $checkbox = $(this);
+            let foodId = $checkbox.data("food-id");
+            let is_active = $checkbox.is(":checked") ? 1 : 0;
+
+            confirmChange('Bạn có chắc chắn muốn thay đổi trạng thái món ăn?').then((confirmed) => {
+                if (confirmed) {
+                    $.ajax({
+                        url: "{{ route('food.change-active') }}",
+                        method: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id: foodId,
+                            is_active: is_active
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                toastr.success('Trạng thái hoạt động đã được cập nhật.');
+                            } else {
+                                toastr.error(response.message || 'Có lỗi xảy ra.');
+                                $checkbox.prop("checked", !is_active);
+                            }
+                        },
+                        error: function() {
+                            toastr.error('Có lỗi xảy ra khi cập nhật trạng thái.');
+                            $checkbox.prop("checked", !is_active);
+                        }
+                    });
+                } else {
+                    $checkbox.prop("checked", !is_active); // Nếu hủy thì hoàn tác checkbox
                 }
             });
         });
