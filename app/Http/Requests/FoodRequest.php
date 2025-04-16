@@ -47,7 +47,7 @@ class FoodRequest extends FormRequest
             ],
             'type' => 'required',
             'img_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'required|numeric|min:0|max:99999999',
+            'price' => 'required|numeric|min:10000|max:99999999',
             'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
         ];
@@ -64,7 +64,7 @@ class FoodRequest extends FormRequest
             ],
             'type' => 'nullable',
             'img_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'required|numeric|min:0|max:99999999',
+            'price' => 'required|numeric|min:10000|max:99999999',
             'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
         ];
@@ -101,7 +101,7 @@ class FoodRequest extends FormRequest
             ],
             'price.required' => 'Vui lòng nhập giá món ăn.',
             'price.numeric' => 'Giá món ăn phải là một số.',
-            'price.min' => 'Giá món ăn không được nhỏ hơn 0.',
+            'price.min' => 'Giá món ăn phải lớn hơn 10,000.',
             'price.max' => 'Giá món ăn không được vượt quá 99,999,999.',
 
             'description.required' => 'Vui lòng nhập mô tả món ăn.',

@@ -52,7 +52,6 @@
                             <th class="fw-semibold text-center">Hoạt động</th>
                             <th class="fw-semibold text-center">Chức năng</th>
                         @endcan
-
                     </tr>
                 </thead>
                 <tbody>

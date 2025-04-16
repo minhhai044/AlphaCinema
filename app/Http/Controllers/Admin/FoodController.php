@@ -50,10 +50,11 @@ class FoodController extends Controller
     // 3. Lưu đồ ăn mới
     public function store(FoodRequest $foodRequest)
     {
+        // var_dump($foodRequest->all());
         // dd($foodRequest->toArray());
         try {
-            // $data = $foodRequest->validated();
-            // dd($data);
+            $data = $foodRequest->validated();
+            dd($data);
             $this->foodService->createFoodService($foodRequest->validated());
 
             Toastr::success(null, 'Thêm mới đồ ăn thành công!');
