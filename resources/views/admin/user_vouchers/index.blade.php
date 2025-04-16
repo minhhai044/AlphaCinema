@@ -2,8 +2,8 @@
 @section('title', 'Áp mã giảm giá')
 
 @section('style')
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
@@ -19,6 +19,7 @@
         #datatable_length select {
             width: 60px;
         }
+
         #datatable thead th {
             text-align: center;
             vertical-align: middle;
@@ -47,67 +48,66 @@
 
     <!-- End Page Title -->
 
-    <div class="row">
+    <div class="row mb-3">
         <div class="col-lg-12">
-            <div class="card">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-sm">
-                            <div class="mb-4">
-                                <h6 class="mb-sm-0 font-size-16">Áp mã giảm giá</h6>
-                            </div>
-                        </div>
-                        @can('Thêm vouchers')
-                            <div class="col-sm-auto">
-                                <div class="mb-4">
-                                    <a href="{{ route('admin.user-vouchers.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
-                                </div>
-                            </div>
-                        @endcan
-                    </div>
 
-                    <div class="table-responsive">
-                        <table id="datatable" class="table table-bordered w-100 text-center">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Người dùng</th>
-                                    <th>Mã voucher</th>
-                                    <th>Tên voucher</th>
-                                    <th>Số lần sử dụng</th>
-                                    <th>Chức năng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($User_vouchers as $User_voucher)
-                                    <tr>
-                                        <td>{{ $User_voucher->id }}</td>
-                                        <td>{{ $User_voucher->user->name }}</td>
-                                        <td>{{ $User_voucher->voucher->code }}</td>
-                                        <td>{{ $User_voucher->voucher->title }}</td>
-                                        <td>{{ $User_voucher->usage_count }}</td>
-                                        <td class="text-center">
-                                            <a href="{{ route('admin.user-vouchers.edit', $User_voucher) }}" class="btn btn-warning btn-sm">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <form action="{{ route('admin.user-vouchers.destroy', $User_voucher) }}" method="POST"
-                                                class="d-inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
-                                                @csrf
-                                                @method('DELETE')
-                                                <button type="submit" class="btn btn-danger btn-sm">
-                                                    <i class="bi bi-trash"></i>
-                                                </button>
-                                            </form>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
+            <div class="row">
+                <div class="col-sm">
+                    <div class="mb-4">
+                        <h6 class="mb-sm-0 font-size-16">Áp mã giảm giá</h6>
                     </div>
-
                 </div>
+                @can('Thêm vouchers')
+                    <div class="col-sm-auto">
+                        <div class="mb-4">
+                            <a href="{{ route('admin.user-vouchers.create') }}" class="btn btn-primary me-2">+ Thêm mới</a>
+                        </div>
+                    </div>
+                @endcan
             </div>
+
+            <div class="table-responsive">
+                <table id="datatable" class="table table-bordered w-100 text-center">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Người dùng</th>
+                            <th>Mã voucher</th>
+                            <th>Tên voucher</th>
+                            <th>Số lần sử dụng</th>
+                            <th>Chức năng</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($User_vouchers as $User_voucher)
+                            <tr>
+                                <td>{{ $User_voucher->id }}</td>
+                                <td>{{ $User_voucher->user->name }}</td>
+                                <td>{{ $User_voucher->voucher->code }}</td>
+                                <td>{{ $User_voucher->voucher->title }}</td>
+                                <td>{{ $User_voucher->usage_count }}</td>
+                                <td class="text-center">
+                                    <a href="{{ route('admin.user-vouchers.edit', $User_voucher) }}"
+                                        class="btn btn-warning btn-sm">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                    <form action="{{ route('admin.user-vouchers.destroy', $User_voucher) }}" method="POST"
+                                        class="d-inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            </div>
+
         </div>
+
     </div>
 @endsection
 
@@ -140,9 +140,9 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
     <script>
-    $('#pageLength').on('change', function() {
-                table.page.len($(this).val()).draw();
-            });
+        $('#pageLength').on('change', function() {
+            table.page.len($(this).val()).draw();
+        });
     </script>
 
 @endsection

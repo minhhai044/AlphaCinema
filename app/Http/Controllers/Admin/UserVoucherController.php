@@ -25,7 +25,7 @@ class UserVoucherController extends Controller
 
     public function index()
     {
-        $User_vouchers = User_voucher::with(['user', 'voucher'])->latest('id')->paginate(10);
+        $User_vouchers = User_voucher::with(['user', 'voucher'])->latest('id')->get();
         return view('admin.user_vouchers.index', compact('User_vouchers'));
     }
 
