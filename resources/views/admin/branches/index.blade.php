@@ -37,7 +37,8 @@
     <div class="row">
         <div class="col-lg-4">
             <div class="card">
-                <div class="card-header">Thêm mới chi nhánh</div>
+                <div class="mb-sm-0 font-size-20 fw-semibold ms-3 mt-3">Thêm mới chi nhánh</div>
+
                 <div class="card-body">
                     <form action="{{ route('admin.branches.store') }}" method="post">
                         @csrf
@@ -85,7 +86,7 @@
         <div class="col-lg-8">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title">Danh sách chi nhánh</h4>
+                    <h4 class="mb-sm-0 font-size-20 fw-semibold">Danh sách chi nhánh</h4>
                     <div class="table-responsive">
                         <table id="datatable" class="table table-bordered w-100 text-center">
                             <thead>

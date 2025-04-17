@@ -24,8 +24,6 @@
                 <h4 class="mb-sm-0 font-size-20 fw-semibold">Quản lý đồ ăn</h4>
 
                 <div class="page-title-right">
-
-
                     @can('Thêm đồ ăn')
                         <a href="{{ route('admin.foods.create') }}" class="btn btn-primary  me-2">+ Thêm mới</a>
                     @endcan
