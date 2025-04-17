@@ -188,7 +188,7 @@
 
                         <div class="card-footer">
                             <button class="btn btn-primary">
-                               + Thêm mới
+                            Thêm
                             </button>
                             <a href="{{ route('admin.vouchers.index') }}" class="btn btn-danger">
                                 Hủy
@@ -207,7 +207,7 @@
                                 <div class="mb-3 d-flex gap-2">
                                     <label for="cinema-description" class="form-label">
                                         <span class="required">*</span>
-                                        Active:
+                                        Hoạt động:
                                     </label>
                                     <div class="round-switch">
                                         <input type="checkbox" id="switch6" switch="primary" value="1"
@@ -216,6 +216,7 @@
                                     </div>
                                 </div>
                             </div>
+                            <label for="">Áp dụng cho</label>
                             <select name="type_voucher" class="form-control select2" required>
                                 <option value="0" selected>Áp dụng cho Ghế</option>
                                 <option value="1">Áp dụng cho Food/Combo</option>
