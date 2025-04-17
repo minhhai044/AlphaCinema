@@ -84,7 +84,7 @@ class MovieRequest extends FormRequest
     public function messages()
     {
         return [
-            'branch_ids.required' => 'Nhập danh sách chi nhánh.',
+            'branch_ids.required' => 'Danh sách chi nhánh là bắt buộc.',
             'name.required' => 'Tên phim là bắt buộc.',
             'name.string' => 'Tên phim phải là chuỗi ký tự.',
             'name.max' => 'Tên phim không được vượt quá 255 ký tự.',

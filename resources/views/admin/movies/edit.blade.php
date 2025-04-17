@@ -57,7 +57,7 @@
 
 
                                         <div class="mb-3">
-                                            <label class="form-label">Danh mục phim <span class="required"
+                                            <label class="form-label">Diễn viên <span class="required"
                                                     style="color: red">*</span></label>
                                             <input type="text" name="category"
                                                 value="{{ old('category', $movie->category) }}" class="form-control">
@@ -177,22 +177,28 @@
                                             @enderror
                                         </div>
 
-                                        <div class="mb-4">
-                                            <label>Ngày trình chiếu <span class="required"
-                                                    style="color: red">*</span></label>
-                                            <div class="input-group">
-                                                <input type="date" class="form-control" name="release_date"
-                                                    value="{{ old('release_date', $movie->release_date ? date('Y-m-d', strtotime($movie->release_date)) : '') }}">
-                                                @error('release_date')
-                                                    <div class="text-danger fw-medium">{{ $message }}</div>
-                                                @enderror
-                                                <input type="date" class="form-control" name="end_date"
-                                                    value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}">
-                                                @error('end_date')
-                                                    <div class="text-danger fw-medium">{{ $message }}</div>
-                                                @enderror
-                                            </div>
-                                        </div>
+                                       <div class="mb-4">
+    <label>Ngày trình chiếu <span class="required" style="color: red">*</span></label>
+
+    <div class="input-group">
+        <input type="date" class="form-control {{ $errors->has('release_date') ? 'is-invalid' : '' }}"
+            name="release_date"
+            value="{{ old('release_date', $movie->release_date ? date('Y-m-d', strtotime($movie->release_date)) : '') }}">
+
+        <input type="date" class="form-control {{ $errors->has('end_date') ? 'is-invalid' : '' }}"
+            name="end_date"
+            value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}">
+    </div>
+
+    {{-- Phần hiển thị lỗi, nằm ngoài input-group --}}
+    @if ($errors->has('release_date'))
+        <div class="text-danger fw-medium d-block">{{ $errors->first('release_date') }}</div>
+    @endif
+
+    @if ($errors->has('end_date'))
+        <div class="text-danger fw-medium d-block">{{ $errors->first('end_date') }}</div>
+    @endif
+</div>
 
 
 

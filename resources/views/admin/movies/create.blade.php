@@ -55,25 +55,8 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="mb-3">
-                                            <label for="branch_ids" class="form-label">Chi nhánh chiếu phim
-                                                <span class="required" style="color: red">*</span>
-                                            </label>
-                                            <select name="branch_ids[]" class="form-control select2" multiple id="branch_ids" style="width: 100%;">
-                                                @foreach ($branches as $branch)
-                                                    <option value="{{ $branch->id }}" {{ in_array($branch->id, old('branch_ids', $selectedBranches ?? [])) ? 'selected' : '' }}>
-                                                        {{ $branch->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <div
-                                                class="{{ $errors->has('branch_ids') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
-                                                @if ($errors->has('branch_ids'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('branch_ids') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
+
+
 
                                         <div class="mb-3">
                                             <label class="form-label">Diễn viên
@@ -89,6 +72,10 @@
                                                 @endif
                                             </div>
                                         </div>
+
+
+
+
                                         <div class="mb-3">
                                             <label class="form-label">Ảnh
                                                 <span class="required" style="color: red">*</span></label>
@@ -103,6 +90,28 @@
                                                 @endif
                                             </div>
                                         </div>
+                                        <div class="mb-3">
+                                            <label for="branch_ids" class="form-label">Chi nhánh chiếu phim
+                                                <span class="required" style="color: red">*</span>
+                                            </label>
+                                            <select name="branch_ids[]" class="form-control select2" multiple
+                                                id="branch_ids" style="width: 100%;">
+                                                @foreach ($branches as $branch)
+                                                    <option value="{{ $branch->id }}"
+                                                        {{ in_array($branch->id, old('branch_ids', $selectedBranches ?? [])) ? 'selected' : '' }}>
+                                                        {{ $branch->name }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            <div
+                                                class="{{ $errors->has('branch_ids') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
+                                                @if ($errors->has('branch_ids'))
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('branch_ids') }}</span>
+                                                @endif
+                                            </div>
+                                        </div>
+
                                         <div class="mb-3">
                                             <label class="form-label">Thể loại phim
                                                 <span class="required" style="color: red">*</span></label>
@@ -127,17 +136,29 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="mb-3" id="surcharge_container" style="display: none;">
-                                            <label class="form-label">Phụ phí
-                                                <span class="required" style="color: red">*</span></label>
-                                            <input type="number" name="surcharge"
-                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
-                                                value="{{ old('surcharge') }}">
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Đánh giá <span class="required"
+                                                    style="color: red">*</span></label>
+                                            <div class="star-rating d-flex gap-1"
+                                                style="font-size: 1.5rem; cursor: pointer;">
+                                                <i class="bi bi-star" data-rating="1"></i>
+                                                <i class="bi bi-star" data-rating="2"></i>
+                                                <i class="bi bi-star" data-rating="3"></i>
+                                                <i class="bi bi-star" data-rating="4"></i>
+                                                <i class="bi bi-star" data-rating="5"></i>
+                                            </div>
+                                            <!-- Hidden input để gửi giá trị rating -->
+                                            <input type="hidden" name="rating" id="rating-value"
+                                                class="form-control {{ $errors->has('rating') ? 'is-invalid' : (old('rating') ? 'is-valid' : '') }}"
+                                                value="{{ old('rating') }}">
                                             <div
-                                                class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('surcharge'))
-                                                    <span class="text-danger fw-medium">
-                                                        {{ $errors->first('surcharge') }}</span>
+                                                class="{{ $errors->has('rating') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
+                                                @if ($errors->has('rating'))
+                                                    <span
+                                                        class="text-danger fw-medium">{{ $errors->first('rating') }}</span>
+                                                @elseif (old('rating'))
+                                                    Đã chọn {{ old('rating') }} sao
                                                 @endif
                                             </div>
                                         </div>
@@ -188,34 +209,40 @@
                                                 @endif
                                             </div>
                                         </div>
-                                        <div class="mb-4">
-                                            <label>Ngày trình chiếu
-                                                <span class="required" style="color: red">*</span></label>
+                                        <div class="mb-3">
+                                            <label>Ngày trình chiếu <span class="required"
+                                                    style="color: red">*</span></label>
 
                                             <div class="input-daterange input-group" id="datepicker6"
                                                 data-date-format="dd M, yyyy" data-date-autoclose="true"
                                                 data-provide="datepicker" data-date-container="#datepicker6">
+
                                                 <input type="date"
                                                     class="form-control {{ $errors->has('release_date') ? 'is-invalid' : (old('release_date') ? 'is-valid' : '') }}"
                                                     value="{{ old('release_date') }}" name="release_date"
                                                     placeholder="Start Date" />
+
                                                 <input type="date"
                                                     class="form-control {{ $errors->has('end_date') ? 'is-invalid' : (old('end_date') ? 'is-valid' : '') }}"
                                                     value="{{ old('end_date') }}" name="end_date"
                                                     placeholder="End Date" />
-                                                    <div class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                        @if ($errors->has('release_date'))
-                                                            <span class="text-danger fw-medium">{{ $errors->first('release_date') }}</span>
-                                                        @endif
-                                                    </div>
-                                                    <div class="{{ $errors->has('end_date') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                        @if ($errors->has('end_date'))
-                                                            <span class="text-danger fw-medium">{{ $errors->first('end_date') }}</span>
-                                                        @endif
-                                                    </div>
                                             </div>
 
+                                            {{-- Đưa phần hiển thị lỗi ra ngoài input-group --}}
+                                            @if ($errors->has('release_date') || $errors->has('end_date'))
+                                                <div class="invalid-feedback d-block">
+                                                    @if ($errors->has('release_date'))
+                                                        <span
+                                                            class="text-danger fw-medium d-block">{{ $errors->first('release_date') }}</span>
+                                                    @endif
+                                                    @if ($errors->has('end_date'))
+                                                        <span
+                                                            class="text-danger fw-medium d-block">{{ $errors->first('end_date') }}</span>
+                                                    @endif
+                                                </div>
+                                            @endif
                                         </div>
+
 
                                         <div class="mb-3">
                                             <label class="form-label">Phiên bản phim
@@ -245,32 +272,22 @@
 
 
 
-                                        <div class="mb-3">
-                                            <label class="form-label">Đánh giá <span class="required"
-                                                    style="color: red">*</span></label>
-                                            <div class="star-rating d-flex gap-1"
-                                                style="font-size: 1.5rem; cursor: pointer;">
-                                                <i class="bi bi-star" data-rating="1"></i>
-                                                <i class="bi bi-star" data-rating="2"></i>
-                                                <i class="bi bi-star" data-rating="3"></i>
-                                                <i class="bi bi-star" data-rating="4"></i>
-                                                <i class="bi bi-star" data-rating="5"></i>
-                                            </div>
-                                            <!-- Hidden input để gửi giá trị rating -->
-                                            <input type="hidden" name="rating" id="rating-value"
-                                                class="form-control {{ $errors->has('rating') ? 'is-invalid' : (old('rating') ? 'is-valid' : '') }}"
-                                                value="{{ old('rating') }}">
+                                        <div class="mb-3" id="surcharge_container" style="display: none;">
+                                            <label class="form-label">Phụ phí  <span class="required" style="color: red">*</span>
+                                            </label>
+                                            <input type="number" name="surcharge"
+                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
+                                                value="{{ old('surcharge') }}">
                                             <div
-                                                class="{{ $errors->has('rating') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
-                                                @if ($errors->has('rating'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('rating') }}</span>
-                                                @elseif (old('rating'))
-                                                    Đã chọn {{ old('rating') }} sao
+                                                class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                @if ($errors->has('surcharge'))
+                                                    <span class="text-danger fw-medium">
+                                                        {{ $errors->first('surcharge') }}</span>
                                                 @endif
                                             </div>
                                         </div>
                                     </div>
+
                                     <div class="mb-12">
                                         <label class="form-label">Mô tả
                                             <span class="required" style="color: red">*</span></label>
@@ -382,10 +399,10 @@
                     allowClear: true
                 });
 
-                    $('#branch_ids').select2({
-                        placeholder: "Chọn chi nhánh...",
-                        allowClear: true
-                    });
+                $('#branch_ids').select2({
+                    placeholder: "Chọn chi nhánh...",
+                    allowClear: true
+                });
 
                 document.querySelectorAll('.custom-switch input[type="checkbox"]').forEach(function(checkbox) {
                     checkbox.addEventListener('change', function() {
@@ -482,47 +499,47 @@
                 }
             });
 
-             $(document).ready(function () {
-                    const $branchSelect = $('#branch_ids');
+            $(document).ready(function() {
+                const $branchSelect = $('#branch_ids');
 
-                    $branchSelect.select2({
-                        placeholder: "Chọn chi nhánh",
-                        closeOnSelect: false,
-                        width: '100%',
-                        // templateResult: formatOptionWithCheckbox,
-                    });
+                $branchSelect.select2({
+                    placeholder: "Chọn chi nhánh",
+                    closeOnSelect: false,
+                    width: '100%',
+                    // templateResult: formatOptionWithCheckbox,
+                });
 
-                    function formatOptionWithCheckbox(option) {
-                        if (!option.id) return option.text;
+                function formatOptionWithCheckbox(option) {
+                    if (!option.id) return option.text;
 
-                        const selectedValues = $branchSelect.val() || [];
-                        const isSelected = selectedValues.includes(option.id);
+                    const selectedValues = $branchSelect.val() || [];
+                    const isSelected = selectedValues.includes(option.id);
 
-            //             return $(`
+                    //             return $(`
             //     <span>
             //         <input type="checkbox" style="margin-right: 6px;" ${isSelected ? 'checked' : ''}/>
             //         ${option.text}
             //     </span>
             // `)
-            ;
+                    ;
+                }
+
+                function updateSelectedNames() {
+                    const selectedOptions = $branchSelect.select2('data');
+                    if (!selectedOptions.length) {
+                        $('#selected-branch-text').text("Chọn chi nhánh");
+                        return;
                     }
+                    const names = selectedOptions.map(opt => opt.text);
+                    $('#selected-branch-text').text(`Đã chọn: ${names.join(', ')}`);
+                }
 
-                    function updateSelectedNames() {
-                        const selectedOptions = $branchSelect.select2('data');
-                        if (!selectedOptions.length) {
-                            $('#selected-branch-text').text("Chọn chi nhánh");
-                            return;
-                        }
-                        const names = selectedOptions.map(opt => opt.text);
-                        $('#selected-branch-text').text(`Đã chọn: ${names.join(', ')}`);
-                    }
-
-                    $branchSelect.on('change', function () {
-                        updateSelectedNames();
-                    });
-
+                $branchSelect.on('change', function() {
                     updateSelectedNames();
                 });
+
+                updateSelectedNames();
+            });
         </script>
     </div>
 @endsection
