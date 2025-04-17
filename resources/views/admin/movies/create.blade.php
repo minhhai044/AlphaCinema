@@ -13,7 +13,6 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
-                                <h4 class="mb-sm-0 font-size-18">Quản lí phim</h4>
 
                                 <div class="page-title-right">
                                     <ol class="breadcrumb m-0">
@@ -57,7 +56,9 @@
                                             </div>
                                         </div>
                                         <div class="mb-3">
-                                            <label for="branch_ids" class="form-label">Chi nhánh chiếu phim</label>
+                                            <label for="branch_ids" class="form-label">Chi nhánh chiếu phim
+                                                <span class="required" style="color: red">*</span>
+                                            </label>
                                             <select name="branch_ids[]" class="form-control select2" multiple id="branch_ids" style="width: 100%;">
                                                 @foreach ($branches as $branch)
                                                     <option value="{{ $branch->id }}" {{ in_array($branch->id, old('branch_ids', $selectedBranches ?? [])) ? 'selected' : '' }}>
@@ -75,7 +76,7 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">Danh mục phim
+                                            <label class="form-label">Diễn viên
                                                 <span class="required" style="color: red">*</span></label>
                                             <input type="text" name="category"
                                                 class="form-control {{ $errors->has('category') ? 'is-invalid' : (old('category') ? 'is-valid' : '') }}"
@@ -145,7 +146,7 @@
 
                                     <div class="col-lg-6">
                                         <div class="mb-3">
-                                            <label class="form-label">Tác giả
+                                            <label class="form-label">Đạo diễn
                                                 <span class="required" style="color: red">*</span></label>
                                             <input type="text" name="director"
                                                 class="form-control {{ $errors->has('director') ? 'is-invalid' : (old('director') ? 'is-valid' : '') }}"
@@ -190,20 +191,7 @@
                                         <div class="mb-4">
                                             <label>Ngày trình chiếu
                                                 <span class="required" style="color: red">*</span></label>
-                                            <div
-                                                class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('release_date'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('release_date') }}</span>
-                                                @endif
-                                            </div>
-                                            <div
-                                                class="{{ $errors->has('end_date') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('end_date'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('end_date') }}</span>
-                                                @endif
-                                            </div>
+
                                             <div class="input-daterange input-group" id="datepicker6"
                                                 data-date-format="dd M, yyyy" data-date-autoclose="true"
                                                 data-provide="datepicker" data-date-container="#datepicker6">
@@ -215,7 +203,18 @@
                                                     class="form-control {{ $errors->has('end_date') ? 'is-invalid' : (old('end_date') ? 'is-valid' : '') }}"
                                                     value="{{ old('end_date') }}" name="end_date"
                                                     placeholder="End Date" />
+                                                    <div class="{{ $errors->has('release_date') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                        @if ($errors->has('release_date'))
+                                                            <span class="text-danger fw-medium">{{ $errors->first('release_date') }}</span>
+                                                        @endif
+                                                    </div>
+                                                    <div class="{{ $errors->has('end_date') ? 'invalid-feedback' : 'valid-feedback' }}">
+                                                        @if ($errors->has('end_date'))
+                                                            <span class="text-danger fw-medium">{{ $errors->first('end_date') }}</span>
+                                                        @endif
+                                                    </div>
                                             </div>
+
                                         </div>
 
                                         <div class="mb-3">
