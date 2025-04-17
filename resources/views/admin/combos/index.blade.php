@@ -92,10 +92,8 @@
                                         <div class="d-flex justify-content-center align-items-center">
                                             <div class="form-check form-switch form-switch-md mb-3" dir="ltr">
                                                 <input class="form-check-input switch-is-active changeActive" type="checkbox"
-                                                    {{-- onclick="return confirm('Bạn có chắc muốn thay đổi?')" --}}
                                                     data-combo-id="{{ $item->id }}" @checked($item->is_active)>
                                             </div>
-
                                         </div>
                                     </td>
                                     <td>

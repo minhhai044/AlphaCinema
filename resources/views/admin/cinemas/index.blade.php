@@ -55,14 +55,21 @@
                                     <td>{{ limitText($cinema->address, 20) }}</td>
                                     <td>
 
-                                        <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST"
+                                        {{-- <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST"
                                             id="toggleForm{{ $cinema->id }}">
                                             @csrf
                                             <input type="checkbox" name="is_active" id="switch{{ $cinema->id }}"
                                                 switch="primary" {{ $cinema->is_active ? 'checked' : '' }}
                                                 onchange="confirmChange({{ $cinema->id }})">
                                             <label for="switch{{ $cinema->id }}"></label>
-                                        </form>
+                                        </form> --}}
+
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div class="form-check form-switch form-switch-md mb-3" dir="ltr">
+                                                <input class="form-check-input switch-is-active changeActive" type="checkbox"
+                                                    data-cinema-id="{{ $cinema->id }}" @checked($cinema->is_active)>
+                                            </div>
+                                        </div>
 
 
                                     </td>

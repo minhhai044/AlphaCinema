@@ -6,6 +6,7 @@ use App\Models\Food;
 use App\Models\Combo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\Cinema;
 use App\Models\Slideshow;
 
 class UpdateActiveController extends Controller {
@@ -44,14 +45,6 @@ class UpdateActiveController extends Controller {
         try {
             $combo = Combo::findOrFail($request->id);
 
-            //  // Kiểm tra nếu món ăn đang trong combo và muốn tắt trạng thái
-            //  if ($food->combos_count > 0 && $request->is_active == 0) {
-            //     return response()->json([
-            //         'success' => false,
-            //         'message' => 'Không thể tắt món ăn vì đang có trong combo!',
-            //     ]);
-            // }
-
             $combo->is_active = $request->is_active;
             $combo->save();
 
@@ -83,4 +76,19 @@ class UpdateActiveController extends Controller {
 
         return response()->json(['success' => true, 'message' => 'Cập nhật trạng thái thành công.']);
     }
+
+    public function cinema(Request $request)
+    {
+        try {
+            $cinema = Cinema::findOrFail($request->id);
+
+            $cinema->is_active = $request->is_active;
+            $cinema->save();
+
+            return response()->json(['success' => true, 'message' => 'Cập nhật thành công.', 'data' => $cinema]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Có lỗi xảy ra, vui lòng thử lại.', 'data' => $cinema]);
+        }
+    }
+
 }
