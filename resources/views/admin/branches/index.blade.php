@@ -47,31 +47,27 @@
                                 <label for="name" class="form-label">
                                     <span class="text-danger">*</span>Tên chi nhánh:
                                 </label>
-                                <input type="text"
-                                    class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
-                                    name="name" value="{{ old('name') }}" placeholder="Nhập tên chi nhánh">
-                                <div class="form-text">
-                                    Tên chi nhánh của rạp chiếu phim.
-                                </div>
-                                <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                    @if ($errors->has('name'))
-                                        {{ $errors->first('name') }}
-                                    @endif
+                                <input type="text" name="name" id="name" class="form-control"
+                                    value="{{ old('name') }}" placeholder="Nhập tên chi nhánh">
+                                <div class="">
+                                    @error('name')
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
                             <div class="mb-2">
                                 <label for="surcharge" class="form-label">
-                                    <span class="text-danger">*</span>Phụ phí:
+                                    <span class="text-danger fw-medium">*</span> Phụ phí (VNĐ)
                                 </label>
-                                <input type="number"
-                                    class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
-                                    name="surcharge" value="{{ old('surcharge') }}" placeholder="Nhập phụ phí">
-                                <div class="form-text">Số tiền phụ phí cho chi nhánh.</div>
-                                <div class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                    @if ($errors->has('surcharge'))
-                                        {{ $errors->first('surcharge') }}
-                                    @endif
-                                </div>
+                                <input type="text" name="surcharge" id="surcharge" class="form-control"
+                                    value="{{ old('surcharge') }}" placeholder="Nhập giá tiền">
+                                @error('surcharge')
+                                    <span class="text-danger fw-medium">
+                                        {{ $message }}
+                                    </span>
+                                @enderror
                             </div>
 
                             <div class="text-end mt-2">
@@ -156,7 +152,7 @@
                     <div class="modal-body">
 
                         <label for="branchSurcharge" class="form-label">Phụ phí</label>
-                        <input type="number" class="form-control" id="branchSurcharge" name="surcharge"
+                        <input type="price" class="form-control" id="branchSurcharge" name="surcharge"
                             placeholder="Nhập phụ phí" required>
 
                     </div>
@@ -199,6 +195,26 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
     <script>
+        function formatPriceInput(inputSelector, hiddenInputSelector) {
+            $(inputSelector).on("input", function() {
+                let value = $(this).val().replace(/\D/g, ""); // Chỉ giữ lại số
+                let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Thêm dấu ,
+
+                $(this).val(formattedValue); // Hiển thị dạng số có dấu ,
+                $(hiddenInputSelector).val(value || "0"); // Lưu dạng số không có dấu , vào input ẩn
+            });
+
+            $(inputSelector).on("blur", function() {
+                if (!$(this).val()) {
+                    $(this).val("0");
+                    $(hiddenInputSelector).val("0");
+                }
+            });
+        }
+
+        // Áp dụng cho input giá gốc & giá sale
+        formatPriceInput("#surcharge", "#surcharge_hidden");
+
         document.querySelectorAll('.editBranch').forEach(function(button) {
             button.addEventListener('click', function() {
                 const id = this.dataset.id;
@@ -229,3 +245,4 @@
     </script>
 
 @endsection
+
