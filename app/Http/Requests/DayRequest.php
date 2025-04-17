@@ -41,7 +41,15 @@ class DayRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'day_surcharge' => 'required|numeric|min:0',
+            'day_surcharge' => 'required|integer|min:0',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'day_surcharge.min' => 'Phụ phí ngày phải lớn hơn 0.',
+            'day_surcharge.integer' => 'Phụ phí ngày phải là số nguyên.',
         ];
     }
 }
