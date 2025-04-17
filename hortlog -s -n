@@ -1,0 +1,120 @@
+* [33mc440f4b[m[33m ([m[1;36mHEAD -> [m[1;32mmergeFull[m[33m, [m[1;31morigin/mergeFull[m[33m, [m[1;31morigin/lamndt2[m[33m, [m[1;32mlamndt2[m[33m)[m fix full pop-op cinema
+* [33mc1666bf[m fix pop-up cinema
+* [33m221fff4[m fix pop-up combo food
+*   [33m2e49a5a[m Merge branch 'mergeFull' of https://github.com/minhhai044/AlphaCinema into mergeFull
+[32m|[m[33m\[m  
+[32m|[m * [33m4e88b10[m Fix User Voucher by Minh Hải
+* [33m|[m [33m7c2cafb[m fix price branch
+* [33m|[m [33mf2b5af2[m fix branch
+* [33m|[m [33me5a1d8c[m fix price combo food
+* [33m|[m [33m92cd8cd[m fix price combo
+* [33m|[m [33macaef80[m fix price food
+* [33m|[m   [33m8718ca0[m Merge branch 'lamndt2' into mergeFull
+[33m|[m[35m\[m [33m\[m  
+[33m|[m [35m|[m[33m/[m  
+[33m|[m[33m/[m[35m|[m   
+[33m|[m * [33m284297e[m feat: tke aa
+[33m|[m * [33m9680853[m full fix slideshow
+[33m|[m * [33m3f0291c[m full fix food
+[33m|[m * [33ma418ba0[m fix change active index food
+[33m|[m * [33m1958c76[m fix change active food
+[33m|[m * [33mbcac7b5[m fix test food
+[33m|[m * [33m5a3f55b[m fix test 12
+[33m|[m * [33mec331d8[m fix combo alert
+[33m|[m * [33mf82a383[m fix combo change active
+[33m|[m * [33me4d16fc[m fix combo index
+[33m|[m * [33m94ee379[m fix combo index
+[33m|[m * [33mc5844aa[m fix combo blade
+* [35m|[m [33mddb4f47[m Fix User Voucher Chat  by Minh Hải
+* [35m|[m [33ma3549c0[m Fix Realtime Chat  by Minh Hải
+* [35m|[m [33mfbc443e[m Fix Showtime Cinema , Room Reation  by Minh Hải
+* [35m|[m   [33m8f17fa1[m update movie
+[36m|[m[1;31m\[m [35m\[m  
+[36m|[m * [35m|[m [33m8f2106f[m[33m ([m[1;31morigin/sondvph45612[m[33m)[m update movie
+* [1;31m|[m [35m|[m [33mc38ba46[m Fix Showtime by Minh Hải
+[1;31m|[m[1;31m/[m [35m/[m  
+* [35m|[m [33m2a1ce97[m Fix Migration  Showtime by Minh Hải
+* [35m|[m [33mf8c93f3[m feat: ticket order
+* [35m|[m   [33m89ad589[m phan quyen movie
+[1;32m|[m[1;33m\[m [35m\[m  
+* [1;33m|[m [35m|[m [33mc7bcdf0[m â
+* [1;33m|[m [35m|[m [33mf793432[m Merge: Realtime Notification Full by Minh Hải
+* [1;33m|[m [35m|[m [33m79aadbd[m Fix Filter Showtime by Minh Hải
+* [1;33m|[m [35m|[m   [33m8471bc3[m update permisson and login;
+[1;34m|[m[1;35m\[m [1;33m\[m [35m\[m  
+[1;34m|[m * [1;33m|[m [35m|[m [33m3fb1be7[m login mesaage
+* [1;35m|[m [1;33m|[m [35m|[m [33mdc79cfd[m Fix Permission Cinema by Minh Hải
+[1;35m|[m[1;35m/[m [1;33m/[m [35m/[m  
+* [1;33m|[m [35m|[m [33m43fcc00[m update permission
+* [1;33m|[m [35m|[m   [33mbe7b14c[m permission view
+[1;36m|[m[31m\[m [1;33m\[m [35m\[m  
+[1;36m|[m * [1;33m|[m [35m|[m [33m4c04f5e[m update permission
+* [31m|[m [1;33m|[m [35m|[m   [33mdaa3505[m Merge: Realtime Notification Full by Minh Hải
+[32m|[m[33m\[m [31m\[m [1;33m\[m [35m\[m  
+[32m|[m * [31m|[m [1;33m|[m [35m|[m [33m00ef120[m[33m ([m[1;31morigin/permissionVipPro[m[33m)[m Realtime Notification Full by Minh Hải
+[32m|[m * [31m|[m [1;33m|[m [35m|[m [33m89e37b8[m Permission Showtime by Minh Hải
+[32m|[m * [31m|[m [1;33m|[m [35m|[m [33m2dfcde6[m Permission Room by Minh Hải
+[32m|[m * [31m|[m [1;33m|[m [35m|[m [33m3d47108[m Config model notification  by Minh Hải
+[32m|[m * [31m|[m [1;33m|[m [35m|[m [33m2702788[m Update css global by Minh Hải
+[32m|[m * [31m|[m [1;33m|[m [35m|[m [33m5f68c1b[m Edit QRCode JS by Minh Hải
+* [33m|[m [31m|[m [1;33m|[m [35m|[m [33mb7f8a7a[m fix(ticket): price_percentage in array
+* [33m|[m [31m|[m [1;33m|[m [35m|[m [33md7d41aa[m fix(ticket): model 123
+[31m|[m [33m|[m[31m/[m [1;33m/[m [35m/[m  
+[31m|[m[31m/[m[33m|[m [1;33m|[m [35m|[m   
+* [33m|[m [1;33m|[m [35m|[m [33m410349e[m permission
+* [33m|[m [1;33m|[m [35m|[m   [33m5ab4e28[m update toastr
+[34m|[m[35m\[m [33m\[m [1;33m\[m [35m\[m  
+[34m|[m * [33m|[m [1;33m|[m [35m|[m [33m3756a88[m update toastr
+* [35m|[m [33m|[m [1;33m|[m [35m|[m [33maf02529[m fix: return vat login google
+* [35m|[m [33m|[m [1;33m|[m [35m|[m [33m458dd5b[m 111
+[33m|[m [35m|[m[33m/[m [1;33m/[m [35m/[m  
+[33m|[m[33m/[m[35m|[m [1;33m|[m [35m|[m   
+* [35m|[m [1;33m|[m [35m|[m [33m3f4d3d6[m[33m ([m[1;31morigin/dev[m[33m, [m[1;32mdev[m[33m)[m Check Buy Seat Disiable Delete Showtime by Minh Hải
+[35m|[m[35m/[m [1;33m/[m [35m/[m  
+* [1;33m|[m [35m|[m   [33me006a79[m update login
+[36m|[m[1;31m\[m [1;33m\[m [35m\[m  
+[36m|[m * [1;33m|[m [35m|[m [33m756b236[m login
+* [1;31m|[m [1;33m|[m [35m|[m [33m4fc5608[m Delete Migration status  Showtime by Minh Hải
+* [1;31m|[m [1;33m|[m [35m|[m [33m84f04f7[m Add Migration status  Showtime by Minh Hải
+* [1;31m|[m [1;33m|[m [35m|[m [33mbe122d2[m Filter Branch Permission Showtime by Minh Hải
+* [1;31m|[m [1;33m|[m [35m|[m [33m171cbf7[m Filter Firm Permission Showtime by Minh Hải
+[1;31m|[m [1;31m|[m [1;33m|[m [35m|[m * [33m8b4db90[m[33m ([m[1;31morigin/huypqph45595[m[33m)[m fix phụ phí và movie
+[1;31m|[m [1;31m|[m [1;33m|[m [35m|[m * [33mc424c71[m fix giao diện phim
+[1;31m|[m [1;31m|[m [1;33m|[m [35m|[m * [33m0fbe1df[m fix edit phim
+[1;31m|[m [1;31m|[m [1;33m|[m [35m|[m * [33m326e181[m fix bug create movie
+[1;31m|[m [1;31m|[m [1;33m|[m [35m|[m[1;33m/[m  
+[1;31m|[m [1;31m|[m [1;33m|[m[1;33m/[m[35m|[m   
+[1;31m|[m [1;31m|[m * [35m|[m [33mc1d0133[m[33m ([m[1;31morigin/mergeDev[m[33m)[m phan quyen moive
+[1;31m|[m [1;31m|[m * [35m|[m [33mdd2525e[m logic mivew phaan quyeefn
+[1;31m|[m [1;31m|[m * [35m|[m [33m0f99e2d[m fix giá tiền
+[1;31m|[m [1;31m|[m * [35m|[m [33m89fce04[m fix giao dien
+[1;31m|[m [1;31m|[m * [35m|[m [33m68bc848[m thay doi trang thai cua phim
+[1;31m|[m [1;31m|[m * [35m|[m [33m151e20c[m view
+[1;31m|[m [1;31m|[m * [35m|[m [33m47e3ae6[m logic tke ti le lap day
+[1;31m|[m [1;31m|[m * [35m|[m [33m88dc414[m fix giao diện moive
+[1;31m|[m [1;31m|[m * [35m|[m [33m0942943[m fix giao diện moive
+[1;31m|[m [1;31m|[m * [35m|[m [33m715b042[m edit branch by moive
+[1;31m|[m [1;31m|[m * [35m|[m [33m26c82c9[m view moive branch edit
+[1;31m|[m [1;31m|[m * [35m|[m [33m9b6f565[m edit branch movie
+[1;31m|[m [1;31m|[m[1;31m/[m [35m/[m  
+[1;31m|[m[1;31m/[m[1;31m|[m [35m|[m   
+* [1;31m|[m [35m|[m   [33m827f094[m add moive branch
+[1;33m|[m[1;34m\[m [1;31m\[m [35m\[m  
+[1;33m|[m * [1;31m|[m [35m|[m [33m896b2b8[m movie branch
+[1;33m|[m * [1;31m|[m [35m|[m [33me5ebe77[m view create thêm branch
+[1;33m|[m * [1;31m|[m [35m|[m [33m3d63f44[m fake data cho moive by branch
+[1;33m|[m * [1;31m|[m [35m|[m [33m59b6f7a[m store
+[1;33m|[m * [1;31m|[m [35m|[m [33me701a49[m moive request
+[1;33m|[m * [1;31m|[m [35m|[m [33mcd4e20f[m controller stpre
+* [1;34m|[m [1;31m|[m [35m|[m   [33m11ff9d8[m Merge:Master by Minh Hải
+[1;35m|[m[1;36m\[m [1;34m\[m [1;31m\[m [35m\[m  
+[1;35m|[m * [1;34m|[m [1;31m|[m [35m|[m [33m17043be[m[33m ([m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m Icon Chat by Minh Hải
+[1;35m|[m * [1;34m|[m [1;31m|[m [35m|[m [33m347c8b6[m Permission showtimes Promax by Minh Hải
+* [1;36m|[m [1;34m|[m [1;31m|[m [35m|[m [33mc8a7dcd[m chore: return cache
+* [1;36m|[m [1;34m|[m [1;31m|[m [35m|[m [33mc21cb3c[m fix(user): logic login google and model
+* [1;36m|[m [1;34m|[m [1;31m|[m [35m|[m [33mfad39a3[m fix: url fe
+* [1;36m|[m [1;34m|[m [1;31m|[m [35m|[m   [33mfe3d171[m Merge branch 'merge/review' into mergeFull
+[1;31m|[m[32m\[m [1;36m\[m [1;34m\[m [1;31m\[m [35m\[m  
+[1;31m|[m [32m|[m[1;31m_[m[1;36m|[m[1;31m_[m[1;34m|[m[1;31m/[m [35m/[m  
+[1;31m|[m[1;31m/[m[32m|[m [1;36m|[m [1;34m|[m [35m|[m   
+[1;31m|[m *
