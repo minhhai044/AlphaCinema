@@ -53,8 +53,8 @@ class FoodController extends Controller
         // var_dump($foodRequest->all());
         // dd($foodRequest->toArray());
         try {
-            $data = $foodRequest->validated();
-            dd($data);
+            // $data = $foodRequest->validated();
+            // dd($data);
             $this->foodService->createFoodService($foodRequest->validated());
 
             Toastr::success(null, 'Thêm mới đồ ăn thành công!');
