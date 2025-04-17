@@ -177,7 +177,7 @@
                                         <div class="mb-3">
                                             <label class="form-label">Thời lượng phim
                                                 <span class="required" style="color: red">*</span></label>
-                                            <input type="number" name="duration" min="1" step="1"
+                                            <input type="number" name="duration" step="1"
                                                 class="form-control {{ $errors->has('duration') ? 'is-invalid' : (old('duration') ? 'is-valid' : '') }}"
                                                 value="{{ old('duration') }}" placeholder="Nhập số phút">
                                             <div
@@ -489,7 +489,7 @@
                         placeholder: "Chọn chi nhánh",
                         closeOnSelect: false,
                         width: '100%',
-                        templateResult: formatOptionWithCheckbox,
+                        // templateResult: formatOptionWithCheckbox,
                     });
 
                     function formatOptionWithCheckbox(option) {
@@ -498,12 +498,13 @@
                         const selectedValues = $branchSelect.val() || [];
                         const isSelected = selectedValues.includes(option.id);
 
-                        return $(`
-                <span>
-                    <input type="checkbox" style="margin-right: 6px;" ${isSelected ? 'checked' : ''}/>
-                    ${option.text}
-                </span>
-            `);
+            //             return $(`
+            //     <span>
+            //         <input type="checkbox" style="margin-right: 6px;" ${isSelected ? 'checked' : ''}/>
+            //         ${option.text}
+            //     </span>
+            // `)
+            ;
                     }
 
                     function updateSelectedNames() {
