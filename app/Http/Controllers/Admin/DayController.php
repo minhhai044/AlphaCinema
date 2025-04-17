@@ -7,6 +7,7 @@ use App\Http\Requests\DayRequest;
 use App\Models\Day;
 use App\Services\DayService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class DayController extends Controller
 {
@@ -49,15 +50,25 @@ class DayController extends Controller
     }
 
 
-
     public function update(Request $request, $id)
     {
         $day = Day::findOrFail($id);
+
+        $request->validate([
+            'day_surcharge' => 'required|integer|min:0',
+        ]);
+
         $day->day_surcharge = $request->day_surcharge;
         $day->save();
 
-        return response()->json(['success' => true]);
+        return response()->json([
+            'success' => true,
+            'data' => $day
+        ]);
     }
+
+
+
 
     public function destroy($id)
     {

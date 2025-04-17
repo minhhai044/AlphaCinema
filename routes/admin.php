@@ -239,7 +239,7 @@ Route::post('days/update/{id}', [DayController::class, 'update']);
 
 Route::resource('type_seats', TypeSeatController::class);
 
-Route::post('days/update/{id}', [DayController::class, 'update'])->name('days.update');
+Route::put('days/update/{id}', [DayController::class, 'update'])->name('days.update');
 
 Route::group([
     'prefix' => 'settings',  // Tiền tố URL cho tất cả route

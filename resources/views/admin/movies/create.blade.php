@@ -273,7 +273,7 @@
 
 
                                         <div class="mb-3" id="surcharge_container" style="display: none;">
-                                            <label class="form-label">Phụ phí  <span class="required" style="color: red">*</span>
+                                            <label class="form-label">Phụ phí </span>
                                             </label>
                                             <input type="number" name="surcharge"
                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
