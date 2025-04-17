@@ -75,7 +75,7 @@
                                         <div class=" form-check form-switch form-switch-md" dir="ltr">
                                             <input class="form-check-input switch-is-active changeActive"
                                                 @checked($food->is_active) type="checkbox" data-food-id="{{ $food->id }}"
-                                                onclick="return confirm('Bạn có chắc muốn thay đổi?')">
+                                               >
                                         </div>
                                     </div>
                                 </td>
