@@ -9,6 +9,7 @@ use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\ConfirmVerifyEmailRequest;
 use App\Http\Requests\SendOtpRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\VerifyEmailRequest;
 use App\Mail\SendOtpMail;
@@ -126,6 +127,18 @@ class AuthController extends Controller
         }
     }
 
+    protected function formatAvatar($avatar)
+    {
+        if (Str::startsWith($avatar, 'avatar')) {
+            return Storage::exists($avatar)
+                ? Storage::url($avatar)
+                : asset('https://i.sstatic.net/l60Hf.png');
+        }
+
+        return $avatar;
+    }
+
+
     public function logout(Request $request)
     {
         // Kiểm tra nếu người dùng đã xác thực
@@ -147,16 +160,29 @@ class AuthController extends Controller
             ->withCookie(cookie()->forget('auth'));
     }
 
-    public function updateProfile(UserRequest $userRequest, string $id)
+    public function updateProfile(UpdateProfileRequest $request, string $id)
     {
+        // UpdateProfileRequest
         try {
+            $data = $request->validated();
 
-            $user = $this->userService->updateInfo($userRequest->validated(), $id);
+            $user = User::findOrFail($id);
+
+            if (!empty($data['avatar'])) {
+                if ($user->avatar && Storage::exists($user->avatar)) {
+                    Storage::delete($user->avatar);
+                }
+                $data['avatar'] = Storage::put('avatar', $data['avatar']);
+            }
+
+            $user->update($data);
+
+            $user->avatar = $this->formatAvatar($user->avatar);
+            // $user = $this->userService->updateInfo($request->validated(), $id);
 
             return $this->successResponse([
-                'message' => "Update thành công",
-                'data' => $user
-            ]);
+                'user' => $user
+            ], 'Update thành công');
         } catch (Exception $e) {
             return $this->errorResponse([
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
@@ -179,9 +205,16 @@ class AuthController extends Controller
 
             // Check if the old password matches the current password
             if (!Hash::check($data['password_old'], $user->password)) {
-                return $this->errorResponse([
-                    'message' => 'Mật khẩu cũ không chính xác.'
-                ]);
+                // return $this->errorResponse([
+                //     'password_old' => 'Mật khẩu cũ không chính xác.'
+                // ]);
+
+                return response()->json([
+                    'errors' => [
+                        'password_old' => 'Mật khẩu cũ không chính xác.'
+                    ],
+                    'status' => false
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             // Remove the 'password_old' field from the data array
@@ -252,6 +285,8 @@ class AuthController extends Controller
         // }
 
         // Auth::login($user);
+
+        $user->avatar = $this->formatAvatar($user->avatar);
 
         $token = $user->createToken('authToken')->plainTextToken;
 
