@@ -54,7 +54,7 @@
                         <table id="datatable" class="table table-bordered w-100 text-center">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
+                                    <th>STT</th>
                                     <th>Mã giảm giá</th>
                                     <th>Giảm giá (VNĐ)</th>
                                     <th>Ngày bắt đầu</th>

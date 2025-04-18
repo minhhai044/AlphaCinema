@@ -19,9 +19,9 @@
                         </div>
                     </div>
 
-                    <h4 class="card-title">Danh sách phim</h4>
+                    <h4 class="card-title">Danh sách ngày</h4>
 
-                    <table id="datatable" class="table align-middle  dt-responsive nowrap w-100 table-bordered w-100 text-center">
+                    <table id="datatable" class="table align-middle dt-responsive nowrap w-100 table-bordered text-center">
                         <thead>
                             <tr>
                                 <th class="text-center">ID</th>
@@ -38,6 +38,7 @@
                                     <td class="text-center">
                                         <span class="day-surcharge">{{ number_format($day->day_surcharge) }} VNĐ</span>
                                         <input type="number" class="form-control day-input d-none" value="{{ $day->day_surcharge }}">
+                                        <div class="text-danger error-message d-none"></div>
                                     </td>
                                     <td class="text-center">
                                         <a class="btn btn-outline-secondary btn-sm edit" title="Edit">
@@ -63,6 +64,7 @@
 @section('script')
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
@@ -78,6 +80,7 @@
             tbody.addEventListener("click", async (e) => {
                 const target = e.target.closest("a");
                 if (!target) return;
+
                 const row = target.closest("tr");
                 const id = row.dataset.id;
 
@@ -85,11 +88,20 @@
                     toggleEditMode(row, true);
                 } else if (target.classList.contains("save")) {
                     const surchargeInput = row.querySelector(".day-input");
-                    const day_surcharge = surchargeInput.value;
+                    const errorDiv = row.querySelector(".error-message");
+                    const day_surcharge = parseInt(surchargeInput.value);
+
+                    if (isNaN(day_surcharge) || day_surcharge < 0) {
+                        if (errorDiv) {
+                            errorDiv.textContent = "Phụ phí phải là số nguyên dương.";
+                            errorDiv.classList.remove("d-none");
+                        }
+                        return;
+                    }
 
                     try {
                         const response = await fetch(`/admin/days/update/${id}`, {
-                            method: "POST",
+                            method: "PUT",
                             headers: {
                                 "Content-Type": "application/json",
                                 "Accept": "application/json",
@@ -97,13 +109,33 @@
                             },
                             body: JSON.stringify({ day_surcharge })
                         });
-                        const data = await response.json();
-                        if (data.success) {
-                            row.querySelector(".day-surcharge").textContent = new Intl.NumberFormat().format(day_surcharge);
-                            toggleEditMode(row, false);
-                            toastr.success("Cập nhật thành công!", "Thành công");
+
+                        if (response.ok) {
+                            const data = await response.json();
+                            if (data.success) {
+                                row.querySelector(".day-surcharge").textContent = new Intl.NumberFormat().format(data.data.day_surcharge) + " VNĐ";
+                                toggleEditMode(row, false);
+
+                                if (errorDiv) {
+                                    errorDiv.textContent = "";
+                                    errorDiv.classList.add("d-none");
+                                }
+
+                                toastr.success("Cập nhật thành công!", "Thành công");
+                            } else {
+                                toastr.error("Lỗi cập nhật, vui lòng thử lại!", "Lỗi");
+                            }
+                        } else if (response.status === 422) {
+                            const errorData = await response.json();
+                            if (errorData.errors && errorData.errors.day_surcharge) {
+                                if (errorDiv) {
+                                    errorDiv.textContent = errorData.errors.day_surcharge[0];
+                                    errorDiv.classList.remove("d-none");
+                                }
+                            }
+                            toastr.error("Dữ liệu không hợp lệ!", "Lỗi");
                         } else {
-                            toastr.error("Lỗi cập nhật, vui lòng thử lại!", "Lỗi");
+                            toastr.error("Có lỗi xảy ra khi cập nhật!", "Lỗi");
                         }
                     } catch (error) {
                         console.error("Error updating day:", error);
