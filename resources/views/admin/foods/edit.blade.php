@@ -89,8 +89,7 @@
                             Cập nhật
                             <i class="bx bx-chevron-right ms-1"></i>
                         </button>
-                        <a href="{{ route('admin.foods.index') }}" class="btn btn-danger" type="button"
-                            onclick="return confirm('Bạn có chắc chắn hủy bỏ thao tác? Mọi thay đổi sẽ không được lưu')">
+                        <a href="{{ route('admin.foods.index') }}" class="btn btn-danger" type="button">
                             Hủy bỏ
                             <i class="bx bx-chevron-right ms-1"></i>
                         </a>

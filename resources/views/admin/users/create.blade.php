@@ -134,7 +134,7 @@
                                 <div>
                                     <div class="mb-3">
                                         <label for="account-name" class="form-label">
-                                            Nhập lại mậtkhẩu <span class="required">*</span>
+                                            Nhập lại mật khẩu <span class="required">*</span>
                                         </label>
                                         <input class="form-control" type="password" name="password_confirmation"
                                             id="confirm-password" placeholder="Nhập lại mật khẩu">
@@ -293,7 +293,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-3">
+            {{-- <div class="col-lg-3">
                 <div class="card">
                     <div class="card-body">
                         <div class="row">
@@ -319,6 +319,38 @@
                                 </div>
 
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div> --}}
+
+            <div class="col-md-3">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="mb-2">
+                            <label for="account-image" class="form-label">
+                                <span class=" text-danger fw-medium required">*</span> Ảnh
+                                <input class="form-control" type="file" name="avatar" id="account-image"
+                                    onchange="previewImage(event)">
+                        </div>
+                        @if (old('avatar'))
+                            <img src="{{ Storage::url(old('avatar')) }}" alt="Thumbnail" class="img-fluid"
+                                width="200" style="max-width: 70%; max-height: 150px;">
+                        @endif
+                        @error('avatar')
+                            <span class="text-danger fw-medium">
+                                {{ $message }}
+                            </span>
+                        @enderror
+                        <!-- Display selected image and delete button -->
+                        <div id="image-container" class="d-none position-relative text-center">
+                            <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2"
+                                style="max-width: 70%; max-height: 100px;">
+                            <!-- Icon thùng rác ở góc phải -->
+                            <button type="button" id="delete-image"
+                                class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
                         </div>
                     </div>
                 </div>
