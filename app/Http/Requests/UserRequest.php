@@ -94,7 +94,7 @@ class UserRequest extends FormRequest
 
             'email.required' => 'Email là bắt buộc.',
             'email.email' => 'Email phải là một địa chỉ email hợp lệ.',
-            'email.unique' => 'Email đã tồn tại. Vui lòng chọn một email khác.',  // Thông báo lỗi cho email trùng
+            'email.unique' => 'Email đã tồn tại.',  // Thông báo lỗi cho email trùng
 
             'password.required' => 'Mật khẩu là bắt buộc.',
             'password.string' => 'Mật khẩu phải là một chuỗi ký tự.',

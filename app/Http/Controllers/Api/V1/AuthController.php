@@ -52,7 +52,10 @@ class AuthController extends Controller
             // Validate dữ liệu đầu vào
             $data = $request->validated();
 
+            $this->sendMailOtp($data['email'], $data['name']);
+
             $vat = Vat::first();
+
 
             // Lấy user theo email
             $user = $this->userService->getUserApi($data['email']);
@@ -61,13 +64,16 @@ class AuthController extends Controller
             if (!$user) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Email không tồn tại'
+                    'email' => 'Email không tồn tại'
                 ], Response::HTTP_NOT_FOUND);
             }
 
             // Kiểm tra mật khẩu (So sánh password hash)
             if (!Hash::check($data['password'], $user->password)) {
-                return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
+                return response()->json([
+                    'status' => 'error',
+                    'password' => 'Mật khẩu không chính xác.'
+                ], Response::HTTP_UNAUTHORIZED);
             }
 
             if ($user->is_active == false) {
@@ -106,8 +112,8 @@ class AuthController extends Controller
     public function signUp(RegisterRequest $request)
     {
         try {
-            $vat = Vat::first();
             $data = $request->validated();
+            $vat = Vat::first();
             $data['type_user'] = 0;
 
             $user = $this->userService->storeUser($data);
@@ -121,10 +127,10 @@ class AuthController extends Controller
             ], 'Đăng ký thành công', Response::HTTP_CREATED);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
-
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
 
     public function logout(Request $request)
     {
@@ -271,9 +277,6 @@ class AuthController extends Controller
 
     public function getUserRank()
     {
-
-
-
         try {
             $user = Auth::user();
             if (!$user) {
@@ -531,5 +534,15 @@ class AuthController extends Controller
             Log::error($th->getMessage());
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
+    }
+
+    public function sendMailOtp($email, $name)
+    {
+        $otp = rand(100000, 999999);
+        // $expiresAt = Carbon::now()->addMinutes(2);
+
+        Redis::setex("otp_{$email}", 300, Hash::make($otp));
+
+        Mail::to($email)->queue(new SendOtpMail($otp, $name));
     }
 }
