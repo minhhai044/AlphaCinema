@@ -44,7 +44,7 @@ class UserRequest extends FormRequest
             'password' => 'required|string|min:8|confirmed',
             'address' => 'nullable|string|max:255',
             'gender' => 'nullable',
-            'birthday' => 'nullable|date',
+            'birthday' => 'nullable|date|before:today',
             'total_amount' => 'nullable|numeric',  // Nếu cần kiểu dữ liệu số cho 'total_amount'
             'type_user' => 'boolean',
             'cinema_id' => 'nullable|exists:cinemas,id',
@@ -56,13 +56,13 @@ class UserRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255',
-            'avatar' => 'nullable',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'phone' => 'nullable|regex:/^\+?[0-9]{10,15}$/|unique:users,phone,' . $userId,  // Bỏ qua kiểm tra số điện thoại nếu là bản ghi hiện tại
             'email' => 'required|email|unique:users,email,' . $userId,  // Bỏ qua kiểm tra email nếu là bản ghi hiện tại
             'password' => 'nullable|string|min:8|confirmed',  // Mật khẩu có thể không thay đổi
             'address' => 'nullable|string|max:255',
             'gender' => 'boolean',
-            'birthday' => 'nullable|date',
+            'birthday' => 'nullable|date|before:today',
             'total_amount' => 'nullable|numeric',  // Kiểm tra dữ liệu số cho 'total_amount'
             'type_user' => 'boolean',
             'cinema_id' => 'nullable|exists:cinemas,id',
@@ -73,7 +73,7 @@ class UserRequest extends FormRequest
     public function rulesForSignIn()
     {
         return [
-            'email' => 'required|email',
+            'email' => 'required|email|exists:users,email',
             'password' => 'required|string|min:8',
         ];
     }
@@ -108,6 +108,7 @@ class UserRequest extends FormRequest
             'gender.boolean' => 'Giới tính phải là một giá trị boolean hợp lệ.',
 
             'birthday.date' => 'Ngày sinh phải là một ngày hợp lệ.',
+            'birthday.before' => 'Ngày sinh phải là một ngày trong quá khứ.',
 
             'type_user.boolean' => 'Loại người dùng phải là một giá trị boolean hợp lệ.',
 
@@ -116,6 +117,10 @@ class UserRequest extends FormRequest
             'cinema_id.exists' => 'ID rạp chiếu không tồn tại.',
 
             'branch_id.exists' => 'ID chi nhánh không tồn tại.',
+
+            'avatar.image' => 'Ảnh đại diện phải là một hình ảnh hợp lệ.',
+            'avatar.mimes' => 'Ảnh đại diện phải có định dạng: jpeg, png, jpg.',
+            'avatar.max' => 'Ảnh đại diện không được vượt quá 2MB.',
         ];
     }
 }

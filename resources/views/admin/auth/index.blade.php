@@ -34,7 +34,7 @@
                         <div class="w-100 d-flex justify-content-center">
                             <div class="d-flex flex-column w-25">
                                 <div class="mb-1 mb-md-5 text-center">
-                                    <a href="index.html" class="d-block auth-logo">
+                                    <a href="/" class="d-block auth-logo">
                                         <img src="{{ asset('logo/Logo Alpha cinema.svg') }}" alt="">
                                     </a>
                                 </div>
@@ -42,13 +42,18 @@
                                     <div class="text-center">
                                         <p class="fw-bold fs-5">Đăng nhập vào hệ thống</p>
                                     </div>
+
                                     <form class="mt-4 pt-2" action="{{ route('login') }}" method="POST">
                                         @csrf
                                         <div class="mb-3">
                                             <label class="form-label">Email</label>
                                             <input type="text" class="form-control" name="email" id="email"
-                                                placeholder="Enter username">
+                                                placeholder="Enter username" value="{{ old('email') }}">
                                             <div class="text-danger mt-1 fw-medium" id="email-error"> </div>
+
+                                            @error('email')
+                                                <div class="text-danger mt-1 fw-medium">{{ $message }}</div>
+                                            @enderror
 
                                         </div>
                                         <div class="mb-3">
@@ -66,11 +71,14 @@
 
                                             <div class="input-group auth-pass-inputgroup">
                                                 <input type="password" class="form-control" name="password"
-                                                    id="password" placeholder="Enter password" aria-label="Password"
-                                                    aria-describedby="password-addon">
+                                                    id="password" placeholder="Enter password"
+                                                    value="{{ old('password') }}">
                                                 <button class="btn btn-light shadow-none ms-0" type="button"
                                                     id="password-addon"><i class="mdi mdi-eye-outline"></i></button>
                                             </div>
+                                            @error('password')
+                                                <div class="text-danger mt-1 fw-medium">{{ $message }}</div>
+                                            @enderror
                                             <div class="text-danger mt-1 fw-medium" id="password-error"></div>
                                         </div>
                                         {{-- <div class="row mb-4">
