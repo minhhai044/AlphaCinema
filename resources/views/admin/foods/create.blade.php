@@ -59,7 +59,7 @@
                                 @enderror
                             </div>
                             <div class="col-md-4 mb-3">
-                                <label for="price_sale" class="form-label">
+                                <label for="type" class="form-label">
                                     <span class="text-danger fw-medium">*</span> Loại đồ ăn
                                 </label>
                                 <select name="type" id="typeFood" class="form-select">

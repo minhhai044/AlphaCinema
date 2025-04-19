@@ -285,7 +285,6 @@
                                             : '<span class="badge bg-danger">Nữ</span>' !!}
                                     </td>
 
-
                                     <td>
                                         <div class="form-check form-switch form-switch-md form-switch-success"
                                             style="display: flex; justify-content: center;">

@@ -441,7 +441,6 @@
                     } else {
                         $foodError.text('');
                     }
-
                     // const quantity = parseInt($quantityInput.val());
                     // if (isNaN(quantity) || quantity <= 0) {
                     //     isValid = false;
@@ -449,7 +448,6 @@
                     // } else {
                     //     $quantityError.text('');
                     // }
-
                     // Kiểm tra price_sale so với price
                     const price = parseInt($('#price_hidden').val() || 0); // Giá gốc từ input ẩn
                     const priceSaleInput = $('#price_sale');

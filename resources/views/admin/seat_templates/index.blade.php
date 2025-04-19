@@ -17,7 +17,7 @@
 
                 <div class="page-title-right">
 
-                    <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
+                    <button type="button" id="addSeatTemplate" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
                         data-bs-target="#exampleModal">
                         <i class="bi bi-plus-lg"></i> Thêm mẫu ghế
                     </button>
@@ -97,7 +97,7 @@
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
                                 <textarea class="form-control" name="description" rows="3"
-                                    placeholder="Nhập mô tả..."></textarea>
+                                    placeholder="Nhập mô tả...">{{ old('description') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -275,11 +275,43 @@
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
     <script>
 
-        $(document).ready(function () {
-            @if ($errors->any())
-                $('#exampleModal').modal('show'); // Giữ modal mở nếu có lỗi
+      $(document).ready(function() {
+            @if (session('error_modal') == 'create')
+                $('#exampleModal').modal('show');
+            @elseif (session('error_modal') == 'edit' && session('seat_template_id'))
+
+                setTimeout(() => {
+                    const editBtn = $(`.edit-seat-template[data-id="{{ session('seat_template_id') }}"]`);
+                    editBtn.trigger('click');
+                    $('#exampleModalEdit').modal('show');
+
+                    // Gán class is-invalid
+                    @foreach ($errors->keys() as $field)
+                        $(`[name="{{ $field }}"]`).addClass('is-invalid');
+                    @endforeach
+
+                    // Gán thông báo lỗi dưới field
+                    @foreach ($errors->messages() as $field => $messages)
+                        let input = $(`[name="{{ $field }}"]`);
+                        let errorMessage =
+                            `<small class="text-danger fst-italic">{{ $messages[0] }}</small>`;
+                        if (input.length > 0) {
+                            input.closest('.mb-3').append(errorMessage);
+                        }
+                    @endforeach
+
+                }, 400);
+
             @endif
         });
+
+        function resetErrors(modalId = '') {
+            let modal = modalId ? $(modalId) : $(document);
+
+            modal.find('input, select, textarea').removeClass('is-invalid');
+
+            modal.find('small.text-danger').remove();
+        }
         $(document).ready(function () {
             let matrixData = @json($matrixs);
 
@@ -385,8 +417,13 @@
                 }
             });
         });
+        // addClass
+        $('#addSeatTemplate').click(function () {
+            resetErrors('#exampleModal');
+        });
         // Phần edit
         $('.edit-seat-template').click(function () {
+            resetErrors('#exampleModalEdit');
             let id = $(this).data('id');
             let name = $(this).data('name');
             let matrix = $(this).data('matrix');

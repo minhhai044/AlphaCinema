@@ -238,6 +238,7 @@
                                         @foreach ($branches as $branch)
                                             <option value="{{ $branch->id }}"
                                                 {{ old('branch_id', $user->branch_id) == $branch->id ? 'selected' : '' }}>
+
                                                 {{ $branch->name }}
                                             </option>
                                         @endforeach

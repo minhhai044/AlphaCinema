@@ -125,10 +125,36 @@ class ShowtimeService
 
     public function createService(string $id)
     {
-        $query = Branch::with('cinemas.rooms')->where('is_active', 1);
+        // $query = Branch::with('cinemas.rooms')->where('is_active', 1);
+        // if (Auth::user()->branch_id) {
+        //     $query = $query->where('id', Auth::user()->branch_id);
+        // }
+        // $branchs = $query->get();
+
+        /**
+         * Check Branch Realation Cinemas IsActive -> Rooms IsActive
+         * @var mixed
+         */
+        $query = Branch::with(['cinemas' => function ($cinemaQuery) {
+            $cinemaQuery->where('is_active', 1)
+                ->whereHas('rooms', function ($roomQuery) {
+                    $roomQuery->where('is_active', 1);
+                })
+                ->with(['rooms' => function ($roomQuery) {
+                    $roomQuery->where('is_active', 1);
+                }]);
+        }])
+        ->where('is_active', 1)
+        ->whereHas('cinemas', function ($cinemaQuery) {
+            $cinemaQuery->where('is_active', 1)
+                ->whereHas('rooms', function ($roomQuery) {
+                    $roomQuery->where('is_active', 1);
+                });
+        });
+        
         if (Auth::user()->branch_id) {
-            $query = $query->where('id', Auth::user()->branch_id);
-        }
+            $query->where('id', Auth::user()->branch_id);
+        }   
         $branchs = $query->get();
 
         $branchsRelation = [];
@@ -148,7 +174,6 @@ class ShowtimeService
         $specialshowtimes = Showtime::SPECIALSHOWTIMES;
         $type_rooms = Type_room::query()->get();
         $type_seats = Type_seat::query()->get();
-
         return [$branchs, $branchsRelation, $rooms, $movie, $days, $slug, $roomsRelation, $specialshowtimes, $type_seats, $type_rooms];
     }
     public function storeService(array $data)

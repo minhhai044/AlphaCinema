@@ -50,6 +50,7 @@ class FoodController extends Controller
     // 3. Lưu đồ ăn mới
     public function store(FoodRequest $foodRequest)
     {
+        // var_dump($foodRequest->all());
         // dd($foodRequest->toArray());
         try {
             // $data = $foodRequest->validated();

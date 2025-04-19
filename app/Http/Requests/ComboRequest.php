@@ -46,8 +46,8 @@ class ComboRequest extends FormRequest
                 Rule::unique(Combo::class),
             ],
             'img_thumbnail' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'nullable|numeric|min:0|max:99999999',
-            'price_sale' => 'nullable|numeric|min:0|max:99999999|lt:price', // Giá sale phải nhỏ hơn giá gốc
+            'price' => 'nullable|numeric|min:5000|max:99999999',
+            'price_sale' => 'nullable|numeric|min:5000|max:99999999|lt:price', // Giá sale phải nhỏ hơn giá gốc
             'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',
             'combo_food.*' => 'required|exists:food,id',  // Đảm bảo đồ ăn được chọn có tồn tại trong DB
@@ -65,7 +65,7 @@ class ComboRequest extends FormRequest
                 Rule::unique(Combo::class)->ignore($this->route('combo')), // Bỏ qua ID hiện tại
             ],
             'img_thumbnail' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
-            'price' => 'nullable|numeric|min:0|max:99999999',
+            'price' => 'nullable|numeric|min:5000|max:99999999',
             'price_sale' => 'nullable|numeric|min:0|max:99999999|lt:price',
             'description' => 'nullable|string',
             'is_active' => 'nullable|boolean',

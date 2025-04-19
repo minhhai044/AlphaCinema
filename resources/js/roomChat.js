@@ -69,6 +69,10 @@ function appendMessage(message, isMine = true) {
 
 $('#sendMessenger').click(function (e) {
     let messenge = $('#messenger').val();
+    if (!messenge) {
+        toastr.warning('Không được để trống tin nhắn nhaa !!!');
+        return;
+    }
     let user_id = UserId;
     let room_chat_id = roomId;
 

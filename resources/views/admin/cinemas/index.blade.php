@@ -55,14 +55,21 @@
                                     <td>{{ limitText($cinema->address, 20) }}</td>
                                     <td>
 
-                                        <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST"
+                                        {{-- <form action="{{ route('admin.cinemas.toggle', $cinema->id) }}" method="POST"
                                             id="toggleForm{{ $cinema->id }}">
                                             @csrf
                                             <input type="checkbox" name="is_active" id="switch{{ $cinema->id }}"
                                                 switch="primary" {{ $cinema->is_active ? 'checked' : '' }}
                                                 onchange="confirmChange({{ $cinema->id }})">
                                             <label for="switch{{ $cinema->id }}"></label>
-                                        </form>
+                                        </form> --}}
+
+                                        <div class="d-flex justify-content-center align-items-center">
+                                            <div class="form-check form-switch form-switch-md mb-3" dir="ltr">
+                                                <input class="form-check-input switch-is-active changeActive" type="checkbox"
+                                                    data-cinema-id="{{ $cinema->id }}" @checked($cinema->is_active)>
+                                            </div>
+                                        </div>
 
 
                                     </td>
@@ -256,13 +263,66 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
     <script>
-        function confirmChange(voucherId) {
-            if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
-                document.getElementById('toggleForm' + voucherId).submit();
-            } else {
-                return false;
-            }
+        // function confirmChange(voucherId) {
+        //     if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
+        //         document.getElementById('toggleForm' + voucherId).submit();
+        //     } else {
+        //         return false;
+        //     }
+        // }
+
+         // Hàm xác nhận trước khi thay đổi
+         function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái Rạp không?', title =
+            'AlphaCinema thông báo') {
+            return Swal.fire({
+                icon: 'warning',
+                title: title,
+                text: text,
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy',
+            }).then(result => result.isConfirmed);
         }
+
+        // Gắn sự kiện thay đổi trạng thái
+        $(document).on("change", ".changeActive", function(e) {
+            e.preventDefault();
+            let $checkbox = $(this);
+            let cinemaId = $checkbox.data("cinema-id");
+            let is_active = $checkbox.is(":checked") ? 1 : 0;
+
+            // Gọi xác nhận
+            confirmChange().then((confirmed) => {
+                if (confirmed) {
+                    // Gửi AJAX nếu đồng ý
+                    $.ajax({
+                        url: "{{ route('cinemas.change-active') }}",
+                        method: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id: cinemaId,
+                            is_active: is_active
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                toastr.success('Trạng thái hoạt động đã được cập nhật.');
+                            } else {
+                                toastr.error(response.message || 'Có lỗi xảy ra.');
+                                $checkbox.prop("checked", !is_active);
+                            }
+                        },
+                        error: function() {
+                            toastr.error('Lỗi kết nối server!');
+                            $checkbox.prop("checked", !is_active);
+                        }
+                    });
+                } else {
+                    // Người dùng từ chối => hoàn tác lại checkbox
+                    $checkbox.prop("checked", !is_active);
+                }
+            });
+        });
+
     </script>
 
 @endsection

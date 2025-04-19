@@ -184,7 +184,7 @@ class StatisticalController extends Controller
         $revenueQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))->tap($filterClosure);
 
         // Lấy top 6 phim
-        $top6Movies = $revenueQuery->orderBy('revenue', 'desc')->limit(6)->get();
+        $top6Movies = $revenueQuery->orderBy('revenue', 'desc')->limit(3)->get();
 
         $totalRevenue = array_sum(array_column($revenues, 'revenue'));
 
@@ -212,7 +212,7 @@ class StatisticalController extends Controller
         $mostRewatchedMovie = $mostRewatchedMovies->first();
 
         // Truy vấn tỷ lệ lấp đầy theo phim
-        
+
 $fillRateQuery = Ticket::query()
     ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
     ->join('movies', 'tickets.movie_id', '=', 'movies.id')

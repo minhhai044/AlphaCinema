@@ -230,6 +230,12 @@
                                                                             value="{{ $room['room']['seat_structure'] }}">
 
                                                                         <input type="hidden"
+                                                                            name="status_specials[{{ $room['room']['id'] }}_{{ Str::slug($date) }}][]"
+                                                                            id="status_special_request_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
+
+                                                                       
+
+                                                                        <input type="hidden"
                                                                             id="day_surcharge_{{ $room['room']['id'] }}_{{ Str::slug($date) }}">
 
                                                                         <input type="hidden"
@@ -774,12 +780,14 @@
                             $(`#price_special_${item.room.id}_${date.trim()}`).prop('readonly', false).val('');
 
                             $(`#status_special_${item.room.id}_${date.trim()}`).val(2);
+                            $(`#status_special_request_${item.room.id}_${date.trim()}`).val(2);   
                         }
 
                         if (date.trim() >= release_date && date.trim() <= end_date) {
                             $(`#price_special_${item.room.id}_${date.trim()}`).prop('readonly', true).val('');
 
                             $(`#status_special_${item.room.id}_${date.trim()}`).val(1);
+                            $(`#status_special_request_${item.room.id}_${date.trim()}`).val(1);
                         }
 
                         $(`#price_special_${item.room.id}_${date.trim()}`).on('input', function(e) {

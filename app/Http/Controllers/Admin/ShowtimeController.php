@@ -299,7 +299,8 @@ class ShowtimeController extends Controller
                                 'seat_structure' => $request['seat_structure'][$keyDate][0],
                                 'start_times' => $request['start_time'][$keyDate],
                                 'end_times' => $request['end_time'][$keyDate],
-                                'price_special' => $request['price_specials'][$keyDate][0]
+                                'price_special' => $request['price_specials'][$keyDate][0],
+                                'status_special' => $request['status_specials'][$keyDate][0],
                             ];
                         }
                     }
@@ -322,6 +323,7 @@ class ShowtimeController extends Controller
                         'start_time' => $start_time,
                         'end_time' => $groups['end_times'][$keyStart_times],
                         'is_active' => 1,
+                        'status_special' => $groups['status_special'],
                     ]);
                 }
             }

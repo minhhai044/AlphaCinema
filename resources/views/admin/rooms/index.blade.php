@@ -23,7 +23,7 @@
                 <div class="page-title-right">
 
                     @can('Thêm phòng chiếu')
-                        <button type="button" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
+                        <button type="button" id="addRoom" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
                             data-bs-target="#exampleModal">
                             <i class="bi bi-plus-lg"></i> Thêm phòng chiếu
                         </button>
@@ -122,7 +122,7 @@
                             </div>
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
-                                <textarea class="form-control" name="description" rows="3" placeholder="Nhập mô tả..."></textarea>
+                                <textarea class="form-control" name="description" rows="3" placeholder="Nhập mô tả...">{{ old('description') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -315,11 +315,45 @@
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
     <script>
+
         $(document).ready(function() {
-            @if ($errors->any())
-                $('#exampleModal').modal('show'); // Giữ modal mở nếu có lỗi
+            @if (session('error_modal') == 'create')
+                $('#exampleModal').modal('show');
+            @elseif (session('error_modal') == 'edit' && session('room_id'))
+
+                setTimeout(() => {
+                    const editBtn = $(`.edit-room[data-id="{{ session('room_id') }}"]`);
+                    editBtn.trigger('click');
+                    $('#exampleModalEdit').modal('show');
+
+                    // Gán class is-invalid
+                    @foreach ($errors->keys() as $field)
+                        $(`[name="{{ $field }}"]`).addClass('is-invalid');
+                    @endforeach
+
+                    // Gán thông báo lỗi dưới field
+                    @foreach ($errors->messages() as $field => $messages)
+                        let input = $(`[name="{{ $field }}"]`);
+                        let errorMessage =
+                            `<small class="text-danger fst-italic">{{ $messages[0] }}</small>`;
+                        if (input.length > 0) {
+                            input.closest('.mb-3').append(errorMessage);
+                        }
+                    @endforeach
+
+                }, 400);
+
             @endif
         });
+
+        function resetErrors(modalId = '') {
+            let modal = modalId ? $(modalId) : $(document);
+
+            modal.find('input, select, textarea').removeClass('is-invalid');
+
+            modal.find('small.text-danger').remove();
+        }
+
         const data = @json($branchsRelation);
 
         $('#cinemas').prop('disabled', true);
@@ -392,7 +426,11 @@
                 toastr.error('Thao tác thất bại , Vui lòng xuất bản phòng !!!');
             }
         });
+        $('#addRoom').click(function() {
+            resetErrors('#exampleModal');
+        })
         $('.edit-room').click(function() {
+            resetErrors('#exampleModalEdit');
             let id = $(this).data('id');
             let name = $(this).data('name');
             let branch_id = $(this).data('branch');

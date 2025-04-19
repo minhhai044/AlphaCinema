@@ -1,7 +1,3 @@
-import 'bootstrap';
-import Modal from 'bootstrap/js/dist/modal';
-import Dropdown from 'bootstrap/js/dist/dropdown';
-import Collapse from 'bootstrap/js/dist/collapse';
 
 /**
  * We'll load the axios HTTP library which allows us to easily issue requests

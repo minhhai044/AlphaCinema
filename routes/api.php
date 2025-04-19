@@ -57,6 +57,7 @@ Route::post('/admin/combos/update-status', [ComboController::class, 'updateStatu
 Route::post('food/change-active',       [UpdateActiveController::class, 'food'])->name('food.change-active');
 Route::post('combos/change-active',     [UpdateActiveController::class, 'combo'])->name('combos.change-active');
 Route::post('slideshows/change-active', [UpdateActiveController::class, 'slideshow'])->name('slideshows.change-active');
+Route::post('cinemas/change-active', [UpdateActiveController::class, 'cinema'])->name('cinemas.change-active');
 
 // Route::prefix('admin/movies')->group(function () {
 //     Route::get('/', [MovieController::class, 'index']);
