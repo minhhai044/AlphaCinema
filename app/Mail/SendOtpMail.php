@@ -34,7 +34,7 @@ class SendOtpMail extends Mailable implements ShouldQueue
             replyTo: [
                 new Address('tmhai2004@gmail.com', 'AlphaCinema')
             ],
-            subject: 'AlphaCinema Thông Báo: Quên mật khẩu',
+            subject: 'AlphaCinema Thông Báo',
         );
     }
 
