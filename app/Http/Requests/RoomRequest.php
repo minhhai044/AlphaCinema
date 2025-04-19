@@ -7,7 +7,9 @@ use App\Models\Cinema;
 use App\Models\Room;
 use App\Models\Seat_template;
 use App\Models\Type_room;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
 class RoomRequest extends FormRequest
@@ -83,7 +85,19 @@ class RoomRequest extends FormRequest
             'seat_template_id.exists' => 'Mẫu ghế không tồn tại !!!',
             'type_room_id.required' => 'Vui lòng chọn loại phòng !!!',
             'type_room_id.exists' => 'Loại phòng không tồn tại !!!',
-            'seat_structures.required' => 'Chưa có mô hình ghế trong mẫu ghế !!!',
+            'seat_structure.required' => 'Chưa có mô hình ghế trong mẫu ghế !!!',
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $error_modal = $this->isMethod('post') ? 'create' : 'edit';
+
+        throw new HttpResponseException(
+            redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error_modal', $error_modal)
+                ->with('room_id', $this->route('id'))
+        );
     }
 }
