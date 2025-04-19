@@ -114,27 +114,29 @@
                                                 {{ $message }}
                                             </span>
                                         @enderror
-                                    </div>
-
+                                    </div>      
                                     <div class="mb-3">
-                                        <label class="form-label">Đánh giá <span class="required"
-                                                style="color: red">*</span></label>
-                                        <div class="star-rating d-flex gap-1" style="font-size: 1.5rem; cursor: pointer;">
-                                            <i class="bi bi-star" data-rating="1"></i>
-                                            <i class="bi bi-star" data-rating="2"></i>
-                                            <i class="bi bi-star" data-rating="3"></i>
-                                            <i class="bi bi-star" data-rating="4"></i>
-                                            <i class="bi bi-star" data-rating="5"></i>
-                                        </div>
-                                        <!-- Hidden input để gửi giá trị rating -->
-                                        <input type="hidden" name="rating" id="rating-value" class="form-control "
-                                            value="{{ old('rating') }}">
-                                        @error('rating')
+                                        <label class="form-label">Phiên bản phim
+                                            <span class="required" style="color: red">*</span>
+                                        </label>
+                                        <select name="movie_versions[]" id="movie_versions" class="form-control" multiple>
+                                            <option value="2D"
+                                                {{ in_array('2D', old('movie_versions', [])) ? 'selected' : '' }}>2D
+                                            </option>
+                                            <option value="3D"
+                                                {{ in_array('3D', old('movie_versions', [])) ? 'selected' : '' }}>3D
+                                            </option>
+                                            <option value="4D"
+                                                {{ in_array('4D', old('movie_versions', [])) ? 'selected' : '' }}>4D
+                                            </option>
+                                        </select>
+                                        @error('movie_versions')
                                             <span class="text-danger fw-medium">
                                                 {{ $message }}
                                             </span>
                                         @enderror
                                     </div>
+
 
                                 </div>
 
@@ -174,6 +176,17 @@
                                         @enderror
                                     </div>
 
+                                    <div class="mb-3" id="surcharge_container" style="display: none;">
+                                        <label class="form-label">Phụ phí </span>
+                                        </label>
+                                        <input type="number" name="surcharge" class="form-control "
+                                            value="{{ old('surcharge') }}">
+                                        @error('surcharge')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
 
                                     <div class="mb-3">
                                         <div class="row">
@@ -204,23 +217,7 @@
                                     </div>
 
 
-
-                                    {{-- Đưa phần hiển thị lỗi ra ngoài input-group --}}
-                                    {{-- @if ($errors->has('release_date') || $errors->has('end_date'))
-                                        <div class="invalid-feedback d-block">
-                                            @if ($errors->has('release_date'))
-                                                <span
-                                                    class="text-danger fw-medium d-block">{{ $errors->first('release_date') }}</span>
-                                            @endif
-                                            @if ($errors->has('end_date'))
-                                                <span
-                                                    class="text-danger fw-medium d-block">{{ $errors->first('end_date') }}</span>
-                                            @endif
-                                        </div>
-                                    @endif --}}
-
-
-                                    <div class="mb-3">
+                                    {{-- <div class="mb-3">
                                         <label class="form-label">Phiên bản phim
                                             <span class="required" style="color: red">*</span>
                                         </label>
@@ -241,21 +238,30 @@
                                                 {{ $message }}
                                             </span>
                                         @enderror
-                                    </div>
+                                    </div> --}}
 
-
-
-                                    <div class="mb-3" id="surcharge_container" style="display: none;">
-                                        <label class="form-label">Phụ phí </span>
-                                        </label>
-                                        <input type="number" name="surcharge" class="form-control "
-                                            value="{{ old('surcharge') }}">
-                                        @error('surcharge')
+                                    <div class="mb-3">
+                                        <label class="form-label">Đánh giá <span class="required"
+                                                style="color: red">*</span></label>
+                                        <div class="star-rating d-flex gap-1" style="font-size: 1.5rem; cursor: pointer;">
+                                            <i class="bi bi-star" data-rating="1"></i>
+                                            <i class="bi bi-star" data-rating="2"></i>
+                                            <i class="bi bi-star" data-rating="3"></i>
+                                            <i class="bi bi-star" data-rating="4"></i>
+                                            <i class="bi bi-star" data-rating="5"></i>
+                                        </div>
+                                        <!-- Hidden input để gửi giá trị rating -->
+                                        <input type="hidden" name="rating" id="rating-value" class="form-control "
+                                            value="{{ old('rating') }}">
+                                        @error('rating')
                                             <span class="text-danger fw-medium">
                                                 {{ $message }}
                                             </span>
                                         @enderror
                                     </div>
+
+
+
                                 </div>
 
                                 <div class="mb-12">

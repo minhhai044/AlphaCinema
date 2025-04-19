@@ -117,7 +117,7 @@ class MovieRequest extends FormRequest
             'end_date.required' => 'Ngày kết thúc là bắt buộc.',
             'end_date.date' => 'Ngày kết thúc phải là một ngày hợp lệ.',
             'end_date.after_or_equal' => 'Ngày kết thúc phải lớn hơn hoặc bằng ngày phát hành.',
-            'release_date.after_or_equal' => 'Ngày phát hành phải là hôm nay hoặc sau hôm nay.',
+            'release_date.after_or_equal' => 'Ngày phát hành phải là hôm nay hoặc ngày trong tương lai.',
             'release_date.after' => 'Ngày phát hành phải lớn hơn ngày hôm nay.',
             'trailer_url.required' => 'URL trailer là bắt buộc.',
             'trailer_url.url' => 'URL trailer phải là một URL hợp lệ.',
