@@ -317,8 +317,13 @@
                                         </button>
                                     </div>
                                 </div>
-
                             </div>
+
+                            @error('avatar')
+                                <div class="text-danger fw-medium mt-3">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -423,17 +428,25 @@
         // Function to display selected image
         function previewImage(event) {
             const file = event.target.files[0];
-            const reader = new FileReader();
 
-            reader.onload = function() {
-                $('#image-preview').attr('src', reader.result);
-                $('#image-container').removeClass('d-none');
-            }
+            // Kiểm tra loại file có phải là ảnh không
+            if (file && file.type.startsWith('image/')) {
+                const reader = new FileReader();
 
-            if (file) {
-                reader.readAsDataURL(file);
+                reader.onload = function() {
+                    $('#image-preview').attr('src', reader.result); // Hiển thị ảnh
+                    $('#image-container').removeClass('d-none'); // Hiện phần chứa ảnh
+                }
+
+                reader.readAsDataURL(file); // Đọc file dưới dạng URL
+
+            } else {
+                // Nếu không phải file ảnh, ẩn phần chứa ảnh
+                $('#image-preview').attr('src', ''); // Xóa ảnh cũ
+                $('#image-container').addClass('d-none'); // Ẩn phần chứa ảnh
             }
         }
+
 
         // Function to delete the selected image
         function deleteImage() {

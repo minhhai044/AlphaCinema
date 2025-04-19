@@ -3,7 +3,10 @@
 namespace App\Http\Requests\Api;
 
 use App\Traits\ApiRequestJsonTrait;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Support\Facades\Log;
 
 class RegisterRequest extends FormRequest
 {
@@ -29,8 +32,8 @@ class RegisterRequest extends FormRequest
             'password'  => 'required|string|min:8',
             'birthday'  => 'required|date',
             'gender'     => 'required|in:0,1',
-            // 'phone'     => 'required|numeric|regex:/^\+?[0-9]{10,15}$/|unique:users', //Hiện tại chưa check
-            'phone'     => 'required|numeric|digits:10',
+            'phone' => 'required|regex:/^0[0-9]{9}$/|unique:users', //Hiện tại chưa check
+            // 'phone'     => 'required|numeric|digits:10, unique:users',
         ];
     }
 
@@ -47,13 +50,13 @@ class RegisterRequest extends FormRequest
 
             'phone.required' => 'Số điện thoại là bắt buộc',
             'phone.regex'   => 'Số điện thoại không hợp lệ. Vui lòng nhập lại.',
-            'phone.unique'  => 'Số điện thoại này đã được đăng ký. Vui lòng chọn một số khác.',  // Thông báo lỗi cho số điện thoại trùng
+            'phone.unique'  => 'Số điện thoại đã được đăng ký.',  // Thông báo lỗi cho số điện thoại trùng
             'phone.numeric' => 'Số điện thoại phải là số',
             'phone.digits' => 'Số điện thoại phải là 10 số',
 
             'email.required' => 'Email là bắt buộc.',
             'email.email'    => 'Email phải là một địa chỉ email hợp lệ.',
-            'email.unique'   => 'Email đã tồn tại. Vui lòng chọn một email khác.',  // Thông báo lỗi cho email trùng
+            'email.unique'   => 'Email đã tồn tại.',  // Thông báo lỗi cho email trùng
 
             'password.required' => 'Mật khẩu là bắt buộc.',
             'password.string'   => 'Mật khẩu phải là một chuỗi ký tự.',
@@ -77,5 +80,18 @@ class RegisterRequest extends FormRequest
 
             'cinema_id.exists' => 'ID rạp chiếu không tồn tại.',
         ];
+    }
+
+    protected function failedValidation(Validator $validator)
+    {
+        Log::error('Validation failed', [
+            'errors' => $validator->errors()->toArray()
+        ]);
+
+        throw new HttpResponseException(response()->json([
+            'status' => false,
+            'message' => 'Dữ liệu không hợp lệ',
+            'errors' => $validator->errors()
+        ], 422));
     }
 }

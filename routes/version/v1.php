@@ -32,6 +32,7 @@ Route::prefix('users')->group(function () {
  */
 
 Route::post('signin', [AuthController::class, 'signIn']);
+Route::post('checkUserResgister', [AuthController::class, 'checkUserResgister']);
 Route::post('signup', [AuthController::class, 'signUp']);
 
 /**
@@ -84,7 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/getRank', [AuthController::class, 'getUserRank']);
 
-    Route::put('{user}/update-profile', [AuthController::class, 'updateProfile']);
+    Route::post('{user}/update-profile', [AuthController::class, 'updateProfile']);
     Route::post('/change-password', [AuthController::class, 'changePassword']);
     Route::get('/pointhistory', [AuthController::class, 'getUserPointHistory']);
 
@@ -118,6 +119,7 @@ Route::post('{payment}/payment', [PaymentController::class, 'payment']);
 Route::get('/checkout', [PaymentController::class, 'checkout']);
 
 // route forget password
+
 Route::post('send-otp', [AuthController::class, 'sendOtp']);
 Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);

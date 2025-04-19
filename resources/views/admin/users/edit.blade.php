@@ -237,7 +237,8 @@
                                         <option value="">Chọn chi nhánh</option>
                                         @foreach ($branches as $branch)
                                             <option value="{{ $branch->id }}"
-                                                {{ old('branch_id', $user->branch_id) == $branch->id ? 'selected' : '' }}>
+                                                {{ old('branch_id', $user->branch_id) == $branch->id ? 'selected' : '' }}
+                                                {{ old('branch_id', $user->cinema ? $user->cinema->branch_id : 0) == $branch->id ? 'selected' : '' }}>
                                                 {{ $branch->name }}
                                             </option>
                                         @endforeach
@@ -308,6 +309,12 @@
                                     <button type="button" id="change-image" class="btn btn-primary">Chọn ảnh</button>
                                 </div>
                             </div>
+
+                            @error('avatar')
+                                <div class="text-danger fw-medium mt-3">
+                                    {{ $message }}
+                                </div>
+                            @enderror
                         </div>
                     </div>
                 </div>
@@ -410,10 +417,10 @@
                 console.log(value);
 
                 // if (Array.isArray(value) && value.includes("2")) {
-                if (value==2) {
+                if (value == 2) {
                     $("#box-cinema").addClass('d-none'); // Ẩn box-cinema
                     $("#box-branch").removeClass('d-none'); // Hiển thị box-branch
-                // } else if (Array.isArray(value) && value.includes("4") || value.includes("3")) {
+                    // } else if (Array.isArray(value) && value.includes("4") || value.includes("3")) {
                 } else if (value == 4 || value == 3) {
                     $("#box-cinema").removeClass('d-none'); // Hiển thị box-cinema
                     const branchId = $('#branch_select').val();

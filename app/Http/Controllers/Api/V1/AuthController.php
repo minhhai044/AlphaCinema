@@ -9,6 +9,7 @@ use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\ConfirmVerifyEmailRequest;
 use App\Http\Requests\SendOtpRequest;
+use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UserRequest;
 use App\Http\Requests\VerifyEmailRequest;
 use App\Mail\SendOtpMail;
@@ -52,7 +53,10 @@ class AuthController extends Controller
             // Validate dữ liệu đầu vào
             $data = $request->validated();
 
+            // $this->sendMailOtp($data['email'], $data['name']);
+
             $vat = Vat::first();
+
 
             // Lấy user theo email
             $user = $this->userService->getUserApi($data['email']);
@@ -61,13 +65,16 @@ class AuthController extends Controller
             if (!$user) {
                 return response()->json([
                     'status' => false,
-                    'message' => 'Email không tồn tại'
+                    'email' => 'Email không tồn tại'
                 ], Response::HTTP_NOT_FOUND);
             }
 
             // Kiểm tra mật khẩu (So sánh password hash)
             if (!Hash::check($data['password'], $user->password)) {
-                return $this->errorResponse('Thông tin tài khoản không chính xác', Response::HTTP_UNAUTHORIZED);
+                return response()->json([
+                    'status' => 'error',
+                    'password' => 'Mật khẩu không chính xác.'
+                ], Response::HTTP_UNAUTHORIZED);
             }
 
             if ($user->is_active == false) {
@@ -103,28 +110,79 @@ class AuthController extends Controller
         }
     }
 
-    public function signUp(RegisterRequest $request)
+    // public function signUp(RegisterRequest $request)
+    // {
+    //     try {
+    //         $data = $request->validated();
+    //         $vat = Vat::first();
+    //         $data['type_user'] = 0;
+
+    //         $user = $this->userService->storeUser($data);
+
+    //         $token = $user->createToken('UserToken')->plainTextToken;
+
+    //         return $this->successResponse([
+    //             'user' => $user,
+    //             'token' => $token,
+    //             'vat' => $vat
+    //         ], 'Đăng ký thành công', Response::HTTP_CREATED);
+    //     } catch (\Throwable $th) {
+    //         Log::error($th->getMessage());
+    //         return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+    //     }
+    // }
+
+    public function register($data)
     {
         try {
             $vat = Vat::first();
-            $data = $request->validated();
             $data['type_user'] = 0;
 
             $user = $this->userService->storeUser($data);
 
             $token = $user->createToken('UserToken')->plainTextToken;
 
-            return $this->successResponse([
+            return $data = [
                 'user' => $user,
                 'token' => $token,
                 'vat' => $vat
-            ], 'Đăng ký thành công', Response::HTTP_CREATED);
+            ];
+            // return $this->successResponse([
+            //     'user' => $user,
+            //     'token' => $token,
+            //     'vat' => $vat
+            // ], 'Đăng ký thành công', Response::HTTP_CREATED);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
-
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
+
+    public function checkUserResgister(RegisterRequest $request)
+    {
+        try {
+            $data = $request->validated();
+
+            if (!empty($data)) {
+                $this->sendMailOtp($data['email'], $data['name']);
+            }
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected function formatAvatar($avatar)
+    {
+        if (Str::startsWith($avatar, 'avatar')) {
+            return Storage::exists($avatar)
+                ? Storage::url($avatar)
+                : asset('https://i.sstatic.net/l60Hf.png');
+        }
+
+        return $avatar;
+    }
+
 
     public function logout(Request $request)
     {
@@ -147,16 +205,29 @@ class AuthController extends Controller
             ->withCookie(cookie()->forget('auth'));
     }
 
-    public function updateProfile(UserRequest $userRequest, string $id)
+    public function updateProfile(UpdateProfileRequest $request, string $id)
     {
+        // UpdateProfileRequest
         try {
+            $data = $request->validated();
 
-            $user = $this->userService->updateInfo($userRequest->validated(), $id);
+            $user = User::findOrFail($id);
+
+            if (!empty($data['avatar'])) {
+                if ($user->avatar && Storage::exists($user->avatar)) {
+                    Storage::delete($user->avatar);
+                }
+                $data['avatar'] = Storage::put('avatar', $data['avatar']);
+            }
+
+            $user->update($data);
+
+            $user->avatar = $this->formatAvatar($user->avatar);
+            // $user = $this->userService->updateInfo($request->validated(), $id);
 
             return $this->successResponse([
-                'message' => "Update thành công",
-                'data' => $user
-            ]);
+                'user' => $user
+            ], 'Update thành công');
         } catch (Exception $e) {
             return $this->errorResponse([
                 'message' => 'Có lỗi xảy ra: ' . $e->getMessage(),
@@ -179,9 +250,16 @@ class AuthController extends Controller
 
             // Check if the old password matches the current password
             if (!Hash::check($data['password_old'], $user->password)) {
-                return $this->errorResponse([
-                    'message' => 'Mật khẩu cũ không chính xác.'
-                ]);
+                // return $this->errorResponse([
+                //     'password_old' => 'Mật khẩu cũ không chính xác.'
+                // ]);
+
+                return response()->json([
+                    'errors' => [
+                        'password_old' => 'Mật khẩu cũ không chính xác.'
+                    ],
+                    'status' => false
+                ], Response::HTTP_INTERNAL_SERVER_ERROR);
             }
 
             // Remove the 'password_old' field from the data array
@@ -253,6 +331,8 @@ class AuthController extends Controller
 
         // Auth::login($user);
 
+        $user->avatar = $this->formatAvatar($user->avatar);
+
         $token = $user->createToken('authToken')->plainTextToken;
 
         $authData = json_encode([
@@ -271,9 +351,6 @@ class AuthController extends Controller
 
     public function getUserRank()
     {
-
-
-
         try {
             $user = Auth::user();
             if (!$user) {
@@ -439,11 +516,11 @@ class AuthController extends Controller
     public function confirmVerifyEmail(ConfirmVerifyEmailRequest $request)
     {
         try {
-            $user = User::where('email', $request->email)->first();
+            // $user = User::where('email', $request->email)->first();
 
-            if (!$user) {
-                return $this->errorResponse('Email không tồn tại', Response::HTTP_NOT_FOUND);
-            }
+            // if (!$user) {
+            //     return $this->errorResponse('Email không tồn tại', Response::HTTP_NOT_FOUND);
+            // }
 
             $redisKey = "verify-email-{$request->email}";
             $hashedOtp = Redis::get($redisKey);
@@ -456,12 +533,18 @@ class AuthController extends Controller
                 return $this->errorResponse('Mã OTP không chính xác', Response::HTTP_UNAUTHORIZED);
             }
 
+            // $user->email_verified_at = now();
+            // $user->save();
+
+            $data = $this->register($request->except('otp'));
+
+            // Cập nhật thông tin người dùng và xác minh email
+            $user = $data['user'];
             $user->email_verified_at = now();
             $user->save();
 
-            Redis::del($redisKey);
-
-            return $this->successResponse([], 'Xác minh email thành công', Response::HTTP_OK);
+            // Trả về thông tin người dùng đã xác minh
+            return $this->successResponse(['user' => $user, 'token' => $data['token'], 'vat' => $data['vat']], 'Xác minh email thành công', Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
@@ -527,6 +610,23 @@ class AuthController extends Controller
             Redis::del("otp_{$request->email}");
 
             return $this->successResponse($user, 'Thay đổi mật khẩu thành công', Response::HTTP_OK);
+        } catch (\Throwable $th) {
+            Log::error($th->getMessage());
+            return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    public function sendMailOtp($email, $name)
+    {
+        try {
+            $otp = rand(100000, 999999);
+            // $expiresAt = Carbon::now()->addMinutes(2);
+
+            Redis::setex("verify-email-{$email}", 300, Hash::make($otp));
+
+            Mail::to($email)->queue(new SendOtpMail($otp, $name));
+
+            return $this->successResponse([], 'Vui lòng kiểm tra email của bạn', Response::HTTP_OK);
         } catch (\Throwable $th) {
             Log::error($th->getMessage());
             return $this->errorResponse('Đã xảy ra lỗi, vui lòng thử lại', Response::HTTP_INTERNAL_SERVER_ERROR);

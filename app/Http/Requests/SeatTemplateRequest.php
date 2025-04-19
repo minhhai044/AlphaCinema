@@ -3,7 +3,9 @@
 namespace App\Http\Requests;
 
 use App\Models\Seat_template;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Validation\Rule;
 
 class SeatTemplateRequest extends FormRequest
@@ -70,5 +72,17 @@ class SeatTemplateRequest extends FormRequest
             'row_vip.required' => 'Vui lòng nhập ghế vip !!!',
             'row_double.required' => 'Vui lòng nhập ghế đôi !!!',
         ];
+    }
+    protected function failedValidation(Validator $validator)
+    {
+        $error_modal = $this->isMethod('post') ? 'create' : 'edit';
+
+        throw new HttpResponseException(
+            redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+                ->with('error_modal', $error_modal)
+                ->with('seat_template_id', $this->route('id'))
+        );
     }
 }
