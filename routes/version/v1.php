@@ -32,6 +32,7 @@ Route::prefix('users')->group(function () {
  */
 
 Route::post('signin', [AuthController::class, 'signIn']);
+Route::post('checkUserResgister', [AuthController::class, 'checkUserResgister']);
 Route::post('signup', [AuthController::class, 'signUp']);
 
 /**
@@ -118,6 +119,7 @@ Route::post('{payment}/payment', [PaymentController::class, 'payment']);
 Route::get('/checkout', [PaymentController::class, 'checkout']);
 
 // route forget password
+
 Route::post('send-otp', [AuthController::class, 'sendOtp']);
 Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
 Route::post('reset-password', [AuthController::class, 'resetPassword']);

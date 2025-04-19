@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Xác nhận quên mật khẩu - AlphaCinema</title>
+    <title>Mã xác nhận - AlphaCinema</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -81,7 +81,7 @@
 <body>
     <div class="container">
         <div class="header">
-            🎟 Xác nhận quên mật khẩu - AlphaCinema
+            🎟 Xác nhận gửi mã OTP - AlphaCinema
         </div>
         <div class="content">
             <p>Xin chào <strong>{{ $user_name }}</strong>,</p>
