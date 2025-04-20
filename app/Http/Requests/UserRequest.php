@@ -40,7 +40,11 @@ class UserRequest extends FormRequest
             'name' => 'required|string|max:255',
             'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'phone' => 'required|regex:/^\+?[0-9]{10,15}$/|unique:users,phone',  // Kiểm tra số điện thoại duy nhất
-            'email' => 'required|email|unique:users,email',  // Kiểm tra email duy nhất
+            'email' => [
+                'required',
+                'unique:users,email',
+                'regex:/^[\w\.\-]+@([\w\-]+\.)+[a-zA-Z]{2,}$/'
+            ],
             'password' => 'required|string|min:8|confirmed',
             'address' => 'nullable|string|max:255',
             'gender' => 'nullable',
@@ -85,8 +89,13 @@ class UserRequest extends FormRequest
             'name.string' => 'Tên phải là một chuỗi ký tự.',
             'name.max' => 'Tên không được vượt quá 255 ký tự.',
 
-            'avatar.image' => 'Ảnh đại diện phải là một file ảnh.',
-            'avatar.max' => 'Ảnh đại diện không được vượt quá 2MB.',
+            'avatar' => [
+                'required' => 'Vui lòng chọn hình ảnh.',
+                'image' => 'Tệp tải lên phải là một hình ảnh.',
+                'mimes' => 'Hình ảnh phải có định dạng: jpeg, png, jpg, gif, svg.',
+                'max' => 'Hình ảnh không được vượt quá 2MB.',
+                'url' => 'Hình ảnh phải là một URL hợp lệ.'
+            ],
 
             'phone.required' => 'Số điện thoại là bắt buộc',
             'phone.regex' => 'Số điện thoại không hợp lệ. Vui lòng nhập lại.',
@@ -94,7 +103,8 @@ class UserRequest extends FormRequest
 
             'email.required' => 'Email là bắt buộc.',
             'email.email' => 'Email phải là một địa chỉ email hợp lệ.',
-            'email.unique' => 'Email đã tồn tại.',  // Thông báo lỗi cho email trùng
+            'email.unique' => 'Email đã tồn tại.',
+            'email.regex' => 'Email không đúng định dạng (phải có @ và tên miền đầy đủ)',
 
             'password.required' => 'Mật khẩu là bắt buộc.',
             'password.string' => 'Mật khẩu phải là một chuỗi ký tự.',
@@ -117,10 +127,6 @@ class UserRequest extends FormRequest
             'cinema_id.exists' => 'ID rạp chiếu không tồn tại.',
 
             'branch_id.exists' => 'ID chi nhánh không tồn tại.',
-
-            'avatar.image' => 'Ảnh đại diện phải là một hình ảnh hợp lệ.',
-            'avatar.mimes' => 'Ảnh đại diện phải có định dạng: jpeg, png, jpg.',
-            'avatar.max' => 'Ảnh đại diện không được vượt quá 2MB.',
         ];
     }
 }
