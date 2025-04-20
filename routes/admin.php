@@ -159,6 +159,7 @@ Route::prefix('showtimes')->as('showtimes.')->group(function () {
     Route::get('{id}/createList',   [ShowtimeController::class, 'createList'])->name('createList');
     Route::post('{id}/multipleSelect', [ShowtimeController::class, 'multipleSelect'])->name('multipleSelect');
     Route::post('{id}/storePremium', [ShowtimeController::class, 'storePremium'])->name('storePremium');
+    Route::get('{id}/show',         [ShowtimeController::class, 'show'])->name('show');
 });
 
 

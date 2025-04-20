@@ -244,18 +244,20 @@
                                                                             </div>
                                                                         </td>
                                                                         <td>
-                                                                            <form
-                                                                                action="{{ route('admin.showtimes.delete') }}"
-                                                                                method="POST">
-                                                                                @csrf
-                                                                                <input type="hidden" name="showtime_id"
-                                                                                    value="{{ $showtime['id'] }}">
-                                                                                <button type="submit"
-                                                                                    onclick="return confirm('Bạn có chắc chắn không !!!')"
-                                                                                    class="btn btn-sm btn-danger fw-bold">
-                                                                                    <i class="bi bi-trash"></i>
-                                                                                </button>
-                                                                            </form>
+                                                                            <div class="d-flex justify-content-center align-items-center gap-1">
+                                                                                <a href="{{route('admin.showtimes.show' , $showtime['slug']) }}" class="btn btn-sm btn-warning" title="Xem chi tiết">
+                                                                                    <i class="bx bx-show"></i>
+                                                                                </a>
+                                                                                <form action="{{ route('admin.showtimes.delete') }}" method="POST" onsubmit="return confirm('Bạn có chắc chắn không !!!')">
+                                                                                    @csrf
+                                                                                    <input type="hidden" name="showtime_id" value="{{ $showtime['id'] }}">
+                                                                                    <button type="submit" class="btn btn-sm btn-danger fw-bold" title="Xoá suất chiếu">
+                                                                                        <i class="bi bi-trash"></i>
+                                                                                    </button>
+                                                                                </form>
+                                                                        
+                                                                                
+                                                                            </div>
                                                                         </td>
                                                                     </tr>
                                                                 @endforeach
