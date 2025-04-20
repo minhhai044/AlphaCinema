@@ -318,8 +318,8 @@ class ShowtimeController extends Controller
                         'slug' => Showtime::generateCustomRandomString(),
                         'date' => $groups['date'],
                         'price_special' => isset($groups['price_special'])
-                        ? str_replace('.', '', $groups['price_special'])
-                        : 0,
+                            ? str_replace('.', '', $groups['price_special'])
+                            : 0,
                         'start_time' => $start_time,
                         'end_time' => $groups['end_times'][$keyStart_times],
                         'is_active' => 1,
@@ -333,5 +333,18 @@ class ShowtimeController extends Controller
 
             return back()->with('error','Thao tác không thành công !!!');
         }
+    }
+    public function show(string $id)
+    {
+
+        [
+            $showtime,
+            $seatMap,
+            $matrix_colume,
+            $totalSeats,
+            $soldSeats
+
+        ] = $this->showtimeService->showServive($id);
+        return view(self::PATH_VIEW . __FUNCTION__, compact('showtime', 'matrix_colume', 'seatMap','totalSeats','soldSeats'));
     }
 }

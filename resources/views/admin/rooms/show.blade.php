@@ -96,14 +96,14 @@
 
             <div class="text-center">
                 <div class="screen ">
-                    <img class="w-100" src="{{asset('images/seat/manhinh.png')}}" alt="">
+                    <img style="width: 80% !important;" src="{{asset('images/seat/manhinh.png')}}" alt="">
                 </div>
                 <div class="seat-map" >
                     <table style="width: 60%" class="table-chart-chair table-none align-middle mx-auto text-center mt-3">
                         <tbody>
                             @for ($row = 0; $row < $room->matrix_colume; $row++)
                                 <tr>
-                                    <td class="box-item">{{ chr(65 + $row) }}</td>
+                                    {{-- <td class="box-item">{{ chr(65 + $row) }}</td> --}}
                                     @for ($col = 0; $col < $room->matrix_colume; $col++)
                                         @php
                                             $seatType = $seatMap[chr(65 + $row)][$col + 1] ?? null;
