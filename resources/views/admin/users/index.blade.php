@@ -53,7 +53,6 @@
                         </div>
                     @endif
 
-
                     <!-- Nút thêm mới -->
                     <a href="{{ route('admin.users.create') }}" class="btn btn-primary flex-shrink-0">+ Thêm mới</a>
                 </form>
