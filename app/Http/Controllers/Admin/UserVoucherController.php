@@ -68,9 +68,18 @@ class UserVoucherController extends Controller
                         ];
                     }
                 }
+
+                // dd($insertData);
                 if (!empty($insertData)) {
-                    User_voucher::insert($insertData);
-                    // broadcast(new RealTimeVouCherEvent($vouchers, $userIds))->toOthers();
+
+                    foreach ($insertData as $voucherData) {
+
+                        $userVoucher = User_voucher::create($voucherData);
+                        $voucher = $userVoucher->voucher;
+
+                        broadcast(new RealTimeVouCherEvent($voucher, $voucherData['user_id']))->toOthers();
+                    }
+
 
                     return redirect()->route('admin.user-vouchers.index')->with('success', 'Thêm mới User Voucher thành công!');
                 } else {

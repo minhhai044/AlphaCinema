@@ -16,7 +16,7 @@ class RealTimeVouCherEvent implements ShouldBroadcastNow
 
     public $voucher;
     public $userIds;
-    public function __construct($voucher,$userIds)
+    public function __construct($voucher, $userIds)
     {
         $this->voucher = $voucher;
         $this->userIds = $userIds;
@@ -24,11 +24,9 @@ class RealTimeVouCherEvent implements ShouldBroadcastNow
 
     public function broadcastOn()
     {
-        // return new Channel('voucher');
-        return collect($this->userIds)
-        ->map(fn ($id) => new PrivateChannel('voucher.' . $id))
-        ->all();
+        return new Channel('voucher');
     }
+
     public function broadcastWith()
     {
         return [
@@ -38,6 +36,7 @@ class RealTimeVouCherEvent implements ShouldBroadcastNow
             'end_date_time' => $this->voucher->end_date_time,
             'discount' => $this->voucher->discount,
             'quantity' => $this->voucher->quantity,
+            'user_id' => $this->userIds
         ];
     }
 }
