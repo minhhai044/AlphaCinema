@@ -15,13 +15,13 @@ class UserVoucherController extends Controller
      * Hiển thị danh sách User Voucher.
      */
 
-     public function __construct()
-     {
-         $this->middleware('can:Danh sách áp mã giảm giá')->only('index');
-         $this->middleware('can:Thêm áp mã giảm giá')->only(['create', 'store']);
-         $this->middleware('can:Sửa áp mã giảm giá')->only(['edit', 'update']);
-         $this->middleware('can:Xóa áp mã giảm giá')->only('destroy');
-     }
+    public function __construct()
+    {
+        $this->middleware('can:Danh sách áp mã giảm giá')->only('index');
+        $this->middleware('can:Thêm áp mã giảm giá')->only(['create', 'store']);
+        $this->middleware('can:Sửa áp mã giảm giá')->only(['edit', 'update']);
+        $this->middleware('can:Xóa áp mã giảm giá')->only('destroy');
+    }
 
     public function index()
     {
@@ -34,9 +34,7 @@ class UserVoucherController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-
-
+        $users = User::query()->where('type_user', '0')->get();
         $vouchers = Voucher::where('is_active', 1)->get();
 
         return view('admin.user_vouchers.create', compact('users', 'vouchers'));
