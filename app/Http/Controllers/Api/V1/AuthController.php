@@ -410,7 +410,7 @@ class AuthController extends Controller
             }
 
             // Lấy danh sách voucher của người dùng
-            $vouchers = User_voucher::where('user_id', $userId)->with('voucher')->get();
+            $vouchers = User_voucher::where('user_id', $userId)->where('is_active' , 1)->with('voucher')->get();
 
             return response()->json([
                 'success' => true,
