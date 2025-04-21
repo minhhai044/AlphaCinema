@@ -154,10 +154,15 @@
                         toastr.error('Lỗi khi tải dữ liệu bảng.');
                     }
                 },
-                columns: [{
-                        data: 'id',
-                        name: 'id'
-                    },
+                columns: [
+    {
+        data: null,
+        name: 'index',
+        render: function (data, type, row, meta) {
+            return meta.row + meta.settings._iDisplayStart + 1;
+        },
+        title: 'STT'
+    },
                     {
                         data: 'img_thumbnail',
                         render: function(data) {
@@ -235,7 +240,7 @@
                             }
                                             </p>
                                             <p style="margin: 5px 0; font-size: 14px;">
-                                                <strong style="color: #333;">Danh mục:</strong> ${row.category || '<span style="color: gray;">Chưa có</span>'}
+                                                <strong style="color: #333;">Diễn viên:</strong> ${row.category || '<span style="color: gray;">Chưa có</span>'}
                                             </p>
                                             <p style="margin: 5px 0; font-size: 14px;">
                                                 <strong style="color: #333;">Phiên bản:</strong> ${versionHtml || '<span style="color: gray;">Chưa cập nhật</span>'}
