@@ -32,11 +32,11 @@
                         <div class="card card-body mb-3">
                             <form id="filterForm">
                                 <div class="row">
-                                    <div class="col-md-4">
+                                    {{-- <div class="col-md-4">
                                         <label class="form-label">Tìm nhanh theo ID</label>
                                         <input type="text" name="id" class="form-control" placeholder="Nhập ID">
-                                    </div>
-                                    <div class="col-md-4">
+                                    </div> --}}
+                                    <div class="col-md-6">
                                         <label class="form-label">Phiên bản</label>
                                         <select name="movie_versions" class="form-control">
                                             <option value="">-- Chọn phiên bản --</option>
@@ -45,7 +45,7 @@
                                             <option value="4D">4D</option>
                                         </select>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="col-md-6">
                                         <label class="form-label">Thể loại</label>
                                         <select name="movie_genres" class="form-control">
                                             <option value="">-- Chọn thể loại --</option>
@@ -92,7 +92,7 @@
                                     <th>Thông tin phim</th>
                                     <th>Hoạt động</th>
                                     <th>Nổi bật</th>
-                                    <th>Xuất bản</th>
+                                    {{-- <th>Xuất bản</th> --}}
                                     <th>Hành động</th>
                                 </tr>
                             </thead>
@@ -296,27 +296,27 @@
                         orderable: false,
                         searchable: false
                     },
-                    {
-                        data: 'is_publish',
-                        render: function(data, type, row) {
-                            return `
-                                    <div class="form-check form-switch form-switch-md form-switch-success">
-                                        <input class="form-check-input @can('Sửa phim') changeStatus @endcan"
-                                            type="checkbox"
-                                            data-movie-id="${row.id}"
-                                            data-field="is_publish"
-                                            ${data ? 'checked' : ''}
-                                            @can('Sửa phim')
-                                            @else
-                                            disabled
-                                            @endcan
-                                        >
-                                    </div>
-                                `;
-                        },
-                        orderable: false,
-                        searchable: false
-                    },
+                    // {
+                    //     data: 'is_publish',
+                    //     render: function(data, type, row) {
+                    //         return `
+                    //                 <div class="form-check form-switch form-switch-md form-switch-success">
+                    //                     <input class="form-check-input @can('Sửa phim') changeStatus @endcan"
+                    //                         type="checkbox"
+                    //                         data-movie-id="${row.id}"
+                    //                         data-field="is_publish"
+                    //                         ${data ? 'checked' : ''}
+                    //                         @can('Sửa phim')
+                    //                         @else
+                    //                         disabled
+                    //                         @endcan
+                    //                     >
+                    //                 </div>
+                    //             `;
+                    //     },
+                    //     orderable: false,
+                    //     searchable: false
+                    // },
                     {
                         data: 'id',
                         render: function(data) {

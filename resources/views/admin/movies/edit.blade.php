@@ -234,7 +234,7 @@
                                         'is_active' => 'Hoạt động',
                                         'is_hot' => 'Nổi bật ',
                                         'is_special' => 'Đặc biệt',
-                                        'is_publish' => 'Xuất bản',
+                                        // 'is_publish' => 'Xuất bản',
                                     ];
                                 @endphp
 

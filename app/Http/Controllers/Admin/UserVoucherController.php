@@ -103,8 +103,11 @@ class UserVoucherController extends Controller
             ->pluck('voucher_id')
             ->toArray();
 
-        $vouchers = Voucher::whereNotIn('id', $usedVoucherIds)
-            ->orWhere('id', $User_voucher->voucher_id)
+        $vouchers = Voucher::where('is_active', 1)
+            ->where(function ($query) use ($usedVoucherIds, $User_voucher) {
+                $query->whereNotIn('id', $usedVoucherIds)
+                    ->orWhere('id', $User_voucher->voucher_id);
+            })
             ->get();
 
         return view('admin.user_vouchers.edit', compact('User_voucher', 'users', 'vouchers'));
