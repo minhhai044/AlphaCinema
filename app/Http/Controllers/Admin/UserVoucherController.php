@@ -132,6 +132,11 @@ class UserVoucherController extends Controller
 
             $User_voucher->update($data);
 
+            $userId = $data['user_id'];
+            $voucher = $User_voucher->voucher;
+
+            broadcast(new RealTimeVouCherEvent($voucher, $userId))->toOthers();
+
             return redirect()->route('admin.user-vouchers.index')->with('success', 'Cập nhật User Voucher thành công!');
         } catch (\Throwable $th) {
             return redirect()->back()->with('error', 'Đã xảy ra lỗi: ' . $th->getMessage());
