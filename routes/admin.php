@@ -284,6 +284,8 @@ Route::post('/tickets/change-status', [TicketController::class, 'changeStatus'])
 
 Route::get('/tickets/{code}/check-exists', [TicketController::class, 'checkExists']);
 
+Route::get('/change-password', [AuthController::class, 'showChangePasswordForm'])->name('change-password.form');
+Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password');
 
 
 Route::group([
@@ -293,3 +295,5 @@ Route::group([
     Route::get('{roomId}/', [RoomChatController::class, 'room'])->name('show');
     Route::post('{roomId}/', [RoomChatController::class, 'messenger'])->name('messenger');
 });
+
+
