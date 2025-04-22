@@ -115,7 +115,7 @@
                     <div class="col-md-8">
                         <h3>{{ $movie->name }}</h3>
                         <p><strong><i class="bi bi-link-45deg me-1"></i> Slug:</strong> {{ $movie->slug }}</p>
-                        <p><strong><i class="bi bi-list-ul me-1"></i> Danh mục:</strong> {{ $movie->category }}</p>
+                        <p><strong><i class="bi bi-list-ul me-1"></i> Diễn viên:</strong> {{ $movie->category }}</p>
                         <p><strong><i class="bi bi-person-video me-1"></i> Tác giả:</strong> {{ $movie->director }}</p>
                         <p><strong><i class="bi bi-youtube me-1"></i> Trailer:</strong>
                             <a href="{{ $movie->trailer_url }}" target="_blank"

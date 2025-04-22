@@ -41,8 +41,8 @@
                                         <div class="text-danger error-message d-none"></div>
                                     </td>
                                     <td class="text-center">
-                                        <a class="btn btn-outline-secondary btn-sm edit" title="Edit">
-                                            <i class="fas fa-pencil-alt"></i> Sửa
+                                        <a class="btn  btn-sm edit btn btn-warning" title="Edit">
+                                            <i class="fas fa-pencil-alt"></i>
                                         </a>
                                         <a class="btn btn-success btn-sm save d-none" title="Save">
                                             <i class="fas fa-check"></i> Lưu

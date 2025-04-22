@@ -103,9 +103,20 @@ class UserVoucherController extends Controller
     public function edit(User_voucher $User_voucher)
     {
         $users = User::all();
-        $vouchers = Voucher::all();
+        $userId = $User_voucher->user_id;
+
+        $usedVoucherIds = User_voucher::where('user_id', $userId)
+            ->where('id', '!=', $User_voucher->id)
+            ->pluck('voucher_id')
+            ->toArray();
+
+        $vouchers = Voucher::whereNotIn('id', $usedVoucherIds)
+            ->orWhere('id', $User_voucher->voucher_id)
+            ->get();
+
         return view('admin.user_vouchers.edit', compact('User_voucher', 'users', 'vouchers'));
     }
+
 
     /**
      * Cập nhật User Voucher.

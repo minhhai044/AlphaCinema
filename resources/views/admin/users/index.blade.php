@@ -96,7 +96,7 @@
                 <table id="datatable" class="table table-bordered w-100 text-center">
                     <thead>
                         <tr class="text-center">
-                            <th>ID</th>
+                            <th>STT</th>
                             <th>Tên</th>
                             <th>Ảnh</th>
                             <th>Email</th>

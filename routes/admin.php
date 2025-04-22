@@ -58,10 +58,9 @@ Route::post('/cinemas/{id}/toggle', [CinemaController::class, 'toggleStatus'])->
 Route::get('/get-cinemas/{branch_id}', [CinemaController::class, 'getCinemasByBranch']);
 
 Route::resource('ranks', RankController::class);
+Route::post('/branches/change-active', [BranchController::class, 'changeActive'])->name('branches.change-active');
 
 Route::resource('slideshows', SlideShowController::class);
-// Route Food
-// Đảm bảo rằng route được khai báo trong nhóm `foods` nếu muốn đặt tên cho route đúng cách.
 Route::group([
     'prefix' => 'foods',  // Tiền tố URL cho tất cả route
     'as' => 'foods.', // Thêm `admin` vào nhóm tên route
