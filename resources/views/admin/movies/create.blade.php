@@ -346,7 +346,7 @@
                                     value="{{ old('is_special', 1) }}">
 
                                 <!-- Publish -->
-                                <div class="d-flex align-items-center gap-2 mb-2">
+                                {{-- <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="custom-switch">
                                         <input type="checkbox" id="switch_publish" switch="primary"
                                             {{ old('is_publish', 1) ? 'checked' : '' }} />
@@ -356,7 +356,7 @@
                                 </div>
                                 <input type="hidden" name="is_publish" id="is_publish"
                                     value="{{ old('is_publish', 1) }}">
-                            </div>
+                            </div> --}}
                         </div>
 
                         <div class="d-flex flex-wrap gap-2">

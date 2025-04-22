@@ -133,9 +133,9 @@
                             <span class="badge bg-{{ $movie->is_special ? 'info' : 'secondary' }}">
                                 {{ $movie->is_special ? 'Đặc biệt' : 'Tiêu chuẩn' }}
                             </span>
-                            <span class="badge bg-{{ $movie->is_publish ? 'primary' : 'secondary' }}">
+                            {{-- <span class="badge bg-{{ $movie->is_publish ? 'primary' : 'secondary' }}">
                                 {{ $movie->is_publish ? 'Đã xuất bản' : 'Chưa xuất bản' }}
-                            </span>
+                            </span> --}}
                         </p>
                     </div>
                 </div>
