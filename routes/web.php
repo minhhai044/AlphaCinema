@@ -37,6 +37,11 @@ Route::get("/login", function () {
 
 Route::post("/login", [AuthAdmin::class, "login"])->name('login');
 
+Route::get("/formSendMail", [AuthAdmin::class, "formSendMail"])->name('formSendMail');
+Route::post("/sendMailPassword", [AuthAdmin::class, "sendMailPassword"])->name('sendMailPassword');
+
+// Route::post("/login", [AuthAdmin::class, "login"])->name('login');
+
 Route::get('auth/google/redirect', [AuthController::class, 'googleRedirect']);
 
 Route::get('auth/google/callback', [AuthController::class, 'googleCallBack']);
