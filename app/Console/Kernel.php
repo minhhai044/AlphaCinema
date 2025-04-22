@@ -17,9 +17,6 @@ class Kernel extends ConsoleKernel
         $schedule->command('voucher:updateExpired')->daily()->at('08:00');
         $schedule->command('reset:Seat')->everyMinute();
 
-        // $schedule->call(function () {
-        //     Log::info('Cập nhật ghế sau 10p');
-        // })->everySecond();
     }
 
     /**
