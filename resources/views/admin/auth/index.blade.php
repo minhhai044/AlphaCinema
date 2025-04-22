@@ -104,7 +104,12 @@
                                     </div> --}}
                                 </div>
 
+                                <div class="mt-5 text-center">
+                                    <a href="{{ route('formSendMail') }}" class="text-primary fw-semibold"> Quên mật khẩu </a>
+                                </div>
+
                             </div>
+
                         </div>
                     </div>
                     <!-- end auth full page content -->
