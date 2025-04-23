@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ChangePasswordRequest;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Services\UserService;
@@ -143,6 +144,30 @@ class AuthController extends Controller
             ]);
 
             return back()->withErrors(['error' => 'Đã xảy ra lỗi khi đăng xuất. Vui lòng thử lại sau.']);
+        }
+    }
+
+    public function showChangePasswordForm()
+    {
+        return view('admin.auth.change-password');
+    }
+
+    public function changePassword(ChangePasswordRequest $request)
+    {
+        try {
+            $user = Auth::user();
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return back()->withErrors(['current_password' => 'Mật khẩu hiện tại không đúng.']);
+            }
+
+            $user->password = Hash::make($request->new_password);
+            $user->save();
+
+            return redirect()->route('admin.index')->with('success', 'Đổi mật khẩu thành công!');
+        } catch (\Throwable $th) {
+            Log::error('Đổi mật khẩu thất bại', ['error' => $th->getMessage()]);
+            return back()->withErrors(['error' => 'Đã xảy ra lỗi. Vui lòng thử lại sau.']);
         }
     }
 }

@@ -1,6 +1,6 @@
 <div class="navbar-header">
     @php
-        $user = \Auth::user();
+$user = \Auth::user();
     @endphp
 
     {{-- <span>{{ \Auth::user()->id }}</span>
@@ -88,9 +88,9 @@
                         {{ $notifications->where('status', 0)->count() }}
                     </span>
                 @else
-                <span class="badge bg-danger rounded-pill">
-                    0
-                </span>
+                    <span class="badge bg-danger rounded-pill">
+                        0
+                    </span>
                 @endif
 
             </button>
@@ -175,11 +175,14 @@
             </button>
             <div class="dropdown-menu dropdown-menu-end">
                 <!-- item-->
-                <a class="dropdown-item" href="apps-contacts-profile.html"><i
+                {{-- <a class="dropdown-item" href="apps-contacts-profile.html"><i
                         class="mdi mdi mdi-face-man font-size-16 align-middle me-1"></i> Profile</a>
                 <a class="dropdown-item" href="auth-lock-screen.html"><i
                         class="mdi mdi-lock font-size-16 align-middle me-1"></i> Lock Screen</a>
-                <div class="dropdown-divider"></div>
+                <div class="dropdown-divider"></div> --}}
+                <a class="dropdown-item" id="changepassword-btn" href="{{ route('admin.change-password') }}">
+                    <i class="mdi mdi-lock-reset font-size-16 align-middle me-1"></i>Change Password</a>
+
                 <a class="dropdown-item" id="logout-btn">
                     <i class="mdi mdi-logout font-size-16 align-middle me-1"></i>
                     Logout

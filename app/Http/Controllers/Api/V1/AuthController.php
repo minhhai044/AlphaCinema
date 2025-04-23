@@ -8,6 +8,7 @@ use App\Http\Requests\Api\ChangePasswordRequest;
 use App\Http\Requests\Api\LoginRequest;
 use App\Http\Requests\Api\RegisterRequest;
 use App\Http\Requests\ConfirmVerifyEmailRequest;
+use App\Http\Requests\ResetPasswordRequest;
 use App\Http\Requests\SendOtpRequest;
 use App\Http\Requests\UpdateProfileRequest;
 use App\Http\Requests\UserRequest;
@@ -410,7 +411,7 @@ class AuthController extends Controller
             }
 
             // Lấy danh sách voucher của người dùng
-            $vouchers = User_voucher::where('user_id', $userId)->where('is_active' , 1)->with('voucher')->get();
+            $vouchers = User_voucher::where('user_id', $userId)->where('is_active', 1)->with('voucher')->get();
 
             return response()->json([
                 'success' => true,
@@ -586,7 +587,7 @@ class AuthController extends Controller
      *
      * @return mixed|\Illuminate\Http\JsonResponse
      */
-    public function resetPassword(Request $request)
+    public function resetPassword(ResetPasswordRequest $request)
     {
         try {
             $otpRedis = Redis::get("otp_{$request->email}");

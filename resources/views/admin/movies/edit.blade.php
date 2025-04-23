@@ -53,7 +53,7 @@
 
 
                                                             <div class="mb-3">
-                                                                <label class="form-label">Danh mục phim</label>
+                                                                <label class="form-label">Diễn viên phim</label>
                                                                 <input type="text" name="category"
                                                                     value="{{ old('category', $movie->category) }}" class="form-control">
                                                                 @error('category')
@@ -234,7 +234,7 @@
                                         'is_active' => 'Hoạt động',
                                         'is_hot' => 'Nổi bật ',
                                         'is_special' => 'Đặc biệt',
-                                        'is_publish' => 'Xuất bản',
+                                        // 'is_publish' => 'Xuất bản',
                                     ];
                                 @endphp
 

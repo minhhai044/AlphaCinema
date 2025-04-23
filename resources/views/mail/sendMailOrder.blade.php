@@ -110,6 +110,7 @@
             <div class="ticket-info">
                 <p><strong>🎬 Phim:</strong> {{ $movie_name }}</p>
                 <p><strong>📅 Ngày chiếu:</strong> {{ \Carbon\Carbon::parse($date)->format('d/m/Y') }}</p>
+                <p><strong>🛋️ Phòng chiếu:</strong> {{ $room }}</p>
                 <p><strong>⏰ Giờ chiếu:</strong> {{ $start_time }}</p>
                 <p><strong>🏢 Rạp:</strong> {{ $cinema_name }} - Chi Nhánh {{ $branch_name }}</p>
                 <p><strong>🪑 Ghế:</strong> {{ implode(', ', $seat_name) }}</p>

@@ -26,7 +26,7 @@
                             <div class="col-auto">
                                 <select name="branch_id" class="form-select" required id="branch_id">
                                     <option value="" disabled selected>Chọn chi nhánh</option>
-                                   
+
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch['id'] }}"
                                             {{ request('branch_id') == $branch['id'] ? 'selected' : '' }}>
@@ -244,18 +244,30 @@
                                                                             </div>
                                                                         </td>
                                                                         <td>
-                                                                            <form
-                                                                                action="{{ route('admin.showtimes.delete') }}"
-                                                                                method="POST">
-                                                                                @csrf
-                                                                                <input type="hidden" name="showtime_id"
-                                                                                    value="{{ $showtime['id'] }}">
-                                                                                <button type="submit"
-                                                                                    onclick="return confirm('Bạn có chắc chắn không !!!')"
-                                                                                    class="btn btn-sm btn-danger fw-bold">
-                                                                                    <i class="bi bi-trash"></i>
-                                                                                </button>
-                                                                            </form>
+                                                                            <div
+                                                                                class="d-flex justify-content-center align-items-center gap-1">
+                                                                                <a href="{{ route('admin.showtimes.show', $showtime['slug']) }}"
+                                                                                    class="btn btn-sm btn-warning"
+                                                                                    title="Xem chi tiết">
+                                                                                    <i class="bx bx-show"></i>
+                                                                                </a>
+                                                                                <form
+                                                                                    action="{{ route('admin.showtimes.delete') }}"
+                                                                                    method="POST"
+                                                                                    onsubmit="return confirm('Bạn có chắc chắn không !!!')">
+                                                                                    @csrf
+                                                                                    <input type="hidden"
+                                                                                        name="showtime_id"
+                                                                                        value="{{ $showtime['id'] }}">
+                                                                                    <button type="submit"
+                                                                                        class="btn btn-sm btn-danger fw-bold"
+                                                                                        title="Xoá suất chiếu">
+                                                                                        <i class="bi bi-trash"></i>
+                                                                                    </button>
+                                                                                </form>
+
+
+                                                                            </div>
                                                                         </td>
                                                                     </tr>
                                                                 @endforeach
@@ -463,28 +475,41 @@
             loadCinemas(selectedBranchId);
         }
 
+        function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái ?', title =
+            'AlphaCinema thông báo') {
+            return Swal.fire({
+                icon: 'warning',
+                title: title,
+                text: text,
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy',
+            }).then(result => result.isConfirmed);
+        }
 
         $('input[id^="is_active"]').change(function() {
             let id = this.id.replace('is_active', ''); // Lấy ID động
             let is_active = this.checked ? 1 : 0; // Kiểm tra trạng thái
+            confirmChange("Bạn có chắc chắn muốn thay đổi trạng thái ?").then(confirmed => {
+                if (confirmed) {
+                    $.ajax({
+                        url: `${Url}/api/v1/${id}/active-showtime`,
+                        method: "PUT",
+                        data: {
+                            is_active
+                        },
+                        success: function(response) {
+                            toastr.success('Thao tác thành công !!!');
+                        },
+                        error: function(error) {
+                            toastr.error('Thao tác thất bại !!!');
+                        }
+                    });
+                } else {
+                    $(this).prop('checked', !is_active);
+                }
+            });
 
-            if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
-                $.ajax({
-                    url: `${Url}/api/v1/${id}/active-showtime`,
-                    method: "PUT",
-                    data: {
-                        is_active
-                    },
-                    success: function(response) {
-                        toastr.success('Thao tác thành công !!!');
-                    },
-                    error: function(error) {
-                        toastr.error('Thao tác thất bại !!!');
-                    }
-                });
-            } else {
-                $(this).prop('checked', !is_active);
-            }
 
         });
         let movies = @json($movies);

@@ -40,9 +40,10 @@ Broadcast::channel('notification.cinema.{cinemaId}', function ($user, $cinemaId)
     return $user->cinema_id == $cinemaId && !$user->branch_id; // quản lý rạp
 });
 
-Broadcast::channel('voucher.{id}', function ($user, $id) {
-    return (int)$user->id === (int)$id;
+Broadcast::channel('voucher', function () {
+    return true;
 });
+
 Broadcast::channel('chat.{roomId}', function ($user, $roomId) {
     Log::info($user);
     Log::info($roomId);

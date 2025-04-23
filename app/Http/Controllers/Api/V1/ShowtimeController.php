@@ -234,6 +234,17 @@ class ShowtimeController extends Controller
             ];
         }
 
+        if (empty($showtimes)) {
+
+            return response()->json([
+                'status' => false,
+                'message' => "Không có xuất chiếu nào",
+                'code' => 404
+            ], Response::HTTP_NOT_FOUND);
+
+            // return $this->errorResponse('Không tìm thấy phim hoặc lịch chiếu', 404);
+        }
+
         $data = [
             'movie' => $movie,
             'showtimes' => $showtimes

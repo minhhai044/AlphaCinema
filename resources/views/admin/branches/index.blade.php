@@ -2,247 +2,247 @@
 @section('title', 'Quản lý chi nhánh')
 
 @section('style')
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
-        type="text/css" />
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
-    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
-
-    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" type="text/css" />
-    <!-- App Css-->
-    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" type="text/css" />
-
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" />
+    <link href="{{ asset('theme/admin/assets/css/icons.min.css') }}" rel="stylesheet" />
+    <link href="{{ asset('theme/admin/assets/css/app.min.css') }}" id="app-style" rel="stylesheet" />
     <style>
         #datatable_length select {
             width: 60px;
         }
-
         #datatable thead th {
             text-align: center;
             vertical-align: middle;
         }
     </style>
 @endsection
-@section('style-libs')
-    <!-- Datatable CSS -->
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/dataTables.bootstrap5.min.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.bootstrap.min.css" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/buttons/2.2.2/css/buttons.dataTables.min.css">
-@endsection
 
 @section('content')
-    <div class="row">
-        <div class="col-lg-4">
-            <div class="card">
-                <div class="mb-sm-0 font-size-20 fw-semibold ms-3 mt-3">Thêm mới chi nhánh</div>
-
-                <div class="card-body">
-                    <form action="{{ route('admin.branches.store') }}" method="post">
-                        @csrf
-                        <div class="row ">
-                            <div class="mb-2">
-                                <label for="name" class="form-label">
-                                    <span class="text-danger">*</span>Tên chi nhánh:
-                                </label>
-                                <input type="text" name="name" id="name" class="form-control"
-                                    value="{{ old('name') }}" placeholder="Nhập tên chi nhánh">
-                                <div class="">
-                                    @error('name')
-                                        <span class="text-danger fw-medium">
-                                            {{ $message }}
-                                        </span>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div class="mb-2">
-                                <label for="surcharge" class="form-label">
-                                    <span class="text-danger fw-medium">*</span> Phụ phí (VNĐ)
-                                </label>
-                                <input type="text" name="surcharge" id="surcharge" class="form-control"
-                                    value="{{ old('surcharge') }}" placeholder="Nhập giá tiền">
-                                @error('surcharge')
-                                    <span class="text-danger fw-medium">
-                                        {{ $message }}
-                                    </span>
-                                @enderror
-                            </div>
-
-                            <div class="text-end mt-2">
-                                <button type="submit" class="btn btn-primary mx-1">+ Thêm mới</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </div>
-
-        <div class="col-lg-8">
-            <div class="card">
-                <div class="card-body">
-                    <h4 class="mb-sm-0 font-size-20 fw-semibold">Danh sách chi nhánh</h4>
-                    <div class="table-responsive">
-                        <table id="datatable" class="table table-bordered w-100 text-center">
-                            <thead>
-                                <tr>
-                                    <th>ID</th>
-                                    <th>Tên chi nhánh</th>
-                                    <th>Phụ phí</th>
-                                    <th>Hoạt động</th>
-                                    <th>Chức năng</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                @foreach ($branches as $branch)
-                                    <tr>
-                                        <td>{{ $branch->id }}</td>
-                                        <td>{{ $branch->name }}</td>
-                                        <td>{{ number_format($branch->surcharge) }} VND</td>
-                                        <td class="d-flex justify-content-center align-items-center">
-                                            <form action="{{ route('admin.branches.toggle', $branch->id) }}"
-                                                class="form-check form-switch form-switch-success" method="POST"
-                                                id="toggleForm{{ $branch->id }}">
-                                                @csrf
-                                                <input type="checkbox" name="is_active" id="switch{{ $branch->id }}"
-                                                    class="form-check-input switch-is-active changeActive"
-                                                    style="width: 55px; height: 25px;"
-                                                    {{ $branch->is_active ? 'checked' : '' }}
-                                                    onchange="confirmChange({{ $branch->id }})">
-                                                <label for="switch{{ $branch->id }}" data-on-label="Yes"
-                                                    data-off-label="No"></label>
-                                            </form>
-                                        </td>
-
-                                        <td class="text-center">
-                                            <button class="btn btn-warning btn-sm editBranch" data-id="{{ $branch->id }}"
-                                                data-name="{{ $branch->name }}" data-surcharge="{{ $branch->surcharge }}">
-                                                <i class="fas fa-edit"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Modal chỉnh sửa -->
-    </div>
-    <div class="modal fade" id="editBranchModal" tabindex="-1" aria-labelledby="editBranchModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered"> <!-- Thêm modal-dialog-centered -->
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editBranchModalLabel">Cập nhật chi nhánh</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <form id="editBranchForm" method="POST">
+<div class="row">
+    <!-- Form thêm mới -->
+    <div class="col-lg-4">
+        <div class="card">
+            <div class="mb-sm-0 font-size-20 fw-semibold ms-3 mt-3">Thêm mới chi nhánh</div>
+            <div class="card-body">
+                <form action="{{ route('admin.branches.store') }}" method="post">
                     @csrf
-                    @method('PUT')
-                    <div class="modal-body">
-
-                        <label for="branchName" class="form-label">Tên chi nhánh</label>
-                        <input type="text" class="form-control" id="branchName" name="name"
-                            placeholder="Nhập tên chi nhánh" required>
-
+                    <div class="mb-2">
+                        <label class="form-label"><span class="text-danger">*</span> Tên chi nhánh:</label>
+                        <input type="text" name="name" class="form-control" value="{{ old('name') }}" placeholder="Nhập tên chi nhánh">
+                        @error('name') @if (!session('edit_modal')) <span class="text-danger">{{ $message }}</span> @endif @enderror
                     </div>
-                    <div class="modal-body">
-
-                        <label for="branchSurcharge" class="form-label">Phụ phí</label>
-                        <input type="price" class="form-control" id="branchSurcharge" name="surcharge"
-                            placeholder="Nhập phụ phí" required>
-
+                    <div class="mb-2">
+                        <label class="form-label"><span class="text-danger">*</span> Phụ phí (VNĐ)</label>
+                        <input type="text" name="surcharge" class="form-control" value="{{ old('surcharge') }}" placeholder="Nhập phụ phí">
+                        @error('surcharge') @if (!session('edit_modal')) <span class="text-danger">{{ $message }}</span> @endif @enderror
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
-                        <button type="submit" class="btn btn-primary">Cập nhật</button>
+                    <div class="text-end mt-2">
+                        <button type="submit" class="btn btn-primary">+ Thêm mới</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-@endsection
 
+    <!-- Danh sách chi nhánh -->
+    <div class="col-lg-8">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="mb-sm-0 font-size-20 fw-semibold">Danh sách chi nhánh</h4>
+                <div class="table-responsive">
+                    <table id="" class="table table-bordered table-striped">
+                        <thead>
+                            <tr>
+                                <th>STT</th>
+                                <th>Tên chi nhánh</th>
+                                <th>Phụ phí</th>
+                                <th>Hoạt động</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($branches as $branch)
+                                <tr>
+                                    <td>{{ $branch->id }}</td>
+                                    <td>{{ $branch->name }}</td>
+                                    <td>{{ number_format($branch->surcharge) }}</td>
+                                   <td class="text-center">
+    <div class="d-flex justify-content-center align-items-center">
+        <div class="form-check form-switch form-switch-md" dir="ltr">
+            <input class="form-check-input switch-is-active changeActive"
+                   type="checkbox"
+                   data-branch-id="{{ $branch->id }}"
+                   @checked($branch->is_active)>
+        </div>
+    </div>
+</td>
+
+                                    <td class="text-center">
+                                        <button class="btn btn-warning btn-sm editBranch" data-id="{{ $branch->id }}" data-name="{{ $branch->name }}" data-surcharge="{{ $branch->surcharge }}">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Phân trang -->
+                <div class="mt-3">
+                    {{ $branches->appends(['search' => request('search')])->links() }}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal chỉnh sửa -->
+<div class="modal fade" id="editBranchModal" tabindex="-1" aria-labelledby="editBranchModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form id="editBranchForm" method="POST">
+                @csrf
+                @method('PUT')
+                <div class="modal-header">
+                    <h5 class="modal-title">Cập nhật chi nhánh</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-2">
+                        <label class="form-label">Tên chi nhánh</label>
+                        <input type="text" class="form-control" id="branchName" name="name" value="{{ old('name') }}">
+                        @error('name') @if (session('edit_modal')) <span class="text-danger">{{ $message }}</span> @endif @enderror
+                    </div>
+                    <div class="mb-2">
+                        <label class="form-label">Phụ phí</label>
+                        <input type="text" class="form-control" id="branchSurcharge" name="surcharge" value="{{ old('surcharge') }}">
+                        @error('surcharge') @if (session('edit_modal')) <span class="text-danger">{{ $message }}</span> @endif @enderror
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                    <button type="submit" class="btn btn-primary">Cập nhật</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
 
 @section('script')
-    <!-- Required datatable js -->
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-    <!-- Buttons examples -->
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}"></script>
+<script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}"></script>
 
-    <!-- Responsive examples -->
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
-    </script>
-    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
-    </script>
-
-    <!-- Datatable init js -->
-    <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
-
-    <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
-
-    <script src="{{ asset('assets/js/common.js') }}"></script>
-    <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
-    <script>
-        function formatPriceInput(inputSelector, hiddenInputSelector) {
-            $(inputSelector).on("input", function() {
-                let value = $(this).val().replace(/\D/g, ""); // Chỉ giữ lại số
-                let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ","); // Thêm dấu ,
-
-                $(this).val(formattedValue); // Hiển thị dạng số có dấu ,
-                $(hiddenInputSelector).val(value || "0"); // Lưu dạng số không có dấu , vào input ẩn
-            });
-
-            $(inputSelector).on("blur", function() {
-                if (!$(this).val()) {
-                    $(this).val("0");
-                    $(hiddenInputSelector).val("0");
-                }
-            });
-        }
-
-        // Áp dụng cho input giá gốc & giá sale
-        formatPriceInput("#surcharge", "#surcharge_hidden");
-
-        document.querySelectorAll('.editBranch').forEach(function(button) {
-            button.addEventListener('click', function() {
-                const id = this.dataset.id;
-                const name = this.dataset.name;
-                const surcharge = this.dataset.surcharge;
-
-                // Cập nhật form trong modal
-                const form = document.getElementById('editBranchForm');
-                form.action = `/admin/branches/${id}`;
-                document.getElementById('branchName').value = name;
-                document.getElementById('branchSurcharge').value = surcharge;
-
-
-
-                // Hiển thị modal
-                const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
-                modal.show();
-            });
+<script>
+    $(document).ready(function() {
+        $('#branches-table').DataTable({
+            paging: true,
+            lengthChange: false,
+            searching: false,
+            ordering: true,
+            info: true,
+            autoWidth: false,
+            responsive: true
         });
 
-        function confirmChange(branchId) {
-            if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
-                document.getElementById('toggleForm' + branchId).submit();
+        formatPriceInput("#surcharge");
+        formatPriceInput("#branchSurcharge");
+    });
+
+    function formatPriceInput(inputSelector) {
+        $(inputSelector).on("input", function() {
+            let value = $(this).val().replace(/\D/g, "");
+            let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+            $(this).val(formattedValue);
+        }).on("blur", function() {
+            if (!$(this).val()) $(this).val("0");
+        });
+    }
+
+    document.querySelectorAll('.editBranch').forEach(button => {
+        button.addEventListener('click', function() {
+            const id = this.dataset.id;
+            const name = this.dataset.name;
+            const surcharge = this.dataset.surcharge;
+
+            const form = document.getElementById('editBranchForm');
+            form.action = `/admin/branches/${id}`;
+            document.getElementById('branchName').value = name;
+            document.getElementById('branchSurcharge').value = surcharge;
+
+            const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
+            modal.show();
+        });
+    });
+
+    function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái chi nhánh?', title = 'AlphaCinema thông báo') {
+        return Swal.fire({
+            icon: 'warning',
+            title: title,
+            text: text,
+            showCancelButton: true,
+            confirmButtonText: 'Đồng ý',
+            cancelButtonText: 'Hủy',
+        }).then(result => result.isConfirmed);
+    }
+
+    $(document).on("change", ".changeActive", function(e) {
+        e.preventDefault();
+
+        let $checkbox = $(this);
+        let branchId = $checkbox.data("branch-id");
+        let is_active = $checkbox.is(":checked") ? 1 : 0;
+
+        confirmChange('Bạn có chắc chắn muốn thay đổi trạng thái chi nhánh?').then((confirmed) => {
+            if (confirmed) {
+                $.ajax({
+                    url: "{{ route('admin.branches.change-active') }}",
+                    method: "POST",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: branchId,
+                        is_active: is_active
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            toastr.success('Trạng thái chi nhánh đã được cập nhật.');
+                        } else {
+                            toastr.error(response.message || 'Có lỗi xảy ra.');
+                            $checkbox.prop("checked", !is_active);
+                        }
+                    },
+                    error: function() {
+                        toastr.error('Có lỗi xảy ra khi cập nhật trạng thái.');
+                        $checkbox.prop("checked", !is_active);
+                    }
+                });
             } else {
-                return false;
+                $checkbox.prop("checked", !is_active);
             }
+        });
+    });
+
+    @if (session('edit_modal'))
+        window.onload = function () {
+            const id = "{{ session('edit_modal') }}";
+            const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
+            modal.show();
+            document.getElementById('editBranchForm').action = `/admin/branches/${id}`;
         }
-    </script>
+    @endif
+
+    document.querySelector('form[action="{{ route('admin.branches.store') }}"]').addEventListener('submit', function(e) {
+        this.querySelector('input[name="surcharge"]').value = this.querySelector('input[name="surcharge"]').value.replace(/,/g, '');
+    });
+
+    document.getElementById('editBranchForm').addEventListener('submit', function(e) {
+        this.querySelector('input[name="surcharge"]').value = this.querySelector('input[name="surcharge"]').value.replace(/,/g, '');
+    });
+</script>
 
 @endsection
-

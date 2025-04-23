@@ -377,6 +377,18 @@
                     '#vipSeatEdit', '#doubleSeatEdit');
             });
         });
+
+        function confirmChange(text = 'Bạn có chắc chắn không ?', title =
+            'AlphaCinema thông báo') {
+            return Swal.fire({
+                icon: 'warning',
+                title: title,
+                text: text,
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy',
+            }).then(result => result.isConfirmed);
+        }     
         // Phần active
         $(document).ready(function () {
             let Url = @json($appUrl);
@@ -389,28 +401,29 @@
 
 
                 if (publish) {
-                    if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
-                        $.ajax({
-                            url: `${Url}/api/v1/${id}/active-seat-template`,
-                            method: "PUT",
-                            data: {
-                                is_active
-                            },
-                            headers: {
-                                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                            },
-                            success: function (response) {
-                                toastr.success('Thao tác thành công !!!');
-                            },
-                            error: function (error) {
-                                console.log(error)
-
-                                toastr.error('Thao tác thất bại !!!');
-                            }
-                        });
-                    } else {
-                        $(this).prop('checked', !is_active);
-                    }
+                    confirmChange("Bạn có chắc chắn muốn thay đổi trạng thái mẫu ghế ?").then(confirmed => {
+                        if (confirmed) {
+                            $.ajax({
+                                url: `${Url}/api/v1/${id}/active-seat-template`,
+                                method: "PUT",
+                                data: {
+                                    is_active
+                                },
+                                headers: {
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                },
+                                success: function (response) {
+                                    toastr.success('Thao tác thành công !!!');
+                                },
+                                error: function (error) {
+                                    console.log(error)
+                                    toastr.error('Thao tác thất bại !!!');
+                                }
+                            });
+                        } else {
+                            $(this).prop('checked', !is_active);
+                        }
+                    });
                 } else {
                     $(this).prop('checked', !is_active);
                     toastr.error('Thao tác thất bại , Vui lòng cấu tạo ghế !!!');

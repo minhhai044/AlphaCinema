@@ -58,10 +58,9 @@ Route::post('/cinemas/{id}/toggle', [CinemaController::class, 'toggleStatus'])->
 Route::get('/get-cinemas/{branch_id}', [CinemaController::class, 'getCinemasByBranch']);
 
 Route::resource('ranks', RankController::class);
+Route::post('/branches/change-active', [BranchController::class, 'changeActive'])->name('branches.change-active');
 
 Route::resource('slideshows', SlideShowController::class);
-// Route Food
-// Đảm bảo rằng route được khai báo trong nhóm `foods` nếu muốn đặt tên cho route đúng cách.
 Route::group([
     'prefix' => 'foods',  // Tiền tố URL cho tất cả route
     'as' => 'foods.', // Thêm `admin` vào nhóm tên route
@@ -159,6 +158,7 @@ Route::prefix('showtimes')->as('showtimes.')->group(function () {
     Route::get('{id}/createList',   [ShowtimeController::class, 'createList'])->name('createList');
     Route::post('{id}/multipleSelect', [ShowtimeController::class, 'multipleSelect'])->name('multipleSelect');
     Route::post('{id}/storePremium', [ShowtimeController::class, 'storePremium'])->name('storePremium');
+    Route::get('{id}/show',         [ShowtimeController::class, 'show'])->name('show');
 });
 
 
@@ -284,6 +284,8 @@ Route::post('/tickets/change-status', [TicketController::class, 'changeStatus'])
 
 Route::get('/tickets/{code}/check-exists', [TicketController::class, 'checkExists']);
 
+Route::get('/change-password', [AuthController::class, 'showChangePasswordForm'])->name('change-password.form');
+Route::post('/change-password', [AuthController::class, 'changePassword'])->name('change-password');
 
 
 Route::group([
@@ -293,3 +295,5 @@ Route::group([
     Route::get('{roomId}/', [RoomChatController::class, 'room'])->name('show');
     Route::post('{roomId}/', [RoomChatController::class, 'messenger'])->name('messenger');
 });
+
+

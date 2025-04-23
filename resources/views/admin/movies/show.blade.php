@@ -115,7 +115,7 @@
                     <div class="col-md-8">
                         <h3>{{ $movie->name }}</h3>
                         <p><strong><i class="bi bi-link-45deg me-1"></i> Slug:</strong> {{ $movie->slug }}</p>
-                        <p><strong><i class="bi bi-list-ul me-1"></i> Danh mục:</strong> {{ $movie->category }}</p>
+                        <p><strong><i class="bi bi-list-ul me-1"></i> Diễn viên:</strong> {{ $movie->category }}</p>
                         <p><strong><i class="bi bi-person-video me-1"></i> Tác giả:</strong> {{ $movie->director }}</p>
                         <p><strong><i class="bi bi-youtube me-1"></i> Trailer:</strong>
                             <a href="{{ $movie->trailer_url }}" target="_blank"
@@ -133,9 +133,9 @@
                             <span class="badge bg-{{ $movie->is_special ? 'info' : 'secondary' }}">
                                 {{ $movie->is_special ? 'Đặc biệt' : 'Tiêu chuẩn' }}
                             </span>
-                            <span class="badge bg-{{ $movie->is_publish ? 'primary' : 'secondary' }}">
+                            {{-- <span class="badge bg-{{ $movie->is_publish ? 'primary' : 'secondary' }}">
                                 {{ $movie->is_publish ? 'Đã xuất bản' : 'Chưa xuất bản' }}
-                            </span>
+                            </span> --}}
                         </p>
                     </div>
                 </div>
