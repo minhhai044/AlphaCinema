@@ -315,7 +315,6 @@
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
     <script>
-
         $(document).ready(function() {
             @if (session('error_modal') == 'create')
                 $('#exampleModal').modal('show');
@@ -342,7 +341,6 @@
                     @endforeach
 
                 }, 400);
-
             @endif
         });
 
@@ -395,7 +393,17 @@
 
         });
 
-
+        function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái ?', title =
+            'AlphaCinema thông báo') {
+            return Swal.fire({
+                icon: 'warning',
+                title: title,
+                text: text,
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy',
+            }).then(result => result.isConfirmed);
+        }
         let Url = @json($appUrl);
         $('input[id^="is_active"]').change(function() {
             let id = this.id.replace('is_active', ''); // Lấy ID động
@@ -404,23 +412,27 @@
 
 
             if (publish) {
-                if (confirm("Bạn có chắc chắn muốn thay đổi trạng thái ?")) {
-                    $.ajax({
-                        url: `${Url}/api/v1/${id}/active-room`,
-                        method: "PUT",
-                        data: {
-                            is_active
-                        },
-                        success: function(response) {
-                            toastr.success('Thao tác thành công !!!');
-                        },
-                        error: function(error) {
-                            toastr.error('Thao tác thất bại !!!');
-                        }
-                    });
-                } else {
-                    $(this).prop('checked', !is_active);
-                }
+                confirmChange("Bạn có chắc chắn muốn thay đổi trạng thái ?").then(confirmed => {
+                    if (confirmed) {
+                        $.ajax({
+                            url: `${Url}/api/v1/${id}/active-room`,
+                            method: "PUT",
+                            data: {
+                                is_active
+                            },
+                            success: function(response) {
+                                toastr.success('Thao tác thành công !!!');
+                            },
+                            error: function(error) {
+                                toastr.error('Thao tác thất bại !!!');
+                            }
+                        });
+                    } else {
+                        $(this).prop('checked', !is_active);
+                    }
+
+                });
+
             } else {
                 $(this).prop('checked', !is_active);
                 toastr.error('Thao tác thất bại , Vui lòng xuất bản phòng !!!');

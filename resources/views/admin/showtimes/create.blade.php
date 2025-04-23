@@ -182,7 +182,7 @@
                 </div>
 
                 <div class="m-3">
-                    <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')" class="btn btn-primary">Thêm mới</button>
+                    <button id="submitForm" type="button" class="btn btn-primary">Thêm mới</button>
                     {{-- <a href="{{ route('admin.showtimes.index') }}"><button type="button" class="btn btn-danger btn-sm">Quay lại</button></a> --}}
                 </div>
             </div>

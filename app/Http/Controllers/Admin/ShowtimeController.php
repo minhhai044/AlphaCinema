@@ -162,7 +162,7 @@ class ShowtimeController extends Controller
                                 'price_special' => $price_special_value,
                                 'start_time' => $start_time,
                                 'end_time' => $end_time,
-                                'is_active' => 0,
+                                'is_active' => 1,
                             ]);
                         }
                     }
