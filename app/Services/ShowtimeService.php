@@ -210,7 +210,6 @@ class ShowtimeService
         $updated_seats = array_map(function ($seat) use ($data, $seatIds) {
             if (isset($seat['id']) && in_array($seat['id'], $seatIds)) {
                 $seat['status'] = $data['status'] ?? $seat['status'];
-                // $seat['user_id'] = $data['user_id'] ?? $seat['user_id'];
                 $seat['user_id'] = $data['user_id'];
                 $seat['hold_expires_at'] = null;
 

@@ -51,16 +51,6 @@ class UpdateResetSeat extends Command
 
             $isUpdated = false;
 
-            // foreach ($seatStructure as &$seat) {
-            //     if (!empty($seat['hold_expires_at']) && Carbon::parse($seat['hold_expires_at'])->format('H:i') === $nowTime) {
-            //         $seat['hold_expires_at'] = null;
-            //         $seat['status'] = 'available';
-            //         $seat['user_id'] = null;
-            //         $isUpdated = true;
-            //         broadcast(new RealTimeSeatEvent($seat['id'], $seat['status'], $seat['user_id']))->toOthers();
-            //     }
-            // }
-
             foreach ($seatStructure as &$seat) {
                 if (!empty($seat['hold_expires_at']) && Carbon::parse($seat['hold_expires_at'])->format('H:i') <= $nowTime) {
                     $seat['hold_expires_at'] = null;
