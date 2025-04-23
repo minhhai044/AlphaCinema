@@ -4,13 +4,12 @@
 <head>
 
     <meta charset="utf-8" />
-    <title>Đăng nhập</title>
+    <title>Reset Mẩu khẩu</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('theme/admin/assets/images/favicon.ico') }}">
-
+    <link rel="shortcut icon" href="{{ asset('logo/Icon Alpha cinema.svg') }}">
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
 
@@ -41,6 +40,10 @@
                                 <div>
                                     <div class="text-center">
                                         <p class="fw-bold fs-5">Gửi mail quên mật khẩu</p>
+                                    </div>
+
+                                    <div class="alert alert-success">
+                                        Đã gửi email tới tài khoản của bạn
                                     </div>
 
                                     <form class="mt-4" action="{{ route('sendMailPassword') }}" method="POST">
