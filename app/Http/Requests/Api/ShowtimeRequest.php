@@ -41,6 +41,7 @@ class ShowtimeRequest extends FormRequest
             'user_id' => 'nullable',
             'seat_id' => 'required',
             'status' => 'required',
+            'hold_expires_at' => 'nullable'
         ];
     }
 

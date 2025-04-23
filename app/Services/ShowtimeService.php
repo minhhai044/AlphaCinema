@@ -100,7 +100,6 @@ class ShowtimeService
             foreach ($branchs as $branch) {
 
                 $branchsRelation[$branch['id']] = $branch->cinemas->where('is_active', 1)->pluck('name', 'id')->all();
-            
             }
         }
 
@@ -213,6 +212,7 @@ class ShowtimeService
                 $seat['status'] = $data['status'] ?? $seat['status'];
                 // $seat['user_id'] = $data['user_id'] ?? $seat['user_id'];
                 $seat['user_id'] = $data['user_id'];
+                $seat['hold_expires_at'] = null;
 
                 broadcast(new RealTimeSeatEvent($seat['id'], $seat['status'], $seat['user_id']))->toOthers();
             }

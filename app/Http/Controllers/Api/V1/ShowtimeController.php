@@ -354,6 +354,7 @@ class ShowtimeController extends Controller
                     // Cập nhật trạng thái ghế
                     $seat_structure['user_id'] = $showtimeRequest->user_id;
                     $seat_structure['status'] = $showtimeRequest->status;
+                    $seat_structure['hold_expires_at'] = $showtimeRequest->hold_expires_at;
                     break;
                 }
             }
