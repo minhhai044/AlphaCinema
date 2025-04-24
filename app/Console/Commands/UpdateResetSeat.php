@@ -52,7 +52,7 @@ class UpdateResetSeat extends Command
             $isUpdated = false;
 
             foreach ($seatStructure as &$seat) {
-                if (!empty($seat['hold_expires_at']) && Carbon::parse($seat['hold_expires_at'])->format('H:i') === $nowTime) {
+                if (!empty($seat['hold_expires_at']) && Carbon::parse($seat['hold_expires_at'])->format('H:i') <= $nowTime) {
                     $seat['hold_expires_at'] = null;
                     $seat['status'] = 'available';
                     $seat['user_id'] = null;
@@ -63,7 +63,7 @@ class UpdateResetSeat extends Command
 
             if ($isUpdated) {
                 $showtime->update([
-                    'seat_structure' => $seatStructure
+                    'seat_structure' => json_encode($seatStructure)
                 ]);
             }
         }
