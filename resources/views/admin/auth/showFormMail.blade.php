@@ -42,6 +42,18 @@
                                         <p class="fw-bold fs-5">Gửi mail quên mật khẩu</p>
                                     </div>
 
+                                    @if (session('Gửi mail thành công'))
+                                        <div class="alert alert-success fw-bold">
+                                            {{ session('Gửi mail thành công') }}
+                                        </div>
+                                    @endif
+
+                                    @if (session('Gửi mail không thành công'))
+                                        <div class="alert alert-danger fw-bold">
+                                            {{ session('Gửi mail không thành công') }}
+                                        </div>
+                                    @endif
+
                                     <form class="mt-4" action="{{ route('sendMailPassword') }}" method="POST">
                                         @csrf
                                         <div class="mb-3">

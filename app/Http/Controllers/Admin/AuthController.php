@@ -74,7 +74,12 @@ class AuthController extends Controller
         // Validate email input
         $request->validate([
             'email' => 'required|email|exists:users,email', // Kiểm tra email có tồn tại trong bảng users
+        ], [
+            'email.required' => 'Vui lòng nhập email.', // Thông báo khi email không được điền
+            'email.email' => 'Email không hợp lệ. Vui lòng nhập email đúng định dạng.', // Thông báo khi email không hợp lệ
+            'email.exists' => 'Email này không tồn tại trong hệ thống.', // Thông báo khi email không tồn tại trong bảng users
         ]);
+
 
         try {
             // Tìm người dùng
@@ -94,10 +99,10 @@ class AuthController extends Controller
                 // Gửi email thông báo cho người dùng
                 $this->sendPasswordEmail($user, $newPassword);
 
-                return back()->with('Gửi mail thành công');
+                return back()->with('Gửi mail thành công', 'Đã gửi email với mật khẩu mới');
             } else {
                 // Nếu không tìm thấy tài khoản hoặc tài khoản bị khóa
-                return back()->with( 'Tài khoản không tồn tại hoặc đã bị khóa');
+                return back()->with('Gửi mail không thành công','Tài khoản không tồn tại hoặc đã bị khóa');
             }
         } catch (\Exception $e) {
             // Log lỗi vào file log để phục vụ việc debug
