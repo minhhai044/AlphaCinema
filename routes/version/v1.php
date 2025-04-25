@@ -31,9 +31,20 @@ Route::prefix('users')->group(function () {
  * signup : Đăng ký tài khoản
  */
 
-Route::post('signin', [AuthController::class, 'signIn']);
-Route::post('checkUserResgister', [AuthController::class, 'checkUserResgister']);
-Route::post('signup', [AuthController::class, 'signUp']);
+Route::post('signin',               [AuthController::class, 'signIn']);
+Route::post('checkUserResgister',   [AuthController::class, 'checkUserResgister']);
+Route::post('signup',               [AuthController::class, 'signUp']);
+/**
+ *  Route Auth
+ */
+
+Route::post('send-otp',             [AuthController::class, 'sendOtp']);
+Route::post('verify-otp',           [AuthController::class, 'verifyOtp']);
+Route::post('reset-password',       [AuthController::class, 'resetPassword']);
+Route::post('/verify-email',        [AuthController::class, 'verifyEmail']);
+Route::post('/confirm-email',       [AuthController::class, 'confirmVerifyEmail']);
+Route::post('roles/change-active',  [RoleController::class, 'changActive']);
+Route::post('users/change-active',  [AdminUserController::class, 'changActiveStatus']);
 
 /**
  * Route Api showtime
@@ -52,13 +63,15 @@ Route::get('{slug}/movieShowTimes', [ShowtimeController::class, 'movieShowTimes'
 Route::get('/listMovies',           [ShowtimeController::class, 'listMovies']);
 Route::get('{movie}/listShowtimes', [ShowtimeController::class, 'listShowtimes']);
 Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
+Route::put('{id}/active-showtime',  [ShowtimeController::class, 'activeShowtime']);
+
 
 /**
  * Api slideshows
  *
  * slideshows : Lấy image slide
  */
-Route::get('/slideshows', [SlideShowController::class, 'index']);
+Route::get('/slideshows',           [SlideShowController::class, 'index']);
 
 
 /**
@@ -69,63 +82,76 @@ Route::get('/slideshows', [SlideShowController::class, 'index']);
  * get-cinemas : Lấy danh sách rạp
  *
  */
-Route::get('/branchs',      [BranchController::class, 'index']);
-Route::get('/get-cinemas',  [TicketController::class, 'getCinemas']);
+Route::get('/branchs',              [BranchController::class, 'index']);
+Route::get('/get-cinemas',          [TicketController::class, 'getCinemas']);
 /**
  * Api rank
  *
  * ranksJson : Lấy rank
  *
  */
-Route::get('/ranksJson', [RankController::class, 'getRanksJson']);
+Route::get('/ranksJson',            [RankController::class, 'getRanksJson']);
 
 Route::middleware('auth:sanctum')->group(function () {
 
-    Route::post('tickets', [TicketController::class, 'createTicket']);
-    Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/getRank', [AuthController::class, 'getUserRank']);
-
-    Route::post('{user}/update-profile', [AuthController::class, 'updateProfile']);
-    Route::post('/change-password', [AuthController::class, 'changePassword']);
-    Route::get('/pointhistory', [AuthController::class, 'getUserPointHistory']);
-
-    Route::get('/ticket-by-user', [TicketController::class, 'getTicketByUser']);
     /**
-     * Chi tiết đơn hàng dựa vào mã code
+     *  Route Auth
+     * 
      */
-    Route::get('/{code}/order', [TicketController::class, 'findByCode']);
+    Route::post('/logout',                  [AuthController::class, 'logout']);
+    Route::get('/getRank',                  [AuthController::class, 'getUserRank']);
+    Route::post('{user}/update-profile',    [AuthController::class, 'updateProfile']);
+    Route::post('/change-password',         [AuthController::class, 'changePassword']);
+    Route::get('/pointhistory',             [AuthController::class, 'getUserPointHistory']);
 
+    /**
+     *  Route Ticket
+     * 
+     */
+    Route::post('tickets',                  [TicketController::class, 'createTicket']);
+    Route::get('/ticket-by-user',           [TicketController::class, 'getTicketByUser']);
+    Route::get('/{code}/order',             [TicketController::class, 'findByCode']);
 
-    Route::get('/voucher', [AuthController::class, 'getUserVoucher']);
-
+    /**
+     *  Route Voucher
+     * 
+     */
+    Route::get('/voucher',                  [AuthController::class, 'getUserVoucher']);
+    /**
+     *  Route Showtimes
+     * 
+     */
     Route::post('{id}/changeSeatStatus',    [ShowtimeController::class, 'changeSeatStatus']);
-
-
-
-    Route::post('{id}/resetSuccessSeat',     [ShowtimeController::class, 'resetSuccessSeat']);
+    Route::post('{id}/resetSuccessSeat',    [ShowtimeController::class, 'resetSuccessSeat']);
 });
 
-Route::put('{id}/active-seat-template', [SeatTemplateController::class, 'activeSeatTemplate']);
-Route::put('{id}/active-room',          [RoomController::class, 'activeRoom']);
-Route::get('/foods', [FoodController::class, 'index']);
-Route::get('list_combo', [ComboFoodController::class, 'list_combo']);
+/**
+ *  Route Settings
+ * 
+ */
+Route::put('{id}/active-seat-template',     [SeatTemplateController::class, 'activeSeatTemplate']);
+/**
+ *  Route Room
+ * 
+ */
+Route::put('{id}/active-room',              [RoomController::class, 'activeRoom']);
+/**
+ *  Route Food + Combo
+ * 
+ */
+Route::get('/foods',                        [FoodController::class, 'index']);
+Route::get('list_combo',                    [ComboFoodController::class, 'list_combo']);
 
-Route::put('{id}/active-showtime',      [ShowtimeController::class, 'activeShowtime']);
-Route::get('{slug}/movieShowTimes',     [ShowtimeController::class, 'movieShowTimes']);
+/**
+ *  Route Settings
+ * 
+ */
+Route::get('/settings',                     [SiteSettingController::class, 'index']);
 
-Route::get('/settings', [SiteSettingController::class, 'index']);
+/**
+ *  Route Payment
+ * 
+ */
 
-Route::post('{payment}/payment', [PaymentController::class, 'payment']);
-Route::get('/checkout', [PaymentController::class, 'checkout']);
-
-// route forget password
-
-Route::post('send-otp', [AuthController::class, 'sendOtp']);
-Route::post('verify-otp', [AuthController::class, 'verifyOtp']);
-Route::post('reset-password', [AuthController::class, 'resetPassword']);
-
-Route::post('roles/change-active', [RoleController::class, 'changActive']);
-Route::post('users/change-active', [AdminUserController::class, 'changActiveStatus']);
-
-Route::post('/verify-email', [AuthController::class, 'verifyEmail']);
-Route::post('/confirm-email', [AuthController::class, 'confirmVerifyEmail']);
+Route::post('{payment}/payment',            [PaymentController::class, 'payment']);
+Route::get('/checkout',                     [PaymentController::class, 'checkout']);

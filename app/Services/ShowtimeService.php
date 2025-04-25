@@ -44,6 +44,7 @@ class ShowtimeService
                 ];
             });
         }
+        $listShowtimesByDates = $listShowtimesByDates->sortKeys();
         if (empty($date) || empty($branch_id) || empty($cinema_id)) {
             $showtimes = collect();
         } else {
