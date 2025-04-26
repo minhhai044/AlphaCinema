@@ -346,31 +346,29 @@ class ShowtimeController extends Controller
             return $this->errorResponse('Không tìm thấy phim hoặc lịch chiếu', 404);
         }
 
-        $showtimes = [];
+        // $showtimes = [];
 
-        foreach ($movie->showtime as $showtime) {
-            $showtimes[$showtime['date']][] = [
-                'id' => $showtime['id'],
-                'start_time' => $showtime['start_time'],
-                'slug' => $showtime['slug'],
-                'name_room' => optional($showtime->room)->name
-            ];
-        }
+        // foreach ($movie->showtime as $showtime) {
+        //     $showtimes[$showtime['date']][] = [
+        //         'id' => $showtime['id'],
+        //         'start_time' => $showtime['start_time'],
+        //         'slug' => $showtime['slug'],
+        //         'name_room' => optional($showtime->room)->name
+        //     ];
+        // }
 
-        if (empty($showtimes)) {
+        // if (empty($showtimes)) {
 
-            return response()->json([
-                'status' => false,
-                'message' => "Không có xuất chiếu nào",
-                'code' => 404
-            ], Response::HTTP_NOT_FOUND);
-
-            // return $this->errorResponse('Không tìm thấy phim hoặc lịch chiếu', 404);
-        }
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => "Không có xuất chiếu nào",
+        //         'code' => 404
+        //     ], Response::HTTP_NOT_FOUND);
+        // }
 
         $data = [
             'movie' => $movie,
-            'showtimes' => $showtimes
+            // 'showtimes' => $showtimes
         ];
 
         return $this->successResponse(
