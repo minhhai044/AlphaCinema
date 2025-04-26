@@ -251,7 +251,7 @@
                         <div class="col-7">
                             <h4 class="mb-3">
                                 <span class="counter-value"
-                                    data-target="{{ $activeMoviesCount }}">{{ $activeMoviesCount }}</span> Phim
+                                    data-target="{{ $activeMoviesCount }}">{{ $activeMoviesCount }}</span> PHIM
                             </h4>
                         </div>
                     </div>
