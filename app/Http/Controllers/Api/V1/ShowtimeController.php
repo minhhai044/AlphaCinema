@@ -194,6 +194,7 @@ class ShowtimeController extends Controller
     {
         $branchId = $request->branchId;
         $cinemId = $request->cinemId;
+        $today = now()->format('Y-m-d');
 
         // Nếu không có trong cache, thực hiện truy vấn từ cơ sở dữ liệu
         if ($branchId && $cinemId) {
@@ -202,6 +203,7 @@ class ShowtimeController extends Controller
                 $query->where('cinema_id', $cinemId)
                     ->where('branch_id', $branchId);
             })
+                ->whereDate('release_date', '>', $today)
                 ->with('showtime')
                 ->latest('id')
                 ->get();
