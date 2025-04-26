@@ -131,7 +131,7 @@
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="map"></i>
-                        <span data-key="t-service-systems">Hệ thống Rạp</span>
+                        <span data-key="t-service-systems">Hệ thống rạp</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         @canany(['Danh sách chi nhánh', 'Thêm chi nhánh', 'Sửa chi nhánh', 'Xóa chi nhánh'])
@@ -207,7 +207,7 @@
                 <li>
                     <a href="javascript: void(0);" class="has-arrow">
                         <i data-feather="film"></i>
-                        <span data-key="t-service-systems">Phim & Suất chiếu</span>
+                        <span data-key="t-service-systems">Phim & suất chiếu</span>
                     </a>
                     <ul class="sub-menu" aria-expanded="false">
                         @canany(['Danh sách phim', 'Thêm phim', 'Sửa phim', 'Xóa phim', 'Xem chi tiết phim'])
