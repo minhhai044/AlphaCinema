@@ -28,7 +28,7 @@ class BranchController extends Controller
         // Tìm kiếm theo tên nếu có từ khóa
         $branches = Branch::when($search, function ($query, $search) {
             return $query->where('name', 'like', '%' . $search . '%');
-        })->latest('id')->paginate(5);
+        })->latest('id')->get();
 
         // Trả về view kèm dữ liệu
         return view('admin.branches.index', compact('branches', 'search'));
@@ -41,13 +41,16 @@ class BranchController extends Controller
 
     public function store(BranchRequest $request)
     {
-        $data = $request->validated(); // Lấy dữ liệu đã validate
+        $data = $request->validated();
+
         try {
-            $data['is_active'] = 1;
-            $data['surcharge'] ??= 0;
+
+            if ($data['surcharge']) {
+                $data['surcharge'] = str_replace('.', '', $data['surcharge']);
+            }
 
             if ($data['surcharge'] < 1000) {
-                return redirect()->back()->with('error', 'Phụ phí phải lớn hơn hoặc bằng 1000.');
+                return redirect()->back()->with('warning', 'Phụ phí phải lớn hơn hoặc bằng 1000.');
             }
 
             if (!empty($data['name'])) {
@@ -62,49 +65,44 @@ class BranchController extends Controller
         }
     }
 
-    public function update(Request $request, $id)
+    public function update(BranchRequest $request, $id)
     {
         $branch = Branch::findOrFail($id);
 
-        $validator = Validator::make($request->all(), [
-            'name' => 'required|string|max:255',
-            'surcharge' => 'required|numeric|min:1000',
-        ], [
-        'name.required' => 'Tên chi nhánh không được để trống.',
-        'name.string' => 'Tên chi nhánh phải là một chuỗi.',
-        'name.max' => 'Tên chi nhánh không được vượt quá 255 ký tự.',
-        'surcharge.required' => 'Phụ thu không được để trống.',
-        'surcharge.numeric' => 'Phụ thu phải là số hợp lệ.',
-        'surcharge.min' => 'Phụ thu phải từ 1,000 trở lên.',]
-    );
+        $data = $request->validated();
 
-        if ($validator->fails()) {
-            return redirect()->route('admin.branches.index')
-                ->withErrors($validator)
-                ->withInput()
-                ->with('edit_modal', $id); 
+        if ($data['branchSurcharge']) {
+            $data['branchSurcharge'] = str_replace('.', '', $data['branchSurcharge']);
+        }
+        if ($data['branchSurcharge'] < 1000 || $data['branchSurcharge'] > 100000) {
+            return redirect()->back()->with('warning', 'Phụ phí phải lớn hơn hoặc bằng 1.000 và nhỏ hơn hoặc bằng 100.000 !!!');
+        }
+
+        if ($data['branchName']) {
+            $data['slug'] = Str::slug($data['branchName'], '-') . '-' . Str::ulid();
         }
 
         $branch->update([
-            'name' => $request->name,
-            'surcharge' => $request->surcharge,
+            'name' => $data['branchName'],
+            'surcharge' => $data['branchSurcharge'],
+            'slug' =>  $data['slug']
         ]);
 
         return redirect()->route('admin.branches.index')->with('success', 'Cập nhật chi nhánh thành công!');
     }
-public function changeActive(Request $request)
-{
-    $branch = Branch::find($request->id);
+    public function changeActive(Request $request)
+    {
+        $branch = Branch::find($request->id);
 
-    if (!$branch) {
-        return response()->json(['success' => false, 'message' => 'Chi nhánh không tồn tại.']);
+        if (!$branch) {
+            return response()->json(['success' => false, 'message' => 'Chi nhánh không tồn tại.']);
+        }
+
+        $branch->is_active = $request->is_active;
+        $branch->save();
+
+        return response()->json(['success' => true]);
     }
-
-    $branch->is_active = $request->is_active;
-    $branch->save();
-
-    return response()->json(['success' => true]);
-}
 
     public function destroy(Branch $branch)
     {
@@ -117,7 +115,6 @@ public function changeActive(Request $request)
         } catch (\Throwable $th) {
             return back()->with('error', $th->getMessage());
         }
-
     }
 
     public function toggleStatus($id, Request $request)
@@ -126,6 +123,6 @@ public function changeActive(Request $request)
         $branch->is_active = $request->has('is_active');
         $branch->save();
 
-        return back()->with('success','Thao tác thành công !!!');
+        return back()->with('success', 'Thao tác thành công !!!');
     }
 }

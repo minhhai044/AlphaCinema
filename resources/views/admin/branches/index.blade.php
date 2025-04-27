@@ -34,19 +34,19 @@
                         @csrf
                         <div class="mb-2">
                             <label class="form-label"><span class="text-danger">*</span> Tên chi nhánh:</label>
-                            <input type="text" name="name" class="form-control" value="{{ old('name') }}"
+                            <input type="text" name="name" value="{{ old('name') }}" class="form-control"
                                 placeholder="Nhập tên chi nhánh">
-                            @error('name') @if (!session('edit_modal'))
+                            @error('name')
                                 <span class="text-danger">{{ $message }}</span>
-                            @endif @enderror
+                            @enderror
                         </div>
                         <div class="mb-2">
                             <label class="form-label"><span class="text-danger">*</span> Phụ phí (VNĐ)</label>
-                            <input type="text" name="surcharge" class="form-control" value="{{ old('surcharge') }}"
-                                placeholder="Nhập phụ phí">
-                            @error('surcharge') @if (!session('edit_modal'))
+                            <input type="text" value="{{ old('surcharge') ?? 0 }}" id="surchargeCreate" name="surcharge"
+                                class="form-control" value="0" placeholder="Nhập phụ phí">
+                            @error('surcharge')
                                 <span class="text-danger">{{ $message }}</span>
-                            @endif @enderror
+                            @enderror
                         </div>
                         <div class="text-end mt-2">
                             <button type="submit" class="btn btn-primary">+ Thêm mới</button>
@@ -62,7 +62,7 @@
                 <div class="card-body">
                     <h4 class="mb-sm-0 font-size-20 fw-semibold">Danh sách chi nhánh</h4>
                     <div class="table-responsive">
-                        <table id="datatable" class="table table-bordered table-striped">
+                        <table id="datatable" class="table table-bordered table-striped text-center">
                             <thead>
                                 <tr>
                                     <th>STT</th>
@@ -77,7 +77,7 @@
                                     <tr>
                                         <td>{{ $branch->id }}</td>
                                         <td>{{ $branch->name }}</td>
-                                        <td>{{ number_format($branch->surcharge) }}</td>
+                                        <td>{{ number_format($branch->surcharge, 0, '.', '.') }}</td>
                                         <td class="text-center">
                                             <div class="d-flex justify-content-center align-items-center">
                                                 <div class="form-check form-switch form-switch-md" dir="ltr">
@@ -101,9 +101,9 @@
                     </div>
 
                     <!-- Phân trang -->
-                    <div class="mt-3">
+                    {{-- <div class="mt-3">
                         {{ $branches->appends(['search' => request('search')])->links() }}
-                    </div>
+                    </div> --}}
                 </div>
             </div>
         </div>
@@ -123,19 +123,17 @@
                     <div class="modal-body">
                         <div class="mb-2">
                             <label class="form-label">Tên chi nhánh</label>
-                            <input type="text" class="form-control" id="branchName" name="name"
-                                value="{{ old('name') }}">
-                            @error('name') @if (session('edit_modal'))
+                            <input type="text" class="form-control" id="branchName" name="branchName">
+                            @error('branchName')
                                 <span class="text-danger">{{ $message }}</span>
-                            @endif @enderror
+                            @enderror
                         </div>
                         <div class="mb-2">
                             <label class="form-label">Phụ phí</label>
-                            <input type="text" class="form-control" id="branchSurcharge" name="surcharge"
-                                value="{{ old('surcharge') }}">
-                            @error('surcharge') @if (session('edit_modal'))
+                            <input type="text" class="form-control" id="branchSurcharge" name="branchSurcharge">
+                            @error('branchSurcharge')
                                 <span class="text-danger">{{ $message }}</span>
-                            @endif @enderror
+                            @enderror
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -168,32 +166,47 @@
 
     <script>
         $(document).ready(function() {
-            $('#branches-table').DataTable({
-                paging: true,
-                lengthChange: false,
-                searching: false,
-                ordering: true,
-                info: true,
-                autoWidth: false,
-                responsive: true
-            });
-
-            formatPriceInput("#surcharge");
-            formatPriceInput("#branchSurcharge");
+            @if (session('error_modal') == 'edit' && session('branch_id'))
+                const editBtn = $(`.editBranch[data-id="{{ session('branch_id') }}"]`);
+                editBtn.trigger('click');
+                $('#editBranchModal').modal('show');
+                @foreach ($errors->messages() as $field => $messages)
+                    let input = $(`[name="{{ $field }}"]`);
+                    let errorMessage =
+                        `<small class="text-danger">{{ $messages[0] }}</small>`;
+                    if (input.length > 0) {
+                        input.closest('.mb-2').append(errorMessage);
+                    }
+                @endforeach
+            @endif
         });
 
-        function formatPriceInput(inputSelector) {
-            $(inputSelector).on("input", function() {
-                let value = $(this).val().replace(/\D/g, "");
-                let formattedValue = value.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-                $(this).val(formattedValue);
-            }).on("blur", function() {
-                if (!$(this).val()) $(this).val("0");
-            });
+        function resetErrors(modalId = '') {
+            let modal = modalId ? $(modalId) : $(document);
+
+            modal.find('input, select, textarea').removeClass('is-invalid');
+
+            modal.find('.text-danger').remove();
         }
+
+        $('#surchargeCreate').on('input', function(e) {
+            e.preventDefault();
+            let valueDiscount = $(this).val().replace(/\D/g, '');
+            let setValueDiscount = new Intl.NumberFormat('vi-VN').format(valueDiscount);
+            $(this).val(setValueDiscount);
+        });
+        $('#branchSurcharge').on('input', function(e) {
+            e.preventDefault();
+            let valueDiscount = $(this).val().replace(/\D/g, '');
+            let setValueDiscount = new Intl.NumberFormat('vi-VN').format(valueDiscount);
+            $(this).val(setValueDiscount);
+        });
 
         document.querySelectorAll('.editBranch').forEach(button => {
             button.addEventListener('click', function() {
+
+                resetErrors();
+
                 const id = this.dataset.id;
                 const name = this.dataset.name;
                 const surcharge = this.dataset.surcharge;
@@ -201,7 +214,10 @@
                 const form = document.getElementById('editBranchForm');
                 form.action = `/admin/branches/${id}`;
                 document.getElementById('branchName').value = name;
-                document.getElementById('branchSurcharge').value = surcharge;
+
+                const formattedSurcharge = new Intl.NumberFormat('vi-VN').format(surcharge.replace(/\D/g,
+                    ''));
+                document.getElementById('branchSurcharge').value = formattedSurcharge;
 
                 const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
                 modal.show();
@@ -254,26 +270,6 @@
                     $checkbox.prop("checked", !is_active);
                 }
             });
-        });
-
-        @if (session('edit_modal'))
-            window.onload = function() {
-                const id = "{{ session('edit_modal') }}";
-                const modal = new bootstrap.Modal(document.getElementById('editBranchModal'));
-                modal.show();
-                document.getElementById('editBranchForm').action = `/admin/branches/${id}`;
-            }
-        @endif
-
-        document.querySelector('form[action="{{ route('admin.branches.store') }}"]').addEventListener('submit', function(
-            e) {
-            this.querySelector('input[name="surcharge"]').value = this.querySelector('input[name="surcharge"]')
-                .value.replace(/,/g, '');
-        });
-
-        document.getElementById('editBranchForm').addEventListener('submit', function(e) {
-            this.querySelector('input[name="surcharge"]').value = this.querySelector('input[name="surcharge"]')
-                .value.replace(/,/g, '');
         });
     </script>
 
