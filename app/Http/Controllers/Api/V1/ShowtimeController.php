@@ -357,14 +357,14 @@ class ShowtimeController extends Controller
             ];
         }
 
-        if (empty($showtimes)) {
+        // if (empty($showtimes)) {
 
-            return response()->json([
-                'status' => false,
-                'message' => "Không có xuất chiếu nào",
-                'code' => 404
-            ], Response::HTTP_NOT_FOUND);
-        }
+        //     return response()->json([
+        //         'status' => false,
+        //         'message' => "Không có xuất chiếu nào",
+        //         'code' => 404
+        //     ], Response::HTTP_NOT_FOUND);
+        // }
 
         $data = [
             'movie' => $movie,
