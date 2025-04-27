@@ -78,11 +78,13 @@ $user = \Auth::user();
 
 
 
+        @if (!empty(auth()->user()->branch_id) || !empty(auth()->user()->cinema_id))
         <div class="dropdown d-inline-block">
             <button type="button" class="btn header-item noti-icon position-relative"
                 id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                 aria-expanded="false">
                 <i data-feather="bell" class="icon-lg"></i>
+
                 @if ($notifications->where('status', 0)->count() > 0)
                     <span class="badge bg-danger rounded-pill">
                         {{ $notifications->where('status', 0)->count() }}
@@ -144,6 +146,7 @@ $user = \Auth::user();
                 </div>
             </div>
         </div>
+    @endif
 
 
 
