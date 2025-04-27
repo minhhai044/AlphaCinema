@@ -49,7 +49,7 @@ class BranchController extends Controller
                 $data['surcharge'] = str_replace('.', '', $data['surcharge']);
             }
 
-            if ($data['surcharge'] < 1000) {
+            if ($data['surcharge'] < 1000 || $data['surcharge'] > 100000) {
                 return redirect()->back()->with('warning', 'Phụ phí phải lớn hơn hoặc bằng 1000.');
             }
 
