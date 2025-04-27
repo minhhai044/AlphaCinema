@@ -37,7 +37,7 @@ class BranchRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:branches,name',
-            'surcharge' => 'required|numeric|min:1000'
+            'surcharge' => 'required|numeric|min:1000|max:100000'
         ];
     }
 
@@ -48,7 +48,7 @@ class BranchRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:branches,name,' . $this->route('branch'),
-            'surcharge' => 'nullable|numeric|min:1000', 
+            'surcharge' => 'nullable|numeric|min:1000|max:100000', 
         ];
     }
 
@@ -64,6 +64,7 @@ class BranchRequest extends FormRequest
             'surcharge.required' => 'Vui lòng điền phụ phí.',
             'surcharge.numeric' => 'Phụ phí phải là một số.',
             'surcharge.min' => 'Phụ phí phải lớn hơn hoặc bằng 1000.',
+            'surcharge.max' => 'Phụ phí phải nhỏ hơn hoặc bằng 100000.',
         ];
     }
 }
