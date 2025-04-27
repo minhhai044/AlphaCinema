@@ -423,13 +423,13 @@ class DatabaseSeeder extends Seeder
             'Quét hóa đơn',
             'Xem chi tiết hóa đơn',
             'Danh sách đồ ăn',
-            'Thêm đồ ăn',
-            'Sửa đồ ăn',
-            'Xóa đồ ăn',
+            // 'Thêm đồ ăn',
+            // 'Sửa đồ ăn',
+            // 'Xóa đồ ăn',
             'Danh sách combo',
-            'Thêm combo',
-            'Sửa combo',
-            'Xóa combo',
+            // 'Thêm combo',
+            // 'Sửa combo',
+            // 'Xóa combo',
             'Sửa giá',
             'Danh sách tài khoản',
             'Thêm tài khoản',
@@ -1162,7 +1162,7 @@ class DatabaseSeeder extends Seeder
                 'updated_at' => now(),
             ]);
         }
-        
+
         $movie_branches = [
             ['branch_id' => 1, 'movie_id' => 1],
             ['branch_id' => 1, 'movie_id' => 2],
