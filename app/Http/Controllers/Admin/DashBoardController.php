@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Ticket;
+use Illuminate\Support\Facades\Log;
 
 class DashBoardController extends Controller
 {
@@ -35,12 +36,15 @@ class DashBoardController extends Controller
         $selectedMonth = $selectedMonth ? max(1, min(12, (int) $selectedMonth)) : null;
         $selectedYear = max(2020, min(Carbon::now()->year, (int) $selectedYear));
 
-        // Date handling
-        $today = $date ? Carbon::parse($date) : Carbon::today();
+        // Validate date
+        $today = $date && Carbon::hasFormat($date, 'Y-m-d') ? Carbon::parse($date) : Carbon::today();
         $todayEnd = $today->copy()->endOfDay();
+        $yesterday = $today->copy()->subDay()->startOfDay();
+        $yesterdayEnd = $today->copy()->subDay()->endOfDay();
         $thisMonthStart = $selectedMonth ? Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth() : Carbon::now()->startOfMonth();
         $lastMonthStart = $thisMonthStart->copy()->subMonth()->startOfMonth();
         $lastMonthEnd = $thisMonthStart->copy()->subMonth()->endOfMonth();
+        $thisMonthEnd = $thisMonthStart->copy()->endOfMonth(); 
 
         // Phân quyền mặc định
         if (!$user->hasRole('System Admin')) {
@@ -96,24 +100,41 @@ class DashBoardController extends Controller
         // Thống kê vé và loại ghế
         [$ticketCount, $seatSeries, $seatLabels] = $this->getTicketStats($selectedMonth, $selectedYear, $branchId, $cinemaId, $movieId, $statusId);
 
-        // Doanh thu hôm nay
+        // Doanh thu hôm nay và hôm qua
         $revenueToday = $this->getRevenue($today, $todayEnd, $branchId, $cinemaId, $movieId, $statusId);
-        // dd($revenueToday)
-
+        $revenueYesterday = $this->getRevenue($yesterday, $yesterdayEnd, $branchId, $cinemaId, $movieId, $statusId);
+        $revenueTodayChange = $revenueYesterday > 0
+            ? (($revenueToday - $revenueYesterday) / $revenueYesterday * 100)
+            : ($revenueToday > 0 ? 100 : 0); // Nếu hôm qua = 0, hôm nay > 0 thì tăng 100%
         $formattedRevenueToday = number_format($revenueToday, 0, ',', '.');
-        // dd($formattedRevenueToday);
 
-        // Số vé bán ra hôm nay
+        // Debug log để kiểm tra
+        Log::debug('Revenue Debug', [
+            'today' => $revenueToday,
+            'yesterday' => $revenueYesterday,
+            'change' => $revenueTodayChange
+        ]);
+
+        // Số vé hôm nay và hôm qua
         $ticketsToday = $this->getTicketCountToday($today, $todayEnd, $branchId, $cinemaId, $movieId, $statusId);
+        $ticketsYesterday = $this->getTicketCountToday($yesterday, $yesterdayEnd, $branchId, $cinemaId, $movieId, $statusId);
+        $ticketsTodayChange = $ticketsYesterday > 0
+            ? (($ticketsToday - $ticketsYesterday) / $ticketsYesterday * 100)
+            : ($ticketsToday > 0 ? 100 : 0); // Nếu hôm qua = 0, hôm nay > 0 thì tăng 100%
 
-        // Doanh thu tháng này
-        $revenueThisMonth = $this->getRevenue($thisMonthStart, $today, $branchId, $cinemaId, $movieId, $statusId);
+        // Debug log để kiểm tra
+        Log::debug('Tickets Debug', [
+            'today' => $ticketsToday,
+            'yesterday' => $ticketsYesterday,
+            'change' => $ticketsTodayChange
+        ]);
 
-        // Doanh thu tháng trước
+        // Doanh thu tháng này và tháng trước
+        $revenueThisMonth = $this->getRevenue($thisMonthStart, $thisMonthEnd, $branchId, $cinemaId, $movieId, $statusId);
         $revenueLastMonth = $this->getRevenue($lastMonthStart, $lastMonthEnd, $branchId, $cinemaId, $movieId, $statusId);
         $revenueChange = $revenueLastMonth > 0
             ? (($revenueThisMonth - $revenueLastMonth) / $revenueLastMonth * 100)
-            : 0;
+            : ($revenueThisMonth > 0 ? 100 : 0);
 
         // Số vé bán ra tháng này
         $ticketsThisMonth = $this->getTicketCount($thisMonthStart, $today, $branchId, $cinemaId, $movieId, $statusId);
@@ -124,15 +145,38 @@ class DashBoardController extends Controller
         // Doanh thu theo rạp
         [$revenueSeriesJson, $cinemaLabelsJson] = $this->getRevenueByCinema($selectedMonth, $selectedYear, $branchId, $cinemaId, $movieId, $statusId);
 
+        // Phim hoạt động
         $activeMoviesCount = DB::table('showtimes')
             ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
             ->where('movies.is_active', 1)
-            ->when($cinemaId, fn($q) => $q->where('showtimes.cinema_id', $cinemaId)) // Lọc theo rạp nếu có
+            ->when($cinemaId, fn($q) => $q->where('showtimes.cinema_id', $cinemaId))
             ->when($branchId, fn($q) => $q->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
                 ->where('cinemas.branch_id', $branchId))
-            ->when($date, fn($q) => $q->whereDate('showtimes.start_time', '=', $date)) // Lọc theo ngày nếu có
+            ->when($date, fn($q) => $q->whereDate('showtimes.start_time', '=', $date))
             ->distinct()
             ->count('movies.id');
+
+        // Phim hoạt động tháng trước
+        $activeMoviesLastMonth = DB::table('showtimes')
+            ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
+            ->where('movies.is_active', 1)
+            ->whereBetween('showtimes.start_time', [$lastMonthStart, $lastMonthEnd])
+            ->when($cinemaId, fn($q) => $q->where('showtimes.cinema_id', $cinemaId))
+            ->when($branchId, fn($q) => $q->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
+                ->where('cinemas.branch_id', $branchId))
+            ->distinct()
+            ->count('movies.id');
+
+        $activeMoviesChange = $activeMoviesLastMonth > 0
+            ? (($activeMoviesCount - $activeMoviesLastMonth) / $activeMoviesLastMonth * 100)
+            : ($activeMoviesCount > 0 ? 100 : 0);
+
+        // Debug log để kiểm tra
+        Log::debug('Active Movies Debug', [
+            'current' => $activeMoviesCount,
+            'last_month' => $activeMoviesLastMonth,
+            'change' => $activeMoviesChange
+        ]);
 
         return view(self::PATH_VIEW . __FUNCTION__, compact(
             'branches',
@@ -158,9 +202,12 @@ class DashBoardController extends Controller
             'revenueSeriesJson',
             'cinemaLabelsJson',
             'revenueToday',
+            'revenueTodayChange',
             'formattedRevenueToday',
             'ticketsToday',
-            'activeMoviesCount'
+            'ticketsTodayChange',
+            'activeMoviesCount',
+            'activeMoviesChange'
         ));
     }
 
@@ -208,7 +255,7 @@ class DashBoardController extends Controller
         $ticketCount = 0;
         $seatTypes = [];
         foreach ($tickets as $ticket) {
-            $seats = $ticket->ticket_seats;
+            $seats = is_array($ticket->ticket_seats) ? $ticket->ticket_seats : json_decode($ticket->ticket_seats, true);
             if (is_array($seats)) {
                 $ticketCount += count($seats);
                 foreach ($seats as $seat) {
@@ -254,7 +301,7 @@ class DashBoardController extends Controller
 
         $ticketCount = 0;
         foreach ($tickets as $ticket) {
-            $seats = $ticket->ticket_seats;
+            $seats = is_array($ticket->ticket_seats) ? $ticket->ticket_seats : json_decode($ticket->ticket_seats, true);
             if (is_array($seats)) {
                 $ticketCount += count($seats);
             }
@@ -275,8 +322,12 @@ class DashBoardController extends Controller
             $query = Ticket::query()
                 ->whereYear('created_at', $year)
                 ->whereMonth('created_at', $month)
-                ->when($movieId, fn($q) => $q->where('movie_id', $movieId))
-                ->when($statusId, fn($q) => $q->where('status', $statusId));
+                ->when($movieId, function ($q) use ($movieId) {
+                    $q->where('movie_id', $movieId);
+                })
+                ->when($statusId, function ($q) use ($statusId) {
+                    $q->where('status', $statusId);
+                });
 
             $this->applyPermission($query, $branchId, $cinemaId);
             $revenue = $query->sum('total_price') ?: 0;
@@ -304,7 +355,6 @@ class DashBoardController extends Controller
             ->orderBy('revenue', 'desc')
             ->get();
 
-        // Bỏ round() để giữ nguyên giá trị
         $revenueSeries = $revenueByCinema->pluck('revenue')->map(fn($value) => (float) $value / 1000000)->toArray();
         $cinemaLabels = $revenueByCinema->pluck('cinema_name')->toArray();
 
@@ -324,7 +374,7 @@ class DashBoardController extends Controller
 
         $soldSeats = 0;
         foreach ($tickets as $ticket) {
-            $seats = json_decode($ticket->ticket_seats, true);
+            $seats = is_array($ticket->ticket_seats) ? $ticket->ticket_seats : json_decode($ticket->ticket_seats, true);
             if (is_array($seats)) {
                 $soldSeats += count($seats);
             }
@@ -358,4 +408,3 @@ class DashBoardController extends Controller
         return [json_encode($series), json_encode($labels)];
     }
 }
-
