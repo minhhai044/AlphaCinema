@@ -234,6 +234,7 @@
                                                                                 class="d-flex justify-content-center align-items-center mt-2">
                                                                                 <div class="custom-switch">
                                                                                     <input @checked($showtime['is_active'])
+                                                                                        @disabled(!$showtime['tickets'])
                                                                                         switch="primary"
                                                                                         class="form-check-input switch-is-active"
                                                                                         id="is_active{{ $showtime['id'] }}"
@@ -260,6 +261,7 @@
                                                                                         name="showtime_id"
                                                                                         value="{{ $showtime['id'] }}">
                                                                                     <button type="submit"
+                                                                                        @disabled(!$showtime['tickets'])
                                                                                         class="btn btn-sm btn-danger fw-bold"
                                                                                         title="Xoá suất chiếu">
                                                                                         <i class="bi bi-trash"></i>

@@ -25,7 +25,7 @@ class ShowtimeService
         $cinema_id = $request->query('cinema_id', '');
         $listShowtimesByDates = collect();
         if (empty($date) && !empty($branch_id) && !empty($cinema_id)) {
-            $showtimes = Showtime::with('movie', 'room.type_room', 'branch', 'cinema')
+            $showtimes = Showtime::with('movie', 'room.type_room', 'branch', 'cinema','tickets')
                 ->where('date', '>=', Carbon::now()->toDateString())
                 ->where('branch_id', $branch_id)
                 ->where('cinema_id', $cinema_id)
