@@ -53,6 +53,14 @@ Route::get('/listMovies',           [ShowtimeController::class, 'listMovies']);
 Route::get('{movie}/listShowtimes', [ShowtimeController::class, 'listShowtimes']);
 Route::get('{slug}/showtimeDetail', [ShowtimeController::class, 'showtimeDetail']);
 
+// xuất chiếu đặc biệt
+Route::get('/movies-coming-soon',           [ShowtimeController::class, 'listComingSoon']);
+Route::get('/movies-now-showing',           [ShowtimeController::class, 'listNowShowing']);
+Route::get('/movies-special',           [ShowtimeController::class, 'listMoviesSpecial']);
+//
+Route::get('{slug}/moviesNowShowing',           [ShowtimeController::class, 'moviesNowShowing']);
+Route::get('{slug}/moviesSpecialShowtimes',           [ShowtimeController::class, 'moviesSpecialShowtimes']);
+
 /**
  * Api slideshows
  *
