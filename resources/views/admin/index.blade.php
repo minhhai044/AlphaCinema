@@ -163,107 +163,118 @@
 
     <!-- Phần còn lại của nội dung giữ nguyên -->
     <div class="row g-4">
-        <!-- Card Doanh thu hôm nay -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-custom">
-                <div class="card-header-custom">
-                    <i class="bi bi-currency-dollar me-1"></i> Doanh thu hôm nay
-                </div>
-                <div class="card-body-custom">
-                    <div class="row align-items-center">
-                        <div class="col-12">
-                            <h4 class="mb-3">
-                                <span class="counter-value"
-                                    data-target="{{ $revenueToday }}">{{ $formattedRevenueToday }}</span> VNĐ
-                            </h4>
-                        </div>
-                    </div>
-                    <div class="text-nowrap">
-                        <span class="badge bg-success-subtle text-success badge-custom"><i
-                                class="bi bi-arrow-up"></i>0%</span>
-                        <span class="ms-1 text-muted">So với hôm qua</span>
-                    </div>
-                </div>
+    <!-- Card Doanh thu hôm nay -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-custom">
+            <div class="card-header-custom">
+                <i class="bi bi-currency-dollar me-1"></i> Doanh thu hôm nay
             </div>
-        </div>
-
-        <!-- Card Vé hôm nay -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-custom">
-                <div class="card-header-custom">
-                    <i class="bi bi-ticket-perforated me-1"></i> Vé hôm nay
-                </div>
-                <div class="card-body-custom">
-                    <div class="row align-items-center">
-                        <div class="col-7">
-                            <h4 class="mb-3">
-                                <span class="counter-value" data-target="{{ $ticketsToday }}">{{ $ticketsToday }}</span>
-                                VÉ
-                            </h4>
-                        </div>
+            <div class="card-body-custom">
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <h4 class="mb-3">
+                            <span class="counter-value" data-target="{{ $revenueToday }}">{{ $formattedRevenueToday }}</span> VNĐ
+                        </h4>
                     </div>
-                    <div class="text-nowrap">
+                </div>
+                <div class="text-nowrap">
+                    @if ($revenueTodayChange < 0)
+                        <span class="badge bg-danger-subtle text-danger badge-custom"><i class="bi bi-arrow-down"></i>
+                            {{ number_format(abs($revenueTodayChange), 1, '.', '') }}%</span>
+                    @else
                         <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
-                            0%</span>
-                        <span class="ms-1 text-muted">So với hôm qua</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card Doanh thu tháng -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-custom">
-                <div class="card-header-custom">
-                    <i class="bi bi-calendar-month me-1"></i> Doanh thu tháng {{ $selectedMonth ?: Carbon::now()->month }}
-                </div>
-                <div class="card-body-custom">
-                    <div class="row align-items-center">
-                        <div class="col-12">
-                            <h4 class="mb-3">
-                                <span class="counter-value"
-                                    data-target="{{ $totalRevenue }}">{{ $formattedRevenue }}</span> VNĐ
-                            </h4>
-                        </div>
-                    </div>
-                    <div class="text-nowrap">
-                        @if ($revenueChange < 0)
-                            <span class="badge bg-danger-subtle text-danger badge-custom"><i class="bi bi-arrow-down"></i>
-                                {{ abs(round($revenueChange, 1)) }}%</span>
-                        @else
-                            <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
-                                {{ round($revenueChange, 1) }}%</span>
-                        @endif
-                        <span class="ms-1 text-muted">So với tháng trước</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Card Phim đang hoạt động -->
-        <div class="col-xl-3 col-md-6">
-            <div class="card card-custom">
-                <div class="card-header-custom">
-                    <i class="bi bi-film me-1"></i> Phim đang hoạt động
-                </div>
-                <div class="card-body-custom">
-                    <div class="row align-items-center">
-                        <div class="col-7">
-                            <h4 class="mb-3">
-                                <span class="counter-value"
-                                    data-target="{{ $activeMoviesCount }}">{{ $activeMoviesCount }}</span> Phim
-                            </h4>
-                        </div>
-                    </div>
-                    <div class="text-nowrap">
-                        <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
-                            0%</span>
-                        <span class="ms-1 text-muted">So với tháng trước</span>
-                    </div>
+                            {{ number_format($revenueTodayChange, 1, '.', '') }}%</span>
+                    @endif
+                    <span class="ms-1 text-muted">So với hôm qua</span>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- Card Vé hôm nay -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-custom">
+            <div class="card-header-custom">
+                <i class="bi bi-ticket-perforated me-1"></i> Vé hôm nay
+            </div>
+            <div class="card-body-custom">
+                <div class="row align-items-center">
+                    <div class="col-7">
+                        <h4 class="mb-3">
+                            <span class="counter-value" data-target="{{ $ticketsToday }}">{{ $ticketsToday }}</span> VÉ
+                        </h4>
+                    </div>
+                </div>
+                <div class="text-nowrap">
+                    @if ($ticketsTodayChange < 0)
+                        <span class="badge bg-danger-subtle text-danger badge-custom"><i class="bi bi-arrow-down"></i>
+                            {{ number_format(abs($ticketsTodayChange), 1, '.', '') }}%</span>
+                    @else
+                        <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
+                            {{ number_format($ticketsTodayChange, 1, '.', '') }}%</span>
+                    @endif
+                    <span class="ms-1 text-muted">So với hôm qua</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Doanh thu tháng -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-custom">
+            <div class="card-header-custom">
+                <i class="bi bi-calendar-month me-1"></i> Doanh thu tháng {{ $selectedMonth ?: Carbon::now()->month }}
+            </div>
+            <div class="card-body-custom">
+                <div class="row align-items-center">
+                    <div class="col-12">
+                        <h4 class="mb-3">
+                            <span class="counter-value" data-target="{{ $totalRevenue }}">{{ $formattedRevenue }}</span> VNĐ
+                        </h4>
+                    </div>
+                </div>
+                <div class="text-nowrap">
+                    @if ($revenueChange < 0)
+                        <span class="badge bg-danger-subtle text-danger badge-custom"><i class="bi bi-arrow-down"></i>
+                            {{ number_format(abs($revenueChange), 1, '.', '') }}%</span>
+                    @else
+                        <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
+                            {{ number_format($revenueChange, 1, '.', '') }}%</span>
+                    @endif
+                    <span class="ms-1 text-muted">So với tháng trước</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card Phim đang hoạt động -->
+    <div class="col-xl-3 col-md-6">
+        <div class="card card-custom">
+            <div class="card-header-custom">
+                <i class="bi bi-film me-1"></i> Phim đang hoạt động
+            </div>
+            <div class="card-body-custom">
+                <div class="row align-items-center">
+                    <div class="col-7">
+                        <h4 class="mb-3">
+                            <span class="counter-value" data-target="{{ $activeMoviesCount }}">{{ $activeMoviesCount }}</span> Phim
+                        </h4>
+                    </div>
+                </div>
+                <div class="text-nowrap">
+                    @if ($activeMoviesChange < 0)
+                        <span class="badge bg-danger-subtle text-danger badge-custom"><i class="bi bi-arrow-down"></i>
+                            {{ number_format(abs($activeMoviesChange), 1, '.', '') }}%</span>
+                    @else
+                        <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
+                            {{ number_format($activeMoviesChange, 1, '.', '') }}%</span>
+                    @endif
+                    <span class="ms-1 text-muted">So với tháng trước</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
     <div class="row g-4">
         <div class="col-xl-4">
