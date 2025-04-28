@@ -123,7 +123,7 @@
 
                                                         <div class="col-md-6 mb-3">
                                                             <label for="name">Phụ phí phòng:</label>
-                                                            <input type="number" name="surcharge"
+                                                            <input type="number" name="surcharge" id="surcharge_store"
                                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
                                                                 value="{{ old('surcharge') }}">
 
@@ -262,6 +262,39 @@
                 $('#formupdate').attr('action', `typerooms/${id}/update`);
             });
 
+            $(document).on('submit', '#formadd', function(e) {
+                let isValid = true;
+
+                // Reset lỗi trước
+                $("#nameError").text('');
+                $("input[name='name']").removeClass('is-invalid');
+                $("#surcharge_store").removeClass('is-invalid');
+                $(".invalid-feedback").text('');
+
+                const name = $.trim($("#name").val());
+                const surcharge = $.trim($("#surcharge_store").val());
+
+                // Validate "Tên loại phòng"
+                if (name == '') {
+                    isValid = false;
+                    $("#name").addClass('is-invalid');
+                    $("#nameError").text('Tên loại phòng không được để trống.');
+                }
+
+                // Validate "Phụ phí phòng"
+                if (surcharge === '' || parseFloat(surcharge) < 0) {
+                    isValid = false;
+                    $("#surcharge_store").addClass('is-invalid');
+                    $("#surcharge_store").next('.invalid-feedback').text(
+                        'Phụ phí không được để trống và từ 0 trở lên');
+                }
+
+                // Nếu có lỗi thì ngăn form submit
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
+
             $('#formupdate').on('submit', function(e) {
                 let isValid = true;
 
@@ -270,13 +303,13 @@
 
                 if (surchargeVal == '' || parseFloat(surchargeVal) < 0) {
                     isValid = false;
-                    $("#error_surcharge").addClass("invalid-feedback").text("Phụ phí không được để trống và từ 0 trở lên").show();
+                    $("#error_surcharge").addClass("invalid-feedback").text(
+                        "Phụ phí không được để trống và từ 0 trở lên").show();
                     $("#surcharge_edit").addClass("is-invalid");
                 } else {
                     $("#error_surcharge").removeClass("invalid-feedback").text("").hide();
                     $("#surcharge_edit").removeClass("is-invalid");
                 }
-
 
                 // Nếu không hợp lệ thì chặn submit
                 if (!isValid) {
