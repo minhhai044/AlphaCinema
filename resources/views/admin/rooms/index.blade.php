@@ -178,6 +178,10 @@
                                     data-typeroom="{{ $room->type_room_id }}"
                                     data-seattemplate="{{ $room->seat_template_id }}"
                                     data-description="{{ $room->description }}" data-publish="{{ $room->is_publish }}"
+                                    data-nameseat="{{ $room->seat_template->name }}"
+                                    data-idseat="{{ $room->seat_template->id }}"
+                                    data-seatstructure="{{ $room->seat_structure }}"
+                                    data-seatmaxtrix="{{ $room->matrix_colume }}"
                                     data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
                                     <i class=" bx bx-edit"></i>
                                 </a></button>
@@ -458,6 +462,11 @@
             let seat_template_id = $(this).data('seattemplate');
             let description = $(this).data('description');
             let publish = $(this).data('publish');
+            let nameseat = $(this).data('nameseat');
+            let idseat = $(this).data('idseat');
+            let seatstructure = $(this).data('seatstructure');
+            let seatmaxtrix = $(this).data('seatmaxtrix');
+            
             let filteredData = "";
             Object.entries(data).forEach(([key, value]) => {
 
@@ -493,6 +502,14 @@
 
             $('#seat_structure_edit').val(dataTemplate);
             $('#matrix_colume_edit').val(matrix_colume);
+
+            let foundSeatTemplate = seat_templates.some(item => item.id == seat_template_id);
+            
+            if (!foundSeatTemplate && idseat && nameseat) {
+                $('#seat_templates_edit').append(`<option selected value="${idseat}">${nameseat}</option>`);
+                $('#seat_structure_edit').val(JSON.stringify(seatstructure));
+                $('#matrix_colume_edit').val(seatmaxtrix);
+            }
 
             $('.submitRoomFormUpdate').attr('action', `rooms/${id}/update`);
 
