@@ -95,7 +95,8 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="addModalLabel">Thêm mới phòng </h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="btn-close closeModalAdd" data-bs-dismiss="modal"
+                        aria-label="Close"></button>
                 </div>
                 <form method="post" action="{{ route('admin.typerooms.store') }}" id="formadd">
                     <div class="modal-body">
@@ -127,7 +128,7 @@
                                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
                                                                 value="{{ old('surcharge') }}">
 
-                                                            <div class="invalid-feedback">
+                                                            <div class="invalid-feedback" id="surcharge_add">
                                                                 @if ($errors->has('surcharge'))
                                                                     {{ $errors->first('surcharge') }}
                                                                 @endif
@@ -145,7 +146,8 @@
 
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+                        <button type="button" class="btn btn-secondary closeModalAdd"
+                            data-bs-dismiss="modal">Đóng</button>
                         <button type="submit" class="btn btn-primary btn-submit"> Thêm mới</button>
                     </div>
                 </form>
@@ -262,6 +264,8 @@
                 $('#formupdate').attr('action', `typerooms/${id}/update`);
             });
 
+
+
             $(document).on('submit', '#formadd', function(e) {
                 let isValid = true;
 
@@ -285,7 +289,7 @@
                 if (surcharge === '' || parseFloat(surcharge) < 0) {
                     isValid = false;
                     $("#surcharge_store").addClass('is-invalid');
-                    $("#surcharge_store").next('.invalid-feedback').text(
+                    $("#surcharge_store").next('#surcharge_add').text(
                         'Phụ phí không được để trống và từ 0 trở lên');
                 }
 
@@ -295,6 +299,13 @@
                 }
             });
 
+            $(document).on('click', '.closeModalAdd', function(e) {
+                $("#name").removeClass("is-invalid");
+                $("#nameError").text('');
+
+                $("#surcharge_store").removeClass("is-invalid");
+                $("#surcharge_add").text('');
+            });
             $('#formupdate').on('submit', function(e) {
                 let isValid = true;
 
@@ -316,6 +327,9 @@
                     e.preventDefault();
                 }
             });
+
+
+
         });
     </script>
 
