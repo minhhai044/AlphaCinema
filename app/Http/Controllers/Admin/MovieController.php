@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Filters\MovieFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MovieRequest;
+use App\Models\Branch;
 use App\Models\Movie;
 use App\Services\MovieService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class MovieController extends Controller
@@ -26,19 +28,27 @@ class MovieController extends Controller
     // 1. Hiển thị danh sách phim
     public function index(Request $request)
     {
+        $today = Carbon::now();
+
+
+        Movie::where('is_active', true)
+            ->where('end_date', '<', $today)
+            ->update(['is_active' => false]);
+
+      
         $filters = $request->only(['id', 'name', 'movie_versions', 'movie_genres']);
 
         $movieFilter = new MovieFilter($filters);
         $movies = $movieFilter->apply()->paginate(10);
-        // dd($movies);
+
         return view('admin.movies.index', compact('movies', 'filters'));
     }
-    
+
 
     // 2. Hiển thị form thêm mới phim
     public function create()
     {
-        $branches = \App\Models\Branch::all();
+        $branches = Branch::where('is_active', 1)->get();
         $selectedBranches = [];
         // dd($branches);
         return view('admin.movies.create', compact('branches', 'selectedBranches'));
@@ -68,7 +78,7 @@ class MovieController extends Controller
     public function edit($id)
     {
         $movie = Movie::with('branches')->findOrFail($id);
-        $branches = \App\Models\Branch::all();
+        $branches = Branch::where('is_active', 1)->get();
         $selectedBranches = $movie->branches()->pluck('branches.id')->toArray();
 
         return view('admin.movies.edit', compact('movie', 'branches', 'selectedBranches'));

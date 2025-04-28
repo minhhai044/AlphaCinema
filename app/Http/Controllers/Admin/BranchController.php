@@ -97,20 +97,38 @@ class BranchController extends Controller
         if (!$branch) {
             return response()->json(['success' => false, 'message' => 'Chi nhánh không tồn tại.']);
         }
-        
+
         // Khi tắt
         if ($branch->cinemas && $request->is_active == 0) {
-            foreach ($branch->cinemas ?? [] as $cinemas) {
-                if ($cinemas->is_active == 1) {
-                    return response()->json(['success' => false, 'message' => 'Bạn không thể tắt hoạt động chi nhánh khi các rạp vẫn đang hoạt động !!!']);
+            // Kiểm tra rạp còn hoạt động
+            foreach ($branch->cinemas ?? [] as $cinema) {
+                if ($cinema->is_active == 1) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Bạn không thể tắt hoạt động chi nhánh khi các rạp vẫn đang hoạt động !!!'
+                    ]);
                 }
             }
+
+            // Kiểm tra phim còn hoạt động
+            $hasActiveMovies = $branch->movies()
+                ->where('is_active', 1)
+                ->exists();
+
+            if ($hasActiveMovies) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Bạn không thể tắt hoạt động chi nhánh khi còn phim đang hoạt động !!!'
+                ]);
+            }
         }
+
         $branch->is_active = $request->is_active;
         $branch->save();
 
         return response()->json(['success' => true]);
     }
+
 
     public function destroy(Branch $branch)
     {
