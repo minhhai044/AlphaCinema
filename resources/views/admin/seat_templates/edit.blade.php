@@ -510,7 +510,7 @@
 
             if (seatStructure.length === 0) {
                 e.preventDefault(); // Ngăn form submit nếu không có ghế nào được chọn
-                toastr.error('Bạn chưa chọn ghế nào!!!');
+                toastr.warning('Bạn chưa chọn ghế nào!!!');
                 return;
             }
 

@@ -158,6 +158,7 @@
                                 data-matrix="{{ $data->matrix }}" data-regular="{{ $data->row_regular }}"
                                 data-vip="{{ $data->row_vip }}" data-double="{{ $data->row_double }}"
                                 data-description="{{ $data->description }}" data-publish="{{ $data->is_publish }}"
+                                data-seatstructure="{{ $data->seat_structure }}"
                                 data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
                                 <button class="btn btn-warning btn-sm"> <i class="bx bx-edit"></i></button>
                             </a>
@@ -356,7 +357,7 @@
                         if (totalSeat === selectedMatrix.max_col) {
                             $(form).submit();
                         } else {
-                            toastr.error('Vui lòng kiểm tra lại số lượng ghế !!');
+                            toastr.warning('Vui lòng kiểm tra lại số lượng ghế !!');
                             handleMatrixChange(matrixSelectId, regularSeatId, vipSeatId, doubleSeatId);
                         }
                     } else {
@@ -426,7 +427,7 @@
                     });
                 } else {
                     $(this).prop('checked', !is_active);
-                    toastr.error('Thao tác thất bại , Vui lòng cấu tạo ghế !!!');
+                    toastr.warning('Vui lòng cấu tạo ghế !!!');
                 }
             });
         });
@@ -445,7 +446,9 @@
             let double = $(this).data('double');
             let description = $(this).data('description');
             let publish = $(this).data('publish');
-
+            let seatstructure = $(this).data('seatstructure');
+           
+            
             // Điền dữ liệu vào form
             $('#nameInput').val(name);
             $('#matrixSelectEdit').val(matrix);
@@ -454,7 +457,7 @@
             $('#doubleSeatEdit').val(double);
             $('#description').val(description);
 
-            if (publish) {
+            if (seatstructure) {
                 $('#regularSeatEdit, #vipSeatEdit, #doubleSeatEdit').attr('readonly', true);
                 $('#matrixSelectEdit').prop('disabled', true);
             } else {
