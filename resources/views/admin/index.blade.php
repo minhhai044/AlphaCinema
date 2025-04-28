@@ -167,7 +167,7 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-custom">
             <div class="card-header-custom">
-                <i class="bi bi-currency-dollar me-1"></i> Doanh thu hôm nay
+                <i class="bi bi-currency-dollar me-1"></i> Doanh thu {{ $date ? \Carbon\Carbon::parse($date)->format('d/m') : 'hôm nay' }}
             </div>
             <div class="card-body-custom">
                 <div class="row align-items-center">
@@ -185,7 +185,7 @@
                         <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
                             {{ number_format($revenueTodayChange, 1, '.', '') }}%</span>
                     @endif
-                    <span class="ms-1 text-muted">So với hôm qua</span>
+                    <span class="ms-1 text-muted">So với {{ $date ? \Carbon\Carbon::parse($date)->subDay()->format('d/m') : 'hôm qua' }}</span>
                 </div>
             </div>
         </div>
@@ -195,7 +195,7 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-custom">
             <div class="card-header-custom">
-                <i class="bi bi-ticket-perforated me-1"></i> Vé hôm nay
+                <i class="bi bi-ticket-perforated me-1"></i> Vé hôm {{ $date ? \Carbon\Carbon::parse($date)->format('d/m') : 'hôm nay' }}
             </div>
             <div class="card-body-custom">
                 <div class="row align-items-center">
@@ -213,39 +213,43 @@
                         <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
                             {{ number_format($ticketsTodayChange, 1, '.', '') }}%</span>
                     @endif
-                    <span class="ms-1 text-muted">So với hôm qua</span>
+                    <span class="ms-1 text-muted">So với {{ $date ? \Carbon\Carbon::parse($date)->subDay()->format('d/m') : 'hôm qua' }}</span>
                 </div>
             </div>
         </div>
     </div>
 
     <!-- Card Doanh thu tháng -->
-    <div class="col-xl-3 col-md-6">
-        <div class="card card-custom">
-            <div class="card-header-custom">
-                <i class="bi bi-calendar-month me-1"></i> Doanh thu tháng {{ $selectedMonth ?: Carbon::now()->month }}
+    <!-- Card Doanh thu tháng -->
+<div class="col-xl-3 col-md-6">
+    <div class="card card-custom">
+        <div class="card-header-custom">
+            <i class="bi bi-calendar-month me-1"></i>
+            Doanh thu Tháng {{ collect([1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => '10', 11 => '11', 12 => '12'])->get($selectedMonth ?: \Carbon\Carbon::now()->month) }}
+        </div>
+        <div class="card-body-custom">
+            <div class="row align-items-center">
+                <div class="col-12">
+                    <h4 class="mb-3">
+                        <span class="counter-value" data-target="{{ $totalRevenue }}">{{ $formattedRevenue }}</span> VNĐ
+                    </h4>
+                </div>
             </div>
-            <div class="card-body-custom">
-                <div class="row align-items-center">
-                    <div class="col-12">
-                        <h4 class="mb-3">
-                            <span class="counter-value" data-target="{{ $totalRevenue }}">{{ $formattedRevenue }}</span> VNĐ
-                        </h4>
-                    </div>
-                </div>
-                <div class="text-nowrap">
-                    @if ($revenueChange < 0)
-                        <span class="badge bg-danger-subtle text-danger badge-custom"><i class="bi bi-arrow-down"></i>
-                            {{ number_format(abs($revenueChange), 1, '.', '') }}%</span>
-                    @else
-                        <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
-                            {{ number_format($revenueChange, 1, '.', '') }}%</span>
-                    @endif
-                    <span class="ms-1 text-muted">So với tháng trước</span>
-                </div>
+            <div class="text-nowrap">
+                @if ($revenueChange < 0)
+                    <span class="badge bg-danger-subtle text-danger badge-custom"><i class="bi bi-arrow-down"></i>
+                        {{ number_format(abs($revenueChange), 1, '.', '') }}%</span>
+                @else
+                    <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
+                        {{ number_format($revenueChange, 1, '.', '') }}%</span>
+                @endif
+                <span class="ms-1 text-muted">
+                    So với Tháng {{ collect([1 => '1', 2 => '2', 3 => '3', 4 => '4', 5 => '5', 6 => '6', 7 => '7', 8 => '8', 9 => '9', 10 => '10', 11 => '11', 12 => '12'])->get(($selectedMonth ?: \Carbon\Carbon::now()->month) - 1 ?: 12) }}
+                </span>
             </div>
         </div>
     </div>
+</div>
 
     <!-- Card Phim đang hoạt động -->
     <div class="col-xl-3 col-md-6">
