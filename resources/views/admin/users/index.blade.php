@@ -53,7 +53,6 @@
                         </div>
                     @endif
 
-
                     <!-- Nút thêm mới -->
                     <a href="{{ route('admin.users.create') }}" class="btn btn-primary flex-shrink-0">+ Thêm mới</a>
                 </form>
@@ -97,7 +96,7 @@
                 <table id="datatable" class="table table-bordered w-100 text-center">
                     <thead>
                         <tr class="text-center">
-                            <th>ID</th>
+                            <th>STT</th>
                             <th>Tên</th>
                             <th>Ảnh</th>
                             <th>Email</th>

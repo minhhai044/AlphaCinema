@@ -15,13 +15,13 @@ class UserVoucherController extends Controller
      * Hiển thị danh sách User Voucher.
      */
 
-     public function __construct()
-     {
-         $this->middleware('can:Danh sách áp mã giảm giá')->only('index');
-         $this->middleware('can:Thêm áp mã giảm giá')->only(['create', 'store']);
-         $this->middleware('can:Sửa áp mã giảm giá')->only(['edit', 'update']);
-         $this->middleware('can:Xóa áp mã giảm giá')->only('destroy');
-     }
+    public function __construct()
+    {
+        $this->middleware('can:Danh sách áp mã giảm giá')->only('index');
+        $this->middleware('can:Thêm áp mã giảm giá')->only(['create', 'store']);
+        $this->middleware('can:Sửa áp mã giảm giá')->only(['edit', 'update']);
+        $this->middleware('can:Xóa áp mã giảm giá')->only('destroy');
+    }
 
     public function index()
     {
@@ -34,9 +34,7 @@ class UserVoucherController extends Controller
      */
     public function create()
     {
-        $users = User::all();
-
-
+        $users = User::query()->where('type_user', '0')->get();
         $vouchers = Voucher::where('is_active', 1)->get();
 
         return view('admin.user_vouchers.create', compact('users', 'vouchers'));
@@ -70,9 +68,18 @@ class UserVoucherController extends Controller
                         ];
                     }
                 }
+
+                // dd($insertData);
                 if (!empty($insertData)) {
-                    User_voucher::insert($insertData);
-                    // broadcast(new RealTimeVouCherEvent($vouchers, $userIds))->toOthers();
+
+                    foreach ($insertData as $voucherData) {
+
+                        $userVoucher = User_voucher::create($voucherData);
+                        $voucher = $userVoucher->voucher;
+
+                        broadcast(new RealTimeVouCherEvent($voucher, $voucherData['user_id']))->toOthers();
+                    }
+
 
                     return redirect()->route('admin.user-vouchers.index')->with('success', 'Thêm mới User Voucher thành công!');
                 } else {
@@ -96,9 +103,24 @@ class UserVoucherController extends Controller
     public function edit(User_voucher $User_voucher)
     {
         $users = User::all();
-        $vouchers = Voucher::all();
+        $userId = $User_voucher->user_id;
+
+        $usedVoucherIds = User_voucher::where('user_id', $userId)
+            ->where('id', '!=', $User_voucher->id)
+            ->pluck('voucher_id')
+            ->toArray();
+
+
+        $vouchers = Voucher::where('is_active', 1)
+            ->where(function ($query) use ($usedVoucherIds, $User_voucher) {
+                $query->whereNotIn('id', $usedVoucherIds)
+                    ->orWhere('id', $User_voucher->voucher_id);
+            })
+            ->get();
+
         return view('admin.user_vouchers.edit', compact('User_voucher', 'users', 'vouchers'));
     }
+
 
     /**
      * Cập nhật User Voucher.
@@ -109,6 +131,11 @@ class UserVoucherController extends Controller
             $data = $request->validated();
 
             $User_voucher->update($data);
+
+            $userId = $data['user_id'];
+            $voucher = $User_voucher->voucher;
+
+            broadcast(new RealTimeVouCherEvent($voucher, $userId))->toOthers();
 
             return redirect()->route('admin.user-vouchers.index')->with('success', 'Cập nhật User Voucher thành công!');
         } catch (\Throwable $th) {

@@ -55,6 +55,8 @@ class MovieRequest extends FormRequest
 
     public function rulesForUpdate(): array
     {
+        $movieId = $this->route('movie');
+        $movie = \App\Models\Movie::findOrFail($movieId);
         return [
             'branch_ids' => 'required|array',
             'branch_ids.*' => 'exists:branches,id',
@@ -66,7 +68,7 @@ class MovieRequest extends FormRequest
             'director' => 'required|string|max:255',
             'duration' => 'required|integer|min:1',
             'rating' => 'required|numeric|min:0|max:10',
-            'release_date' => 'required|date',
+            'release_date' => 'required|date|after_or_equal:' . $movie->created_at->format('Y-m-d'),
             'end_date' => 'required|date|after_or_equal:release_date',
             'trailer_url' => 'required|url',
             'surcharge' => 'nullable|numeric|min:0',
@@ -93,9 +95,9 @@ class MovieRequest extends FormRequest
             'slug.string' => 'Slug phim phải là chuỗi ký tự.',
             'slug.max' => 'Slug phim không được vượt quá 255 ký tự.',
             'slug.unique' => 'Slug phim đã tồn tại.',
-            'category.required' => 'Danh mục phim là bắt buộc.',
-            'category.string' => 'Danh mục phim phải là chuỗi ký tự.',
-            'category.max' => 'Danh mục phim không được vượt quá 255 ký tự.',
+            'category.required' => 'Diễn viên phim là bắt buộc.',
+            'category.string' => 'Diễn viên phim phải là chuỗi ký tự.',
+            'category.max' => 'Diễn viên phim không được vượt quá 255 ký tự.',
             'description.required' => 'Mô tả phim là bắt buộc.',
             'description.string' => 'Mô tả phim phải là chuỗi ký tự.',
             'img_thumbnail.required' => 'Ảnh thumbnail là bắt buộc.',
@@ -118,6 +120,7 @@ class MovieRequest extends FormRequest
             'end_date.date' => 'Ngày kết thúc phải là một ngày hợp lệ.',
             'end_date.after_or_equal' => 'Ngày kết thúc phải lớn hơn hoặc bằng ngày phát hành.',
             'release_date.after_or_equal' => 'Ngày phát hành phải là hôm nay hoặc ngày trong tương lai.',
+
             'release_date.after' => 'Ngày phát hành phải lớn hơn ngày hôm nay.',
             'trailer_url.required' => 'URL trailer là bắt buộc.',
             'trailer_url.url' => 'URL trailer phải là một URL hợp lệ.',

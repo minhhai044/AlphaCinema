@@ -503,7 +503,7 @@
                         coordinates_y: coordinates_y,
                         type_seat_id: type_seat_id,
                         status:'available',
-                        hold_expires_at : 10
+                        hold_expires_at : null
                     });
                 }
             });

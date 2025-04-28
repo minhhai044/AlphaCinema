@@ -164,7 +164,7 @@
 
                     <!-- Group nút bấm -->
                     <div class="d-flex justify-content-between mt-4">
-                        <button id="submitForm" type="button" onclick="return confirm('Bạn có chắc chắn không !!!')"
+                        <button id="submitForm" type="button"
                             class="btn btn-primary btn-sm px-3">
                             <i class="fas fa-plus-circle me-1"></i> Thêm
                         </button>

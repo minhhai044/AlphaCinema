@@ -9,7 +9,7 @@
     <meta content="Premium Multipurpose Admin & Dashboard Template" name="description" />
     <meta content="Themesbrand" name="author" />
     <!-- App favicon -->
-    <link rel="shortcut icon" href="{{ asset('theme/admin/assets/images/favicon.ico') }}">
+    <link rel="shortcut icon" href="{{ asset('logo/Icon Alpha cinema.svg') }}">
 
     <!-- preloader css -->
     <link rel="stylesheet" href="{{ asset('theme/admin/assets/css/preloader.min.css') }}" type="text/css" />
@@ -104,7 +104,12 @@
                                     </div> --}}
                                 </div>
 
+                                <div class="mt-5 text-center">
+                                    <a href="{{ route('formSendMail') }}" class="text-primary fw-semibold"> Quên mật khẩu </a>
+                                </div>
+
                             </div>
+
                         </div>
                     </div>
                     <!-- end auth full page content -->

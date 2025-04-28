@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\Branch;
 use Illuminate\Support\Str;
 use App\Http\Requests\BranchRequest;
+use Illuminate\Support\Facades\Validator;
 
 class BranchController extends Controller
 {
@@ -61,20 +62,49 @@ class BranchController extends Controller
         }
     }
 
-    public function update(BranchRequest $request, $id)
+    public function update(Request $request, $id)
     {
         $branch = Branch::findOrFail($id);
 
-        $data = $request->validated(); // Lấy dữ liệu đã validate
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'surcharge' => 'required|numeric|min:1000',
+        ], [
+        'name.required' => 'Tên chi nhánh không được để trống.',
+        'name.string' => 'Tên chi nhánh phải là một chuỗi.',
+        'name.max' => 'Tên chi nhánh không được vượt quá 255 ký tự.',
+        'surcharge.required' => 'Phụ thu không được để trống.',
+        'surcharge.numeric' => 'Phụ thu phải là số hợp lệ.',
+        'surcharge.min' => 'Phụ thu phải từ 1,000 trở lên.',]
+    );
+
+        if ($validator->fails()) {
+            return redirect()->route('admin.branches.index')
+                ->withErrors($validator)
+                ->withInput()
+                ->with('edit_modal', $id); 
+        }
 
         $branch->update([
-            'name' => $data['name'],
-            'surcharge' => $data['surcharge'],
-
+            'name' => $request->name,
+            'surcharge' => $request->surcharge,
         ]);
 
         return redirect()->route('admin.branches.index')->with('success', 'Cập nhật chi nhánh thành công!');
     }
+public function changeActive(Request $request)
+{
+    $branch = Branch::find($request->id);
+
+    if (!$branch) {
+        return response()->json(['success' => false, 'message' => 'Chi nhánh không tồn tại.']);
+    }
+
+    $branch->is_active = $request->is_active;
+    $branch->save();
+
+    return response()->json(['success' => true]);
+}
 
     public function destroy(Branch $branch)
     {

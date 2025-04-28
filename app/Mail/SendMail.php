@@ -30,6 +30,7 @@ class SendMail extends Mailable implements ShouldQueue
     private $combo_name;
     private $food_name;
     private $code;
+    private $room;
 
     public function __construct(
         $user_name,
@@ -42,7 +43,8 @@ class SendMail extends Mailable implements ShouldQueue
         $seat_name = [],
         $combo_name = [],
         $food_name = [],
-        $code
+        $code,
+        $room
     ) {
         $this->user_name = $user_name;
         $this->total_price = $total_price;
@@ -55,6 +57,7 @@ class SendMail extends Mailable implements ShouldQueue
         $this->combo_name = is_array($combo_name) ? $combo_name : [];
         $this->food_name = is_array($food_name) ? $food_name : [];
         $this->code = $code;
+        $this->room = $room;
     }
 
 
@@ -95,7 +98,8 @@ class SendMail extends Mailable implements ShouldQueue
                 'combo_name'  => $this->combo_name,
                 'food_name'   => $this->food_name,
                 // 'QrCodeUrl'  => $imagePath,
-                'code'        => $this->code
+                'code'        => $this->code,
+                'room'        => $this->room
             ],
         );
     }

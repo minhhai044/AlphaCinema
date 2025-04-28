@@ -60,6 +60,7 @@ class MailService
         $cinema_name = $data['cinema']['name'] ?? 'Không rõ';
         $branch_name = $data['branch']['name'] ?? 'Không rõ';
         $code        = $data['code'];
+        $room        = $data['room']['name'] ?? 'Không xác định';
 
         $seat_name = [];
         if (!empty($data['ticket_seats']) && is_array($data['ticket_seats'])) {
@@ -99,7 +100,8 @@ class MailService
             $seat_name,
             $combo_name,
             $food_name,
-            $code
+            $code,
+            $room
         ));
 
         return true;

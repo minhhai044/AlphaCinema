@@ -11,7 +11,7 @@
         <div class="navbar-brand-box">
             <a href="{{ route('admin.index') }}" class="logo logo-dark">
                 <span class="logo-sm">
-                    <img src="{{ asset('logo/Icon Alpha cinema.svg') }}" alt="" style="width: 70%">
+                    <img src="{{ asset('logo/Icon Alpha cinema.svg') }}" alt="" style="width: 120%">
                 </span>
                 <span class="logo-lg">
                     <img src="{{ asset('logo/Logo Alpha cinema.svg') }}" alt="" style="width: 52%">
@@ -78,72 +78,79 @@
 
 
 
-        <div class="dropdown d-inline-block">
-            <button type="button" class="btn header-item noti-icon position-relative"
-                id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
-                aria-expanded="false">
-                <i data-feather="bell" class="icon-lg"></i>
-                @if ($notifications->where('status', 0)->count() > 0)
-                    <span class="badge bg-danger rounded-pill">
-                        {{ $notifications->where('status', 0)->count() }}
-                    </span>
-                @else
-                <span class="badge bg-danger rounded-pill">
-                    0
-                </span>
-                @endif
+        @if (!empty(auth()->user()->branch_id) || !empty(auth()->user()->cinema_id))
 
-            </button>
 
-            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                aria-labelledby="page-header-notifications-dropdown">
-                <div class="p-3">
-                    <div class="row align-items-center">
-                        <div class="col">
-                            <h6 class="m-0">Thông báo chung</h6>
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn header-item noti-icon position-relative"
+                    id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    <i data-feather="bell" class="icon-lg"></i>
+
+                    @if ($notifications->where('status', 0)->count() > 0)
+                        <span class="badge bg-danger rounded-pill">
+                            {{ $notifications->where('status', 0)->count() }}
+                        </span>
+                    @else
+                        <span class="badge bg-danger rounded-pill">
+                            0
+                        </span>
+                    @endif
+
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+                    aria-labelledby="page-header-notifications-dropdown">
+                    <div class="p-3">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0">Thông báo chung</h6>
+                            </div>
+                        </div>
+                    </div>
+
+                    {{-- Bọc nội dung vào 1 div để SimpleBar hoạt động đúng --}}
+                    <div id="listNotifications" data-simplebar style="max-height: 500px;">
+                        <div class="simplebar-content">
+                            @forelse($notifications as $noti)
+                                <a href="{{ $noti->link ?? 'javascript:void(0)' }}" class="text-reset notification-item"
+                                    data-id="{{ $noti->id }}">
+                                    <div class="d-flex">
+                                        <div class="flex-shrink-0 avatar-sm me-3">
+                                            <span class="avatar-title bg-info rounded-circle font-size-16">
+                                                <i class="bx bx-bell"></i>
+                                            </span>
+                                        </div>
+                                        <div class="flex-grow-1">
+                                            <h6 class="mb-1 fw-bold">{{ $noti->title }}</h6>
+                                            <div class="font-size-13 text-muted">
+                                                <p class="mb-1 {{ $noti->status == 0 ? 'fw-semibold' : '' }}">
+                                                    {{ $noti->content }}
+                                                </p>
+                                                <p class="mb-0">
+                                                    <i class="mdi mdi-clock-outline"></i>
+                                                    <span>{{ $noti->created_at->diffForHumans() }}</span>
+
+                                                    @if ($noti->status == 0)
+                                                        <span class="badge bg-secondary text-light ms-2">Chưa xem</span>
+                                                    @else
+                                                        <span class="badge bg-success text-light ms-2">Đã xem</span>
+                                                    @endif
+                                                </p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </a>
+                            @empty
+                                <p class="text-center text-muted my-3 no-notification">Không có thông báo nào</p>
+                            @endforelse
                         </div>
                     </div>
                 </div>
-
-                {{-- Bọc nội dung vào 1 div để SimpleBar hoạt động đúng --}}
-                <div id="listNotifications" data-simplebar style="max-height: 500px;">
-                    <div class="simplebar-content">
-                        @forelse($notifications as $noti)
-                            <a href="{{ $noti->link ?? 'javascript:void(0)' }}" class="text-reset notification-item"
-                                data-id="{{ $noti->id }}">
-                                <div class="d-flex">
-                                    <div class="flex-shrink-0 avatar-sm me-3">
-                                        <span class="avatar-title bg-info rounded-circle font-size-16">
-                                            <i class="bx bx-bell"></i>
-                                        </span>
-                                    </div>
-                                    <div class="flex-grow-1">
-                                        <h6 class="mb-1 fw-bold">{{ $noti->title }}</h6>
-                                        <div class="font-size-13 text-muted">
-                                            <p class="mb-1 {{ $noti->status == 0 ? 'fw-semibold' : '' }}">
-                                                {{ $noti->content }}
-                                            </p>
-                                            <p class="mb-0">
-                                                <i class="mdi mdi-clock-outline"></i>
-                                                <span>{{ $noti->created_at->diffForHumans() }}</span>
-
-                                                @if ($noti->status == 0)
-                                                    <span class="badge bg-secondary text-light ms-2">Chưa xem</span>
-                                                @else
-                                                    <span class="badge bg-success text-light ms-2">Đã xem</span>
-                                                @endif
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </a>
-                        @empty
-                            <p class="text-center text-muted my-3 no-notification">Không có thông báo nào</p>
-                        @endforelse
-                    </div>
-                </div>
             </div>
-        </div>
+
+        @endif
+
 
 
 
@@ -175,11 +182,14 @@
             </button>
             <div class="dropdown-menu dropdown-menu-end">
                 <!-- item-->
-                <a class="dropdown-item" href="apps-contacts-profile.html"><i
+                {{-- <a class="dropdown-item" href="apps-contacts-profile.html"><i
                         class="mdi mdi mdi-face-man font-size-16 align-middle me-1"></i> Profile</a>
                 <a class="dropdown-item" href="auth-lock-screen.html"><i
                         class="mdi mdi-lock font-size-16 align-middle me-1"></i> Lock Screen</a>
-                <div class="dropdown-divider"></div>
+                <div class="dropdown-divider"></div> --}}
+                <a class="dropdown-item" id="changepassword-btn" href="{{ route('admin.change-password') }}">
+                    <i class="mdi mdi-lock-reset font-size-16 align-middle me-1"></i>Change Password</a>
+
                 <a class="dropdown-item" id="logout-btn">
                     <i class="mdi mdi-logout font-size-16 align-middle me-1"></i>
                     Logout
