@@ -307,7 +307,7 @@
                             if (response.success) {
                                 toastr.success('Trạng thái hoạt động đã được cập nhật.');
                             } else {
-                                toastr.error(response.message || 'Có lỗi xảy ra.');
+                                toastr.warning(response.message || 'Có lỗi xảy ra.');
                                 $checkbox.prop("checked", !is_active);
                             }
                         },

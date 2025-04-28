@@ -76,12 +76,33 @@ class UpdateActiveController extends Controller {
 
         return response()->json(['success' => true, 'message' => 'Cập nhật trạng thái thành công.']);
     }
-
+    /**
+     * Change IsActive Cinema
+     * @param \Illuminate\Http\Request $request
+     * @return mixed|\Illuminate\Http\JsonResponse
+     */
     public function cinema(Request $request)
     {
         try {
-            $cinema = Cinema::findOrFail($request->id);
-
+            $cinema = Cinema::with('rooms','branch')->find($request->id);
+            if (!$cinema) {
+                return response()->json(['success' => false, 'message' => 'Rạp không tồn tại !!!']);
+            }
+            if ($cinema->rooms && $request->is_active == 0) {
+                foreach ($cinema->rooms ?? [] as $rooms) {
+                    if ($rooms->is_active == 1) {
+                        return response()->json(['success' => false, 'message' => 'Không thể tắt hoạt đông rạp chiếu khi phòng chiếu vẫn đang hoạt động !!!']);
+                    }
+                    
+                }
+            }
+            if ($cinema->branch && $request->is_active == 1) {
+                if ($cinema->branch->is_active == 0) {
+                    return response()->json(['success' => false, 'message' => 'Không thể bật hoạt đông rạp chiếu khi chi nhánh vẫn đang ngừng hoạt động !!!']);
+                }
+                
+            }
+            
             $cinema->is_active = $request->is_active;
             $cinema->save();
 

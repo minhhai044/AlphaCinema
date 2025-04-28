@@ -406,6 +406,7 @@
         }
         let Url = @json($appUrl);
         $('input[id^="is_active"]').change(function() {
+            let checkbox = $(this);
             let id = this.id.replace('is_active', ''); // Lấy ID động
             let is_active = this.checked ? 1 : 0; // Kiểm tra trạng thái
             let publish = $(this).data('publish');
@@ -421,20 +422,26 @@
                                 is_active
                             },
                             success: function(response) {
-                                toastr.success('Thao tác thành công !!!');
+                                if (response.success) {
+                                    toastr.success('Thao tác thành công !!!');
+                                } else {
+                                    toastr.warning(response.message || 'Có lỗi xảy ra.');
+                                    checkbox.prop('checked', !is_active);
+                                }
                             },
                             error: function(error) {
                                 toastr.error('Thao tác thất bại !!!');
+                                checkbox.prop('checked', !is_active);
                             }
                         });
                     } else {
-                        $(this).prop('checked', !is_active);
+                        checkbox.prop('checked', !is_active);
                     }
 
                 });
 
             } else {
-                $(this).prop('checked', !is_active);
+                checkbox.prop('checked', !is_active);
                 toastr.error('Thao tác thất bại , Vui lòng xuất bản phòng !!!');
             }
         });
