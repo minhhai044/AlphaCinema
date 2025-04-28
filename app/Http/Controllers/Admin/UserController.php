@@ -152,11 +152,17 @@ class UserController extends Controller
 
         $data = $userRequest->validated();
 
+
+
         if (!empty($data['cinema_id'])) {
             $data = $userRequest->except('branch_id');
         }
 
         $data['type_user'] = 1;
+
+        if($userRequest->role_id == 2){
+            $data['cinema_id'] = null;
+        }
 
         $result = $this->userService->updateUser($id, $data);
 

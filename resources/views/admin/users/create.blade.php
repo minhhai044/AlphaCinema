@@ -399,9 +399,11 @@
         const selectedValue = $("#choices-multiple-remove-button").val(); // Lấy giá trị của lựa chọn
 
         if (selectedValue == "Quản lý chi nhánh") {
-            $("#box-cinema").addClass("d-none"); // Ẩn box-cinema nếu chọn "Quản lý chi nhánh"
+            $("#cinema_select").addClass("d-none");
+            $("#cinema_select").prop("disabled", true); // Ẩn cinema_select nếu chọn "Quản lý chi nhánh"
         } else {
-            $("#box-cinema").removeClass("d-none"); // Hiển thị lại box-cinema nếu không chọn "Quản lý chi nhánh"
+            $("#cinema_select").removeClass("d-none");
+            $("#cinema_select").prop("disabled", false);  // Hiển thị lại box-cinema nếu không chọn "Quản lý chi nhánh"
         }
 
         $("#account-phone").on("keypress", function(event) {

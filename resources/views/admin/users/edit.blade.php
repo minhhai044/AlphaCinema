@@ -419,10 +419,12 @@
                 // if (Array.isArray(value) && value.includes("2")) {
                 if (value == 2) {
                     $("#box-cinema").addClass('d-none'); // Ẩn box-cinema
+                    $("#cinema_select").prop('disabled', true);
                     $("#box-branch").removeClass('d-none'); // Hiển thị box-branch
                     // } else if (Array.isArray(value) && value.includes("4") || value.includes("3")) {
                 } else if (value == 4 || value == 3) {
                     $("#box-cinema").removeClass('d-none'); // Hiển thị box-cinema
+                    $("#cinema_select").prop('disabled', false);
                     const branchId = $('#branch_select').val();
                     if (branchId) {
                         getCinemasByBranch(branchId);
@@ -430,6 +432,7 @@
                 } else {
                     $("#box-cinema").removeClass('d-none'); // Ẩn box-cinema
                     $("#box-branch").removeClass('d-none'); // Ẩn box-branch
+                    $("#cinema_select").prop('disabled', true);
                 }
             });
         }
