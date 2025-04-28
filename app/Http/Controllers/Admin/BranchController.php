@@ -92,12 +92,20 @@ class BranchController extends Controller
     }
     public function changeActive(Request $request)
     {
-        $branch = Branch::find($request->id);
+        $branch = Branch::with('cinemas')->find($request->id);
 
         if (!$branch) {
             return response()->json(['success' => false, 'message' => 'Chi nhánh không tồn tại.']);
         }
-
+        
+        // Khi tắt
+        if ($branch->cinemas && $request->is_active == 0) {
+            foreach ($branch->cinemas ?? [] as $cinemas) {
+                if ($cinemas->is_active == 1) {
+                    return response()->json(['success' => false, 'message' => 'Bạn không thể tắt hoạt động chi nhánh khi các rạp vẫn đang hoạt động !!!']);
+                }
+            }
+        }
         $branch->is_active = $request->is_active;
         $branch->save();
 

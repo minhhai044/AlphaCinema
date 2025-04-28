@@ -202,7 +202,7 @@
                                 </label>
                                 <select id="updateBranch" class="form-control update-branch_id"
                                     placeholder="Chọn chi nhánh" name="branch_id">
-                                    <option selected value="" class="text-secondary">Select branch</option>
+                                    <option selected value="" class="text-secondary">Chọn chi nhánh</option>
                                     @foreach ($branchs as $branch)
                                         <option value="{{ $branch->id }}">
                                             {{ $branch->name }}
@@ -307,7 +307,7 @@
                             if (response.success) {
                                 toastr.success('Trạng thái hoạt động đã được cập nhật.');
                             } else {
-                                toastr.error(response.message || 'Có lỗi xảy ra.');
+                                toastr.warning(response.message || 'Có lỗi xảy ra.');
                                 $checkbox.prop("checked", !is_active);
                             }
                         },

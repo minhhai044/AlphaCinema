@@ -36,7 +36,7 @@ class CinemaController extends Controller
     {
         $cinemas = $this->cinemaService->getAllPaginateService(10);
         
-        $query = Branch::query()->orderByDesc('id');
+        $query = Branch::query()->orderByDesc('id')->where('is_active',1);
         if (Auth::user()->branch_id) {
             $query->where('id', Auth::user()->branch_id);
         }

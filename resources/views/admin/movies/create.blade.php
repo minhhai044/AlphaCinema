@@ -3,27 +3,24 @@
 @section('content')
     <!-- start page title -->
     <div class="row">
-        <div class="col-12">
-            <h1 class="card-title">Tạo mới phim</h1>
+        <div class="row align-items-center mb-3">
+            <div class="col-md-9 d-flex align-items-center">
+                <h4 class="card-title font-size-20 fw-semibold mb-0">Tạo mới phim</h4>
+            </div>
+            <div class="col-md-3 text-end">
+                <ol class="breadcrumb m-0">
+                    <li class="breadcrumb-item">
+                        <a href="{{ route('admin.movies.index') }}">Danh sách phim</a>
+                    </li>
+                    <li class="breadcrumb-item active">Thêm mới</li>
+                </ol>
+            </div>
             {{-- <a href="{{ route('admin.movies.index') }}" class="btn btn-primary mb-3">Quay lại</a> --}}
             <form action="{{ route('admin.movies.store') }}" method="POST" enctype="multipart/form-data"
                 class="custom-validation">
                 @csrf
                 <div class="row">
-                    <div class="row">
-                        <div class="col-12">
-                            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
 
-                                <div class="page-title-right">
-                                    <ol class="breadcrumb m-0">
-                                        <li class="breadcrumb-item"><a href="{{ route('admin.movies.index') }}">Danh sách
-                                                phim</a></li>
-                                        <li class="breadcrumb-item active">Thêm mới</li>
-                                    </ol>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                     <!-- Khối 9/12 -->
                     <div class="col-lg-9">
                         <div class="card">
@@ -357,191 +354,191 @@
                                 <input type="hidden" name="is_publish" id="is_publish"
                                     value="{{ old('is_publish', 1) }}">
                             </div> --}}
-                        </div>
+                            </div>
 
-                        <div class="d-flex flex-wrap gap-2">
-                            <button type="submit" class="btn btn-primary waves-effect waves-light">
-                                Lưu
-                            </button>
-                            <button type="reset" class="btn btn-secondary waves-effect">
-                                Hủy
-                            </button>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button type="submit" class="btn btn-primary waves-effect waves-light">
+                                    Lưu
+                                </button>
+                                <button type="reset" class="btn btn-secondary waves-effect">
+                                    Hủy
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
             </form>
         </div>
-
-        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                ClassicEditor
-                    .create(document.querySelector('#description'), {
-                        toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
-                            'imageUpload', 'undo', 'redo'
-                        ]
-                    })
-                    .then(editor => {
-                        console.log('CKEditor đã được khởi tạo!', editor);
-                    })
-                    .catch(error => {
-                        console.error('Lỗi khi khởi tạo CKEditor:', error);
-                    });
-
-                $('#movie_genres').select2({
-
-                    placeholder: "Chọn thể loại phim",
-                    allowClear: true
+    </div>
+    <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            ClassicEditor
+                .create(document.querySelector('#description'), {
+                    toolbar: ['heading', '|', 'bold', 'italic', 'link', 'bulletedList', 'numberedList',
+                        'imageUpload', 'undo', 'redo'
+                    ]
+                })
+                .then(editor => {
+                    console.log('CKEditor đã được khởi tạo!', editor);
+                })
+                .catch(error => {
+                    console.error('Lỗi khi khởi tạo CKEditor:', error);
                 });
 
-                $('#movie_versions').select2({
-                    placeholder: "Chọn phiên bản phim",
-                    allowClear: true
-                });
+            $('#movie_genres').select2({
 
-                $('#branch_ids').select2({
-                    placeholder: "Chọn chi nhánh...",
-                    allowClear: true
-                });
+                placeholder: "Chọn thể loại phim",
+                allowClear: true
+            });
 
-                document.querySelectorAll('.custom-switch input[type="checkbox"]').forEach(function(checkbox) {
-                    checkbox.addEventListener('change', function() {
-                        var hiddenInput = document.getElementById(this.id.replace('switch_', 'is_'));
-                        if (hiddenInput) {
-                            hiddenInput.value = this.checked ? '1' : '0';
-                        }
-                    });
-                });
+            $('#movie_versions').select2({
+                placeholder: "Chọn phiên bản phim",
+                allowClear: true
+            });
 
-                var specialCheckbox = document.getElementById('switch_special');
-                var surchargeContainer = document.getElementById('surcharge_container');
-                var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
+            $('#branch_ids').select2({
+                placeholder: "Chọn chi nhánh...",
+                allowClear: true
+            });
 
-                function toggleSurchargeInput() {
-                    if (specialCheckbox.checked) {
-                        surchargeContainer.style.display = 'block';
-                        surchargeInput.disabled = false;
-                    } else {
-                        surchargeContainer.style.display = 'none';
-                        surchargeInput.disabled = true;
-                    }
-                }
-
-                toggleSurchargeInput();
-
-                specialCheckbox.addEventListener('change', toggleSurchargeInput);
-
-                function generateUUID() {
-                    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
-                        const r = Math.random() * 16 | 0,
-                            v = c === 'x' ? r : (r & 0x3 | 0x8);
-                        return v.toString(16);
-                    });
-                }
-
-                function convertToSlug(text) {
-                    return text.toLowerCase()
-                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                        .replace(/[^a-z0-9 -]/g, '')
-                        .replace(/\s+/g, '-')
-                        .replace(/-+/g, '-');
-                }
-
-                document.getElementById('name').addEventListener('input', function() {
-                    let name = this.value.trim();
-                    if (name !== '') {
-                        let slug = convertToSlug(name) + '-' + generateUUID().substring(0, 8);
-                        document.getElementById('slug').value = slug;
-                    } else {
-                        document.getElementById('slug').value = '';
+            document.querySelectorAll('.custom-switch input[type="checkbox"]').forEach(function(checkbox) {
+                checkbox.addEventListener('change', function() {
+                    var hiddenInput = document.getElementById(this.id.replace('switch_', 'is_'));
+                    if (hiddenInput) {
+                        hiddenInput.value = this.checked ? '1' : '0';
                     }
                 });
             });
 
+            var specialCheckbox = document.getElementById('switch_special');
+            var surchargeContainer = document.getElementById('surcharge_container');
+            var surchargeInput = surchargeContainer.querySelector('input[name="surcharge"]');
 
-            document.addEventListener('DOMContentLoaded', function() {
-                const stars = document.querySelectorAll('.star-rating .bi-star, .star-rating .bi-star-fill');
-                const ratingInput = document.getElementById('rating-value');
-                let currentRating = ratingInput.value || 0;
+            function toggleSurchargeInput() {
+                if (specialCheckbox.checked) {
+                    surchargeContainer.style.display = 'block';
+                    surchargeInput.disabled = false;
+                } else {
+                    surchargeContainer.style.display = 'none';
+                    surchargeInput.disabled = true;
+                }
+            }
 
-                if (currentRating) {
+            toggleSurchargeInput();
+
+            specialCheckbox.addEventListener('change', toggleSurchargeInput);
+
+            function generateUUID() {
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    const r = Math.random() * 16 | 0,
+                        v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
+            function convertToSlug(text) {
+                return text.toLowerCase()
+                    .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                    .replace(/[^a-z0-9 -]/g, '')
+                    .replace(/\s+/g, '-')
+                    .replace(/-+/g, '-');
+            }
+
+            document.getElementById('name').addEventListener('input', function() {
+                let name = this.value.trim();
+                if (name !== '') {
+                    let slug = convertToSlug(name) + '-' + generateUUID().substring(0, 8);
+                    document.getElementById('slug').value = slug;
+                } else {
+                    document.getElementById('slug').value = '';
+                }
+            });
+        });
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const stars = document.querySelectorAll('.star-rating .bi-star, .star-rating .bi-star-fill');
+            const ratingInput = document.getElementById('rating-value');
+            let currentRating = ratingInput.value || 0;
+
+            if (currentRating) {
+                updateStars(currentRating);
+            }
+
+            stars.forEach(star => {
+                star.addEventListener('click', function() {
+                    currentRating = this.getAttribute('data-rating');
+                    ratingInput.value = currentRating;
                     updateStars(currentRating);
-                }
-
-                stars.forEach(star => {
-                    star.addEventListener('click', function() {
-                        currentRating = this.getAttribute('data-rating');
-                        ratingInput.value = currentRating;
-                        updateStars(currentRating);
-                    });
-
-                    star.addEventListener('mouseover', function() {
-                        const hoverRating = this.getAttribute('data-rating');
-                        updateStars(hoverRating, true);
-                    });
-
-                    star.addEventListener('mouseout', function() {
-                        updateStars(currentRating);
-                    });
                 });
 
-                function updateStars(rating, hover = false) {
-                    stars.forEach(star => {
-                        const starRating = star.getAttribute('data-rating');
-                        if (starRating <= rating) {
-                            star.classList.remove('bi-star');
-                            star.classList.add('bi-star-fill');
-                        } else {
-                            star.classList.remove('bi-star-fill');
-                            star.classList.add('bi-star');
-                        }
-                    });
-                }
+                star.addEventListener('mouseover', function() {
+                    const hoverRating = this.getAttribute('data-rating');
+                    updateStars(hoverRating, true);
+                });
+
+                star.addEventListener('mouseout', function() {
+                    updateStars(currentRating);
+                });
             });
 
-            $(document).ready(function() {
-                const $branchSelect = $('#branch_ids');
-
-                $branchSelect.select2({
-                    placeholder: "Chọn chi nhánh",
-                    closeOnSelect: false,
-                    width: '100%',
-                    // templateResult: formatOptionWithCheckbox,
+            function updateStars(rating, hover = false) {
+                stars.forEach(star => {
+                    const starRating = star.getAttribute('data-rating');
+                    if (starRating <= rating) {
+                        star.classList.remove('bi-star');
+                        star.classList.add('bi-star-fill');
+                    } else {
+                        star.classList.remove('bi-star-fill');
+                        star.classList.add('bi-star');
+                    }
                 });
+            }
+        });
 
-                function formatOptionWithCheckbox(option) {
-                    if (!option.id) return option.text;
+        $(document).ready(function() {
+            const $branchSelect = $('#branch_ids');
 
-                    const selectedValues = $branchSelect.val() || [];
-                    const isSelected = selectedValues.includes(option.id);
+            $branchSelect.select2({
+                placeholder: "Chọn chi nhánh",
+                closeOnSelect: false,
+                width: '100%',
+                // templateResult: formatOptionWithCheckbox,
+            });
 
-                    //             return $(`
+            function formatOptionWithCheckbox(option) {
+                if (!option.id) return option.text;
+
+                const selectedValues = $branchSelect.val() || [];
+                const isSelected = selectedValues.includes(option.id);
+
+                //             return $(`
             //     <span>
             //         <input type="checkbox" style="margin-right: 6px;" ${isSelected ? 'checked' : ''}/>
             //         ${option.text}
             //     </span>
             // `)
-                    ;
+                ;
+            }
+
+            function updateSelectedNames() {
+                const selectedOptions = $branchSelect.select2('data');
+                if (!selectedOptions.length) {
+                    $('#selected-branch-text').text("Chọn chi nhánh");
+                    return;
                 }
+                const names = selectedOptions.map(opt => opt.text);
+                $('#selected-branch-text').text(`Đã chọn: ${names.join(', ')}`);
+            }
 
-                function updateSelectedNames() {
-                    const selectedOptions = $branchSelect.select2('data');
-                    if (!selectedOptions.length) {
-                        $('#selected-branch-text').text("Chọn chi nhánh");
-                        return;
-                    }
-                    const names = selectedOptions.map(opt => opt.text);
-                    $('#selected-branch-text').text(`Đã chọn: ${names.join(', ')}`);
-                }
-
-                $branchSelect.on('change', function() {
-                    updateSelectedNames();
-                });
-
+            $branchSelect.on('change', function() {
                 updateSelectedNames();
             });
-        </script>
-    </div>
+
+            updateSelectedNames();
+        });
+    </script>
+
 @endsection
 
 @section('style')

@@ -5,12 +5,9 @@
         <div class="col-12">
             <div class="">
                 <div class="card-body">
-                    <h4 class="card-title">Danh sách phim</h4>
-
-                    <!-- Container chứa các action -->
                     <div class="row align-items-center mb-3">
-                        <div class="col-md-6">
-                            <!-- Không cần #pageLength ở đây nữa -->
+                        <div class="col-md-6 d-flex align-items-center">
+                            <h4 class="card-title font-size-20 fw-semibold mb-0">Danh sách phim</h4>
                         </div>
                         <div class="col-md-6 text-end">
                             @can('Thêm phim')
@@ -26,6 +23,7 @@
                             </button>
                         </div>
                     </div>
+                    
 
                     <!-- Form lọc -->
                     <div class="collapse" id="searchForm">

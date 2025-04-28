@@ -4,9 +4,9 @@
 @section('content')
     <div class="row">
         <div class="col-12">
-            <div class="card">
+           
                 <div class="card-body">
-                    <div class="row">
+                    {{-- <div class="row">
                         <div class="col-12">
                             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                                 <h4 class="mb-sm-0 font-size-18">Quản lí Ngày</h4>
@@ -17,9 +17,9 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
-                    <h4 class="card-title">Danh sách ngày</h4>
+                    <h4 class="card-title font-size-20 fw-semibold">Danh sách ngày</h4>
 
                     <table id="datatable" class="table align-middle dt-responsive nowrap w-100 table-bordered text-center">
                         <thead>
@@ -56,7 +56,7 @@
                 <div class="d-flex justify-content-center">
                     {{ $days->links() }}
                 </div>
-            </div>
+           
         </div>
     </div>
 @endsection
