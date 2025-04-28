@@ -2,8 +2,8 @@
 @section('title', 'Quản lý loại phòng ')
 
 @section('style')
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
@@ -43,49 +43,47 @@
     <!-- end page title -->
     <div class="row">
         <div class="col-lg-12">
-            
-                 
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="table-responsive">
-                                <table class="table table-bordered text-center"
-                                    id="datatable">
-                                    <thead >
-                                        <tr >
-                                            <th class="text-center">STT</th>
-                                            <th class="text-center">Loại phòng</th>
-                                            <th class="text-center">Phụ Phí</th>
-                                            <th class="text-center">Thời gian tạo</th>
-                                            <th class="text-center">Hành động</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="roomList">
-                                        @foreach ($type_rooms as $item)
-                                            <tr>
-                                                <td>{{ $loop->iteration }}</td> <!-- Hiển thị số thứ tự thay vì ID -->
-                                                <td>{{ $item->name }}</td>
-                                                <td>{{ number_format($item->surcharge) }} VND</td>
-                                                <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}</td>
 
-                                                <td>
-                                                    <!-- Nút sửa -->
-                                                    <button type="button" data-bs-toggle="modal" title="sửa"
-                                                        class="edit_type_room btn btn-warning btn-sm edit-list"
-                                                        data-bs-target="#exampleModal" data-id="{{ $item->id }}"
-                                                        data-name="{{ $item->name }}"
-                                                        data-surcharge="{{ $item->surcharge }}">
-                                                        <i class="fas fa-edit"></i>
-                                                    </button>
-                                                   
-                                                </td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
 
-                                </table>
-                            </div>
-                        </div>
+            <div class="row">
+                <div class="col-sm-12">
+                    <div class="table-responsive">
+                        <table class="table table-bordered text-center" id="datatable">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">STT</th>
+                                    <th class="text-center">Loại phòng</th>
+                                    <th class="text-center">Phụ Phí</th>
+                                    <th class="text-center">Thời gian tạo</th>
+                                    <th class="text-center">Hành động</th>
+                                </tr>
+                            </thead>
+                            <tbody class="roomList">
+                                @foreach ($type_rooms as $item)
+                                    <tr>
+                                        <td>{{ $loop->iteration }}</td> <!-- Hiển thị số thứ tự thay vì ID -->
+                                        <td>{{ $item->name }}</td>
+                                        <td>{{ number_format($item->surcharge) }} VND</td>
+                                        <td>{{ \Carbon\Carbon::parse($item->created_at)->format('d/m/Y H:i:s') }}</td>
+
+                                        <td>
+                                            <!-- Nút sửa -->
+                                            <button type="button" data-bs-toggle="modal" title="sửa"
+                                                class="edit_type_room btn btn-warning btn-sm edit-list"
+                                                data-bs-target="#exampleModal" data-id="{{ $item->id }}"
+                                                data-name="{{ $item->name }}" data-surcharge="{{ $item->surcharge }}">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+
+                        </table>
                     </div>
+                </div>
+            </div>
         </div>
     </div>
     {{--  end index --}}
@@ -124,7 +122,7 @@
                                                         </div>
 
                                                         <div class="col-md-6 mb-3">
-                                                            <label for="name">Giá phòng:</label>
+                                                            <label for="name">Phụ phí phòng:</label>
                                                             <input type="number" name="surcharge"
                                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
                                                                 value="{{ old('surcharge') }}">
@@ -191,12 +189,12 @@
                                                         <div class="col-md-6 mb-3">
                                                             <label for="price" class="form-label ">
                                                                 <span class="text-danger">*</span>
-                                                                Giá
+                                                                Phụ phí
                                                             </label>
-                                                            <input type="number" name="surcharge" id="surcharge"
+                                                            <input type="number" name="surcharge" id="surcharge_edit"
                                                                 class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}">
 
-                                                            <div
+                                                            <div id="error_surcharge"
                                                                 class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
                                                                 @if ($errors->has('surcharge'))
                                                                     {{ $errors->first('surcharge') }}
@@ -227,40 +225,65 @@
 
 @section('script')
     <script src="{{ asset('js/validate-type-room.js') }}"></script>
-        <!-- Required datatable js -->
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
-        <!-- Buttons examples -->
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
-        <script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
-        <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
-        <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
-    
-        <!-- Responsive examples -->
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
-        </script>
-        <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
-        </script>
-    
-        <!-- Datatable init js -->
-        <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
-    
-        <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
-    
-    <script>
-        // Sửa 
-        $('.edit_type_room').click(function(e) {
-            let id = $(this).data('id');
-            let name = $(this).data('name');
-            let surcharge = $(this).data('surcharge');
-            $('#nameedit').val(name);
-            $('#surcharge').val(surcharge);
+    <!-- Required datatable js -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+    <!-- Buttons examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/jszip/jszip.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/pdfmake.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/pdfmake/build/vfs_fonts.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
 
-            $('#formupdate').attr('action', `typerooms/${id}/update`);
+    <!-- Responsive examples -->
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
+    </script>
+    <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
+    </script>
+
+    <!-- Datatable init js -->
+    <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
+
+    <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+            $('.edit_type_room').click(function() {
+                let id = $(this).data('id');
+                let name = $(this).data('name');
+                let surcharge = $(this).data('surcharge');
+
+                $('#nameedit').val(name);
+                $('#surcharge_edit').val(surcharge);
+
+                $('#formupdate').attr('action', `typerooms/${id}/update`);
+            });
+
+            $('#formupdate').on('submit', function(e) {
+                let isValid = true;
+
+                const surchargeVal = $.trim($("#surcharge_edit").val());
+                console.log(surchargeVal);
+
+                if (surchargeVal == '' || parseFloat(surchargeVal) < 0) {
+                    isValid = false;
+                    $("#error_surcharge").addClass("invalid-feedback").text("Phụ phí không được để trống và từ 0 trở lên").show();
+                    $("#surcharge_edit").addClass("is-invalid");
+                } else {
+                    $("#error_surcharge").removeClass("invalid-feedback").text("").hide();
+                    $("#surcharge_edit").removeClass("is-invalid");
+                }
+
+
+                // Nếu không hợp lệ thì chặn submit
+                if (!isValid) {
+                    e.preventDefault();
+                }
+            });
         });
     </script>
+
 @endsection

@@ -30,7 +30,11 @@ class RegisterRequest extends FormRequest
             'name'      => 'required|string|max:255|min:5',
             'email'     => 'required|email|unique:users',
             'password'  => 'required|string|min:8',
-            'birthday'  => 'required|date',
+            'birthday' => [
+                'required',
+                'date',
+                'before:' . now()->subYears(12)->format('Y-m-d'),
+            ],
             'gender'     => 'required|in:0,1',
             'phone' => 'required|regex:/^0[0-9]{9}$/|unique:users', //Hiện tại chưa check
             // 'phone'     => 'required|numeric|digits:10, unique:users',

@@ -31,7 +31,7 @@
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
                 <h4 class="mb-sm-0 font-size-20">Quản lý loại ghế </h4>
-                
+
             </div>
         </div>
     </div>
@@ -39,14 +39,14 @@
 
     <div class="row">
         <div class="col-lg-12">
-            
+
                     <table id="datatable" class="table table-bordered  text-center"
                         style="width:100%">
                         <thead  >
                             <tr>
                                 <th class="text-center">STT</th>
                                 <th class="text-center">Tên loại ghế</th>
-                                <th class="text-center">Giá</th>
+                                <th class="text-center">Phụ phí</th>
                                 <th class="text-center">Chức năng</th>
                             </tr>
                         </thead>
@@ -71,7 +71,7 @@
                     </table>
         </div><!--end col-->
     </div><!--end row-->
-    
+
 
     <!-- Modal -->
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -108,7 +108,7 @@
                                                         <div class="col-md-6 mb-3">
                                                             <label for="price" class="form-label ">
                                                                 <span class="text-danger">*</span>
-                                                                Giá
+                                                                Phụ phí
                                                             </label>
                                                             <input type="number" name="price" id="price"
                                                                 class="form-control {{ $errors->has('price') ? 'is-invalid' : (old('price') ? 'is-valid' : '') }}">
@@ -156,21 +156,21 @@
         <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.html5.min.js') }}"></script>
         <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.print.min.js') }}"></script>
         <script src="{{ asset('theme/admin/assets/libs/datatables.net-buttons/js/buttons.colVis.min.js') }}"></script>
-    
+
         <!-- Responsive examples -->
         <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive/js/dataTables.responsive.min.js') }}">
         </script>
         <script src="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js') }}">
         </script>
-    
+
         <!-- Datatable init js -->
         <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
-    
+
         <script src="{{ asset('theme/admin/assets/js/app.js') }}"></script>
-    
+
         <script>
             // <!-- Required datatable js -->
-   
+
             $('.edit_type_seat').click(function(e) {
                 let id = $(this).data('id');
                 let name = $(this).data('name').trim();
@@ -185,22 +185,24 @@
             $('#formupdate').submit(function(e) {
                 e.preventDefault(); // Ngăn form submit ngay lập tức
 
-                let price = parseFloat($('#price').val());
+                let price = $.trim($('#price').val()) ;
+                // let price = parseFloat($.trim($('#price').val()));
+
                 let errorMessage = '';
 
-                // Lấy danh sách giá từ dữ liệu đang hiển thị trên trang
+                // Lấy danh sách Phụ phí từ dữ liệu đang hiển thị trên trang
                 let priceNormal = {{ $typeSeats->where('name', 'Ghế thường')->first()->price ?? 0 }};
                 let priceVip = {{ $typeSeats->where('name', 'Ghế VIP')->first()->price ?? 0 }};
                 let priceCouple = {{ $typeSeats->where('name', 'Ghế đôi')->first()->price ?? 0 }};
 
-                if (price <= 0) {
-                    errorMessage = 'Giá phải lớn hơn 0!';
+                if (price < 0 || price == '') {
+                    errorMessage = 'Phụ phí phải lớn hơn 0!';
                 } else if ($('#name').val().trim() === 'Ghế thường' && price >= priceVip) {
-                    errorMessage = 'Giá ghế thường phải nhỏ hơn giá ghế VIP!';
+                    errorMessage = 'Phụ phí ghế thường phải nhỏ hơn Phụ phí ghế VIP!';
                 } else if ($('#name').val().trim() === 'Ghế VIP' && (price <= priceNormal || price >= priceCouple)) {
-                    errorMessage = 'Giá ghế VIP phải lớn hơn ghế thường và nhỏ hơn ghế đôi!';
+                    errorMessage = 'Phụ phí ghế VIP phải lớn hơn ghế thường và nhỏ hơn ghế đôi!';
                 } else if ($('#name').val().trim() === 'Ghế đôi' && price <= priceVip) {
-                    errorMessage = 'Giá ghế đôi phải lớn hơn giá ghế VIP!';
+                    errorMessage = 'Phụ phí ghế đôi phải lớn hơn Phụ phí ghế VIP!';
                 }
 
                 if (errorMessage) {
@@ -238,6 +240,6 @@
             }
         });
     });
-    
+
         </script>
     @endsection
