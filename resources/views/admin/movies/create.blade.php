@@ -3,347 +3,321 @@
 @section('content')
     <!-- start page title -->
     <div class="row">
-        <div class="row align-items-center mb-3">
-            <div class="col-md-9 d-flex align-items-center">
-                <h4 class="card-title font-size-20 fw-semibold mb-0">Tạo mới phim</h4>
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Thêm mới phim</h4>
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('admin.movies.index') }}">Phim</a>
+                        </li>
+                        <li class="breadcrumb-item active">Thêm mới phim</li>
+                    </ol>
+                </div>
             </div>
-            <div class="col-md-3 text-end">
-                <ol class="breadcrumb m-0">
-                    <li class="breadcrumb-item">
-                        <a href="{{ route('admin.movies.index') }}">Danh sách phim</a>
-                    </li>
-                    <li class="breadcrumb-item active">Thêm mới</li>
-                </ol>
-            </div>
-            {{-- <a href="{{ route('admin.movies.index') }}" class="btn btn-primary mb-3">Quay lại</a> --}}
-            <form action="{{ route('admin.movies.store') }}" method="POST" enctype="multipart/form-data"
-                class="custom-validation">
-                @csrf
+        </div>
+    </div>
+    <!-- end page title -->
+    <div class="col-12">
+        <form action="{{ route('admin.movies.store') }}" method="POST" enctype="multipart/form-data"
+            class="custom-validation">
+            @csrf
+            <div class="row">
                 <div class="row">
+                    <div class="col-12">
+                        <div class="page-title-box d-sm-flex align-items-center justify-content-between">
 
-                    <!-- Khối 9/12 -->
-                    <div class="col-lg-9">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label for="name" class="form-label">Tên phim
-                                                <span class="required" style="color: red">*</span>
-                                            </label>
-                                            <input type="text" name="name" id="name"
-                                                class="form-control {{ $errors->has('name') ? 'is-invalid' : (old('name') ? 'is-valid' : '') }}"
-                                                value="{{ old('name') }}" placeholder="Nhập tên phim">
-                                            <div class="{{ $errors->has('name') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('name'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('name') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Slug
-                                                <span class="required" style="color: red">*</span></label>
-                                            <input type="text" id="slug" name="slug"
-                                                class="form-control {{ $errors->has('slug') ? 'is-invalid' : (old('slug') ? 'is-valid' : '') }}"
-                                                value="{{ old('slug') }}" readonly>
-                                            <div class="{{ $errors->has('slug') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('slug'))
-                                                    <span class="text-danger fw-medium">{{ $errors->first('slug') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Diễn viên
-                                                <span class="required" style="color: red">*</span></label>
-                                            <input type="text" name="category"
-                                                class="form-control {{ $errors->has('category') ? 'is-invalid' : (old('category') ? 'is-valid' : '') }}"
-                                                value="{{ old('category') }}">
-                                            <div
-                                                class="{{ $errors->has('category') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('category'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('category') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-
-
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Ảnh
-                                                <span class="required" style="color: red">*</span></label>
-                                            <input type="file" name="img_thumbnail"
-                                                class="form-control {{ $errors->has('img_thumbnail') ? 'is-invalid' : (old('img_thumbnail') ? 'is-valid' : '') }}"
-                                                value="{{ old('img_thumbnail') }}">
-                                            <div
-                                                class="{{ $errors->has('img_thumbnail') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('img_thumbnail'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('img_thumbnail') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="branch_ids" class="form-label">Chi nhánh chiếu phim
-                                                <span class="required" style="color: red">*</span>
-                                            </label>
-                                            <select name="branch_ids[]" class="form-control select2" multiple
-                                                id="branch_ids" style="width: 100%;">
-                                                @foreach ($branches as $branch)
-                                                    <option value="{{ $branch->id }}"
-                                                        {{ in_array($branch->id, old('branch_ids', $selectedBranches ?? [])) ? 'selected' : '' }}>
-                                                        {{ $branch->name }}
-                                                    </option>
-                                                @endforeach
-                                            </select>
-                                            <div
-                                                class="{{ $errors->has('branch_ids') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
-                                                @if ($errors->has('branch_ids'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('branch_ids') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Thể loại phim
-                                                <span class="required" style="color: red">*</span></label>
-                                            <select name="movie_genres[]" id="movie_genres"
-                                                class="form-control {{ $errors->has('movie_genres') ? 'is-invalid' : (old('movie_genres') ? 'is-valid' : '') }}"
-                                                multiple>
-                                                <option value="Action"
-                                                    {{ in_array('Action', old('movie_genres', [])) ? 'selected' : '' }}>
-                                                    Hành động</option>
-                                                <option value="Horror"
-                                                    {{ in_array('Horror', old('movie_genres', [])) ? 'selected' : '' }}>
-                                                    Kinh dị</option>
-                                                <option value="Comedy"
-                                                    {{ in_array('Comedy', old('movie_genres', [])) ? 'selected' : '' }}>Hài
-                                                    hước</option>
-                                            </select>
-                                            <div
-                                                class="{{ $errors->has('movie_genres') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
-                                                @if ($errors->has('movie_genres'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('movie_genres') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Đánh giá <span class="required"
-                                                    style="color: red">*</span></label>
-                                            <div class="star-rating d-flex gap-1"
-                                                style="font-size: 1.5rem; cursor: pointer;">
-                                                <i class="bi bi-star" data-rating="1"></i>
-                                                <i class="bi bi-star" data-rating="2"></i>
-                                                <i class="bi bi-star" data-rating="3"></i>
-                                                <i class="bi bi-star" data-rating="4"></i>
-                                                <i class="bi bi-star" data-rating="5"></i>
-                                            </div>
-                                            <!-- Hidden input để gửi giá trị rating -->
-                                            <input type="hidden" name="rating" id="rating-value"
-                                                class="form-control {{ $errors->has('rating') ? 'is-invalid' : (old('rating') ? 'is-valid' : '') }}"
-                                                value="{{ old('rating') }}">
-                                            <div
-                                                class="{{ $errors->has('rating') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
-                                                @if ($errors->has('rating'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('rating') }}</span>
-                                                @elseif (old('rating'))
-                                                    Đã chọn {{ old('rating') }} sao
-                                                @endif
-                                            </div>
-                                        </div>
-
+                        </div>
+                    </div>
+                </div>
+                <!-- Khối 9/12 -->
+                <div class="col-lg-9">
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label for="name" class="form-label">Tên phim
+                                            <span class="required" style="color: red">*</span>
+                                        </label>
+                                        <input type="text" name="name" id="name" class="form-control"
+                                            value="{{ old('name') }}" placeholder="Nhập tên phim">
+                                        @error('name')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
                                     </div>
-
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Đạo diễn
-                                                <span class="required" style="color: red">*</span></label>
-                                            <input type="text" name="director"
-                                                class="form-control {{ $errors->has('director') ? 'is-invalid' : (old('director') ? 'is-valid' : '') }}"
-                                                value="{{ old('director') }}">
-                                            <div
-                                                class="{{ $errors->has('director') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('director'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('director') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">URL Youtube
-                                                <span class="required" style="color: red">*</span></label>
-                                            <input type="text" name="trailer_url"
-                                                class="form-control {{ $errors->has('trailer_url') ? 'is-invalid' : (old('trailer_url') ? 'is-valid' : '') }}"
-                                                value="{{ old('trailer_url') }}">
-                                            <div
-                                                class="{{ $errors->has('trailer_url') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('trailer_url'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('trailer_url') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">Thời lượng phim
-                                                <span class="required" style="color: red">*</span></label>
-                                            <input type="number" name="duration" step="1"
-                                                class="form-control {{ $errors->has('duration') ? 'is-invalid' : (old('duration') ? 'is-valid' : '') }}"
-                                                value="{{ old('duration') }}" placeholder="Nhập số phút">
-                                            <div
-                                                class="{{ $errors->has('duration') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('duration'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('duration') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label>Ngày trình chiếu <span class="required"
-                                                    style="color: red">*</span></label>
-
-                                            <div class="input-daterange input-group" id="datepicker6"
-                                                data-date-format="dd M, yyyy" data-date-autoclose="true"
-                                                data-provide="datepicker" data-date-container="#datepicker6">
-
-                                                <input type="date"
-                                                    class="form-control {{ $errors->has('release_date') ? 'is-invalid' : (old('release_date') ? 'is-valid' : '') }}"
-                                                    value="{{ old('release_date') }}" name="release_date"
-                                                    placeholder="Start Date" />
-
-                                                <input type="date"
-                                                    class="form-control {{ $errors->has('end_date') ? 'is-invalid' : (old('end_date') ? 'is-valid' : '') }}"
-                                                    value="{{ old('end_date') }}" name="end_date"
-                                                    placeholder="End Date" />
-                                            </div>
-
-                                            {{-- Đưa phần hiển thị lỗi ra ngoài input-group --}}
-                                            @if ($errors->has('release_date') || $errors->has('end_date'))
-                                                <div class="invalid-feedback d-block">
-                                                    @if ($errors->has('release_date'))
-                                                        <span
-                                                            class="text-danger fw-medium d-block">{{ $errors->first('release_date') }}</span>
-                                                    @endif
-                                                    @if ($errors->has('end_date'))
-                                                        <span
-                                                            class="text-danger fw-medium d-block">{{ $errors->first('end_date') }}</span>
-                                                    @endif
-                                                </div>
-                                            @endif
-                                        </div>
-
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Phiên bản phim
-                                                <span class="required" style="color: red">*</span>
-                                            </label>
-                                            <select name="movie_versions[]" id="movie_versions"
-                                                class="form-control {{ $errors->has('movie_versions') ? 'is-invalid' : (old('movie_versions') ? 'is-valid' : '') }}"
-                                                multiple>
-                                                <option value="2D"
-                                                    {{ in_array('2D', old('movie_versions', [])) ? 'selected' : '' }}>2D
-                                                </option>
-                                                <option value="3D"
-                                                    {{ in_array('3D', old('movie_versions', [])) ? 'selected' : '' }}>3D
-                                                </option>
-                                                <option value="4D"
-                                                    {{ in_array('4D', old('movie_versions', [])) ? 'selected' : '' }}>4D
-                                                </option>
-                                            </select>
-                                            <div
-                                                class="{{ $errors->has('movie_versions') ? 'invalid-feedback' : 'valid-feedback' }} d-block">
-                                                @if ($errors->has('movie_versions'))
-                                                    <span
-                                                        class="text-danger fw-medium">{{ $errors->first('movie_versions') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-
-
-
-                                        <div class="mb-3" id="surcharge_container" style="display: none;">
-                                            <label class="form-label">Phụ phí </span>
-                                            </label>
-                                            <input type="number" name="surcharge"
-                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
-                                                value="{{ old('surcharge') }}">
-                                            <div
-                                                class="{{ $errors->has('surcharge') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                                @if ($errors->has('surcharge'))
-                                                    <span class="text-danger fw-medium">
-                                                        {{ $errors->first('surcharge') }}</span>
-                                                @endif
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="mb-12">
-                                        <label class="form-label">Mô tả
+                                    <div class="mb-3">
+                                        <label class="form-label">Slug
                                             <span class="required" style="color: red">*</span></label>
-                                        <textarea name="description" id="description"
-                                            class="form-control {{ $errors->has('description') ? 'is-invalid' : (old('description') ? 'is-valid' : '') }}">{{ old('description') }}</textarea>
-                                        <div
-                                            class="{{ $errors->has('description') ? 'invalid-feedback' : 'valid-feedback' }}">
-                                            @if ($errors->has('description'))
-                                                <span
-                                                    class="text-danger fw-medium">{{ $errors->first('description') }}</span>
-                                            @endif
+                                        <input type="text" id="slug" name="slug" class="form-control "
+                                            value="{{ old('slug') }}" readonly>
+                                        @error('slug')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+
+
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Diễn viên
+                                            <span class="required" style="color: red">*</span></label>
+                                        <input type="text" name="category" class="form-control "
+                                            value="{{ old('category') }}">
+                                        @error('category')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+
+
+                                    <div class="mb-3">
+                                        <label for="branch_ids" class="form-label">Chi nhánh chiếu phim
+                                            <span class="required" style="color: red">*</span>
+                                        </label>
+                                        <select name="branch_ids[]" class="form-control select2" multiple id="branch_ids"
+                                            style="width: 100%;">
+                                            @foreach ($branches as $branch)
+                                                <option value="{{ $branch->id }}"
+                                                    {{ in_array($branch->id, old('branch_ids', $selectedBranches ?? [])) ? 'selected' : '' }}>
+                                                    {{ $branch->name }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('branch_ids')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Thể loại phim
+                                            <span class="required" style="color: red">*</span></label>
+                                        <select name="movie_genres[]" id="movie_genres" class="form-control " multiple>
+                                            <option value="Action"
+                                                {{ in_array('Action', old('movie_genres', [])) ? 'selected' : '' }}>
+                                                Hành động</option>
+                                            <option value="Horror"
+                                                {{ in_array('Horror', old('movie_genres', [])) ? 'selected' : '' }}>
+                                                Kinh dị</option>
+                                            <option value="Comedy"
+                                                {{ in_array('Comedy', old('movie_genres', [])) ? 'selected' : '' }}>Hài
+                                                hước</option>
+                                        </select>
+                                        @error('movie_genres')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Phiên bản phim
+                                            <span class="required" style="color: red">*</span>
+                                        </label>
+                                        <select name="movie_versions[]" id="movie_versions" class="form-control" multiple>
+                                            <option value="2D"
+                                                {{ in_array('2D', old('movie_versions', [])) ? 'selected' : '' }}>2D
+                                            </option>
+                                            <option value="3D"
+                                                {{ in_array('3D', old('movie_versions', [])) ? 'selected' : '' }}>3D
+                                            </option>
+                                            <option value="4D"
+                                                {{ in_array('4D', old('movie_versions', [])) ? 'selected' : '' }}>4D
+                                            </option>
+                                        </select>
+                                        @error('movie_versions')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+
+
+                                </div>
+
+                                <div class="col-lg-6">
+                                    <div class="mb-3">
+                                        <label class="form-label">Đạo diễn
+                                            <span class="required" style="color: red">*</span></label>
+                                        <input type="text" name="director" class="form-control "
+                                            value="{{ old('director') }}">
+                                        @error('director')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <label class="form-label">URL Youtube
+                                            <span class="required" style="color: red">*</span></label>
+                                        <input type="text" name="trailer_url" class="form-control "
+                                            value="{{ old('trailer_url') }}">
+                                        @error('trailer_url')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label">Thời lượng phim
+                                            <span class="required" style="color: red">*</span></label>
+                                        <input type="number" name="duration" step="1" class="form-control }"
+                                            value="{{ old('duration') }}" placeholder="Nhập số phút">
+                                        @error('duration')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3" id="surcharge_container" style="display: none;">
+                                        <label class="form-label">Phụ phí </span>
+                                        </label>
+                                        <input type="number" name="surcharge" class="form-control "
+                                            value="{{ old('surcharge') }}">
+                                        @error('surcharge')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+
+                                    <div class="mb-3">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="release_date" class="form-label">Ngày trình chiếu<span
+                                                        class="required" style="color: red">*</span></label>
+                                                <input type="date" class="form-control" id="release_date"
+                                                    name="release_date" value="{{ old('release_date') }}"
+                                                    placeholder="Start Date" />
+                                                @error('release_date')
+                                                    <span
+                                                        class="text-danger fw-medium mt-1 d-block">{{ $message }}</span>
+                                                @enderror
+                                            </div>
+
+                                            <div class="col-md-6">
+                                                <label for="end_date" class="form-label">Ngày kết thúc<span
+                                                        class="required" style="color: red">*</span></label>
+                                                <input type="date" class="form-control" id="end_date"
+                                                    name="end_date" value="{{ old('end_date') }}"
+                                                    placeholder="End Date" />
+                                                @error('end_date')
+                                                    <span
+                                                        class="text-danger fw-medium mt-1 d-block">{{ $message }}</span>
+                                                @enderror
+                                            </div>
                                         </div>
                                     </div>
+
+
+                                    {{-- <div class="mb-3">
+                                        <label class="form-label">Phiên bản phim
+                                            <span class="required" style="color: red">*</span>
+                                        </label>
+                                        <select name="movie_versions[]" id="movie_versions" class="form-control"
+                                            multiple>
+                                            <option value="2D"
+                                                {{ in_array('2D', old('movie_versions', [])) ? 'selected' : '' }}>2D
+                                            </option>
+                                            <option value="3D"
+                                                {{ in_array('3D', old('movie_versions', [])) ? 'selected' : '' }}>3D
+                                            </option>
+                                            <option value="4D"
+                                                {{ in_array('4D', old('movie_versions', [])) ? 'selected' : '' }}>4D
+                                            </option>
+                                        </select>
+                                        @error('movie_versions')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div> --}}
+
+                                    <div class="mb-3">
+                                        <label class="form-label">Đánh giá <span class="required"
+                                                style="color: red">*</span></label>
+                                        <div class="star-rating d-flex gap-1" style="font-size: 1.5rem; cursor: pointer;">
+                                            <i class="bi bi-star" data-rating="1"></i>
+                                            <i class="bi bi-star" data-rating="2"></i>
+                                            <i class="bi bi-star" data-rating="3"></i>
+                                            <i class="bi bi-star" data-rating="4"></i>
+                                            <i class="bi bi-star" data-rating="5"></i>
+                                        </div>
+                                        <!-- Hidden input để gửi giá trị rating -->
+                                        <input type="hidden" name="rating" id="rating-value" class="form-control "
+                                            value="{{ old('rating') }}">
+                                        @error('rating')
+                                            <span class="text-danger fw-medium">
+                                                {{ $message }}
+                                            </span>
+                                        @enderror
+                                    </div>
+
+
+
+                                </div>
+
+                                <div class="mb-12">
+                                    <label class="form-label">Mô tả
+                                        <span class="required" style="color: red">*</span></label>
+                                    <textarea name="description" id="description" class="form-control ">{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <span class="text-danger fw-medium">
+                                            {{ $message }}
+                                        </span>
+                                    @enderror
                                 </div>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <!-- Khối 3/12 -->
-                    <div class="col-lg-3">
-                        <div class="card">
-                            <div class="card-body">
-                                <!-- Active -->
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <div class="custom-switch">
-                                        <input type="checkbox" id="switch_active" switch="primary"
-                                            {{ old('is_active', 1) ? 'checked' : '' }} />
-                                        <label for="switch_active" data-on-label="Yes" data-off-label="No"></label>
-                                    </div>
-                                    <span>Hoạt động</span>
+                <!-- Khối 3/12 -->
+                <div class="col-lg-3">
+                    <div class="card">
+                        <div class="card-body">
+                            <!-- Active -->
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="custom-switch">
+                                    <input type="checkbox" id="switch_active" switch="primary"
+                                        {{ old('is_active', 1) ? 'checked' : '' }} />
+                                    <label for="switch_active" data-on-label="Yes" data-off-label="No"></label>
                                 </div>
-                                <input type="hidden" name="is_active" id="is_active"
-                                    value="{{ old('is_active', 1) }}">
+                                <span>Hoạt động</span>
+                            </div>
+                            <input type="hidden" name="is_active" id="is_active" value="{{ old('is_active', 1) }}">
 
-                                <!-- Hot -->
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <div class="custom-switch">
-                                        <input type="checkbox" id="switch_hot" switch="primary"
-                                            {{ old('is_hot', 1) ? 'checked' : '' }} />
-                                        <label for="switch_hot" data-on-label="Yes" data-off-label="No"></label>
-                                    </div>
-                                    <span>Nổi bật</span>
+                            <!-- Hot -->
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="custom-switch">
+                                    <input type="checkbox" id="switch_hot" switch="primary"
+                                        {{ old('is_hot', 1) ? 'checked' : '' }} />
+                                    <label for="switch_hot" data-on-label="Yes" data-off-label="No"></label>
                                 </div>
-                                <input type="hidden" name="is_hot" id="is_hot" value="{{ old('is_hot', 1) }}">
+                                <span>Nổi bật</span>
+                            </div>
+                            <input type="hidden" name="is_hot" id="is_hot" value="{{ old('is_hot', 1) }}">
 
-                                <!-- Special -->
-                                <div class="d-flex align-items-center gap-2 mb-2">
-                                    <div class="custom-switch">
-                                        <input type="checkbox" id="switch_special" switch="primary"
-                                            {{ old('is_special', 1) ? 'checked' : '' }} />
-                                        <label for="switch_special" data-on-label="Yes" data-off-label="No"></label>
-                                    </div>
-                                    <span>Đặc biệt</span>
+                            <!-- Special -->
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <div class="custom-switch">
+                                    <input type="checkbox" id="switch_special" switch="primary"
+                                        {{ old('is_special', 1) ? 'checked' : '' }} />
+                                    <label for="switch_special" data-on-label="Yes" data-off-label="No"></label>
                                 </div>
-                                <input type="hidden" name="is_special" id="is_special"
-                                    value="{{ old('is_special', 1) }}">
+                                <span>Đặc biệt</span>
+                            </div>
+                            <input type="hidden" name="is_special" id="is_special" value="{{ old('is_special', 1) }}">
 
-                                <!-- Publish -->
-                                {{-- <div class="d-flex align-items-center gap-2 mb-2">
+                            <!-- Publish -->
+                            {{-- <div class="d-flex align-items-center gap-2 mb-2">
                                     <div class="custom-switch">
                                         <input type="checkbox" id="switch_publish" switch="primary"
                                             {{ old('is_publish', 1) ? 'checked' : '' }} />
@@ -354,23 +328,71 @@
                                 <input type="hidden" name="is_publish" id="is_publish"
                                     value="{{ old('is_publish', 1) }}">
                             </div> --}}
-                            </div>
 
-                            <div class="d-flex flex-wrap gap-2">
-                                <button type="submit" class="btn btn-primary waves-effect waves-light">
-                                    Lưu
-                                </button>
-                                <button type="reset" class="btn btn-secondary waves-effect">
-                                    Hủy
+                            <div class="mb-3">
+                                <label class="form-label">Ảnh
+                                    <span class="required" style="color: red">*</span></label>
+                                <input type="file" name="img_thumbnail" class="form-control "
+                                    value="{{ old('img_thumbnail') }}" id="movie-image" onchange="previewImage(event)">
+                            </div>
+                            @if (old('img_thumbnail'))
+                                <img src="{{ Storage::url(old('img_thumbnail')) }}" alt="Thumbnail" class="img-fluid"
+                                    width="200" style="max-width: 70%; max-height: 150px;">
+                            @endif
+                            @error('img_thumbnail')
+                                <span class="text-danger fw-medium">
+                                    {{ $message }}
+                                </span>
+                            @enderror
+                            <div id="image-container" class="d-none position-relative text-center">
+                                <img id="image-preview" src="" alt="Preview" class="img-fluid mb-2"
+                                    style="max-width: 70%; max-height: 100px;">
+                                <!-- Icon thùng rác ở góc phải -->
+                                <button type="button" id="delete-image"
+                                    class="btn btn-danger position-absolute top-0 end-0 p-1" onclick="deleteImage()">
+                                    <i class="fas fa-trash-alt"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-            </form>
-        </div>
+                    <div class="d-flex flex-wrap gap-2">
+                        <button type="submit" class="btn btn-primary waves-effect waves-light">
+                            Lưu
+                        </button>
+                        <button type="reset" class="btn btn-secondary waves-effect">
+                            Hủy
+                        </button>
+                    </div>
+                </div>
+
+
+            </div>
+    </div>
+    </form>
+    </div>
     </div>
     <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/classic/ckeditor.js"></script>
     <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                $('#image-preview').attr('src', reader.result);
+                $('#image-container').removeClass('d-none');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function deleteImage() {
+            $('#image-container').addClass('d-none');
+            $('#movie-image').val('');
+            $('#image-preview').attr('src', '');
+        }
+
         document.addEventListener('DOMContentLoaded', function() {
             ClassicEditor
                 .create(document.querySelector('#description'), {
@@ -538,7 +560,6 @@
             updateSelectedNames();
         });
     </script>
-
 @endsection
 
 @section('style')

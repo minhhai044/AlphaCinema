@@ -3,7 +3,23 @@
 @section('content')
     <!-- start page title -->
     <div class="row">
-        <h1 class="card-title">Sửa phim: {{ $movie->name }}</h1>
+        <div class="col-12">
+            <div class="page-title-box d-sm-flex align-items-center justify-content-between">
+                <h4 class="mb-sm-0 font-size-18">Cập nhật phim</h4>
+                <div class="page-title-right">
+                    <ol class="breadcrumb m-0">
+                        <li class="breadcrumb-item">
+                            <a href="{{ route('admin.movies.index') }}">Phim</a>
+                        </li>
+                        <li class="breadcrumb-item active">Cập nhật phim</li>
+                    </ol>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+
         <div class="col-12">
             <form action="{{ route('admin.movies.update', $movie->id) }}" method="POST" enctype="multipart/form-data">
                 @csrf
@@ -25,10 +41,22 @@
                                         </div>
 
                                         <div class="mb-3">
-                                            <label class="form-label">Đường dẫn phim</label>
+                                            <label class="form-label">Slug</label>
                                             <input type="text" name="slug" value="{{ old('slug', $movie->slug) }}"
                                                 class="form-control">
                                             @error('slug')
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+
+                                        
+
+
+                                        <div class="mb-3">
+                                            <label class="form-label">Danh mục phim</label>
+                                            <input type="text" name="category"
+                                                value="{{ old('category', $movie->category) }}" class="form-control">
+                                            @error('category')
                                                 <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
@@ -53,66 +81,6 @@
                                             @endif
                                         </div>
 
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Diễn viên phim</label>
-                                            <input type="text" name="category"
-                                                value="{{ old('category', $movie->category) }}" class="form-control">
-                                            @error('category')
-                                                <div class="text-danger fw-medium">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Ảnh</label>
-                                            <input type="file" name="img_thumbnail" class="form-control">
-                                            @if ($movie->img_thumbnail)
-                                                <img src="{{ asset('storage/' . $movie->img_thumbnail) }}" width="100"
-                                                    class="mt-2">
-                                            @endif
-                                            @error('img_thumbnail')
-                                                <div class="text-danger fw-medium">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="mb-3" id="surcharge_container" style="display: none;">
-                                            <label class="form-label">Phụ phí</label>
-                                            <input type="number" name="surcharge"
-                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
-                                                value="{{ old('surcharge', $movie->surcharge ?? '') }}">
-                                            @if ($errors->has('surcharge'))
-                                                <div class="invalid-feedback">{{ $errors->first('surcharge') }}</div>
-                                            @endif
-                                        </div>
-
-                                    </div>
-
-
-                                    <div class="col-lg-6">
-                                        <div class="mb-3">
-                                            <label class="form-label">Tác giả</label>
-                                            <input type="text" name="director"
-                                                value="{{ old('director', $movie->director) }}" class="form-control">
-                                            @error('director')
-                                                <div class="text-danger fw-medium">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-                                        <div class="mb-3">
-                                            <label class="form-label">URL Youtube</label>
-                                            <input type="text" name="trailer_url"
-                                                value="{{ old('trailer_url', $movie->trailer_url) }}" class="form-control">
-                                            @error('trailer_url')
-                                                <div class="text-danger fw-medium">{{ $message }}</div>
-                                            @enderror
-                                        </div>
-
-                                        <div class="mb-3">
-                                            <label class="form-label">Thời lượng phim</label>
-                                            <input type="text" name="duration"
-                                                value="{{ old('duration', $movie->duration) }}" class="form-control">
-                                            @error('duration')
-                                                <div class="text-danger fw-medium">{{ $message }}</div>
-                                            @enderror
-                                        </div>
 
                                         @php
                                             $selectedVersions = (array) old(
@@ -176,36 +144,75 @@
                                                 <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
+                                    </div>
+
+
+                                    <div class="col-lg-6">
+                                        <div class="mb-3">
+                                            <label class="form-label">Tác giả</label>
+                                            <input type="text" name="director"
+                                                value="{{ old('director', $movie->director) }}" class="form-control">
+                                            @error('director')
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-3">
+                                            <label class="form-label">URL Youtube</label>
+                                            <input type="text" name="trailer_url"
+                                                value="{{ old('trailer_url', $movie->trailer_url) }}" class="form-control">
+                                            @error('trailer_url')
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
+                                            @enderror
+                                        </div>
 
                                         <div class="mb-3">
-                                            <label>Ngày trình chiếu <span class="text-danger">*</span></label>
+                                            <label class="form-label">Thời lượng phim</label>
+                                            <input type="text" name="duration"
+                                                value="{{ old('duration', $movie->duration) }}" class="form-control">
+                                            @error('duration')
+                                                <div class="text-danger fw-medium">{{ $message }}</div>
+                                            @enderror
+                                        </div>
 
-                                            <div class="input-group">
-                                                <input type="date" name="release_date"
-                                                    class="form-control {{ $errors->has('release_date') ? 'is-invalid' : (old('release_date') ? 'is-valid' : '') }}"
-                                                    value="{{ old('release_date', $movie->release_date ? date('Y-m-d', strtotime($movie->release_date)) : '') }}"
-                                                    placeholder="Ngày bắt đầu">
-
-                                                <input type="date" name="end_date"
-                                                    class="form-control {{ $errors->has('end_date') ? 'is-invalid' : (old('end_date') ? 'is-valid' : '') }}"
-                                                    value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}"
-                                                    placeholder="Ngày kết thúc">
-                                            </div>
-
-                                            @if ($errors->has('release_date') || $errors->has('end_date'))
-                                                <div class="invalid-feedback d-block">
-                                                    @error('release_date')
-                                                        <div class="text-danger fw-medium">{{ $message }}</div>
-                                                    @enderror
-                                                    @error('end_date')
-                                                        <div class="text-danger fw-medium">{{ $message }}</div>
-                                                    @enderror
-                                                </div>
+                                        <div class="mb-3" id="surcharge_container" style="display: none;">
+                                            <label class="form-label">Phụ phí</label>
+                                            <input type="number" name="surcharge"
+                                                class="form-control {{ $errors->has('surcharge') ? 'is-invalid' : (old('surcharge') ? 'is-valid' : '') }}"
+                                                value="{{ old('surcharge', $movie->surcharge ?? '') }}">
+                                            @if ($errors->has('surcharge'))
+                                                <div class="invalid-feedback">{{ $errors->first('surcharge') }}</div>
                                             @endif
                                         </div>
 
+                                        <div class="mb-3">
+                                            <div class="row">
+                                                <div class="col-md-6">
+                                                    <label for="release_date" class="form-label">Ngày trình chiếu<span
+                                                            class="required" style="color: red">*</span></label>
+                                                    <input type="date" class="form-control" id="release_date"
+                                                        name="release_date"
+                                                        value="{{ old('release_date', $movie->release_date ? date('Y-m-d', strtotime($movie->release_date)) : '') }}"
+                                                        placeholder="Start Date" />
+                                                    @error('release_date')
+                                                        <span
+                                                            class="text-danger fw-medium mt-1 d-block">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
 
-
+                                                <div class="col-md-6">
+                                                    <label for="end_date" class="form-label">Ngày kết thúc<span
+                                                            class="required" style="color: red">*</span></label>
+                                                    <input type="date" class="form-control" id="end_date"
+                                                        name="end_date"
+                                                        value="{{ old('end_date', $movie->end_date ? date('Y-m-d', strtotime($movie->end_date)) : '') }}"
+                                                        placeholder="End Date" />
+                                                    @error('end_date')
+                                                        <span
+                                                            class="text-danger fw-medium mt-1 d-block">{{ $message }}</span>
+                                                    @enderror
+                                                </div>
+                                            </div>
+                                        </div>
 
                                         <div class="mb-3">
                                             <label class="form-label">Đánh giá</label>
@@ -224,6 +231,8 @@
                                                 <div class="text-danger fw-medium">{{ $message }}</div>
                                             @enderror
                                         </div>
+
+
                                     </div>
                                 </div>
                                 <div class="mb-12">
@@ -265,6 +274,18 @@
                                     <input type="hidden" name="{{ $key }}" id="{{ $key }}"
                                         value="{{ old($key, $movie->$key) }}">
                                 @endforeach
+
+                                <div class="mb-3">
+                                    <label class="form-label">Ảnh</label>
+                                    <input type="file" name="img_thumbnail" class="form-control">
+                                    @if ($movie->img_thumbnail)
+                                        <img src="{{ asset('storage/' . $movie->img_thumbnail) }}" width="100"
+                                            class="mt-2">
+                                    @endif
+                                    @error('img_thumbnail')
+                                        <div class="text-danger fw-medium">{{ $message }}</div>
+                                    @enderror
+                                </div>
                                 <div class="d-flex flex-wrap gap-2">
                                     <a href=""><button type="submit"
                                             class="btn btn-primary waves-effect waves-light">
@@ -272,9 +293,21 @@
                                         </button></a>
                                     <a href="{{ route('admin.movies.index') }}" class="btn btn-secondary mb-3">Hủy</a>
                                 </div>
+
+                                {{-- <div class="d-flex flex-wrap gap-2">
+                                    <a href=""><button type="submit"
+                                            class="btn btn-primary waves-effect waves-light">
+                                            Lưu
+                                        </button></a>
+                                    <a href="{{ route('admin.movies.index') }}" class="btn btn-secondary mb-3">Hủy</a>
+                                </div> --}}
                             </div>
                         </div>
                     </div>
+
+
+
+
                 </div>
             </form>
         </div>
@@ -286,6 +319,21 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+
+
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            reader.onload = function() {
+                $('#image-preview').attr('src', reader.result);
+                $('#image-container').removeClass('d-none');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
         document.addEventListener('DOMContentLoaded', function() {
             // Khởi tạo CKEditor cho trường description
             ClassicEditor

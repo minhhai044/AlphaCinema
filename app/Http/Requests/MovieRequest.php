@@ -68,8 +68,10 @@ class MovieRequest extends FormRequest
             'director' => 'required|string|max:255',
             'duration' => 'required|integer|min:1',
             'rating' => 'required|numeric|min:0|max:10',
+            
             'release_date' => 'required|date|after_or_equal:' . $movie->created_at->format('Y-m-d'),
-            'end_date' => 'required|date|after_or_equal:'.now(),
+
+            'end_date' => 'required|date|after_or_equal:release_date',
             'trailer_url' => 'required|url',
             'surcharge' => 'nullable|numeric|min:0',
             'movie_versions' => 'sometimes|array',
