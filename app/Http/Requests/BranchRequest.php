@@ -61,6 +61,7 @@ class BranchRequest extends FormRequest
     {
         return [
             'name.required' => 'Vui lòng điền tên chi nhánh.',
+            'branchName.required' => 'Vui lòng điền tên chi nhánh.',
             'name.unique' => 'Tên chi nhánh đã tồn tại.',
             'branchName.unique' => 'Tên chi nhánh đã tồn tại.',
             'name.max' => 'Tên chi nhánh không được vượt quá 255 ký tự.',
