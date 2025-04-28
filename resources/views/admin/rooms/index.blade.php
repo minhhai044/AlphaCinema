@@ -181,8 +181,8 @@
                                     data-nameseat="{{ $room->seat_template->name }}"
                                     data-idseat="{{ $room->seat_template->id }}"
                                     data-seatstructure="{{ $room->seat_structure }}"
-                                    data-seatmaxtrix="{{ $room->matrix_colume }}"
-                                    data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
+                                    data-seatmaxtrix="{{ $room->matrix_colume }}" data-bs-toggle="modal"
+                                    data-bs-target="#exampleModalEdit">
                                     <i class=" bx bx-edit"></i>
                                 </a></button>
                         </td>
@@ -466,7 +466,7 @@
             let idseat = $(this).data('idseat');
             let seatstructure = $(this).data('seatstructure');
             let seatmaxtrix = $(this).data('seatmaxtrix');
-            
+
             let filteredData = "";
             Object.entries(data).forEach(([key, value]) => {
 
@@ -504,10 +504,18 @@
             $('#matrix_colume_edit').val(matrix_colume);
 
             let foundSeatTemplate = seat_templates.some(item => item.id == seat_template_id);
-            
+
+            // Kiểm tra nếu không có trong seat_templates
             if (!foundSeatTemplate && idseat && nameseat) {
-                $('#seat_templates_edit').append(`<option selected value="${idseat}">${nameseat}</option>`);
+
+                let existsInSelect = $('#seat_templates_edit option[value="' + idseat + '"]').length > 0;
+
+                if (!existsInSelect) {
+                    $('#seat_templates_edit').append(`<option selected value="${idseat}">${nameseat}</option>`);
+                }
+
                 $('#seat_structure_edit').val(JSON.stringify(seatstructure));
+                
                 $('#matrix_colume_edit').val(seatmaxtrix);
             }
 
