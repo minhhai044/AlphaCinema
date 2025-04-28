@@ -7,6 +7,7 @@ use App\Http\Requests\MovieRequest;
 use App\Models\Movie;
 use App\Services\MovieService;
 use App\Traits\ApiResponseTrait;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -149,8 +150,19 @@ class MovieController extends Controller
         $movie = Movie::findOrFail($id);
         $field = $request->input('field');
         $value = $request->input('value');
+        $today = Carbon::now();
 
         if (in_array($field, ['is_active', 'is_hot', 'is_publish'])) {
+            // Kiểm tra end_date chỉ khi bật is_active = true
+            if ($field === 'is_active' && $value === true) {
+                if (!$movie->end_date || $movie->end_date < $today) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => 'Không thể kích hoạt phim. Vui lòng gia hạn end_date trước.'
+                    ], 400);
+                }
+            }
+
             $movie->$field = $value;
             $movie->save();
 
@@ -159,8 +171,6 @@ class MovieController extends Controller
 
         return response()->json(['success' => false, 'message' => 'Trường không hợp lệ'], 400);
     }
-
-
     public function update(MovieRequest $request, string $id)
     {
         try {

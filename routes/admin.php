@@ -54,7 +54,7 @@ Route::post("/logout",                      [AuthController::class, "logout"])->
 
 /**
  * Route cho Rạp
- * 
+ *
  */
 Route::resource('cinemas',              CinemaController::class);
 Route::post('/cinemas/{id}/toggle',         [CinemaController::class, 'toggleStatus'])->name('cinemas.toggle');
@@ -62,22 +62,22 @@ Route::get('/get-cinemas/{branch_id}',      [CinemaController::class, 'getCinema
 
 /**
  * Route cho Rank
- * 
+ *
  */
 Route::resource('ranks',                RankController::class);
 
 /**
  * Route cho Slide Show
- * 
+ *
  */
 Route::resource('slideshows',          SlideShowController::class);
 
 /**
  * Route cho Food
- * 
+ *
  */
 Route::group([
-    'prefix' => 'foods', 
+    'prefix' => 'foods',
     'as' => 'foods.',
 ], function () {
     Route::get('/',                         [FoodController::class, 'index'])->name('index');
@@ -92,11 +92,11 @@ Route::group([
 
 /**
  * Route cho Combo
- * 
+ *
  */
 Route::group([
-    'prefix' => 'combos',  
-    'as' => 'combos.',    
+    'prefix' => 'combos',
+    'as' => 'combos.',
 ], function () {
     Route::get('/',                         [ComboController::class, 'index'])->name('index');
     Route::get('create',                    [ComboController::class, 'create'])->name('create');
@@ -111,7 +111,7 @@ Route::group([
 
 /**
  * Route cho Chi nhánh
- * 
+ *
  */
 Route::post('/branches/change-active',      [BranchController::class, 'changeActive'])->name('branches.change-active');
 Route::resource('branches',             BranchController::class);
@@ -120,7 +120,7 @@ Route::post('/branches/{id}/toggle',        [BranchController::class, 'toggleSta
 
 /**
  * Route cho loại phòng
- * 
+ *
  */
 Route::group([
     'prefix' => 'typerooms',
@@ -134,7 +134,7 @@ Route::group([
 
 /**
  * Route cho Phòng chiếu
- * 
+ *
  */
 Route::prefix('rooms')->as('rooms.')->group(function () {
     Route::get('/',                         [RoomController::class, 'index'])->name('index');
@@ -144,7 +144,7 @@ Route::prefix('rooms')->as('rooms.')->group(function () {
 });
 /**
  * Route cho Suất chiếu
- * 
+ *
  */
 Route::prefix('showtimes')->as('showtimes.')->group(function () {
     Route::get('/',                         [ShowtimeController::class, 'index'])->name('index');
@@ -162,7 +162,7 @@ Route::prefix('showtimes')->as('showtimes.')->group(function () {
 
 /**
  * Route cho Users
- * 
+ *
  */
 Route::group([
     'prefix' => 'users',
@@ -179,14 +179,14 @@ Route::group([
 
 /**
  * Route cho Roles
- * 
+ *
  */
 
 Route::resource("roles",                RoleController::class)->middleware("checkSystemAdmin");
 
 /**
  * Route cho Vouchers
- * 
+ *
  */
 Route::post('/vouchers/{id}/toggle',        [VoucherController::class, 'toggleStatus'])->name('vouchers.toggle');
 Route::resource('user-vouchers',        UserVoucherController::class);
@@ -194,7 +194,7 @@ Route::resource('vouchers',             VoucherController::class);
 
 /**
  * Route cho Seat Template
- * 
+ *
  */
 
 Route::prefix('seat-templates')->group(function () {
@@ -209,7 +209,7 @@ Route::prefix('seat-templates')->group(function () {
 
 /**
  * Route cho Movies
- * 
+ *
  */
 
 Route::prefix('movies')->name('movies.')->group(function () {
@@ -225,7 +225,7 @@ Route::prefix('movies')->name('movies.')->group(function () {
 
 /**
  * Route cho Days
- * 
+ *
  */
 
 Route::resource('days', DayController::class)->names([
@@ -239,13 +239,13 @@ Route::put('days/update/{id}',              [DayController::class, 'update'])->n
 
 /**
  * Route cho TypeSeat
- * 
+ *
  */
 Route::resource('type_seats',           TypeSeatController::class);
 
 /**
  * Route cho Settings
- * 
+ *
  */
 Route::group([
     'prefix' => 'settings',
@@ -258,7 +258,7 @@ Route::group([
 
 /**
  * Route cho thống kê
- * 
+ *
  */
 Route::group([
     'prefix' => 'statistical',
@@ -272,7 +272,7 @@ Route::group([
 
 /**
  * Route cho bộ lọc thống kê
- * 
+ *
  */
 Route::get('/combo-revenue',                [StatisticalController::class, 'comboRevenue'])->name('combo.revenue');
 Route::get('/food-revenue',                 [StatisticalController::class, 'foodRevenue'])->name('food.revenue');
@@ -286,7 +286,7 @@ Route::get('/export/{table}',               [ExportController::class, 'export'])
 
 /**
  * Route Ticket
- * 
+ *
  */
 Route::group([
     'prefix' => 'tickets',
@@ -305,7 +305,7 @@ Route::post('/change-password',             [AuthController::class, 'changePassw
 
 /**
  * Route Realtime Phòng Chat
- * 
+ *
  */
 Route::group([
     'prefix' => 'roomchats',
