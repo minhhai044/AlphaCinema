@@ -19,6 +19,7 @@
         #datatable_length select {
             width: 60px;
         }
+
         #datatable thead th {
             text-align: center;
             vertical-align: middle;
@@ -75,20 +76,16 @@
                                         </td>
 
 
-                                        <td class="d-flex justify-content-center align-items-center" >
-                                            <form action="{{ route('admin.vouchers.toggle', $voucher->id) }}"
-                                                class="form-check form-switch form-switch-success" method="POST"
-                                                id="toggleForm{{ $voucher->id }}">
-                                                @csrf
-                                                <input type="checkbox" name="is_active" id="switch{{ $voucher->id }}"
-                                                    class="form-check-input switch-is-active changeActive" style="width: 55px; height: 25px;"
-                                                    {{ $voucher->is_active ? 'checked' : '' }}
-                                                    onchange="confirmChange({{ $voucher->id }})">
-                                                <label for="switch{{ $voucher->id }}" data-on-label="Yes"
-                                                    data-off-label="No"></label>
-                                            </form>
+                                      
 
-
+                                        <td>
+                                            <div class="d-flex justify-content-center align-items-center">
+                                                <div class=" form-check form-switch form-switch-md" dir="ltr">
+                                                    <input class="form-check-input switch-is-active changeActive"
+                                                        @checked($voucher->is_active) type="checkbox"
+                                                        data-voucher-id="{{ $voucher->id }}">
+                                                </div>
+                                            </div>
                                         </td>
 
                                         <td class="text-center">
@@ -152,13 +149,55 @@
     <script src="{{ asset('assets/js/common.js') }}"></script>
     <script src="{{ asset('assets/js/cinema/index.js') }}"></script>
     <script>
-        function confirmChange(voucherId) {
-            if (confirm("Bạn có muốn thay đổi trạng thái không?")) {
-                document.getElementById('toggleForm' + voucherId).submit();
-            } else {
-                return false;
-            }
+        // Hàm xác nhận trước khi thay đổi
+        function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái Đồ ăn?', title =
+            'AlphaCinema thông báo') {
+            return Swal.fire({
+                icon: 'warning',
+                title: title,
+                text: text,
+                showCancelButton: true,
+                confirmButtonText: 'Đồng ý',
+                cancelButtonText: 'Hủy',
+            }).then(result => result.isConfirmed);
         }
+
+        // Sự kiện thay đổi trạng thái của đồ ăn (food)
+        $(document).on("change", ".changeActive", function(e) {
+            e.preventDefault();
+
+            let $checkbox = $(this);
+            let voucherID = $checkbox.data("voucher-id");
+            let is_active = $checkbox.is(":checked") ? 1 : 0;
+
+            confirmChange('Bạn có chắc chắn muốn thay đổi trạng thái món ăn?').then((confirmed) => {
+                if (confirmed) {
+                    $.ajax({
+                        url: "{{ route('voucher.change-active') }}",
+                        method: "POST",
+                        data: {
+                            _token: "{{ csrf_token() }}",
+                            id: voucherID,
+                            is_active: is_active
+                        },
+                        success: function(response) {
+                            if (response.success) {
+                                toastr.success('Trạng thái hoạt động đã được cập nhật.');
+                            } else {
+                                toastr.error(response.message || 'Có lỗi xảy ra.');
+                                $checkbox.prop("checked", !is_active);
+                            }
+                        },
+                        error: function() {
+                            toastr.error('Có lỗi xảy ra khi cập nhật trạng thái.');
+                            $checkbox.prop("checked", !is_active);
+                        }
+                    });
+                } else {
+                    $checkbox.prop("checked", !is_active); // Nếu hủy thì hoàn tác checkbox
+                }
+            });
+        });
     </script>
 
 @endsection

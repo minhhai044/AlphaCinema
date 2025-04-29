@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\Cinema;
 use App\Models\Slideshow;
+use App\Models\Voucher;
 
 class UpdateActiveController extends Controller {
 
@@ -112,4 +113,18 @@ class UpdateActiveController extends Controller {
         }
     }
 
+
+    public function voucher(Request $request)
+    {
+        try {
+            $voucher = Voucher::findOrFail($request->id);
+
+            $voucher->is_active = $request->is_active;
+            $voucher->save();
+
+            return response()->json(['success' => true, 'message' => 'Cập nhật thành công.', 'data' => $voucher]);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Có lỗi xảy ra, vui lòng thử lại.', 'data' => $voucher]);
+        }
+    }
 }
