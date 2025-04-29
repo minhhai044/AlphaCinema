@@ -1,15 +1,14 @@
 @extends('admin.layouts.master')
 @section('style')
-    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}"
-        rel="stylesheet" type="text/css" />
+    <link href="{{ asset('theme/admin/assets/libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css') }}" rel="stylesheet"
+        type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
     <link href="{{ asset('theme/admin/assets/libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css') }}"
         rel="stylesheet" type="text/css" />
-
 @endsection
 @section('content')
-
+    {{-- Tiêu đề --}}
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -17,8 +16,8 @@
 
                 <div class="page-title-right">
 
-                    <button type="button" id="addSeatTemplate" class="btn btn-primary float-end mb-2 me-3" data-bs-toggle="modal"
-                        data-bs-target="#exampleModal">
+                    <button type="button" id="addSeatTemplate" class="btn btn-primary float-end mb-2 me-3"
+                        data-bs-toggle="modal" data-bs-target="#exampleModal">
                         <i class="bi bi-plus-lg"></i> Thêm mẫu ghế
                     </button>
                 </div>
@@ -96,8 +95,7 @@
                             </div>
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
-                                <textarea class="form-control" name="description" rows="3"
-                                    placeholder="Nhập mô tả...">{{ old('description') }}</textarea>
+                                <textarea class="form-control" name="description" rows="3" placeholder="Nhập mô tả...">{{ old('description') }}</textarea>
                             </div>
                         </div>
                     </div>
@@ -109,10 +107,11 @@
             </div>
         </div>
     </div>
-    {{-- Modal update --}}
+    <!-- Table -->
+
 
     <table id="datatable" class="table table-bordered text-center">
-        <thead >
+        <thead>
             <tr>
                 <th class="fw-semibold text-center">STT</th>
                 <th class="fw-semibold text-center">Tên mẫu ghế</th>
@@ -125,55 +124,61 @@
         </thead>
         <tbody>
             @foreach ($dataAll as $data)
-                    @php
-                        $dataMatrix = $matrix = \App\Models\Seat_template::getMatrixById($data->matrix);
-                    @endphp
+                @php
+                    $dataMatrix = $matrix = \App\Models\Seat_template::getMatrixById($data->matrix);
+                @endphp
 
-                    <tr>
-                        <input type="hidden" name="id" id="dataId" value="{{ $data->id }}">
-                        <td id="dataId">{{ $loop->iteration }}</td>
-                        <td class="fw-semibold">{{ limitText($data->name, 20) }}</td>
-                        <td>{{ limitText($data->description, 20)  }}</td>
-                        <td>{{ $dataMatrix['name'] }}</td>
-                        <td>
-                            @if ($data->is_publish)
-                                <span class="badge bg-success">Đã cấu tạo</span>
-                            @else
-                                <span class="badge bg-warning">Chưa cấu tạo</span>
-                            @endif
-                        </td>
-                        <td>
-                            <div class="d-flex justify-content-center align-items-center">
-                                <div class="custom-switch">
-                                    <input @checked($data->is_active) switch="primary" data-publish="{{ $data->is_publish }}" class="form-check-input switch-is-active" id="is_active{{ $data->id }}" type="checkbox">
-                                    <label for="is_active{{ $data->id }}"></label>
-                                </div>
+                <tr>
+                    <input type="hidden" name="id" id="dataId" value="{{ $data->id }}">
+                    <td id="dataId">{{ $loop->iteration }}</td>
+                    <td class="fw-semibold">{{ limitText($data->name, 20) }}</td>
+                    <td>{{ limitText($data->description, 20) }}</td>
+                    <td>{{ $dataMatrix['name'] }}</td>
+                    <td>
+                        @if ($data->is_publish)
+                            <span class="badge bg-success">Đã cấu tạo</span>
+                        @else
+                            <span class="badge bg-warning">Chưa cấu tạo</span>
+                        @endif
+                    </td>
+                    <td>
+                        <div class="d-flex justify-content-center align-items-center">
+                            <div class="custom-switch">
+                                <input @checked($data->is_active) switch="primary"
+                                    data-publish="{{ $data->is_publish }}" class="form-check-input switch-is-active"
+                                    id="is_active{{ $data->id }}" type="checkbox">
+                                <label for="is_active{{ $data->id }}"></label>
                             </div>
-                        </td>
-                        <td>
-                            <a href="{{ route('admin.edit.seat_templates', $data) }}"><button class="btn btn-success btn-sm"><i
-                                        class="mdi mdi-plus-circle-outline"></i></button>
-                            </a>
-                            <a class="edit-seat-template" href="#" data-id="{{ $data->id }}" data-name="{{ $data->name }}"
-                                data-matrix="{{ $data->matrix }}" data-regular="{{ $data->row_regular }}"
-                                data-vip="{{ $data->row_vip }}" data-double="{{ $data->row_double }}"
-                                data-description="{{ $data->description }}" data-publish="{{ $data->is_publish }}"
-                                data-seatstructure="{{ $data->seat_structure }}"
-                                data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
-                                <button class="btn btn-warning btn-sm"> <i class="bx bx-edit"></i></button>
-                            </a>
+                        </div>
+                    </td>
+                    <td>
+                        <a href="{{ route('admin.edit.seat_templates', $data) }}"><button
+                                class="btn btn-success btn-sm"><i class="mdi mdi-plus-circle-outline"></i></button>
+                        </a>
+                        <a class="edit-seat-template" href="#" data-id="{{ $data->id }}"
+                            data-name="{{ $data->name }}" data-matrix="{{ $data->matrix }}"
+                            data-regular="{{ $data->row_regular }}" data-vip="{{ $data->row_vip }}"
+                            data-double="{{ $data->row_double }}" data-description="{{ $data->description }}"
+                            data-publish="{{ $data->is_publish }}" data-seatstructure="{{ $data->seat_structure }}"
+                            data-bs-toggle="modal" data-bs-target="#exampleModalEdit">
+                            <button class="btn btn-warning btn-sm"> <i class="bx bx-edit"></i></button>
+                        </a>
 
 
-                        </td>
-                    </tr>
+                    </td>
+                </tr>
             @endforeach
         </tbody>
     </table>
-    {{-- {{ $dataAll->links() }} --}}
+
     @php
         $appUrl = env('APP_URL');
     @endphp
-    <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+
+    <!-- Modal Update -->
+
+    <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel"
+        aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <form method="post" class="submitSeatTemplateFormUpdate">
@@ -221,7 +226,8 @@
                                 @enderror
                             </div>
                             <div class="col-lg-4 mb-3">
-                                <label for="vipSeat" class="form-label">Ghế Vip <span style="color: red">*</span></label>
+                                <label for="vipSeat" class="form-label">Ghế Vip <span
+                                        style="color: red">*</span></label>
                                 <input required type="text" name="row_vip"
                                     class="form-control @error('row_vip') is-invalid @enderror" id="vipSeatEdit"
                                     placeholder="Nhập số lượng ghế Vip">
@@ -230,7 +236,8 @@
                                 @enderror
                             </div>
                             <div class="col-lg-4 mb-3">
-                                <label for="doubleSeat" class="form-label">Ghế đôi <span style="color: red">*</span></label>
+                                <label for="doubleSeat" class="form-label">Ghế đôi <span
+                                        style="color: red">*</span></label>
                                 <input required type="text" name="row_double"
                                     class="form-control @error('row_double') is-invalid @enderror" id="doubleSeatEdit"
                                     placeholder="Nhập số lượng ghế đôi">
@@ -240,8 +247,7 @@
                             </div>
                             <div class="col-lg-12 mb-3">
                                 <label for="description" class="form-label">Mô tả</label>
-                                <textarea class="form-control" name="description" id="description" rows="3"
-                                    placeholder="Nhập mô tả..."></textarea>
+                                <textarea class="form-control" name="description" id="description" rows="3" placeholder="Nhập mô tả..."></textarea>
                             </div>
                         </div>
                     </div>
@@ -256,7 +262,7 @@
     </div>
 @endsection
 @section('script')
-     <!-- Required datatable js -->
+    <!-- Required datatable js -->
     <script src="{{ asset('theme/admin/assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
     <!-- Buttons examples -->
@@ -274,9 +280,13 @@
 
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
-    <script>
 
-      $(document).ready(function() {
+
+    <script>
+        /** 
+         * Check Messenge Validate Model Create Or Edit
+         */
+        $(document).ready(function() {
             @if (session('error_modal') == 'create')
                 $('#exampleModal').modal('show');
             @elseif (session('error_modal') == 'edit' && session('seat_template_id'))
@@ -302,10 +312,11 @@
                     @endforeach
 
                 }, 400);
-
             @endif
         });
-
+        /** 
+         * Function Reset Messenge Error
+         */
         function resetErrors(modalId = '') {
             let modal = modalId ? $(modalId) : $(document);
 
@@ -313,9 +324,14 @@
 
             modal.find('small.text-danger').remove();
         }
-        $(document).ready(function () {
+
+        $(document).ready(function() {
+            // Lấy data matrixs
             let matrixData = @json($matrixs);
 
+            /** 
+             * Function Set input regular - vip - double
+             */
             function handleMatrixChange(selectId, regularId, vipId, doubleId) {
                 let matrixId = $(selectId).val();
                 let selectedMatrix = matrixData.find(matrix => matrix.id == matrixId);
@@ -331,16 +347,22 @@
                 }
             }
 
-            $('#matrixSelectCreate').change(function () {
+            /** 
+             * Khi change matrixSelectCreate or matrixSelectEdit
+             */
+            $('#matrixSelectCreate').change(function() {
                 handleMatrixChange('#matrixSelectCreate', '#regularSeatCreate', '#vipSeatCreate',
                     '#doubleSeatCreate');
             });
 
-            $('#matrixSelectEdit').change(function () {
+            $('#matrixSelectEdit').change(function() {
                 handleMatrixChange('#matrixSelectEdit', '#regularSeatEdit', '#vipSeatEdit',
                     '#doubleSeatEdit');
             });
 
+            /** 
+             * Function Khi Submit Form
+             */
             function handleSubmit(formClass, matrixSelectId, regularSeatId, vipSeatId, doubleSeatId) {
                 let form = $(`.${formClass}`);
 
@@ -368,17 +390,21 @@
                 }
             }
 
-            $('#submitSeatTemplate').click(function () {
+            // Khi Click Submit submitSeatTemplate or submitSeatTemplateUpdate
+            $('#submitSeatTemplate').click(function() {
                 handleSubmit('submitSeatTemplateForm', '#matrixSelectCreate', '#regularSeatCreate',
                     '#vipSeatCreate', '#doubleSeatCreate');
             });
 
-            $('#submitSeatTemplateUpdate').click(function () {
+            $('#submitSeatTemplateUpdate').click(function() {
                 handleSubmit('submitSeatTemplateFormUpdate', '#matrixSelectEdit', '#regularSeatEdit',
                     '#vipSeatEdit', '#doubleSeatEdit');
             });
         });
 
+        /** 
+         * Function Confirm
+         */
         function confirmChange(text = 'Bạn có chắc chắn không ?', title =
             'AlphaCinema thông báo') {
             return Swal.fire({
@@ -389,15 +415,15 @@
                 confirmButtonText: 'Đồng ý',
                 cancelButtonText: 'Hủy',
             }).then(result => result.isConfirmed);
-        }     
+        }
         // Phần active
-        $(document).ready(function () {
+        $(document).ready(function() {
             let Url = @json($appUrl);
-            console.log(Url);
 
-            $('input[id^="is_active"]').change(function () {
-                let id = this.id.replace('is_active', ''); // Lấy ID động
-                let is_active = this.checked ? 1 : 0; // Kiểm tra trạng thái
+
+            $('input[id^="is_active"]').change(function() {
+                let id = this.id.replace('is_active', '');
+                let is_active = this.checked ? 1 : 0;
                 let publish = $(this).data('publish');
 
 
@@ -411,12 +437,13 @@
                                     is_active
                                 },
                                 headers: {
-                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
+                                        'content')
                                 },
-                                success: function (response) {
+                                success: function(response) {
                                     toastr.success('Thao tác thành công !!!');
                                 },
-                                error: function (error) {
+                                error: function(error) {
                                     console.log(error)
                                     toastr.error('Thao tác thất bại !!!');
                                 }
@@ -431,13 +458,21 @@
                 }
             });
         });
-        // addClass
-        $('#addSeatTemplate').click(function () {
+
+        /** 
+         * Reset Error Khi Click vào AddSeatTemplate
+         */
+        $('#addSeatTemplate').click(function() {
             resetErrors('#exampleModal');
         });
-        // Phần edit
-        $('.edit-seat-template').click(function () {
+
+        /** 
+         * Khi Click vào EditSeatTemplate
+         */
+        $('.edit-seat-template').click(function() {
+            // Reset Messenge Error
             resetErrors('#exampleModalEdit');
+            // Lấy data khi click
             let id = $(this).data('id');
             let name = $(this).data('name');
             let matrix = $(this).data('matrix');
@@ -447,8 +482,8 @@
             let description = $(this).data('description');
             let publish = $(this).data('publish');
             let seatstructure = $(this).data('seatstructure');
-           
-            
+
+
             // Điền dữ liệu vào form
             $('#nameInput').val(name);
             $('#matrixSelectEdit').val(matrix);
@@ -457,6 +492,7 @@
             $('#doubleSeatEdit').val(double);
             $('#description').val(description);
 
+            // Nếu như đã cấu tạo 1 lần rồi thì sẽ không thể chỉnh matrixSelectEdit
             if (seatstructure) {
                 $('#regularSeatEdit, #vipSeatEdit, #doubleSeatEdit').attr('readonly', true);
                 $('#matrixSelectEdit').prop('disabled', true);

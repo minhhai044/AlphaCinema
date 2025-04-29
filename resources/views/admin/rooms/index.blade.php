@@ -14,7 +14,7 @@
 @endsection
 @section('content')
 
-
+    <!-- Tiêu đề -->
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -34,7 +34,8 @@
             </div>
         </div>
     </div>
-    <!-- Modal -->
+
+    <!-- Modal Form Thêm mới -->
     <form action="{{ route('admin.rooms.store') }}" method="post" class="formCreate">
         @csrf
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -135,7 +136,7 @@
         </div>
     </form>
 
-
+    <!-- Table List -->
     <table id="datatable" class="table table-bordered text-center">
         <thead>
             <tr>
@@ -192,7 +193,7 @@
         </tbody>
 
     </table>
-    {{-- {{$rooms->links()}} --}}
+    <!-- Modal Form Chỉnh sửa -->
     <div class="modal fade" id="exampleModalEdit" tabindex="-1" aria-labelledby="exampleModalLabel"
         aria-hidden="true">
         <div class="modal-dialog modal-lg">
@@ -318,7 +319,11 @@
 
     <!-- Datatable init js -->
     <script src="{{ asset('theme/admin/assets/js/pages/datatables.init.js') }}"></script>
+
     <script>
+        /** 
+         * Check Messenge Validate Model Create Or Edit
+         */
         $(document).ready(function() {
             @if (session('error_modal') == 'create')
                 $('#exampleModal').modal('show');
@@ -347,7 +352,9 @@
                 }, 400);
             @endif
         });
-
+        /** 
+         * Function Reset Messenge Error
+         */
         function resetErrors(modalId = '') {
             let modal = modalId ? $(modalId) : $(document);
 
@@ -355,9 +362,15 @@
 
             modal.find('small.text-danger').remove();
         }
-
+        /** 
+         * Data Json
+         */
         const data = @json($branchsRelation);
-
+        const seat_templates = @json($seat_templates);
+        let Url = @json($appUrl);
+        /** 
+         * Select Branch + Cinema
+         */
         $('#cinemas').prop('disabled', true);
         $('#branchSelect').change(function() {
             let id = $(this).val();
@@ -374,7 +387,9 @@
             });
         });
 
-        const seat_templates = @json($seat_templates);
+        /** 
+         * Select Template Seat => set seat_structure
+         */
 
         $('#seat_templates').change(function() {
 
@@ -391,12 +406,14 @@
                     return;
                 }
             })
-
+            // Set input hiiden seat_structure + matrix_colume
             $('#seat_structure').val(dataTemplate);
             $('#matrix_colume').val(matrix_colume);
 
         });
-
+        /** 
+         * Function Confirm
+         */
         function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái ?', title =
             'AlphaCinema thông báo') {
             return Swal.fire({
@@ -408,7 +425,9 @@
                 cancelButtonText: 'Hủy',
             }).then(result => result.isConfirmed);
         }
-        let Url = @json($appUrl);
+        /** 
+         * Is_active 
+         */
         $('input[id^="is_active"]').change(function() {
             let checkbox = $(this);
             let id = this.id.replace('is_active', ''); // Lấy ID động
@@ -449,11 +468,24 @@
                 toastr.error('Thao tác thất bại , Vui lòng xuất bản phòng !!!');
             }
         });
+        /** 
+         * Reset Error Khi Click vào AddRoom
+         */
         $('#addRoom').click(function() {
             resetErrors('#exampleModal');
         })
+
+        /** 
+         * Khi Click vào EditRoom
+         */
         $('.edit-room').click(function() {
+            // Reset Messenge error
             resetErrors('#exampleModalEdit');
+
+            // Remove option cũ
+            $('#seat_templates_edit .checkOption').remove();
+
+            //Lấy data khi click
             let id = $(this).data('id');
             let name = $(this).data('name');
             let branch_id = $(this).data('branch');
@@ -467,6 +499,7 @@
             let seatstructure = $(this).data('seatstructure');
             let seatmaxtrix = $(this).data('seatmaxtrix');
 
+            // Set các Option Rạp của các nhánh đang chọn
             let filteredData = "";
             Object.entries(data).forEach(([key, value]) => {
 
@@ -477,11 +510,13 @@
                 }
             });
 
+            // Xóa data trước khi append
             $('#cinemasEdit').empty();
             Object.entries(filteredData).forEach(([key, value]) => {
                 $('#cinemasEdit').append(`<option value="${key}">${value}</option>`);
             });
 
+            // Set value cho các input + select option trên
             $('#name').val(name);
             $('#branchEdit').val(branch_id);
             $('#cinemasEdit').val(cinema_id);
@@ -492,6 +527,7 @@
             let dataTemplate = "";
             let matrix_colume = "";
 
+            // Tìm template hiện tại + hàng
             seat_templates.forEach((item) => {
                 if (seat_template_id == item.id) {
                     dataTemplate = item.seat_structure;
@@ -500,9 +536,11 @@
                 }
             })
 
+            // set value cho input hidden
             $('#seat_structure_edit').val(dataTemplate);
             $('#matrix_colume_edit').val(matrix_colume);
 
+            // Check xem id template còn hoạt động không
             let foundSeatTemplate = seat_templates.some(item => item.id == seat_template_id);
 
             // Kiểm tra nếu không có trong seat_templates
@@ -511,19 +549,25 @@
                 let existsInSelect = $('#seat_templates_edit option[value="' + idseat + '"]').length > 0;
 
                 if (!existsInSelect) {
-                    $('#seat_templates_edit').append(`<option selected value="${idseat}">${nameseat}</option>`);
+                    $('#seat_templates_edit').append(
+                        `<option class="checkOption" selected value="${idseat}">${nameseat}</option>`);
                 }
 
                 $('#seat_structure_edit').val(JSON.stringify(seatstructure));
-                
+
                 $('#matrix_colume_edit').val(seatmaxtrix);
             }
 
+            // Set atribute
             $('.submitRoomFormUpdate').attr('action', `rooms/${id}/update`);
 
 
 
         })
+
+        /** 
+         * Khi Change Chi nhánh trong Edit
+         */
         $('#branchEdit').change(function() {
             let id = $(this).val();
             let filteredData = "";
@@ -537,7 +581,9 @@
                 $('#cinemasEdit').append(`<option value="${key}">${value}</option>`);
             });
         });
-
+        /** 
+         * Khi Change SeatTemplate
+         */
         $('#seat_templates_edit').change(function() {
 
             let id = $(this).val();
@@ -562,7 +608,9 @@
 
         });
 
-
+        /** 
+         * Khi Submit
+         */
         function handleSubmit(formClass) {
             let form = $(`.${formClass}`);
 

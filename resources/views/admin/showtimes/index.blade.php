@@ -14,6 +14,7 @@
     </style>
 @endsection
 @section('content')
+
     <div class="row">
         <div class="col-12">
             <div class="page-title-box d-sm-flex align-items-center justify-content-between">
@@ -64,6 +65,7 @@
 
 
     <div class="rounded">
+        {{-- List Movie --}}
         <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
             <div class="modal-dialog">
                 <div class="modal-content">
@@ -89,10 +91,14 @@
                 </div>
             </div>
         </div>
+
+        {{-- Bảng màu --}}
         @php
             $colors = ['primary', 'secondary', 'success', 'danger', 'warning', 'info', 'dark', 'muted'];
             $roomColors = [];
         @endphp
+
+        {{-- Danh sách suất chiếu nhiều ngày --}}
         @if ($listShowtimesByDates->isNotEmpty())
 
             <div class="accordion " id="accordionExample">
@@ -133,6 +139,7 @@
                                                 <td>{{ implode(', ', $movie['movie']->movie_genres) }}</td>
                                                 <td>{{ $movie['movie']->duration }} phút</td>
                                                 <td>
+
                                                     <button class="btn btn-success btn-sm" type="button"
                                                         data-bs-toggle="collapse"
                                                         data-bs-target="#collapse-{{ $movie['movie']->id }}{{ $key }}"
@@ -140,9 +147,12 @@
                                                         aria-controls="collapse-{{ $movie['movie']->id }}{{ $key }}">
                                                         <i class="bx bx-show"></i>
                                                     </button>
+
                                                     <button class="btn btn-primary btn-sm" data-bs-toggle="modal"
                                                         data-bs-target="#movieModalXXX{{ $movie['movie']->id }}{{ $key }}"><i
                                                             class="bx bxs-copy"></i></button>
+
+                                                    {{-- Form Nhân bản --}}
                                                     <div class="modal fade"
                                                         id="movieModalXXX{{ $movie['movie']->id }}{{ $key }}"
                                                         tabindex="-1" aria-labelledby="movieModalLabel"
@@ -197,6 +207,7 @@
 
                                                 </td>
                                             </tr>
+
                                             <tr>
                                                 <td colspan="6">
                                                     <div class="collapse"
@@ -292,6 +303,7 @@
 
             </div>
         @else
+            {{-- Khi tìm 1 ngày cụ thể --}}
             <table class="table table-bordered table-hover dt-responsive nowrap w-100 text-center">
                 <thead class="table text-light text-center rounded-top-2">
                     <tr>
@@ -320,14 +332,17 @@
                                 <td>{{ implode(', ', $showtimes['movie']->movie_genres) }}</td>
                                 <td>{{ $showtimes['movie']->duration }} phút</td>
                                 <td>
+
                                     <button class="btn btn-primary btn-sm" type="button" data-bs-toggle="collapse"
                                         data-bs-target="#collapse-{{ $movieId }}" aria-expanded="false"
                                         aria-controls="collapse-{{ $movieId }}">
                                         <i class="bx bx-show"></i>
                                     </button>
+
                                     <button class="btn btn-success btn-sm" data-bs-toggle="modal"
                                         data-bs-target="#movieModalXXX{{ $movieId }}"><i
                                             class="bx bxs-copy"></i></button>
+                                    {{-- Form Model Nhân Bản --}}
                                     <div class="modal fade" id="movieModalXXX{{ $movieId }}" tabindex="-1"
                                         aria-labelledby="movieModalLabel" aria-hidden="true">
                                         <div class="modal-dialog modal-dialog-centered">
@@ -452,11 +467,15 @@
     <script src="{{ asset('theme/admin/assets/libs/flatpickr/flatpickr.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/js/pages/form-advanced.init.js') }}"></script>
     <script>
+
+        // Lấy data
         const branchsRelation = @json($branchsRelation);
         const selectedBranchId = "{{ request('branch_id') }}";
         const selectedCinemaId = "{{ request('cinema_id') }}";
         let Url = @json($appUrl);
+        let movies = @json($movies);
 
+        // Funtion Hiển thị danh sách cinema khi chọn branch
         function loadCinemas(branchId) {
             let cinemas = branchsRelation[branchId] || {};
             let $cinemaSelect = $('#cinema_id');
@@ -477,6 +496,7 @@
             loadCinemas(selectedBranchId);
         }
 
+        // Hàm Confirm 
         function confirmChange(text = 'Bạn có chắc chắn muốn thay đổi trạng thái ?', title =
             'AlphaCinema thông báo') {
             return Swal.fire({
@@ -489,6 +509,7 @@
             }).then(result => result.isConfirmed);
         }
 
+        // Hàm khi thay đổi IsActive
         $('input[id^="is_active"]').change(function() {
             let id = this.id.replace('is_active', ''); // Lấy ID động
             let is_active = this.checked ? 1 : 0; // Kiểm tra trạng thái
@@ -514,8 +535,8 @@
 
 
         });
-        let movies = @json($movies);
-
+        
+        // Function List Movie
         function renderMovies(filteredMovies) {
             $('#movieList').empty(); // Xóa danh sách cũ
             filteredMovies.forEach(item => {
@@ -538,13 +559,16 @@
             });
         }
         renderMovies(movies);
-
+        
+        // Search Movie
         $('#searchMovie').keyup(function() {
             let searchText = $(this).val().toLowerCase();
             let filteredMovies = movies.filter(movie => movie.name.toLowerCase().includes(searchText));
 
             renderMovies(filteredMovies);
         });
+
+        // Submit Search
         $('#submitFilter').click(function() {
             let branch_id = $('#branch_id').val();
             let cinema_id = $('#cinema_id').val();
