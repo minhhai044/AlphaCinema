@@ -213,20 +213,20 @@ class StatisticalController extends Controller
 
         // Truy vấn tỷ lệ lấp đầy theo phim
 
-$fillRateQuery = Ticket::query()
-    ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
-    ->join('movies', 'tickets.movie_id', '=', 'movies.id')
-    ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
-    ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
-    ->join('rooms', 'showtimes.room_id', '=', 'rooms.id')
-    ->select(
-        'movies.name as movie_name',
-        'movies.id as movie_id',
-        DB::raw('SUM(JSON_LENGTH(CASE
+        $fillRateQuery = Ticket::query()
+            ->join('showtimes', 'tickets.showtime_id', '=', 'showtimes.id')
+            ->join('movies', 'tickets.movie_id', '=', 'movies.id')
+            ->join('cinemas', 'tickets.cinema_id', '=', 'cinemas.id')
+            ->join('branches', 'cinemas.branch_id', '=', 'branches.id')
+            ->join('rooms', 'showtimes.room_id', '=', 'rooms.id')
+            ->select(
+                'movies.name as movie_name',
+                'movies.id as movie_id',
+                DB::raw('SUM(JSON_LENGTH(CASE
             WHEN tickets.ticket_seats IS NULL OR tickets.ticket_seats = "" THEN "[]"
             ELSE tickets.ticket_seats
         END)) as seats_sold'),
-        DB::raw('(
+                DB::raw('(
             SELECT COALESCE(SUM(show_count * JSON_LENGTH(rooms.seat_structure)), 0)
             FROM (
                 SELECT showtimes.room_id, COUNT(*) as show_count
@@ -244,7 +244,7 @@ $fillRateQuery = Ticket::query()
             JOIN rooms ON rooms.id = showtime_counts.room_id
             WHERE rooms.is_active = 1
         ) as total_seats'),
-        DB::raw('ROUND(
+                DB::raw('ROUND(
             LEAST(
                 CASE
                     WHEN (
@@ -294,35 +294,35 @@ $fillRateQuery = Ticket::query()
             ),
             2
         ) as fill_rate')
-    )
-    ->where('rooms.is_active', 1)
-    ->groupBy('movies.name', 'movies.id')
-    ->orderBy('fill_rate', 'desc');
+            )
+            ->where('rooms.is_active', 1)
+            ->groupBy('movies.name', 'movies.id')
+            ->orderBy('fill_rate', 'desc');
 
-// Xác định khoảng thời gian
-$startDate = $date ? Carbon::parse($date)->startOfDay() :
-    ($selectedMonth && $selectedYear ?
-        Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth() :
-        Carbon::today()->startOfDay());
-$endDate = $date ? Carbon::parse($date)->endOfDay() :
-    ($selectedMonth && $selectedYear ?
-        Carbon::create($selectedYear, $selectedMonth, 1)->endOfMonth() :
-        Carbon::today()->endOfDay());
+        // Xác định khoảng thời gian
+        $startDate = $date ? Carbon::parse($date)->startOfDay() :
+            ($selectedMonth && $selectedYear ?
+                Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth() :
+                Carbon::today()->startOfDay());
+        $endDate = $date ? Carbon::parse($date)->endOfDay() :
+            ($selectedMonth && $selectedYear ?
+                Carbon::create($selectedYear, $selectedMonth, 1)->endOfMonth() :
+                Carbon::today()->endOfDay());
 
-// Thêm tham số liên kết
-$fillRateQuery->addBinding($startDate, 'select');
-$fillRateQuery->addBinding($endDate, 'select');
-$fillRateQuery->addBinding($startDate, 'select');
-$fillRateQuery->addBinding($endDate, 'select');
-$fillRateQuery->addBinding($startDate, 'select');
-$fillRateQuery->addBinding($endDate, 'select');
+        // Thêm tham số liên kết
+        $fillRateQuery->addBinding($startDate, 'select');
+        $fillRateQuery->addBinding($endDate, 'select');
+        $fillRateQuery->addBinding($startDate, 'select');
+        $fillRateQuery->addBinding($endDate, 'select');
+        $fillRateQuery->addBinding($startDate, 'select');
+        $fillRateQuery->addBinding($endDate, 'select');
 
-// Áp dụng phân quyền và bộ lọc thời gian
-$fillRateQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))
-    ->tap($filterClosure);
+        // Áp dụng phân quyền và bộ lọc thời gian
+        $fillRateQuery->tap(fn($q) => $this->applyPermission($q, $user, $branchId, $cinemaId))
+            ->tap($filterClosure);
 
-// Lấy dữ liệu tỷ lệ lấp đầy
-$fillRates = $fillRateQuery->get();
+        // Lấy dữ liệu tỷ lệ lấp đầy
+        $fillRates = $fillRateQuery->get();
 
         // dd($fillRates);
 
@@ -912,31 +912,31 @@ $fillRates = $fillRateQuery->get();
 
         // Doanh thu combo theo khung giờ
         $timeFrames = DB::select("
-            SELECT
-                DATE_FORMAT(showtimes.start_time, '%H:%i') AS time_frame,
-                SUM(JSON_EXTRACT(tc.combo_item, '$.price_sale') * JSON_EXTRACT(tc.combo_item, '$.quantity')) AS revenue
-            FROM tickets
-            JOIN showtimes ON tickets.showtime_id = showtimes.id
-            JOIN cinemas ON tickets.cinema_id = cinemas.id
-            JOIN branches ON cinemas.branch_id = branches.id
-            JOIN JSON_TABLE(
-                ticket_combos,
-                '$[*]' COLUMNS (
-                    combo_item JSON PATH '$'
-                )
-            ) AS tc ON 1=1
-            WHERE ticket_combos IS NOT NULL
-            AND tickets.created_at BETWEEN ? AND ?
-            " . ($branchId ? "AND cinemas.branch_id = ?" : "") . "
-            " . ($cinemaId ? "AND tickets.cinema_id = ?" : "") . "
-            " . ($movieId ? "AND tickets.movie_id = ?" : "") . "
-            GROUP BY time_frame
-            ORDER BY time_frame ASC
-        ", array_filter([$startDate, $endDate, $branchId, $cinemaId, $movieId]));
+        SELECT
+            DATE_FORMAT(tickets.created_at, '%H:00') AS time_frame,
+            SUM(JSON_EXTRACT(tc.combo_item, '$.price_sale') * JSON_EXTRACT(tc.combo_item, '$.quantity')) AS revenue
+        FROM tickets
+        JOIN cinemas ON tickets.cinema_id = cinemas.id
+        JOIN branches ON cinemas.branch_id = branches.id
+        JOIN JSON_TABLE(
+            ticket_combos,
+            '$[*]' COLUMNS (
+                combo_item JSON PATH '$'
+            )
+        ) AS tc ON 1=1
+        WHERE ticket_combos IS NOT NULL
+        AND tickets.created_at BETWEEN ? AND ?
+        " . ($branchId ? "AND cinemas.branch_id = ?" : "") . "
+        " . ($cinemaId ? "AND tickets.cinema_id = ?" : "") . "
+        " . ($movieId ? "AND tickets.movie_id = ?" : "") . "
+        GROUP BY time_frame
+        ORDER BY time_frame ASC
+    ", array_filter([$startDate, $endDate, $branchId, $cinemaId, $movieId]));
 
         $trendDates = array_column($timeFrames, 'time_frame');
         $trendRevenues = array_column($timeFrames, 'revenue');
 
+        // dd($trendDates);
         // Tổng doanh thu combo
         $comboRevenue = array_sum($comboRevenues);
 
@@ -1106,30 +1106,30 @@ $fillRates = $fillRateQuery->get();
 
         // Doanh thu food theo khung giờ
         $timeFrames = DB::select("
-            SELECT
-                DATE_FORMAT(showtimes.start_time, '%H:%i') AS time_frame,
-                SUM(CAST(JSON_EXTRACT(tf.food_item, '$.price') AS DECIMAL(15,2)) * JSON_EXTRACT(tf.food_item, '$.quantity')) AS revenue
-            FROM tickets
-            JOIN showtimes ON tickets.showtime_id = showtimes.id
-            JOIN cinemas ON tickets.cinema_id = cinemas.id
-            JOIN branches ON cinemas.branch_id = branches.id
-            JOIN JSON_TABLE(
-                ticket_foods,
-                '$[*]' COLUMNS (
-                    food_item JSON PATH '$'
-                )
-            ) AS tf ON 1=1
-            WHERE ticket_foods IS NOT NULL
-            AND tickets.created_at BETWEEN ? AND ?
-            " . ($branchId ? "AND cinemas.branch_id = ?" : "") . "
-            " . ($cinemaId ? "AND tickets.cinema_id = ?" : "") . "
-            " . ($movieId ? "AND tickets.movie_id = ?" : "") . "
-            GROUP BY time_frame
-            ORDER BY time_frame ASC
-        ", array_filter([$startDate, $endDate, $branchId, $cinemaId, $movieId]));
+        SELECT
+            DATE_FORMAT(tickets.created_at, '%H:00') AS time_frame,
+            SUM(CAST(JSON_EXTRACT(tf.food_item, '$.price') AS DECIMAL(15,2)) * JSON_EXTRACT(tf.food_item, '$.quantity')) AS revenue
+        FROM tickets
+        JOIN cinemas ON tickets.cinema_id = cinemas.id
+        JOIN branches ON cinemas.branch_id = branches.id
+        JOIN JSON_TABLE(
+            ticket_foods,
+            '$[*]' COLUMNS (
+                food_item JSON PATH '$'
+            )
+        ) AS tf ON 1=1
+        WHERE ticket_foods IS NOT NULL
+        AND tickets.created_at BETWEEN ? AND ?
+        " . ($branchId ? "AND cinemas.branch_id = ?" : "") . "
+        " . ($cinemaId ? "AND tickets.cinema_id = ?" : "") . "
+        " . ($movieId ? "AND tickets.movie_id = ?" : "") . "
+        GROUP BY time_frame
+        ORDER BY time_frame ASC
+    ", array_filter([$startDate, $endDate, $branchId, $cinemaId, $movieId]));
 
         $trendDates = array_column($timeFrames, 'time_frame');
         $trendRevenues = array_column($timeFrames, 'revenue');
+
 
         // Tổng doanh thu food
         $foodRevenue = array_sum($foodRevenues);
