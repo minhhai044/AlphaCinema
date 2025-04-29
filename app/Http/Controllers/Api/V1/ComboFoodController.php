@@ -14,7 +14,11 @@ class ComboFoodController extends Controller
 
     public function list_combo()
     {
-        $ComboFoods = ComboFood::with(['combo', 'food'])->get();
+        $ComboFoods = ComboFood::with(['combo', 'food'])
+            ->whereHas('combo', function ($query) {
+                $query->where('is_active', 1);
+            })
+            ->get();
         $Combo = [];
 
         foreach ($ComboFoods as $ComboFood) {
@@ -39,7 +43,7 @@ class ComboFoodController extends Controller
                 $value['img_thumbnail'] = 'images/foods/foods.png';
             }
         }
-        
+
         return $this->successResponse(array_values($Combo), 'Thao tác thành công !!!');
     }
 }

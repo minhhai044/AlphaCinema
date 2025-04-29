@@ -16,7 +16,7 @@ class FoodController extends Controller
      */
     public function index()
     {
-        $foods = Food::query()->latest('id')->get();
+        $foods = Food::query()->where('is_active', 1)->latest('id')->get();
         foreach ($foods as $food) {
             if (!Storage::exists($food->img_thumbnail)) {
                 $food['img_thumbnail'] = 'images/foods/foods.png';

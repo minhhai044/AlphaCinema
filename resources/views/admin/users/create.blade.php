@@ -398,13 +398,13 @@
 
         const selectedValue = $("#choices-multiple-remove-button").val(); // Lấy giá trị của lựa chọn
 
-        if (selectedValue == "Quản lý chi nhánh") {
-            $("#cinema_select").addClass("d-none");
-            $("#cinema_select").prop("disabled", true); // Ẩn cinema_select nếu chọn "Quản lý chi nhánh"
-        } else {
-            $("#cinema_select").removeClass("d-none");
-            $("#cinema_select").prop("disabled", false);  // Hiển thị lại box-cinema nếu không chọn "Quản lý chi nhánh"
-        }
+        // if (selectedValue == "Quản lý chi nhánh") {
+        //     $("#cinema_select").addClass("d-none");
+        //     $("#cinema_select").prop("disabled", true); // Ẩn cinema_select nếu chọn "Quản lý chi nhánh"
+        // } else {
+        //     $("#cinema_select").removeClass("d-none");
+        //     $("#cinema_select").prop("disabled", false);  // Hiển thị lại box-cinema nếu không chọn "Quản lý chi nhánh"
+        // }
 
         $("#account-phone").on("keypress", function(event) {
             if (!/^[0-9]$/.test(String.fromCharCode(event.which || event.keyCode))) {
@@ -512,11 +512,13 @@
                 // if (Array.isArray(value) && value.includes("Quản lý chi nhánh")) {
                 if (value == "Quản lý chi nhánh") {
                     $("#box-cinema").addClass('d-none'); // Ẩn box-cinema
+                    $("#cinema_select").prop("disabled", true);
                     $("#box-branch").removeClass('d-none'); // Hiển thị box-branch
                     // } else if (Array.isArray(value) && value.includes("Nhân viên") || value.includes("Quản lý rạp")) {
                 } else if (value == "Nhân viên" || value == "Quản lý rạp") {
                     // Kiểm tra nếu chọn "Nhân viên" hoặc "Quản lý rạp", hiển thị cinema và ẩn branch
                     $("#box-cinema").removeClass('d-none'); // Hiển thị box-cinema
+                    $("#cinema_select").prop("disabled", false);
                     const branchId = $('#branch_select').val();
                     if (branchId) {
                         getCinemasByBranch(branchId);

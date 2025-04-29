@@ -88,6 +88,7 @@ class UserController extends Controller
     public function store(UserRequest $userRequest)
     {
         $data = $userRequest->validated();
+        // dd($data);
 
         if (!empty($data['cinema_id'])) {
             $data = $userRequest->except('branch_id');
