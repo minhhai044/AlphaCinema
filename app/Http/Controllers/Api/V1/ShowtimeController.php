@@ -330,6 +330,7 @@ class ShowtimeController extends Controller
                 'showtime' => function ($query) use ($branchId, $cinemId) {
                     $query->where('branch_id', $branchId)
                         ->where('cinema_id', $cinemId)
+                        ->where('is_active', 1)
                         ->where(function ($q) {
                             $q->where('date', '>', Carbon::now()->toDateString())
                                 ->orWhere(function ($q2) {
@@ -522,6 +523,7 @@ class ShowtimeController extends Controller
                     $query->where('branch_id', $branchId)
                         ->where('cinema_id', $cinemId)
                         ->where('status_special', 2)
+                        ->where('is_active', 1)
                         ->where(function ($q) {
                             $q->where('date', '>', Carbon::now()->toDateString())
                                 ->orWhere(function ($q2) {
