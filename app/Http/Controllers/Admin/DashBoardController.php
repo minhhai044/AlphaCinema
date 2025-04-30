@@ -44,7 +44,7 @@ class DashBoardController extends Controller
         $thisMonthStart = $selectedMonth ? Carbon::create($selectedYear, $selectedMonth, 1)->startOfMonth() : Carbon::now()->startOfMonth();
         $lastMonthStart = $thisMonthStart->copy()->subMonth()->startOfMonth();
         $lastMonthEnd = $thisMonthStart->copy()->subMonth()->endOfMonth();
-        $thisMonthEnd = $thisMonthStart->copy()->endOfMonth(); 
+        $thisMonthEnd = $thisMonthStart->copy()->endOfMonth();
 
         // Phân quyền mặc định
         if (!$user->hasRole('System Admin')) {
@@ -145,44 +145,60 @@ class DashBoardController extends Controller
         // Doanh thu theo rạp
         [$revenueSeriesJson, $cinemaLabelsJson] = $this->getRevenueByCinema($selectedMonth, $selectedYear, $branchId, $cinemaId, $movieId, $statusId);
 
-        // Phim hoạt động
+
+        // PHIM HOẠT ĐỘNG HIỆN TẠI
         $activeMoviesCount = DB::table('showtimes')
             ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
-            ->where('movies.is_active', 1)
             ->when($cinemaId, fn($q) => $q->where('showtimes.cinema_id', $cinemaId))
-            ->when($branchId, fn($q) => $q->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
-                ->where('cinemas.branch_id', $branchId))
-            ->when($date, fn($q) => $q->whereDate('showtimes.start_time', '=', $date))
+            ->when($branchId, function ($q) {
+                return $q->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
+                    ->whereColumn('cinemas.id', 'showtimes.cinema_id');
+            })
+            ->when($date, fn($q) => $q->whereDate('showtimes.date', $date))
+            ->when(
+                !$date && $selectedMonth && $selectedYear,
+                fn($q) =>
+                $q->whereMonth('showtimes.date', $selectedMonth)
+                    ->whereYear('showtimes.date', $selectedYear)
+            )
+            ->where('showtimes.is_active', 1)
+            ->where('movies.is_active', 1)
             ->distinct()
-            ->count('movies.id');
+            ->count('showtimes.movie_id');
 
-        // Phim hoạt động tháng trước
+        // THÁNG TRƯỚC
         $activeMoviesLastMonth = DB::table('showtimes')
             ->join('movies', 'showtimes.movie_id', '=', 'movies.id')
-            ->where('movies.is_active', 1)
-            ->whereBetween('showtimes.start_time', [$lastMonthStart, $lastMonthEnd])
             ->when($cinemaId, fn($q) => $q->where('showtimes.cinema_id', $cinemaId))
-            ->when($branchId, fn($q) => $q->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
-                ->where('cinemas.branch_id', $branchId))
+            ->when($branchId, function ($q) {
+                return $q->join('cinemas', 'showtimes.cinema_id', '=', 'cinemas.id')
+                    ->whereColumn('cinemas.id', 'showtimes.cinema_id');
+            })
+            ->whereBetween('showtimes.date', [$lastMonthStart, $lastMonthEnd])
+            ->where('showtimes.is_active', 1)
+            ->where('movies.is_active', 1)
             ->distinct()
-            ->count('movies.id');
+            ->count('showtimes.movie_id');
 
+        // TÍNH % THAY ĐỔI
         $activeMoviesChange = $activeMoviesLastMonth > 0
             ? (($activeMoviesCount - $activeMoviesLastMonth) / $activeMoviesLastMonth * 100)
             : ($activeMoviesCount > 0 ? 100 : 0);
 
-        // Debug log để kiểm tra
+        // LOG DEBUG
         Log::debug('Active Movies Debug', [
             'current' => $activeMoviesCount,
             'last_month' => $activeMoviesLastMonth,
             'change' => $activeMoviesChange
         ]);
+        $movieCount = DB::table('movies')->count();
 
         return view(self::PATH_VIEW . __FUNCTION__, compact(
             'branches',
             'cinemas',
             'branchesRelation',
             'movies',
+            'movieCount',
             'revenueThisMonth',
             'revenueChange',
             'ticketsThisMonth',
