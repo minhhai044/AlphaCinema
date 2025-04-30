@@ -79,7 +79,19 @@ class AuthController extends Controller
             }
 
             if ($user->is_active == false) {
-                return $this->errorResponse('Tài khoản đã bị khóa', Response::HTTP_UNAUTHORIZED);
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tài khoản đã bị khóa',
+                    'code' => 401
+                ], Response::HTTP_UNAUTHORIZED);
+            }
+
+            if ($user->type_user == 1) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Tài khoản không phải là tài khoản khách hàng',
+                    'code' => 401
+                ], Response::HTTP_UNAUTHORIZED);
             }
 
             // Tạo token xác thực
