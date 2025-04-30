@@ -255,7 +255,7 @@
     <div class="col-xl-3 col-md-6">
         <div class="card card-custom">
             <div class="card-header-custom">
-                <i class="bi bi-film me-1"></i> Phim đang hoạt động
+                <i class="bi bi-film me-1"></i> Phim có suất chiếu
             </div>
             <div class="card-body-custom">
                 <div class="row align-items-center">
@@ -266,14 +266,14 @@
                     </div>
                 </div>
                 <div class="text-nowrap">
-                    @if ($activeMoviesChange < 0)
+                    {{-- @if ($activeMoviesChange < 0)
                         <span class="badge bg-danger-subtle text-danger badge-custom"><i class="bi bi-arrow-down"></i>
                             {{ number_format(abs($activeMoviesChange), 1, '.', '') }}%</span>
                     @else
                         <span class="badge bg-success-subtle text-success badge-custom"><i class="bi bi-arrow-up"></i>
                             {{ number_format($activeMoviesChange, 1, '.', '') }}%</span>
-                    @endif
-                    <span class="ms-1 text-muted">So với tháng trước</span>
+                    @endif --}}
+                    <span class="ms-1 text-muted">Trên tổng số {{$movieCount}} phim</span>
                 </div>
             </div>
         </div>
