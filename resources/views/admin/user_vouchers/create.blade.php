@@ -89,12 +89,14 @@
                                             <span class="required">*</span> Chọn người dùng áp dụng
                                         </label>
                                         <select name="user_ids[]" id="user_ids" class="form-control select2" multiple="multiple">
+                                            <option value="all">Chọn tất cả người dùng</option>
                                             @foreach ($users as $user)
                                                 <option value="{{ $user->id }}" {{ in_array($user->id, old('user_ids', [])) ? 'selected' : '' }}>
                                                     {{ $user->name }} ({{ $user->email }})
                                                 </option>
                                             @endforeach
                                         </select>
+                                        
                                         
                                         @error('user_ids')
                                         <div class="text-danger">{{ $message }}</div>
@@ -161,13 +163,30 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-   $(document).ready(function() {
-    $('#user_ids').select2({
-        placeholder: "Chọn người dùng",
-        allowClear: true
+    $(document).ready(function () {
+        $('#user_ids').select2({
+            placeholder: "Chọn người dùng",
+            allowClear: true
+        });
+    
+        $('#user_ids').on('select2:select', function (e) {
+            if (e.params.data.id === 'all') {
+                // Lấy tất cả ID trừ "all"
+                const allValues = $('#user_ids option')
+                    .map(function() {
+                        return this.value !== 'all' ? this.value : null;
+                    })
+                    .get()
+                    .filter(v => v); // Loại bỏ null
+    
+                // Gán toàn bộ giá trị
+                $('#user_ids').val(allValues).trigger('change');
+            }
+        });
     });
-});
-</script>
+    </script>
+    
+
 
 @endsection
 
