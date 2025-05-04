@@ -426,6 +426,12 @@
                                                             </div>
                                                         </td>
                                                         <td>
+                                                            <div
+                                                            class="d-flex justify-content-center align-items-center gap-1">
+                                                            <a href="{{ route('admin.showtimes.show', $showtime['slug']) }}"
+                                                                class="btn btn-sm btn-warning" title="Xem chi tiết">
+                                                                <i class="bx bx-show"></i>
+                                                            </a>
                                                             <form action="{{ route('admin.showtimes.delete') }}"
                                                                 method="POST">
                                                                 @csrf
@@ -437,6 +443,7 @@
                                                                     <i class="bi bi-trash"></i>
                                                                 </button>
                                                             </form>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 @endforeach
@@ -467,7 +474,6 @@
     <script src="{{ asset('theme/admin/assets/libs/flatpickr/flatpickr.min.js') }}"></script>
     <script src="{{ asset('theme/admin/assets/js/pages/form-advanced.init.js') }}"></script>
     <script>
-
         // Lấy data
         const branchsRelation = @json($branchsRelation);
         const selectedBranchId = "{{ request('branch_id') }}";
@@ -535,7 +541,7 @@
 
 
         });
-        
+
         // Function List Movie
         function renderMovies(filteredMovies) {
             $('#movieList').empty(); // Xóa danh sách cũ
@@ -559,7 +565,7 @@
             });
         }
         renderMovies(movies);
-        
+
         // Search Movie
         $('#searchMovie').keyup(function() {
             let searchText = $(this).val().toLowerCase();
