@@ -68,7 +68,7 @@ class MovieRequest extends FormRequest
             'director' => 'required|string|max:255',
             'duration' => 'required|integer|min:1',
             'rating' => 'required|numeric|min:0|max:10',
-            
+
             'release_date' => 'required|date|after_or_equal:' . $movie->created_at->format('Y-m-d'),
 
             'end_date' => 'required|date|after_or_equal:release_date',
@@ -120,7 +120,7 @@ class MovieRequest extends FormRequest
             'release_date.date' => 'Ngày phát hành phải là một ngày hợp lệ.',
             'end_date.required' => 'Ngày kết thúc là bắt buộc.',
             'end_date.date' => 'Ngày kết thúc phải là một ngày hợp lệ.',
-            'end_date.after_or_equal' => 'Ngày kết thúc phải lớn hơn hôm nay.',
+            'end_date.after_or_equal' => 'Ngày kết thúc phải lớn hơn ngày bắt đầu.',
             'release_date.after_or_equal' => 'Ngày phát hành phải lớn hơn ngày tạo',
             'release_date.after' => 'Ngày phát hành phải lớn hơn ngày hôm nay.',
             'trailer_url.required' => 'URL trailer là bắt buộc.',

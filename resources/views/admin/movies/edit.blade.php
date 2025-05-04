@@ -49,7 +49,7 @@
                                             @enderror
                                         </div>
 
-                                        
+
 
 
                                         <div class="mb-3">
@@ -277,15 +277,28 @@
 
                                 <div class="mb-3">
                                     <label class="form-label">Ảnh</label>
-                                    <input type="file" name="img_thumbnail" class="form-control">
-                                    @if ($movie->img_thumbnail)
-                                        <img src="{{ asset('storage/' . $movie->img_thumbnail) }}" width="100"
-                                            class="mt-2">
-                                    @endif
+                                    <input type="file" name="img_thumbnail" id="movie-image" class="form-control"
+                                        onchange="previewImage(event)">
+
+                                    <div id="image-container"
+                                        class="position-relative text-center {{ $movie->img_thumbnail ? '' : 'd-none' }}">
+                                        <img id="image-preview"
+                                            src="{{ $movie->img_thumbnail ? asset('storage/' . $movie->img_thumbnail) : '' }}"
+                                            alt="Preview" class="img-fluid mb-2"
+                                            style="max-width: 100%; max-height: 200px;">
+
+                                        <button type="button" id="delete-image"
+                                            class="btn btn-danger position-absolute top-0 end-0 p-1"
+                                            onclick="deleteImage()">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+
                                     @error('img_thumbnail')
                                         <div class="text-danger fw-medium">{{ $message }}</div>
                                     @enderror
                                 </div>
+
                                 <div class="d-flex flex-wrap gap-2">
                                     <a href=""><button type="submit"
                                             class="btn btn-primary waves-effect waves-light">
@@ -319,7 +332,29 @@
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
+        function previewImage(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
 
+            reader.onload = function() {
+                $('#image-preview').attr('src', reader.result);
+                $('#image-container').removeClass('d-none');
+            }
+
+            if (file) {
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function deleteImage() {
+            $('#image-container').addClass('d-none');
+            $('#image-preview').attr('src', '');
+
+            const fileInput = $('#movie-image');
+            fileInput.val('');
+            fileInput[0].type = '';
+            fileInput[0].type = 'file';
+        }
 
         function previewImage(event) {
             const file = event.target.files[0];
