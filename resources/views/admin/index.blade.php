@@ -93,7 +93,7 @@
                         </div>
 
                         <!-- Bộ lọc phim -->
-                        <div class="input-group input-group-sm">
+                        {{-- <div class="input-group input-group-sm">
                             <span class="input-group-text bg-light text-muted border-0">
                                 <i class="bi bi-film"></i>
                             </span>
@@ -105,7 +105,7 @@
                                     </option>
                                 @endforeach
                             </select>
-                        </div>
+                        </div> --}}
 
 
                         <!-- Bộ lọc tháng -->
