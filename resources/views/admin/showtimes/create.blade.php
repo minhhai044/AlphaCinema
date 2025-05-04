@@ -56,7 +56,23 @@
                 <div class="card-body" style="border: none">
                     <div class="row">
                         <!-- Các trường thông tin cơ bản -->
-                    
+                        <div class="col-lg-4">
+                            <div class="mb-3">
+                                <label for="branch_id" class="form-label">
+                                    Chi nhánh <span style="color: red" class="required">*</span>
+                                </label>
+                                <select name="branch_id" class="form-select @error('branch_id') is-invalid @enderror"
+                                    required id="branch_id">
+                                    <option value="" disabled selected>Chọn chi nhánh</option>
+                                    @foreach ($branchs as $branch)
+                                        <option value="{{ $branch['id'] }}">{{ $branch['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                @error('branch_id')
+                                    <span class="text-danger"><strong>{{ $message }}</strong></span>
+                                @enderror
+                            </div>
+                        </div>
                         <!-- Rạp phim -->
                         <div class="col-lg-4">
                             <div class="mb-3">
