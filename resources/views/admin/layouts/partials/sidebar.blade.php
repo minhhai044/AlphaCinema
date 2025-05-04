@@ -145,15 +145,7 @@
                         @canany(['Danh sách rạp', 'Thêm rạp', 'Sửa rạp', 'Xóa rạp'])
                             <li>
                                 <a href="{{ route('admin.cinemas.index') }}">
-                                    <span>Quản lý Rạp</span>
-                                </a>
-                            </li>
-                        @endcanany
-
-                        @canany(['Danh sách phòng chiếu', 'Thêm phòng chiếu', 'Sửa phòng chiếu', 'Xóa phòng chiếu'])
-                            <li>
-                                <a href="{{ route('admin.rooms.index') }}">
-                                    <span>Quản lý phòng</span>
+                                    <span>Quản lý rạp</span>
                                 </a>
                             </li>
                         @endcanany
@@ -165,6 +157,16 @@
                                 </a>
                             </li>
                         @endcan
+                    
+                        @canany(['Danh sách phòng chiếu', 'Thêm phòng chiếu', 'Sửa phòng chiếu', 'Xóa phòng chiếu'])
+                            <li>
+                                <a href="{{ route('admin.rooms.index') }}">
+                                    <span>Quản lý phòng</span>
+                                </a>
+                            </li>
+                        @endcanany
+
+
 
                         @can(['Danh sách loại ghế'])
                             <li>

@@ -91,14 +91,14 @@
                                         class="btn btn-warning btn-sm">
                                         <i class="fas fa-edit"></i>
                                     </a>
-                                    <form action="{{ route('admin.user-vouchers.destroy', $User_voucher) }}" method="POST"
+                                    {{-- <form action="{{ route('admin.user-vouchers.destroy', $User_voucher) }}" method="POST"
                                         class="d-inline-block" onsubmit="return confirm('Bạn có chắc chắn muốn xóa?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">
                                             <i class="bi bi-trash"></i>
                                         </button>
-                                    </form>
+                                    </form> --}}
                                 </td>
                             </tr>
                         @endforeach
